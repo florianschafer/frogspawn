@@ -20,7 +20,7 @@ class UnsafeBuffer {
     buffer = UNSAFE.reallocateMemory(buffer, newSize << elementBits);
   }
 
-  void free() {
+  public void free() {
     UNSAFE.freeMemory(buffer);
   }
 

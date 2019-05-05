@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations.buffers;
 
-class UnsafeIntBuffer extends UnsafeBuffer {
+public class UnsafeIntBuffer extends UnsafeBuffer {
 
   UnsafeIntBuffer(long initialSize) {
     super(initialSize, 2);
@@ -10,7 +10,7 @@ class UnsafeIntBuffer extends UnsafeBuffer {
     UNSAFE.putInt(buffer + (idx << elementBits), value);
   }
 
-  int get(long idx) {
+  public int get(long idx) {
     return UNSAFE.getInt(buffer + (idx << elementBits));
   }
 

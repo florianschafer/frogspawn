@@ -3,17 +3,15 @@ package net.adeptropolis.nephila.graph.implementations.buffers;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongSwapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MatrixEntryBuffer implements LongSwapper, LongComparator {
 
   private static final long DEFAULT_SIZE_INCREMENT = 1 << 24;
-  private static final Logger LOGGER = LoggerFactory.getLogger(MatrixEntryBuffer.class);
   private final long sizeIncrement;
   private long maxSize;
   private long size;
   private UnsafeIntBuffer rowIndices;
+
   private UnsafeIntBuffer colIndices;
   private UnsafeDoubleBuffer values;
 
@@ -26,7 +24,7 @@ public class MatrixEntryBuffer implements LongSwapper, LongComparator {
     this.values = new UnsafeDoubleBuffer(initialSize);
   }
 
-  MatrixEntryBuffer() {
+  public MatrixEntryBuffer() {
     this(DEFAULT_SIZE_INCREMENT, DEFAULT_SIZE_INCREMENT);
   }
 
@@ -57,7 +55,7 @@ public class MatrixEntryBuffer implements LongSwapper, LongComparator {
     double activeValue = values.get(0);
     long writePtr = 0;
 
-    for (int scrollPtr = 1; scrollPtr < size; scrollPtr++) {
+    for (long scrollPtr = 1; scrollPtr < size; scrollPtr++) {
       int row = rowIndices.get(scrollPtr);
       int col = colIndices.get(scrollPtr);
       double val = values.get(scrollPtr);
@@ -85,7 +83,7 @@ public class MatrixEntryBuffer implements LongSwapper, LongComparator {
     values.set(idx, value);
   }
 
-  public void compact() {
+  private void compact() {
     resize(size);
   }
 
@@ -102,6 +100,11 @@ public class MatrixEntryBuffer implements LongSwapper, LongComparator {
     values.free();
   }
 
+  public void freeRowIndices() {
+    rowIndices.free();
+  }
+
+
   public long getSize() {
     return size;
   }
@@ -114,10 +117,17 @@ public class MatrixEntryBuffer implements LongSwapper, LongComparator {
     return colIndices.get(idx);
   }
 
-  public double getValue(long idx) {
+  double getValue(long idx) {
     return values.get(idx);
   }
 
+  public UnsafeIntBuffer getColIndices() {
+    return colIndices;
+  }
+
+  public UnsafeDoubleBuffer getValues() {
+    return values;
+  }
 
   @Override
   public int compare(long idx1, long idx2) {
