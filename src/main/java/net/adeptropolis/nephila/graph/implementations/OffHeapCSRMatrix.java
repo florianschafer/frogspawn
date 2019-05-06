@@ -31,11 +31,12 @@ public class OffHeapCSRMatrix {
     long low = rowPointers.get(row);
     long high = rowPointers.get(row + 1);
     if (low == high) return 0d; // Row is empty
-    if (colIndices.get(high - 1) <= col ) return 0;
+//    System.out.printf("low: %d, high: %d ---- %d %d -> %d\n", low, high, row, col, 0);
     return binarySearch(col, low, high);
   }
 
   private double binarySearch(long col, long low, long high) {
+//    System.out.printf("%d: %d -- %d\n", col, low, high);
     if (colIndices.get(low) == col) return values.get(low);
     if (high == low + 1) return 0.0; // No match within this column
     long mid = (low + high) >> 1;

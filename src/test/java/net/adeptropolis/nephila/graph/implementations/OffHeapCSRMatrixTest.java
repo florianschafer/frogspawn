@@ -55,8 +55,7 @@ public class OffHeapCSRMatrixTest {
   }
 
   @Test
-  public void foo() {
-//    TODO: Complete test, add one for empty head/tail
+  public void sparseLookup() {
     HashMap<IndexPair, Double> entries = Maps.newHashMap();
     entries.put(IndexPair.of(0, 0), 2.0);
     entries.put(IndexPair.of(0, 5), 3.0);
@@ -65,28 +64,27 @@ public class OffHeapCSRMatrixTest {
     entries.put(IndexPair.of(3, 4), 23.0);
     entries.put(IndexPair.of(3, 6), 29.0);
     entries.put(IndexPair.of(3, 8), 31.0);
-    OffHeapCSRMatrix.Builder builder = new OffHeapCSRMatrix.Builder();
-    entries.forEach((idx, val) -> builder.add(idx.row, idx.col, val));
-    OffHeapCSRMatrix matrix = builder.build();
-    System.out.println(getRowPointers(matrix));
+    OffHeapCSRMatrix matrix = getMatrixFromMap(entries);
     for (int i = 0; i < 40; i++) {
       for (int j = 0; j < 40; j++) {
-        double v = matrix.get(i, j);
-        if (entries.containsKey(IndexPair.of(i, j))) {
-          System.out.println("A");
-          assertThat(v, is(entries.get(IndexPair.of(i, j))));
-        } else {
-          System.out.println("B");
-          assertThat(v, is(0d));
-        }
+        assertThat(matrix.get(i, j), is(entries.getOrDefault(IndexPair.of(i, j), 0d)));
       }
     }
-
-    System.out.println(matrix.get(3,8));
-    //    assertThat("Row pointers match", getRowPointers(matrix), hasItems(0L, 3L, 3L, 3L, 7L));
     matrix.free();
   }
 
+  @Test
+  public void sparseLookupEmptyHead() {
+    HashMap<IndexPair, Double> entries = Maps.newHashMap();
+    entries.put(IndexPair.of(1, 1), 2.0);
+    OffHeapCSRMatrix matrix = getMatrixFromMap(entries);
+    for (int i = 0; i < 5; i++) {
+      for (int j = 0; j < 5; j++) {
+        assertThat(matrix.get(i, j), is(entries.getOrDefault(IndexPair.of(i, j), 0d)));
+      }
+    }
+    matrix.free();
+  }
 
 
 //  @Test
@@ -107,6 +105,12 @@ public class OffHeapCSRMatrixTest {
 //
 //
 //  }
+
+  private OffHeapCSRMatrix getMatrixFromMap(HashMap<IndexPair, Double> entries) {
+    OffHeapCSRMatrix.Builder builder = new OffHeapCSRMatrix.Builder();
+    entries.forEach((idx, val) -> builder.add(idx.row, idx.col, val));
+    return builder.build();
+  }
 
   private List<Long> getRowPointers(OffHeapCSRMatrix matrix) {
     return IntStream.range(0, matrix.numRows + 1)
