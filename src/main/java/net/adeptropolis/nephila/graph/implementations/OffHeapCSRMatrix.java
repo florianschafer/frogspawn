@@ -5,6 +5,8 @@ import net.adeptropolis.nephila.graph.implementations.buffers.UnsafeDoubleBuffer
 import net.adeptropolis.nephila.graph.implementations.buffers.UnsafeIntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.UnsafeLongBuffer;
 
+import java.util.stream.IntStream;
+
 /*
 * ICSR refers to a slightly modified variant where pointers to empty rows have index -1.
 * This should facilitate random access for row-parallel multiplication.
@@ -35,6 +37,57 @@ public class OffHeapCSRMatrix {
     return binarySearch(col, low, high);
   }
 
+  // Assumes selIndices to be sorted!
+  public void multiply(int selIndicesSize, UnsafeIntBuffer selIndices, UnsafeDoubleBuffer arg, UnsafeDoubleBuffer results) {
+    IntStream.range(0, selIndicesSize).parallel().forEach(i -> {
+      long low = rowPointers.get(i);
+      long high = rowPointers.get(i + 1);
+      if (low == high) {
+        results.set(i, 0); // Row is empty
+      } else {
+        double prod = 0;
+        if (selIndicesSize > high - low) {
+
+          for (long idx = low; idx < high; idx++) {
+            int j = colIndices.get(idx);
+            // ...
+
+
+
+
+            prod += values.get(idx) * arg.get(foo);
+          }
+
+
+
+        } else {
+
+        }
+//        double prod = 0;
+//        int matJ;
+//        for (int jIdx = 0; jIdx < selIndicesSize; jIdx++) {
+//          int selJ = selIndices.get(jIdx);
+//          while ((matJ = colIndices.get(low)) < selJ && low < high) low++; WRONG (matJ is set in the final wrong try)
+//          prod += values.get(matJ) * arg.get(jIdx);
+//        }
+//        values.set(i, prod);
+
+//        long selIndicesPtr = 0;
+//        int foo;
+//        double prod = 0;
+//        for (long idx = low; idx < high; idx++) {
+//          int j = colIndices.get(idx);
+//          while ((foo = selIndices.get(selIndicesPtr)) < j) selIndicesPtr++; WRONG (matJ is set in the final wrong try)
+//          prod += values.get(idx) * arg.get(foo);
+//        }
+//        results.set(i, prod);
+
+        results.set(i, prod);
+
+      }
+    });
+  }
+
   private double binarySearch(long col, long low, long high) {
 //    System.out.printf("%d: %d -- %d\n", col, low, high);
     if (colIndices.get(low) == col) return values.get(low);
@@ -47,6 +100,20 @@ public class OffHeapCSRMatrix {
     }
   }
 
+  private static boolean checkFoo(UnsafeIntBuffer buffer, int target, int max, long low, long high) {
+    int lowVal = buffer.get(low);
+    if (lowVal == target) return true;
+    long mid = low + (high - low) * target / (max - lowVal);
+    if (target >= buffer.get(mid)) {
+      return binarySearch(col, mid, high);
+    } else {
+      return binarySearch(col, low, mid);
+    }
+
+
+    return false;
+  }
+
   public void free() {
     rowPointers.free();
     colIndices.free();
@@ -54,13 +121,14 @@ public class OffHeapCSRMatrix {
   }
 
   public String memoryFootprint() {
+    System.out.printf("NumRows: %d, numEntries: %d", numRows, numEntries);
     long fp = (numRows << 2) + (numEntries << 2) + (numEntries << 3);
     if (fp >= (1 << 30)) {
-      return String.format("%d GB", fp >> 30);
+      return String.format("%.2f GB", (double)fp / (1 << 30));
     } else if (fp >= (1 << 20)) {
-      return String.format("%d MB", fp >> 20);
+      return String.format("%.2f MB", (double)fp / (1 << 20));
     } else if (fp >= (1 << 10)) {
-      return String.format("%d KB", fp >> 10);
+      return String.format("%.2f KB", (double)fp / (1 << 10));
     } else {
       return String.format("%d bytes", fp);
     }

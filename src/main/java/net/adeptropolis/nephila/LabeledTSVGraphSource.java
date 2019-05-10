@@ -3,7 +3,9 @@ package net.adeptropolis.nephila;
 import net.adeptropolis.nephila.graph.Edge;
 import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -20,7 +22,7 @@ import java.util.stream.Stream;
 
 public class LabeledTSVGraphSource implements GraphSource  {
 
-  private static final Pattern TSVParsePattern = Pattern.compile("\\s*(?<weight>[0-9]+)\\s+(?<u>.+?)\\s+(?<v>.+?)\\s*");
+  private static final Pattern TSVParsePattern = Pattern.compile("\\s*(?<weight>[0-9]+)\t+(?<u>[^\t]+)\t+(?<v>.+)\\s*");
   private final Path path;
   private final ConcurrentMap<String, Integer> labelMap;
 

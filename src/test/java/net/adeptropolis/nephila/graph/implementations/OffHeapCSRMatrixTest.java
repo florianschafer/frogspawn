@@ -1,10 +1,13 @@
 package net.adeptropolis.nephila.graph.implementations;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
+import net.adeptropolis.nephila.LabeledTSVGraphSource;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.junit.Test;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -87,24 +90,24 @@ public class OffHeapCSRMatrixTest {
   }
 
 
-//  @Test
-//  public void foo() {
-//
-//    LabeledTSVGraphSource source = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-//    OffHeapCSRMatrix.Builder builder = new OffHeapCSRMatrix.Builder();
-//    source.edges().sequential().forEach(edge -> {
-//      builder.add(edge.u, edge.v, edge.weight);
-//      builder.add(edge.v, edge.u, edge.weight);
-//    });
-//    Stopwatch watch = Stopwatch.createStarted();
-//    OffHeapCSRMatrix matrix = builder.build();
-//    System.out.println("Took " + watch.elapsed().getSeconds());
-//    System.out.println("Memory footprint is " + matrix.memoryFootprint());
-//    matrix.free();
-//
-//
-//
-//  }
+  @Test
+  public void foo() {
+
+    LabeledTSVGraphSource source = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    OffHeapCSRMatrix.Builder builder = new OffHeapCSRMatrix.Builder();
+    source.edges().sequential().forEach(edge -> {
+      builder.add(edge.u, edge.v, edge.weight);
+      builder.add(edge.v, edge.u, edge.weight);
+    });
+    Stopwatch watch = Stopwatch.createStarted();
+    OffHeapCSRMatrix matrix = builder.build();
+    System.out.println("Took " + watch.elapsed().getSeconds());
+    System.out.println("Memory footprint is " + matrix.memoryFootprint());
+    matrix.free();
+
+
+
+  }
 
   private OffHeapCSRMatrix getMatrixFromMap(HashMap<IndexPair, Double> entries) {
     OffHeapCSRMatrix.Builder builder = new OffHeapCSRMatrix.Builder();

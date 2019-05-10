@@ -6,7 +6,7 @@ public class UnsafeDoubleBuffer extends UnsafeBuffer {
     super(initialSize, 3);
   }
 
-  void set(long idx, double value) {
+  public void set(long idx, double value) {
     UNSAFE.putDouble(buffer + (idx << elementBits), value);
   }
 
