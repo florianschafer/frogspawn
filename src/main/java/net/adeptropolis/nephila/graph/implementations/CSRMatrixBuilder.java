@@ -36,6 +36,12 @@ public class CSRMatrixBuilder {
     return this;
   }
 
+  public CSRMatrixBuilder addSymmetric(int row, int col, double value) {
+    add(row, col, value);
+    add(col, row, value);
+    return this;
+  }
+
   public CSRMatrix build() {
 
     if (ptr == 0L) {
@@ -137,14 +143,8 @@ public class CSRMatrixBuilder {
 
     @Override
     public int compare(long i1, long i2) {
-      int row1 = Buffers.getInt(rowIndices, i1);
-      int row2 = Buffers.getInt(rowIndices, i2);
-      if (row1 != row2) {
-        return Integer.compare(row1, row2);
-      }
-      int col1 = Buffers.getInt(colIndices, i1);
-      int col2 = Buffers.getInt(colIndices, i2);
-      return Integer.compare(col1, col2);
+      int c = Buffers.compareInts(rowIndices, i1, i2);
+      return c != 0 ? c : Buffers.compareInts(colIndices, i1, i2);
     }
 
     @Override

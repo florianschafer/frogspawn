@@ -57,6 +57,10 @@ public class Buffers {
     return arr;
   }
 
+  public static int compareInts(long buffer, long idx1, long idx2) {
+    return Integer.compare(getInt(buffer, idx1), getInt(buffer, idx2));
+  }
+
   /* LONGS */
   /* ============================================= */
 
@@ -89,6 +93,11 @@ public class Buffers {
     return arr;
   }
 
+  public static int compareLongs(long buffer, long idx1, long idx2) {
+    return Long.compare(getLong(buffer, idx1), getLong(buffer, idx2));
+  }
+
+
   /* DOUBLES */
   /* ============================================= */
 
@@ -119,6 +128,10 @@ public class Buffers {
     double[] arr = new double[size];
     for (int i = 0; i < size; i++) arr[i] = getDouble(buffer, i);
     return arr;
+  }
+
+  public static int compareDoubles(long buffer, long idx1, long idx2) {
+    return Double.compare(getDouble(buffer, idx1), getDouble(buffer, idx2));
   }
 
 

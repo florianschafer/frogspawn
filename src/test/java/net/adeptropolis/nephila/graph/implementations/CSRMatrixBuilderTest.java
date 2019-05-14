@@ -117,6 +117,19 @@ public class CSRMatrixBuilderTest {
             ImmutableList.of(1.0, 8.0, 7.0));
   }
 
+  @Test
+  public void emptyFirstRow() {
+    withBuilder(b -> b
+                    .add(1, 1, 1)
+                    .add(1, 2, 2)
+                    .add(1, 3, 3),mat -> {
+              assertThat(mat.getNnz(), is(3L));
+              assertThat(mat.getNumRows(), is(2));
+            },
+            ImmutableList.of(0L, 0L),
+            ImmutableList.of(1, 2, 3),
+            ImmutableList.of(1.0, 2.0, 3.0));
+  }
 
   private static void withBuilder(Function<CSRMatrixBuilder, CSRMatrixBuilder> builder,
                                   Consumer<CSRMatrix> validator) {
