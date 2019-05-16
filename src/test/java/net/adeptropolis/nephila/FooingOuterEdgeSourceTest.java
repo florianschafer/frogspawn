@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class FooingOuterEdgeSourceTest {
 
 //  @Test
-//  public void foo() {
+//  public void scalarProductWithEntryOverhang() {
 //
 //    LabeledTSVGraphSource graphSource = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
 ////    graphSource.edges().count();
@@ -52,7 +52,7 @@ public class FooingOuterEdgeSourceTest {
     }
 
     AtomicIntegerArray degreePopulation = new AtomicIntegerArray(degrees.length());
-    MMapStorage storage = new MMapStorage("/home/florian/foo.bin", offsets[degrees.length() - 1] + degrees.get(degrees.length() - 1));
+    MMapStorage storage = new MMapStorage("/home/florian/scalarProductWithEntryOverhang.bin", offsets[degrees.length() - 1] + degrees.get(degrees.length() - 1));
     edgeSource.edges().parallel().forEach(edge -> {
       System.out.printf("%d / %d / %f\n", index.get(edge.u), index.get(edge.v), edge.weight);
       int u = index.get(edge.u);

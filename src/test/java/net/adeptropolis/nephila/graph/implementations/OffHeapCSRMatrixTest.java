@@ -96,7 +96,7 @@ public class OffHeapCSRMatrixTest {
 //
 //
 //  @Test
-//  public void foo() {
+//  public void scalarProductWithEntryOverhang() {
 //
 //    LabeledTSVGraphSource source = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
 //    OffHeapCSRMatrix.Builder builder = new OffHeapCSRMatrix.Builder();

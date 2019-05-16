@@ -3,6 +3,8 @@ package net.adeptropolis.nephila.graph.implementations;
 import net.adeptropolis.nephila.graph.implementations.buffers.Buffers;
 import net.adeptropolis.nephila.graph.implementations.buffers.SortedBuffers;
 
+import java.util.stream.IntStream;
+
 public class CSRMatrix {
 
   private final int numRows;
@@ -19,25 +21,28 @@ public class CSRMatrix {
     this.values = values;
   }
 
-  double rowScalarProduct(int row, long vecBuf, long indexBuf, int bufSize) {
+  public void multiply(long vecBuf, long indexBuf, long resultBuf, int bufSize) {
+    // TODO: Check parallel streams are efficient. Look at RecursiveAction
+    for (int i = 0; i < bufSize; i++) Buffers.setDouble(resultBuf, i, 0);
+    IntStream.range(0, bufSize).parallel().forEach(i -> {
+      int row = Buffers.getInt(indexBuf, i);
+      double p = rowScalarProduct(row, vecBuf, indexBuf, bufSize);
+      Buffers.setDouble(resultBuf, i, p);
+    });
+  }
 
+  double rowScalarProduct(int row, long vecBuf, long indexBuf, int bufSize) {
     long low = Buffers.getLong(rowPtrs, row);
     long high = Buffers.getLong(rowPtrs, row + 1);
     if (low == high) return 0; // Empty row
+    if (bufSize == 0) return 0; // Empty indices
 
     double prod = 0;
     int col;
     long retrievedIdx;
     long secPtr;
 
-    if (bufSize == numRows) {
-      // All indices selected
-      for (long ptr = low; ptr < high; ptr++) {
-        col = Buffers.getInt(colIndices, ptr);
-        prod += Buffers.getDouble(values, ptr) * Buffers.getDouble(vecBuf, col);
-      }
-    } else if (bufSize > high - low) {
-      // |indices| > row nnz
+    if (bufSize > high - low) {
       secPtr = 0L;
       for (long ptr = low; ptr < high; ptr++) {
         col = Buffers.getInt(colIndices, ptr);
@@ -49,13 +54,10 @@ public class CSRMatrix {
         if (secPtr >= bufSize) break;
       }
     } else {
-      // row nnz > |indices|
       secPtr = low;
       for (long ptr = 0; ptr < bufSize; ptr++) {
         col = Buffers.getInt(indexBuf, ptr);
-//        todo: row ptrs seem to be off. See log statement
-//        System.out.printf("Searching key = %d, size = %d, secPtr = %d\n", col, bufSize, secPtr);
-        retrievedIdx = SortedBuffers.searchInt(colIndices, bufSize, col, secPtr);
+        retrievedIdx = SortedBuffers.searchInt(colIndices, high, col, secPtr);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
           prod += Buffers.getDouble(values, retrievedIdx) * Buffers.getDouble(vecBuf, ptr);
           secPtr = retrievedIdx + 1;
@@ -63,7 +65,6 @@ public class CSRMatrix {
         if (secPtr >= high) break;
       }
     }
-
     return prod;
   }
 
@@ -95,5 +96,15 @@ public class CSRMatrix {
     }
   }
 
+  public void print() {
+    System.out.println("Row pointers:");
+    for (int i = 0; i < numRows; i++) {
+      System.out.printf("  %d -> %d\n", i, Buffers.getLong(rowPtrs, i));
+    }
+    System.out.println("Column indices / values:");
+    for (int i = 0; i < nnz; i++) {
+      System.out.printf("  %d: %d -> %f\n", i, Buffers.getInt(colIndices, i), Buffers.getDouble(values, i));
+    }
+  }
 
 }
