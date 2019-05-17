@@ -68,9 +68,9 @@ public class CSRMatrixBuilder {
 
   private void resize(long newSize) {
     reservedSize = newSize;
-    Buffers.resizeInts(rowIndices, newSize);
-    Buffers.resizeInts(colIndices, newSize);
-    Buffers.resizeDoubles(values, newSize);
+    rowIndices = Buffers.resizeInts(rowIndices, newSize);
+    colIndices = Buffers.resizeInts(colIndices, newSize);
+    values = Buffers.resizeDoubles(values, newSize);
   }
 
   private void sort() {

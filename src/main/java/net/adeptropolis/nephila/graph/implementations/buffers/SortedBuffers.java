@@ -15,13 +15,12 @@ public class SortedBuffers {
   }
 
   public static long searchInt(long buffer, long size, int key) {
-    return searchInt(buffer, size, key, 0L);
+    return searchInt(buffer, key, 0L, size - 1);
   }
 
-  public static long searchInt(long buffer, long size, int key, long low) {
+  public static long searchInt(long buffer, int key, long low, long high) {
 
     long mid;
-    long high = size - 1;
 
     int lowVal = Buffers.getInt(buffer, low);
     int highVal = Buffers.getInt(buffer, high);

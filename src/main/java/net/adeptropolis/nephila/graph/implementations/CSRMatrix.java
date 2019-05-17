@@ -46,7 +46,7 @@ public class CSRMatrix {
       secPtr = 0L;
       for (long ptr = low; ptr < high; ptr++) {
         col = Buffers.getInt(colIndices, ptr);
-        retrievedIdx = SortedBuffers.searchInt(indexBuf, bufSize, col, secPtr);
+        retrievedIdx = SortedBuffers.searchInt(indexBuf, col, secPtr, bufSize - 1);
         if (retrievedIdx >= 0) {
           prod += Buffers.getDouble(values, ptr) * Buffers.getDouble(vecBuf, retrievedIdx);
           secPtr = retrievedIdx + 1;
@@ -57,7 +57,7 @@ public class CSRMatrix {
       secPtr = low;
       for (long ptr = 0; ptr < bufSize; ptr++) {
         col = Buffers.getInt(indexBuf, ptr);
-        retrievedIdx = SortedBuffers.searchInt(colIndices, high, col, secPtr);
+        retrievedIdx = SortedBuffers.searchInt(colIndices, col, secPtr, high);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
           prod += Buffers.getDouble(values, retrievedIdx) * Buffers.getDouble(vecBuf, ptr);
           secPtr = retrievedIdx + 1;
