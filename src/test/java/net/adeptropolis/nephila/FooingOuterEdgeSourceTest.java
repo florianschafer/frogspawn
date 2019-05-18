@@ -39,10 +39,10 @@ public class FooingOuterEdgeSourceTest {
 
     System.out.println("Finished building matrix");
     long start = System.nanoTime();
-    for (int i = 0 ; i < 1000; i++) {
+    for (int i = 0 ; i < 100; i++) {
       mat.multiply(arg, indices, res, mat.getNumRows());
     }
-    long runTimeMs = (System.nanoTime() - start) / (1000L * 1000000L);
+    long runTimeMs = (System.nanoTime() - start) / (100L * 1000000L);
     System.out.println("Avg runtime: " + runTimeMs + "ms");
 
 

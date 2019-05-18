@@ -3,6 +3,8 @@ package net.adeptropolis.nephila.graph.implementations;
 import net.adeptropolis.nephila.graph.implementations.buffers.Buffers;
 import net.adeptropolis.nephila.graph.implementations.buffers.SortedBuffers;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveAction;
 import java.util.stream.IntStream;
 
 public class CSRMatrix {
@@ -67,7 +69,6 @@ public class CSRMatrix {
     }
     return prod;
   }
-
 
   public void free() {
     Buffers.free(rowPtrs);
