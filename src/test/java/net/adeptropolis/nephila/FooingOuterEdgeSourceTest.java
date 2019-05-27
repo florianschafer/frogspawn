@@ -1,9 +1,9 @@
 package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.graph.Graph;
-import net.adeptropolis.nephila.graph.implementations.CSRMatrix;
-import net.adeptropolis.nephila.graph.implementations.CSRMatrixBuilder;
-import net.adeptropolis.nephila.graph.implementations.buffers.Buffers;
+import net.adeptropolis.nephila.graph.implementations.CSRStorage;
+import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.implementations.CSRSubMatrix;
+import net.adeptropolis.nephila.graph.implementations.buffers.*;
 import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
 import org.junit.Test;
 
@@ -12,7 +12,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -24,32 +23,40 @@ public class FooingOuterEdgeSourceTest {
   public void multiplication() {
 
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-    CSRMatrixBuilder b = new CSRMatrixBuilder();
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+    CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
-    CSRMatrix mat = b.build();
+    CSRStorage storage = b.build();
 
-    long indices = Buffers.allocInts(mat.getNumRows());
-    long arg = Buffers.allocDoubles(mat.getNumRows());
-    long res = Buffers.allocDoubles(mat.getNumRows());
+    IntBuffer indices = new ArrayIntBuffer(storage.getNumRows());
+    DoubleBuffer arg = new ArrayDoubleBuffer(storage.getNumRows());
+    DoubleBuffer res = new ArrayDoubleBuffer(storage.getNumRows());
 
-    for (int i = 0; i < mat.getNumRows(); i++) {
-      Buffers.setInt(indices, i, i);
-      Buffers.setDouble(arg, i, i);
+    for (int i = 0; i < storage.getNumRows(); i++) {
+      indices.set(i, i);
+      arg.set(i, i);
     }
+
+    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
 
     System.out.println("Finished building matrix");
-    long start = System.nanoTime();
-    for (int i = 0 ; i < 100; i++) {
-      mat.multiply(arg, indices, res, mat.getNumRows());
+    System.out.println("NumRows: " + storage.getNumRows());
+    for (int batchSize = 1; batchSize < 100000; batchSize *= 2) {
+      long start = System.nanoTime();
+      for (int i = 0 ; i < 2500; i++) {
+        mat.multiply(arg,batchSize);
+      }
+      long runTimeMs = (System.nanoTime() - start) / (2500L * 1000000L);
+      System.out.println("Bs = " + batchSize + ", Avg runtime: " + runTimeMs + "ms");
     }
-    long runTimeMs = (System.nanoTime() - start) / (100L * 1000000L);
-    System.out.println("Avg runtime: " + runTimeMs + "ms");
 
 
-    Buffers.free(res);
-    Buffers.free(arg);
-    Buffers.free(indices);
+
+    res.free();
+    arg.free();
+    indices.free();
     mat.free();
+    storage.free();
 
 
   }

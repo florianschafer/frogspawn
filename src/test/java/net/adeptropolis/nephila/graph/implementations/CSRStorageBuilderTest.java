@@ -1,19 +1,17 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.collect.ImmutableList;
-import net.adeptropolis.nephila.graph.implementations.buffers.Buffers;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class CSRMatrixBuilderTest {
+public class CSRStorageBuilderTest {
 
   @Test
   public void emptyMatrix() {
@@ -131,27 +129,30 @@ public class CSRMatrixBuilderTest {
             ImmutableList.of(1.0, 2.0, 3.0));
   }
 
-  private static void withBuilder(Function<CSRMatrixBuilder, CSRMatrixBuilder> builder,
-                                  Consumer<CSRMatrix> validator) {
-    CSRMatrix mat = builder.apply(new CSRMatrixBuilder()).build();
+  private static void withBuilder(Function<CSRStorageBuilder, CSRStorageBuilder> builder,
+                                  Consumer<CSRStorage> validator) {
+    CSRStorage mat = builder.apply(new CSRStorageBuilder()).build();
     validator.accept(mat);
     mat.free();
   }
 
-  private static void withBuilder(Function<CSRMatrixBuilder, CSRMatrixBuilder> builder,
-                                  Consumer<CSRMatrix> validator,
+  private static void withBuilder(Function<CSRStorageBuilder, CSRStorageBuilder> builder,
+                                  Consumer<CSRStorage> validator,
                                   List<Long> expectedRowPtrs,
                                   List<Integer> expectedColIndices,
                                   List<Double> expectedValues) {
-    withBuilder(builder, mat -> {
-      validator.accept(mat);
-      long[] rowPtrs = Buffers.toLongArray(mat.rowPtrs, Math.toIntExact(mat.getNumRows()));
-      int[] colIndices = Buffers.toIntArray(mat.colIndices, Math.toIntExact(mat.getNnz()));
-      double[] values = Buffers.toDoubleArray(mat.values, Math.toIntExact(mat.getNnz()));
-      assertThat("Last element in row pointers must be nnz", Buffers.getLong(mat.rowPtrs, mat.getNumRows()), is(mat.getNnz()));
-      assertThat("Row pointers should match", Arrays.stream(rowPtrs).boxed().collect(Collectors.toList()), is(expectedRowPtrs));
-      assertThat("Column indices should match", Arrays.stream(colIndices).boxed().collect(Collectors.toList()), is(expectedColIndices));
-      assertThat("Values should match", Arrays.stream(values).boxed().collect(Collectors.toList()), is(expectedValues));
+    withBuilder(builder, storage -> {
+      validator.accept(storage);
+      List<Long> rowPtrs = Lists.newArrayList();
+      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.getRowPtrs().get(i));
+      List<Integer> colIndices = Lists.newArrayList();
+      for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.getColIndices().get(i));
+      List<Double> values = Lists.newArrayList();
+      for (int i = 0; i < storage.getNnz(); i++) values.add(storage.getValues().get(i));
+      assertThat("Last element in row pointers must be nnz", storage.getRowPtrs().get(storage.getNumRows()), is(storage.getNnz()));
+      assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
+      assertThat("Column indices should match", colIndices, is(expectedColIndices));
+      assertThat("Values should match", values, is(expectedValues));
     });
   }
 

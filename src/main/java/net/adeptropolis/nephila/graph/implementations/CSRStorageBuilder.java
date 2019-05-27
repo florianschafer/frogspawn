@@ -2,75 +2,74 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongComparator;
-import net.adeptropolis.nephila.graph.implementations.buffers.Buffers;
+import net.adeptropolis.nephila.graph.implementations.buffers.*;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongSwapper;
 
-public class CSRMatrixBuilder {
+public class CSRStorageBuilder {
 
   private static final long DEFAULT_SIZE_INCREMENT = 1 << 24;
 
   private final long sizeIncrement;
   private long reservedSize;
   private long ptr = 0L;
-  private long rowIndices;
-  private long colIndices;
-  private long values;
+  private IntBuffer rowIndices;
+  private IntBuffer colIndices;
+  private DoubleBuffer values;
 
-  CSRMatrixBuilder(long initialReservedSize, long sizeIncrement) {
+  CSRStorageBuilder(long initialReservedSize, long sizeIncrement) {
     Preconditions.checkArgument(initialReservedSize > 0, "Inital reserved size must be > 0");
     this.reservedSize = initialReservedSize;
     this.sizeIncrement = sizeIncrement;
-    this.rowIndices = Buffers.allocInts(initialReservedSize);
-    this.colIndices = Buffers.allocInts(initialReservedSize);
-    this.values = Buffers.allocDoubles(initialReservedSize);
+    this.rowIndices = new ArrayIntBuffer(initialReservedSize);
+    this.colIndices = new ArrayIntBuffer(initialReservedSize);
+    this.values = new ArrayDoubleBuffer(initialReservedSize);
   }
 
-  public CSRMatrixBuilder() {
+  public CSRStorageBuilder() {
     this(DEFAULT_SIZE_INCREMENT, DEFAULT_SIZE_INCREMENT);
   }
 
-  public CSRMatrixBuilder add(int row, int col, double value) {
+  public CSRStorageBuilder add(int row, int col, double value) {
     set(ptr++, row, col, value);
     if (ptr == reservedSize) resize(reservedSize + sizeIncrement);
     return this;
   }
 
-  public CSRMatrixBuilder addSymmetric(int row, int col, double value) {
+  public CSRStorageBuilder addSymmetric(int row, int col, double value) {
     add(row, col, value);
     add(col, row, value);
     return this;
   }
 
-  public CSRMatrix build() {
+  public CSRStorage build() {
 
     if (ptr == 0L) {
-      return new CSRMatrix(0, 0, Buffers.allocLongs(0), Buffers.allocInts(0), Buffers.allocDoubles(0));
+      return new CSRStorage(0, 0, new ArrayLongBuffer(0), new ArrayIntBuffer(0), new ArrayDoubleBuffer(0));
     }
 
     sort();
     reduceSorted();
     compact();
 
-    int numRows = Buffers.getInt(rowIndices, ptr - 1) + 1;
-    long rowPtrs = computeRowPointers(numRows);
+    int numRows = rowIndices.get(ptr - 1) + 1;
+    ArrayLongBuffer rowPtrs = computeRowPointers(numRows);
+    rowIndices.free();
 
-    Buffers.free(rowIndices);
-
-    return new CSRMatrix(numRows, ptr, rowPtrs, colIndices, values);
+    return new CSRStorage(numRows, ptr, rowPtrs, colIndices, values);
   }
 
   private void set(long i, int row, int col, double value) {
-    Buffers.setInt(rowIndices, i, row);
-    Buffers.setInt(colIndices, i, col);
-    Buffers.setDouble(values, i, value);
+    rowIndices.set(i, row);
+    colIndices.set(i, col);
+    values.set(i, value);
   }
 
   private void resize(long newSize) {
     reservedSize = newSize;
-    rowIndices = Buffers.resizeInts(rowIndices, newSize);
-    colIndices = Buffers.resizeInts(colIndices, newSize);
-    values = Buffers.resizeDoubles(values, newSize);
+    rowIndices.resize(newSize);
+    colIndices.resize(newSize);;
+    values.resize(newSize);
   }
 
   private void sort() {
@@ -82,9 +81,9 @@ public class CSRMatrixBuilder {
 
     if (ptr == 0) return;
 
-    int activeRow = Buffers.getInt(rowIndices, 0);
-    int activeCol = Buffers.getInt(colIndices, 0);
-    double activeValue = Buffers.getDouble(values, 0);
+    int activeRow = rowIndices.get(0);
+    int activeCol = colIndices.get(0);
+    double activeValue = values.get(0);
 
     int row;
     int col;
@@ -94,9 +93,9 @@ public class CSRMatrixBuilder {
 
     for (long scrollPtr = 1; scrollPtr < ptr; scrollPtr++) {
 
-      row = Buffers.getInt(rowIndices, scrollPtr);
-      col = Buffers.getInt(colIndices, scrollPtr);
-      val = Buffers.getDouble(values, scrollPtr);
+      row = rowIndices.get(scrollPtr);
+      col = colIndices.get(scrollPtr);
+      val = values.get(scrollPtr);
 
       if (row == activeRow && col == activeCol) {
         activeValue += val;
@@ -117,20 +116,20 @@ public class CSRMatrixBuilder {
     resize(ptr);
   }
 
-  private long computeRowPointers(int numRows) {
+  private ArrayLongBuffer computeRowPointers(int numRows) {
 
-    long rowPtrs = Buffers.allocLongs(numRows + 1);
-    Buffers.setLong(rowPtrs, 0, 0);
-    Buffers.setLong(rowPtrs, numRows, ptr);
+    ArrayLongBuffer rowPtrs = new ArrayLongBuffer(numRows + 1);
+    rowPtrs.set(0, 0);
+    rowPtrs.set(numRows, ptr);
 
     int prevRow = 0;
     int row;
 
     for (long i = 0; i < ptr; i++) {
-      row = Buffers.getInt(rowIndices, i);
+      row = rowIndices.get(i);
       if (row > prevRow) {
-        for (int j = prevRow + 1; j < row; j++) Buffers.setLong(rowPtrs, j, i);
-        Buffers.setLong(rowPtrs, row, i);
+        for (int j = prevRow + 1; j < row; j++) rowPtrs.set(j, i);
+        rowPtrs.set(row, i);
         prevRow = row;
       }
     }
@@ -143,15 +142,15 @@ public class CSRMatrixBuilder {
 
     @Override
     public int compare(long i1, long i2) {
-      int c = Buffers.compareInts(rowIndices, i1, i2);
-      return c != 0 ? c : Buffers.compareInts(colIndices, i1, i2);
+      int c = rowIndices.compareEntries(i1, i2);
+      return c != 0 ? c : colIndices.compareEntries(i1, i2);
     }
 
     @Override
     public void swap(long idx1, long idx2) {
-      Buffers.swapInts(rowIndices, idx1, idx2);
-      Buffers.swapInts(colIndices, idx1, idx2);
-      Buffers.swapDoubles(values, idx1, idx2);
+      rowIndices.swapEntries(idx1, idx2);
+      colIndices.swapEntries(idx1, idx2);
+      values.swapEntries(idx1, idx2);
     }
 
   }
