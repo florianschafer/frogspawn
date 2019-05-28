@@ -1,21 +1,18 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import com.google.common.collect.Lists;
 import net.adeptropolis.nephila.graph.implementations.buffers.ArrayDoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 
-import java.util.List;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
-/* NOTE
-* Multiplication is NOT thread-safe (reused buffer for result vector) !!!
-* */
 
 public class CSRSubMatrix {
+
+  private static final int THREAD_BATCH_SIZE = 64;
+  private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
+  private static final ExecutorService multiplicationService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+  private static final Future[] futures = new Future[THREAD_POOL_SIZE];
 
   private final CSRStorage data;
   private final IntBuffer indices;
@@ -27,76 +24,20 @@ public class CSRSubMatrix {
     this.multResult = new ArrayDoubleBuffer(indices.size());
   }
 
-
-  public DoubleBuffer multiply(final DoubleBuffer v, int batchSize) {
-    // TODO: Check parallel streams are efficient. Look at RecursiveAction
-    for (int i = 0; i < indices.size(); i++) multResult.set(i, 0);
-//    LongStream.range(0, indices.size()).parallel().forEach(i -> {
-//      int row = indices.get(i);
-//      double p = rowScalarProduct(row, v);
-//      multResult.set(i, p);
-//    });
-
-
-//    final int foo = (int) (indices.size() / 1024);
-//    IntStream.range(0, 1024).parallel().forEach(i -> {
-//      int low = foo * i;
-//      int high = (int) Math.min(foo * (i + 1), indices.size());
-//      multiplyRowRange(v, low, high);
-//    });
-
-
-    AtomicInteger idx = new AtomicInteger(0);
-    List<Thread> threads = IntStream.range(0, 18).mapToObj(threadId -> {
-      return new Thread(new Runnable() {
-        @Override
-        public void run() {
-          int i;
-          // Have thread-local workload:
-          // 1 ->
-          // 2 ->
-          // 4 -> 163ms 165ms
-          // 8 -> 159ms 143ms 152ms
-          // 16 -> 130ms 145ms 145ms
-          // 32 -> 151ms 145ms 145ms
-          while ((i = idx.getAndAdd(batchSize)) < indices.size()) {
-            for (int j = i; j < Math.min(i + batchSize, indices.size()); j++) {
-              int row = indices.get(j);
-              double p = rowScalarProduct(row, v);
-              multResult.set(j, p);
-            }
-          }
-        }
-      });
-    }).collect(Collectors.toList());
-
-    threads.forEach(t -> t.start());
-    threads.forEach(t -> {
+  public synchronized DoubleBuffer multiply(final DoubleBuffer v) {
+    int threads = Math.min(THREAD_POOL_SIZE, 1 + (int) (indices.size() / (THREAD_POOL_SIZE * THREAD_BATCH_SIZE)));
+    AtomicInteger workPtr = new AtomicInteger(0);
+    for (int threadId = 0; threadId < threads; threadId++) {
+      futures[threadId] = multiplicationService.submit(new MultiplicationRunnable(v, workPtr, THREAD_BATCH_SIZE));
+    }
+    for (int threadId = 0; threadId < threads; threadId++) {
       try {
-        t.join();
-      } catch (InterruptedException e) {
+        futures[threadId].get();
+      } catch (InterruptedException | ExecutionException e) {
         throw new RuntimeException(e);
       }
-    });
-
-
+    }
     return multResult;
-
-  }
-
-
-  private void multiplyRowRange(final DoubleBuffer v, final int low, final int high) {
-    // TODO: Weird. When this is changed to a parallel stream (wrapped in the parallel stream above), resource utilization seems much better
-//    for (int i = low; i < high; i++) {
-//      int row = indices.get(i);
-//      double p = rowScalarProduct(row, v);
-//      multResult.set(i, p);
-//    }
-    IntStream.range(low, high).parallel().forEach( i -> {
-      int row = indices.get(i);
-      double p = rowScalarProduct(row, v);
-      multResult.set(i, p);
-    });
 
   }
 
@@ -141,35 +82,30 @@ public class CSRSubMatrix {
     multResult.free();
   }
 
+  private class MultiplicationRunnable implements Runnable {
 
+    private final DoubleBuffer v;
+    private final AtomicInteger workPtr;
+    private final int batchSize;
 
-//  private class Foo extends RecursiveAction {
-//
-//    private final DoubleBuffer v;
-//    private final int low;
-//    private final int high;
-//
-//    private Foo(DoubleBuffer v, int low, int high) {
-//      this.v = v;
-//      this.low = low;
-//      this.high = high;
-//    }
-//
-//
-//    @Override
-//    protected void compute() {
-//
-//      if (high - low > 10000) {
-//        int mid = (low + high) >> 1;
-//        invokeAll(new Foo(v, low, mid), new Foo(v, mid, high));
-//
-//      } else {
-//        System.out.println(high - low);
-//        multiplyRowRange(v, low, high);
-//      }
-//
-//
-//    }
-//  }
+    private MultiplicationRunnable(DoubleBuffer v, AtomicInteger workPtr, int batchSize) {
+      this.v = v;
+      this.workPtr = workPtr;
+      this.batchSize = batchSize;
+    }
+
+    @Override
+    public void run() {
+      int i;
+      while ((i = workPtr.getAndAdd(batchSize)) < indices.size()) {
+        for (int j = i; j < Math.min(i + batchSize, indices.size()); j++) {
+          int row = indices.get(j);
+          double p = rowScalarProduct(row, v);
+          multResult.set(j, p);
+        }
+      }
+    }
+
+  }
 
 }

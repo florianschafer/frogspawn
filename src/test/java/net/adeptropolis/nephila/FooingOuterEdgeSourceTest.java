@@ -18,12 +18,11 @@ import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
 
-
-  @Test
   public void multiplication() {
 
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
@@ -41,14 +40,12 @@ public class FooingOuterEdgeSourceTest {
 
     System.out.println("Finished building matrix");
     System.out.println("NumRows: " + storage.getNumRows());
-    for (int batchSize = 1; batchSize < 100000; batchSize *= 2) {
-      long start = System.nanoTime();
-      for (int i = 0 ; i < 2500; i++) {
-        mat.multiply(arg,batchSize);
-      }
-      long runTimeMs = (System.nanoTime() - start) / (2500L * 1000000L);
-      System.out.println("Bs = " + batchSize + ", Avg runtime: " + runTimeMs + "ms");
+    long start = System.nanoTime();
+    for (int i = 0 ; i < 2500; i++) {
+      mat.multiply(arg);
     }
+    long runTimeMs = (System.nanoTime() - start) / (2500L * 1000000L);
+    System.out.println("Avg runtime: " + runTimeMs + "ms");
 
 
 
