@@ -56,7 +56,7 @@ public class CSRStorageBuilder {
     compact();
 
     int numRows = rowIndices.get(ptr - 1) + 1;
-    ArrayLongBuffer rowPtrs = computeRowPointers(numRows);
+    LongBuffer rowPtrs = computeRowPointers(numRows);
     rowIndices.free();
 
     return new CSRStorage(numRows, ptr, rowPtrs, colIndices, values);
@@ -119,9 +119,9 @@ public class CSRStorageBuilder {
     resize(ptr);
   }
 
-  private ArrayLongBuffer computeRowPointers(int numRows) {
+  private LongBuffer computeRowPointers(int numRows) {
 
-    ArrayLongBuffer rowPtrs = new ArrayLongBuffer(numRows + 1);
+    LongBuffer rowPtrs = new ArrayLongBuffer(numRows + 1);
     rowPtrs.set(0, 0);
     rowPtrs.set(numRows, ptr);
 
