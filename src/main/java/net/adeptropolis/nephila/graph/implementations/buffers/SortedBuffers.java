@@ -3,7 +3,9 @@ package net.adeptropolis.nephila.graph.implementations.buffers;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongSwapper;
+import net.adeptropolis.nephila.graph.implementations.buffers.unsafe.Buffers;
 
+@Deprecated
 public class SortedBuffers {
 
   /* INTEGERS */

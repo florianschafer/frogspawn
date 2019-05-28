@@ -4,6 +4,8 @@ import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
 import net.adeptropolis.nephila.graph.implementations.CSRSubMatrix;
 import net.adeptropolis.nephila.graph.implementations.buffers.*;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
 import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
 import org.junit.Test;
 
@@ -18,10 +20,11 @@ import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
 
+  @Test
   public void multiplication() {
 
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));

@@ -1,5 +1,7 @@
-package net.adeptropolis.nephila.graph.implementations.buffers;
+package net.adeptropolis.nephila.graph.implementations.buffers.arrays;
 
+import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 

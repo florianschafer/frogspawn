@@ -3,6 +3,9 @@ package net.adeptropolis.nephila.graph.implementations;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.implementations.buffers.*;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayLongBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongSwapper;
 

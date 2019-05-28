@@ -1,5 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations.buffers;
 
+import net.adeptropolis.nephila.graph.implementations.buffers.unsafe.Buffers;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;

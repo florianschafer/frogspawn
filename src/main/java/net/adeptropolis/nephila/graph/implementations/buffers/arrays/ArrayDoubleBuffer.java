@@ -1,14 +1,16 @@
-package net.adeptropolis.nephila.graph.implementations.buffers;
+package net.adeptropolis.nephila.graph.implementations.buffers.arrays;
 
-public class ArrayLongBuffer implements LongBuffer {
+import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
+
+public class ArrayDoubleBuffer implements DoubleBuffer {
 
   static final int BIN_BITS = 22; // 4M
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
 
-  private long[][] data = null;
+  private double[][] data = null;
   private long size;
 
-  public ArrayLongBuffer(long initialSize) {
+  public ArrayDoubleBuffer(long initialSize) {
     resize(initialSize);
   }
 
@@ -18,21 +20,21 @@ public class ArrayLongBuffer implements LongBuffer {
     int currentbins = (data != null) ? data.length : 0;
     int requestedBins = (int) (capacity >> BIN_BITS) + 1;
     if (requestedBins == currentbins) return;
-    long[][] newData = new long[requestedBins][];
+    double[][] newData = new double[requestedBins][];
     if (data != null) {
       System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
     }
-    for (int i = currentbins; i < requestedBins; i++) newData[i] = new long[1 << BIN_BITS];
+    for (int i = currentbins; i < requestedBins; i++) newData[i] = new double[1 << BIN_BITS];
     data = newData;
   }
 
   @Override
-  public long get(long idx) {
+  public double get(long idx) {
     return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
   }
 
   @Override
-  public void set(long idx, long value) {
+  public void set(long idx, double value) {
     data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)] = value;
   }
 

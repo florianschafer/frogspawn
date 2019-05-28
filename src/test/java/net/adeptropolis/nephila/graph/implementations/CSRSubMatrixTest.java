@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.ArrayDoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.ArrayIntBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 import org.junit.Test;
@@ -184,7 +184,7 @@ public class CSRSubMatrixTest {
             .build();
     CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
 
-    DoubleBuffer res = mat.multiply(vec, 16);
+    DoubleBuffer res = mat.multiply(vec);
     assertThat(res.get(0), is(2d * 43d));
     assertThat(res.get(1), is(17d * 47d + 19d * 53 + 23d * 59));
     assertThat(res.get(2), is(0d));

@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.ArrayDoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 

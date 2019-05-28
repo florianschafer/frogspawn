@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations.buffers;
+package net.adeptropolis.nephila.graph.implementations.buffers.unsafe;
 
 import sun.misc.Unsafe;
 
