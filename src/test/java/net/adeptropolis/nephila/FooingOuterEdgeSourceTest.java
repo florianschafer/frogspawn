@@ -2,7 +2,7 @@ package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
-import net.adeptropolis.nephila.graph.implementations.CSRSubMatrix;
+import net.adeptropolis.nephila.graph.implementations.CSRSubmatrix;
 import net.adeptropolis.nephila.graph.implementations.buffers.*;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
@@ -39,13 +39,13 @@ public class FooingOuterEdgeSourceTest {
       arg.set(i, i);
     }
 
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
 
     System.out.println("Finished building matrix");
     System.out.println("NumRows: " + storage.getNumRows());
     long start = System.nanoTime();
     for (int i = 0 ; i < 2500; i++) {
-      mat.multiply(arg);
+      mat.multiply(arg, res);
     }
     long runTimeMs = (System.nanoTime() - start) / (2500L * 1000000L);
     System.out.println("Avg runtime: " + runTimeMs + "ms");

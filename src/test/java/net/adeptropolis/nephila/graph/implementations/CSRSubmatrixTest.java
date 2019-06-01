@@ -9,7 +9,9 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class CSRSubMatrixTest {
+public class CSRSubmatrixTest {
+
+  private static final Product INNER_PROD = new CSRSubmatrix.DefaultProduct(null);
 
   @Test
   public void fullRowScalarProduct() {
@@ -22,8 +24,8 @@ public class CSRSubMatrixTest {
       vec.set(i, i + 3);
     }
     CSRStorage storage = b.build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(1, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(1, vec, INNER_PROD);
     assertThat(p, is(333483345000d));
     vec.free();
     indices.free();
@@ -36,8 +38,8 @@ public class CSRSubMatrixTest {
     IntBuffer indices = new ArrayIntBuffer(0);
     DoubleBuffer vec = new ArrayDoubleBuffer(0);
     CSRStorage storage = new CSRStorageBuilder().add(0, 0, 17).build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(0, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(0, vec, INNER_PROD);
     assertThat(p, is(0d));
     vec.free();
     indices.free();
@@ -56,8 +58,8 @@ public class CSRSubMatrixTest {
     vec.set(1, 11);
     vec.set(2, 13);
     CSRStorage storage = new CSRStorageBuilder().add(1, 0, 17).build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(0, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(0, vec, INNER_PROD);
     assertThat(p, is(0d));
     vec.free();
     indices.free();
@@ -81,8 +83,8 @@ public class CSRSubMatrixTest {
             .add(0, 4, 23)
             .add(0, 5, 29)
             .build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(0, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(0, vec, INNER_PROD);
     assertThat(p, is(9d * 17d + 11d * 19d));
     vec.free();
     indices.free();
@@ -106,8 +108,8 @@ public class CSRSubMatrixTest {
             .add(0, 2, 23)
             .add(0, 4, 29)
             .build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(0, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(0, vec, INNER_PROD);
     assertThat(p, is(11d * 23d + 19d * 29d));
     vec.free();
     indices.free();
@@ -124,8 +126,8 @@ public class CSRSubMatrixTest {
     vec.set(0, 7);
     vec.set(1, 11);
     CSRStorage storage = new CSRStorageBuilder().add(0, 2, 23).build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(0, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(0, vec, INNER_PROD);
     assertThat(p, is(11d * 23d));
     vec.free();
     indices.free();
@@ -143,8 +145,8 @@ public class CSRSubMatrixTest {
             .add(0, 0, 11)
             .add(0, 2, 23)
             .build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
-    double p = mat.rowScalarProduct(0, vec);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    double p = mat.rowScalarProduct(0, vec, INNER_PROD);
     assertThat(p, is(7d * 11d));
     vec.free();
     indices.free();
@@ -182,14 +184,16 @@ public class CSRSubMatrixTest {
             .add(4, 3, 37)
             .add(4, 4, 41)
             .build();
-    CSRSubMatrix mat = new CSRSubMatrix(storage, indices);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
 
-    DoubleBuffer res = mat.multiply(vec);
+    DoubleBuffer res = new ArrayDoubleBuffer(indices.size());
+    mat.multiply(vec, res);
     assertThat(res.get(0), is(2d * 43d));
     assertThat(res.get(1), is(17d * 47d + 19d * 53 + 23d * 59));
     assertThat(res.get(2), is(0d));
     assertThat(res.get(3), is(37d * 53d + 41d * 59d));
 
+    res.free();
     mat.free();
     indices.free();
     vec.free();

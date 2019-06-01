@@ -41,7 +41,7 @@ public class CSRStorageBuilder {
 
   public CSRStorageBuilder addSymmetric(int row, int col, double value) {
     add(row, col, value);
-    add(col, row, value);
+    if (row != col) add(col, row, value);
     return this;
   }
 

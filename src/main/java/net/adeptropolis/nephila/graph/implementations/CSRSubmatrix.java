@@ -2,7 +2,6 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -10,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class CSRSubMatrix {
+public class CSRSubmatrix {
 
   private static final int THREAD_BATCH_SIZE = 64;
   private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
@@ -18,20 +17,18 @@ public class CSRSubMatrix {
   private static final Future[] futures = new Future[THREAD_POOL_SIZE];
 
   private final CSRStorage data;
-  private final IntBuffer indices;
-  private final DoubleBuffer multResult;
+  protected final IntBuffer indices;
 
-  public CSRSubMatrix(CSRStorage data, IntBuffer indices) {
+  public CSRSubmatrix(CSRStorage data, IntBuffer indices) {
     this.data = data;
     this.indices = indices;
-    this.multResult = new ArrayDoubleBuffer(indices.size());
   }
 
-  public synchronized DoubleBuffer multiply(final DoubleBuffer v) {
+  public synchronized void multiply(final DoubleBuffer v, final Product product) {
     int threads = Math.min(THREAD_POOL_SIZE, 1 + (int) (indices.size() / (THREAD_POOL_SIZE * THREAD_BATCH_SIZE)));
     AtomicInteger workPtr = new AtomicInteger(0);
     for (int threadId = 0; threadId < threads; threadId++) {
-      futures[threadId] = multiplicationService.submit(new MultiplicationRunnable(v, workPtr, THREAD_BATCH_SIZE));
+      futures[threadId] = multiplicationService.submit(new MultiplicationRunnable(v, product, workPtr, THREAD_BATCH_SIZE));
     }
     for (int threadId = 0; threadId < threads; threadId++) {
       try {
@@ -40,11 +37,13 @@ public class CSRSubMatrix {
         throw new RuntimeException(e);
       }
     }
-    return multResult;
-
   }
 
-  double rowScalarProduct(final int row, final DoubleBuffer v) {
+  public synchronized void multiply(final DoubleBuffer v, final DoubleBuffer resultBuf) {
+    multiply(v, new DefaultProduct(resultBuf));
+  }
+
+  double rowScalarProduct(final int row, final DoubleBuffer v, final Product product) {
     if (indices.size() == 0) return 0;
     long low = data.getRowPtrs().get(row);
     long high = data.getRowPtrs().get(row + 1);
@@ -61,7 +60,7 @@ public class CSRSubMatrix {
         col = data.getColIndices().get(ptr);
         retrievedIdx = indices.searchSorted(col, secPtr, indices.size() - 1);
         if (retrievedIdx >= 0) {
-          prod += data.getValues().get(ptr) * v.get(retrievedIdx);
+          prod += product.innerProduct(row, col, data.getValues().get(ptr), v.get(retrievedIdx));
           secPtr = retrievedIdx + 1;
         }
         if (secPtr >= indices.size()) break;
@@ -72,7 +71,7 @@ public class CSRSubMatrix {
         col = indices.get(ptr);
         retrievedIdx = data.getColIndices().searchSorted(col, secPtr, high);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
-          prod += data.getValues().get(retrievedIdx) * v.get(ptr);
+          prod += product.innerProduct(row, col, data.getValues().get(retrievedIdx), v.get(ptr));
           secPtr = retrievedIdx + 1;
         }
         if (secPtr >= high) break;
@@ -82,17 +81,18 @@ public class CSRSubMatrix {
   }
 
   public void free() {
-    multResult.free();
   }
 
   private class MultiplicationRunnable implements Runnable {
 
     private final DoubleBuffer v;
+    private final Product product;
     private final AtomicInteger workPtr;
     private final int batchSize;
 
-    private MultiplicationRunnable(DoubleBuffer v, AtomicInteger workPtr, int batchSize) {
+    private MultiplicationRunnable(DoubleBuffer v, Product product, AtomicInteger workPtr, int batchSize) {
       this.v = v;
+      this.product = product;
       this.workPtr = workPtr;
       this.batchSize = batchSize;
     }
@@ -103,12 +103,31 @@ public class CSRSubMatrix {
       while ((i = workPtr.getAndAdd(batchSize)) < indices.size()) {
         for (int j = i; j < Math.min(i + batchSize, indices.size()); j++) {
           int row = indices.get(j);
-          double p = rowScalarProduct(row, v);
-          multResult.set(j, p);
+          double p = rowScalarProduct(row, v, product);
+          product.createResultEntry(j, p, v);
         }
       }
     }
 
+  }
+
+  static class DefaultProduct implements Product {
+
+    private final DoubleBuffer resultBuf;
+
+    DefaultProduct(DoubleBuffer resultBuf) {
+      this.resultBuf = resultBuf;
+    }
+
+    @Override
+    public double innerProduct(int i, int j, double aij, double vj) {
+      return aij * vj;
+    }
+
+    @Override
+    public void createResultEntry(int row, double value, DoubleBuffer arg) {
+      resultBuf.set(row, value);
+    }
   }
 
 }
