@@ -63,25 +63,18 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
     private final DoubleBuffer invDegSqrts;
 
     NormalizedLaplacianProduct(DoubleBuffer resultBuf, DoubleBuffer invDegSqrts) {
-      System.out.println("================================");
       this.resultBuf = resultBuf;
       this.invDegSqrts = invDegSqrts;
     }
 
     @Override
     public double innerProduct(int i, int j, double aij, double vj) {
-//      System.out.printf("Inner %d/%d -> %f\n", i, j, -aij * vj * invDegSqrts.get(j));
       return -aij * vj * invDegSqrts.get(j);
     }
 
     @Override
     public void createResultEntry(int row, double value, DoubleBuffer arg) {
       // Latter term comes from diagonals
-
-      System.out.println("====== PRE-PROD =========");
-      System.out.printf("%d -> %f -- %f -- %f\n", row, value, arg.get(row), invDegSqrts.get(row));
-
-
       resultBuf.set(row, invDegSqrts.get(row) * value + arg.get(row));
     }
   }

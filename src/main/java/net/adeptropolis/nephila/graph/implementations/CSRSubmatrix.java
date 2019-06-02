@@ -45,8 +45,9 @@ public class CSRSubmatrix {
 
   double rowScalarProduct(final int row, final DoubleBuffer v, final Product product) {
     if (indices.size() == 0) return 0;
-    long low = data.getRowPtrs().get(row);
-    long high = data.getRowPtrs().get(row + 1);
+    int origRow = indices.get(row);
+    long low = data.getRowPtrs().get(origRow);
+    long high = data.getRowPtrs().get(origRow + 1);
     if (low == high) return 0; // Empty row
 
     double prod = 0;
@@ -60,7 +61,7 @@ public class CSRSubmatrix {
         col = data.getColIndices().get(ptr);
         retrievedIdx = indices.searchSorted(col, secPtr, indices.size() - 1);
         if (retrievedIdx >= 0) {
-          prod += product.innerProduct(row, col, data.getValues().get(ptr), v.get(retrievedIdx));
+          prod += product.innerProduct(row, (int)retrievedIdx, data.getValues().get(ptr), v.get(retrievedIdx));
           secPtr = retrievedIdx + 1;
         }
         if (secPtr >= indices.size()) break;
@@ -102,8 +103,8 @@ public class CSRSubmatrix {
       int i;
       while ((i = workPtr.getAndAdd(batchSize)) < indices.size()) {
         for (int j = i; j < Math.min(i + batchSize, indices.size()); j++) {
-          int row = indices.get(j);
-          double p = rowScalarProduct(row, v, product);
+//          int row = indices.get(j);
+          double p = rowScalarProduct(j, v, product);
           product.createResultEntry(j, p, v);
         }
       }
