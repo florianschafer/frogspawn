@@ -3,6 +3,7 @@ package net.adeptropolis.nephila;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
 import net.adeptropolis.nephila.graph.implementations.CSRSubmatrix;
+import net.adeptropolis.nephila.graph.implementations.NormalizedLaplacianCSRSubmatrix;
 import net.adeptropolis.nephila.graph.implementations.buffers.*;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
@@ -24,8 +25,8 @@ public class FooingOuterEdgeSourceTest {
   public void multiplication() {
 
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
@@ -39,13 +40,13 @@ public class FooingOuterEdgeSourceTest {
       arg.set(i, i);
     }
 
-    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+    NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
 
     System.out.println("Finished building matrix");
     System.out.println("NumRows: " + storage.getNumRows());
     long start = System.nanoTime();
     for (int i = 0 ; i < 2500; i++) {
-      mat.multiply(arg, res);
+      mat.multiplySpectrallyShiftedNormalizedLaplacian(arg, res);
     }
     long runTimeMs = (System.nanoTime() - start) / (2500L * 1000000L);
     System.out.println("Avg runtime: " + runTimeMs + "ms");

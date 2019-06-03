@@ -1,6 +1,5 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import com.google.common.primitives.Doubles;
 import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
@@ -9,10 +8,12 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
 public class NormalizedLaplacianCSRSubmatrixTest {
@@ -81,6 +82,73 @@ public class NormalizedLaplacianCSRSubmatrixTest {
     verifyNormLaplacianCol(mat, 2, 0, 0, 1, inv1Sqrt4, 0);
     verifyNormLaplacianCol(mat, 3, inv2Sqrt8, 0, inv1Sqrt4, 1, inv1Sqrt8);
     verifyNormLaplacianCol(mat, 4, 0, inv1Sqrt2, 0, inv1Sqrt8, 1);
+    indices.free();
+    mat.free();
+    storage.free();
+  }
+
+  @Test
+  public void spectrallyShiftedProduct() {
+    withBipartiteAdjacencyMatrix(mat -> {
+      DoubleBuffer v = new ArrayDoubleBuffer(6);
+      v.set(0, 43);
+      v.set(1, 47);
+      v.set(2, 53);
+      v.set(3, 59);
+      v.set(4, 61);
+      v.set(5, 67);
+      DoubleBuffer result = new ArrayDoubleBuffer(6);
+      mat.multiplySpectrallyShiftedNormalizedLaplacian(v, result);
+      assertThat(result.get(0), closeTo(-17.3263, 1E-4));
+      assertThat(result.get(1), closeTo(-2.0033, 1E-4));
+      assertThat(result.get(2), closeTo(8.5853, 1E-4));
+      assertThat(result.get(3), closeTo(-2.8083, 1E-4));
+      assertThat(result.get(4), closeTo(1.1999, 1E-4));
+      assertThat(result.get(5), closeTo(1.1598, 1E-4));
+      result.free();
+      v.free();
+    });
+  }
+
+  @Test
+  public void v2() {
+    withBipartiteAdjacencyMatrix(mat -> {
+      DoubleBuffer v2 = mat.lambda2Eigenvector(1E-9);
+      assertThat(v2.get(0), closeTo(0.470144, 1E-6));
+      assertThat(v2.get(1), closeTo(0.316409, 1E-6));
+      assertThat(v2.get(2), closeTo(-0.422907, 1E-6));
+      assertThat(v2.get(3), closeTo(-0.573978, 1E-6));
+      assertThat(v2.get(4), closeTo(0.052957, 1E-6));
+      assertThat(v2.get(5), closeTo(0.409567, 1E-6));
+      v2.free();
+    });
+  }
+
+  private void withBipartiteAdjacencyMatrix(Consumer<NormalizedLaplacianCSRSubmatrix> matConsumer) {
+    IntBuffer indices = new ArrayIntBuffer(6);
+    for (int i = 0; i < 6; i++) indices.set(i, i);
+    CSRStorage storage = new CSRStorageBuilder()
+            .addSymmetric(0, 3, 2)
+            .addSymmetric(0, 4, 3)
+            .addSymmetric(0, 5, 5)
+            .addSymmetric(1, 3, 7)
+            .addSymmetric(1, 4, 11)
+            .addSymmetric(1, 5, 13)
+            .addSymmetric(2, 3, 17)
+            .addSymmetric(2, 4, 19)
+            .addSymmetric(2, 5, 23)
+            .addSymmetric(3, 0, 2)
+            .addSymmetric(3, 1, 7)
+            .addSymmetric(3, 2, 17)
+            .addSymmetric(4, 0, 3)
+            .addSymmetric(4, 1, 11)
+            .addSymmetric(4, 2, 19)
+            .addSymmetric(5, 0, 5)
+            .addSymmetric(5, 1, 13)
+            .addSymmetric(5, 2, 23)
+            .build();
+    NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
+    matConsumer.accept(mat);
     indices.free();
     mat.free();
     storage.free();
