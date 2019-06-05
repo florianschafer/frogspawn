@@ -10,6 +10,7 @@ import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuf
 import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,12 +22,39 @@ import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
 
+
+  @Test
+  public void eigenstuff() {
+
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+    CSRStorageBuilder b = new CSRStorageBuilder();
+    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+    CSRStorage storage = b.build();
+
+    IntBuffer indices = new ArrayIntBuffer(storage.getNumRows());
+    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
+
+    NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
+    long start = System.nanoTime();
+    byte[] v2Sigs = mat.bipartiteLambda2EigenvectorSignums(1E-6, 100);
+    long runTimeMs = (System.nanoTime() - start) / 1000000000L;
+    System.out.println("Runtime: " + runTimeMs + "s");
+
+    indices.free();
+    mat.free();
+    storage.free();
+
+
+  }
+
   @Test
   public void multiplication() {
 
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();

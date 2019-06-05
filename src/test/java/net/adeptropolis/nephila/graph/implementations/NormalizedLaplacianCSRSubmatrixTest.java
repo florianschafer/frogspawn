@@ -113,7 +113,7 @@ public class NormalizedLaplacianCSRSubmatrixTest {
   @Test
   public void v2() {
     withBipartiteAdjacencyMatrix(mat -> {
-      DoubleBuffer v2 = mat.lambda2Eigenvector(1E-9);
+      DoubleBuffer v2 = mat.bipartiteLambda2Eigenvector(1E-9);
       assertThat(v2.get(0), closeTo(0.470144, 1E-6));
       assertThat(v2.get(1), closeTo(0.316409, 1E-6));
       assertThat(v2.get(2), closeTo(-0.422907, 1E-6));

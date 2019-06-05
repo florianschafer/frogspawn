@@ -3,9 +3,14 @@ package net.adeptropolis.nephila.graph.implementations;
 import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+// TODO: The code in this class requires A LOT love!
 
 public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(NormalizedLaplacianCSRSubmatrix.class);
   private final DoubleBuffer v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0)
   private final DoubleBuffer invDegSqrts; // Inverse square roots of degrees
 
@@ -53,19 +58,18 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
   }
 
 
-  // TODO: call should allocate x. Probably transition to arrays!
+  // TODO: caller should allocate x. Probably transition to arrays!
   // TODO: Error computation is not optimal!
-  public DoubleBuffer lambda2Eigenvector(double precision) {
+  public DoubleBuffer bipartiteLambda2Eigenvector(double precision) {
     DoubleBuffer x = new ArrayDoubleBuffer(size());
     DoubleBuffer multRes = new ArrayDoubleBuffer(size());
     DoubleBuffer lastResult = new ArrayDoubleBuffer(size());
     double initialEntryVal = 1.0 / Math.sqrt(size());
     for (int i = 0; i < size(); i++) {
-      // TODO: Find better initial value, must be ||.|| == 1
+      // TODO: Find better initial vector, must be ||.|| == 1
       x.set(i, initialEntryVal);
       lastResult.set(i, initialEntryVal);
     }
-    long iterations = 0;
     while (true) {
       multiplySpectrallyShiftedNormalizedLaplacian(x, multRes);
       normVec(multRes, x);
@@ -76,15 +80,46 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
       }
       if (maxDist < precision) break;
       for (int i = 0; i < size(); i++) lastResult.set(i, x.get(i));
-      iterations++;
     }
-    System.out.println("Iterations: " + iterations);
     lastResult.free();
     multRes.free();
     return x;
   }
 
-  // Also normalizes signum, s.t. the first entry is always positive
+  // TODO: call should allocate x. Probably transition to arrays!
+  // TODO: Error computation is not optimal!
+  public byte[] bipartiteLambda2EigenvectorSignums(double maxAlternations, int minIterations) {
+    DoubleBuffer x = new ArrayDoubleBuffer(size());
+    DoubleBuffer multRes = new ArrayDoubleBuffer(size());
+    byte[] lastSignums = new byte[size()];
+    double initialEntryVal = 1.0 / Math.sqrt(size());
+    for (int i = 0; i < size(); i++) {
+      // TODO: Find better initial value, must be ||.|| == 1
+      x.set(i, initialEntryVal);
+      lastSignums[i] = 1;
+    }
+    long iterations = 0;
+    while (true) {
+      multiplySpectrallyShiftedNormalizedLaplacian(x, multRes);
+      normVec(multRes, x);
+      long signumDist = 0;
+      for (int i = 0; i < size(); i++) {
+        byte sig = (byte) Math.signum(x.get(i));
+        signumDist += sig == lastSignums[i] ? 0 : 1;
+        lastSignums[i] = sig;
+      }
+      if (iterations >= minIterations && signumDist / (double) size() <= maxAlternations) break;
+      iterations++;
+      if (iterations % 1000 == 0) System.out.println("Iterations: " + iterations);
+    }
+
+    System.out.println("Iterations: " + iterations);
+    multRes.free();
+    for (int i = 0; i < size(); i++) lastSignums[i] = (byte) Math.signum(x.get(i));
+    return lastSignums;
+  }
+
+    // Also normalizes signum, s.t. the first entry is always positive
   private void normVec(DoubleBuffer x, DoubleBuffer result) {
     double primSig = Math.signum(x.get(0));
     double sum = 0;
