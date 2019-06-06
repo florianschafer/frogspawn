@@ -15,9 +15,9 @@ public class CSRStorageBuilderTest {
 
   @Test
   public void emptyMatrix() {
-    withBuilder(Function.identity(), mat -> {
-      assertThat(mat.getNumRows(), is(0));
-      assertThat(mat.getNnz(), is(0L));
+    withBuilder(Function.identity(), storage -> {
+      assertThat(storage.getNumRows(), is(0));
+      assertThat(storage.getNnz(), is(0L));
     });
   }
 
@@ -25,10 +25,11 @@ public class CSRStorageBuilderTest {
   public void memoryFootprintReporting() {
     withBuilder(b -> b
             .add(0, 0, 1.0)
-            .add(0, 1, 1.0), mat -> {
-              assertThat(mat.getNnz(), is(2L));
-              assertThat(mat.getNumRows(), is(1));
-              assertThat(mat.memoryFootprint(), is("40 bytes"));
+            .add(0, 1, 1.0), storage -> {
+              assertThat(storage.getNnz(), is(2L));
+              assertThat(storage.getNumRows(), is(1));
+              assertThat(storage.memoryFootprint(), is(40L));
+              assertThat(storage.fmtMemoryFootprint(), is("40 bytes"));
     });
   }
 
@@ -40,9 +41,9 @@ public class CSRStorageBuilderTest {
             .add(0, 0, 0.0)
             .add(0, 7, 0.7)
             .add(5, 0, 5.0)
-            .add(0, 1, 0.1), mat -> {
-      assertThat(mat.getNnz(), is(6L));
-      assertThat(mat.getNumRows(), is(6));
+            .add(0, 1, 0.1), storage -> {
+      assertThat(storage.getNnz(), is(6L));
+      assertThat(storage.getNumRows(), is(6));
     },
             ImmutableList.of(0L, 3L, 3L, 4L, 4L, 4L),
             ImmutableList.of(0, 1, 7, 1, 0, 3),
@@ -56,9 +57,9 @@ public class CSRStorageBuilderTest {
                     .add(0, 0, 3)
                     .add(0, 0, 5)
                     .add(0, 0, 7)
-                    .add(0, 0, 11), mat -> {
-              assertThat(mat.getNnz(), is(1L));
-              assertThat(mat.getNumRows(), is(1));
+                    .add(0, 0, 11), storage -> {
+              assertThat(storage.getNnz(), is(1L));
+              assertThat(storage.getNumRows(), is(1));
             },
             ImmutableList.of(0L),
             ImmutableList.of(0),
@@ -73,9 +74,9 @@ public class CSRStorageBuilderTest {
                     .add(1, 1, 5)
                     .add(2, 2, 7)
                     .add(2, 2, 11)
-                    .add(3, 3, 13), mat -> {
-              assertThat(mat.getNnz(), is(4L));
-              assertThat(mat.getNumRows(), is(4));
+                    .add(3, 3, 13), storage -> {
+              assertThat(storage.getNnz(), is(4L));
+              assertThat(storage.getNumRows(), is(4));
             },
             ImmutableList.of(0L, 1L, 2L, 3L),
             ImmutableList.of(0, 1, 2, 3),
@@ -91,9 +92,9 @@ public class CSRStorageBuilderTest {
                     .add(2, 2, 5)
                     .add(2, 2, 7)
                     .add(3, 3, 11)
-                    .add(3, 3, 13),mat -> {
-              assertThat(mat.getNnz(), is(4L));
-              assertThat(mat.getNumRows(), is(4));
+                    .add(3, 3, 13),storage -> {
+              assertThat(storage.getNnz(), is(4L));
+              assertThat(storage.getNumRows(), is(4));
             },
             ImmutableList.of(0L, 1L, 2L, 3L),
             ImmutableList.of(0, 1, 2, 3),
@@ -106,9 +107,9 @@ public class CSRStorageBuilderTest {
                     .add(1, 1, 1)
                     .add(2, 2, 3)
                     .add(2, 2, 5)
-                    .add(4, 4, 7),mat -> {
-              assertThat(mat.getNnz(), is(3L));
-              assertThat(mat.getNumRows(), is(5));
+                    .add(4, 4, 7),storage -> {
+              assertThat(storage.getNnz(), is(3L));
+              assertThat(storage.getNumRows(), is(5));
             },
             ImmutableList.of(0L, 0L, 1L, 2L, 2L),
             ImmutableList.of(1, 2, 4),
@@ -120,9 +121,9 @@ public class CSRStorageBuilderTest {
     withBuilder(b -> b
                     .add(1, 1, 1)
                     .add(1, 2, 2)
-                    .add(1, 3, 3),mat -> {
-              assertThat(mat.getNnz(), is(3L));
-              assertThat(mat.getNumRows(), is(2));
+                    .add(1, 3, 3),storage -> {
+              assertThat(storage.getNnz(), is(3L));
+              assertThat(storage.getNumRows(), is(2));
             },
             ImmutableList.of(0L, 0L),
             ImmutableList.of(1, 2, 3),
@@ -131,9 +132,9 @@ public class CSRStorageBuilderTest {
 
   private static void withBuilder(Function<CSRStorageBuilder, CSRStorageBuilder> builder,
                                   Consumer<CSRStorage> validator) {
-    CSRStorage mat = builder.apply(new CSRStorageBuilder()).build();
-    validator.accept(mat);
-    mat.free();
+    CSRStorage storage = builder.apply(new CSRStorageBuilder()).build();
+    validator.accept(storage);
+    storage.free();
   }
 
   private static void withBuilder(Function<CSRStorageBuilder, CSRStorageBuilder> builder,
@@ -144,12 +145,12 @@ public class CSRStorageBuilderTest {
     withBuilder(builder, storage -> {
       validator.accept(storage);
       List<Long> rowPtrs = Lists.newArrayList();
-      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.getRowPtrs().get(i));
+      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.getRowPtrs()[i]);
       List<Integer> colIndices = Lists.newArrayList();
       for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.getColIndices().get(i));
       List<Double> values = Lists.newArrayList();
       for (int i = 0; i < storage.getNnz(); i++) values.add(storage.getValues().get(i));
-      assertThat("Last element in row pointers must be nnz", storage.getRowPtrs().get(storage.getNumRows()), is(storage.getNnz()));
+      assertThat("Last element in row pointers must be nnz", storage.getRowPtrs()[storage.getNumRows()], is(storage.getNnz()));
       assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
       assertThat("Column indices should match", colIndices, is(expectedColIndices));
       assertThat("Values should match", values, is(expectedValues));

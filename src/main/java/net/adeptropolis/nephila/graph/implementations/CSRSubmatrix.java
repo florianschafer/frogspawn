@@ -46,8 +46,8 @@ public class CSRSubmatrix {
   double rowScalarProduct(final int row, final DoubleBuffer v, final Product product) {
     if (indices.size() == 0) return 0;
     int origRow = indices.get(row);
-    long low = data.getRowPtrs().get(origRow);
-    long high = data.getRowPtrs().get(origRow + 1);
+    long low = data.getRowPtrs()[origRow];
+    long high = data.getRowPtrs()[origRow + 1];
     if (low == high) return 0; // Empty row
 
     double prod = 0;

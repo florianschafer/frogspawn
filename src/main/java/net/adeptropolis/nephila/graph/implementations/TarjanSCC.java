@@ -1,6 +1,5 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
 
@@ -70,8 +69,8 @@ public class TarjanSCC {
   private void traverseNeighbors(final int row, Consumer<IntBuffer> componentConsumer) {
     if (adj.indices.size() == 0) return;
     int origRow = adj.indices.get(row);
-    long low = adj.data.getRowPtrs().get(origRow);
-    long high = adj.data.getRowPtrs().get(origRow + 1);
+    long low = adj.data.getRowPtrs()[origRow];
+    long high = adj.data.getRowPtrs()[origRow + 1];
     if (low == high) return; // Empty row
 
     int col;

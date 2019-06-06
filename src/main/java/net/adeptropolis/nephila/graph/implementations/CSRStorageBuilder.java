@@ -2,10 +2,10 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongComparator;
-import net.adeptropolis.nephila.graph.implementations.buffers.*;
+import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayLongBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
 import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongSwapper;
 
@@ -48,7 +48,7 @@ public class CSRStorageBuilder {
   public CSRStorage build() {
 
     if (ptr == 0L) {
-      return new CSRStorage(0, 0, new ArrayLongBuffer(0), new ArrayIntBuffer(0), new ArrayDoubleBuffer(0));
+      return new CSRStorage(0, 0, new long[0], new ArrayIntBuffer(0), new ArrayDoubleBuffer(0));
     }
 
     sort();
@@ -56,7 +56,7 @@ public class CSRStorageBuilder {
     compact();
 
     int numRows = rowIndices.get(ptr - 1) + 1;
-    LongBuffer rowPtrs = computeRowPointers(numRows);
+    long[] rowPtrs = computeRowPointers(numRows);
     rowIndices.free();
 
     return new CSRStorage(numRows, ptr, rowPtrs, colIndices, values);
@@ -71,7 +71,7 @@ public class CSRStorageBuilder {
   private void resize(long newSize) {
     reservedSize = newSize;
     rowIndices.resize(newSize);
-    colIndices.resize(newSize);;
+    colIndices.resize(newSize);
     values.resize(newSize);
   }
 
@@ -119,11 +119,11 @@ public class CSRStorageBuilder {
     resize(ptr);
   }
 
-  private LongBuffer computeRowPointers(int numRows) {
+  private long[] computeRowPointers(int numRows) {
 
-    LongBuffer rowPtrs = new ArrayLongBuffer(numRows + 1);
-    rowPtrs.set(0, 0);
-    rowPtrs.set(numRows, ptr);
+    long[] rowPtrs = new long[numRows + 1];
+    rowPtrs[0] = 0;
+    rowPtrs[numRows] = ptr;
 
     int prevRow = 0;
     int row;
@@ -131,8 +131,7 @@ public class CSRStorageBuilder {
     for (long i = 0; i < ptr; i++) {
       row = rowIndices.get(i);
       if (row > prevRow) {
-        for (int j = prevRow + 1; j < row; j++) rowPtrs.set(j, i);
-        rowPtrs.set(row, i);
+        for (int j = prevRow + 1; j <= row; j++) rowPtrs[j] = i;
         prevRow = row;
       }
     }
