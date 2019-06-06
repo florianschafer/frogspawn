@@ -1,14 +1,9 @@
 package net.adeptropolis.nephila;
 
-import com.google.common.collect.Lists;
-
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.IntStream;
 
 class VertexIndex<T> {
@@ -37,6 +32,10 @@ class VertexIndex<T> {
 //    });
 //  }
 
+  public int get(T label) {
+    return indices.computeIfAbsent(label, (x) -> currentIdx.getAndIncrement());
+  }
+
   private int[] computeDegrees(FooingOuterEdgeSourceTest.LabeledEdgeSource<T> edgeSource) {
 
     AtomicIntegerArray deg = new AtomicIntegerArray(size());
@@ -48,10 +47,6 @@ class VertexIndex<T> {
             .parallel()
             .forEach(i -> degArray[i] = deg.get(i));
     return degArray;
-  }
-
-  public int get(T label) {
-    return indices.computeIfAbsent(label, (x) -> currentIdx.getAndIncrement());
   }
 
   public int size() {

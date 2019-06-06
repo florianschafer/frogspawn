@@ -20,6 +20,14 @@ class MMapStorage {
     edgeWeights = new MMapBuffer(edgesCount * Integer.BYTES, edgesCount * Double.BYTES);
   }
 
+  private RandomAccessFile getRandomAccessFile(String path) {
+    try {
+      return new RandomAccessFile(path, "rw");
+    } catch (FileNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public void insertEdge(long ptr, int v, double weight) {
     neighbours.putInt(ptr << 2, v);
     edgeWeights.putDouble(ptr << 3, weight);
@@ -31,14 +39,6 @@ class MMapStorage {
 
   public double getEdgeWeight(long ptr) {
     return edgeWeights.getDouble(ptr << 3);
-  }
-
-  private RandomAccessFile getRandomAccessFile(String path) {
-    try {
-      return new RandomAccessFile(path, "rw");
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   public void close() {
@@ -68,6 +68,14 @@ class MMapStorage {
       }
     }
 
+    private MappedByteBuffer createBuffer(long offset, long size) {
+      try {
+        return fileChannel.map(FileChannel.MapMode.READ_WRITE, offset, size);
+      } catch (IOException e) {
+        throw new RuntimeException("Unable to create buffer", e);
+      }
+    }
+
     public void putInt(long ptr, int val) {
       buffers[(int) (ptr >> 31)].putInt((int) (ptr & 0x7FFFFFFF), val);
     }
@@ -82,14 +90,6 @@ class MMapStorage {
 
     public double getDouble(long ptr) {
       return buffers[(int) (ptr >> 31)].getDouble((int) (ptr & 0x7FFFFFFF));
-    }
-
-    private MappedByteBuffer createBuffer(long offset, long size) {
-      try {
-        return fileChannel.map(FileChannel.MapMode.READ_WRITE, offset, size);
-      } catch (IOException e) {
-        throw new RuntimeException("Unable to create buffer", e);
-      }
     }
 
   }

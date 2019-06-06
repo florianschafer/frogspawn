@@ -1,7 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
-import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.search.InterpolationSearch;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -15,17 +14,20 @@ public class CSRSubmatrix {
   private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
   private static final ExecutorService multiplicationService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
   private static final Future[] futures = new Future[THREAD_POOL_SIZE];
-
+  protected final int[] indices;
   final CSRStorage data;
-  protected final IntBuffer indices;
 
-  public CSRSubmatrix(CSRStorage data, IntBuffer indices) {
+  public CSRSubmatrix(CSRStorage data, int[] indices) {
     this.data = data;
     this.indices = indices;
   }
 
-  public synchronized void multiply(final Doubles v, final Product product) {
-    int threads = Math.min(THREAD_POOL_SIZE, 1 + (int) (indices.size() / (THREAD_POOL_SIZE * THREAD_BATCH_SIZE)));
+  public synchronized void multiply(final double[] v, final double[] result) {
+    multiply(v, new DefaultProduct(result));
+  }
+
+  public synchronized void multiply(final double[] v, final Product product) {
+    int threads = Math.min(THREAD_POOL_SIZE, 1 + (indices.length / (THREAD_POOL_SIZE * THREAD_BATCH_SIZE)));
     AtomicInteger workPtr = new AtomicInteger(0);
     for (int threadId = 0; threadId < threads; threadId++) {
       futures[threadId] = multiplicationService.submit(new MultiplicationRunnable(v, product, workPtr, THREAD_BATCH_SIZE));
@@ -39,40 +41,37 @@ public class CSRSubmatrix {
     }
   }
 
-  public synchronized void multiply(final Doubles v, final Doubles resultBuf) {
-    multiply(v, new DefaultProduct(resultBuf));
-  }
-
-  double rowScalarProduct(final int row, final Doubles v, final Product product) {
-    if (indices.size() == 0) return 0;
-    int origRow = indices.get(row);
+  double rowScalarProduct(final int row, final double[] v, final Product product) {
+    if (indices.length == 0) return 0;
+    int origRow = indices[row];
     long low = data.getRowPtrs()[origRow];
     long high = data.getRowPtrs()[origRow + 1];
     if (low == high) return 0; // Empty row
 
     double prod = 0;
     int col;
-    long retrievedIdx;
-    long secPtr;
 
-    if (indices.size() > high - low) {
-      secPtr = 0L;
+
+    if (indices.length > high - low) {
+      int secPtr = 0;
+      int retrievedIdx;
       for (long ptr = low; ptr < high; ptr++) {
         col = data.getColIndices().get(ptr);
-        retrievedIdx = indices.searchSorted(col, secPtr, indices.size() - 1);
+        retrievedIdx = InterpolationSearch.search(indices, col, secPtr, indices.length - 1);
         if (retrievedIdx >= 0) {
-          prod += product.innerProduct(row, (int)retrievedIdx, data.getValues().get(ptr), v.get(retrievedIdx));
+          prod += product.innerProduct(row, retrievedIdx, data.getValues().get(ptr), v[retrievedIdx]);
           secPtr = retrievedIdx + 1;
         }
-        if (secPtr >= indices.size()) break;
+        if (secPtr >= indices.length) break;
       }
     } else {
-      secPtr = low;
-      for (long ptr = 0; ptr < indices.size(); ptr++) {
-        col = indices.get(ptr);
-        retrievedIdx = data.getColIndices().searchSorted(col, secPtr, high);
+      long secPtr = low;
+      long retrievedIdx;
+      for (int ptr = 0; ptr < indices.length; ptr++) {
+        col = indices[ptr];
+        retrievedIdx = InterpolationSearch.search(data.getColIndices(), col, secPtr, high);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
-          prod += product.innerProduct(row, col, data.getValues().get(retrievedIdx), v.get(ptr));
+          prod += product.innerProduct(row, col, data.getValues().get(retrievedIdx), v[ptr]);
           secPtr = retrievedIdx + 1;
         }
         if (secPtr >= high) break;
@@ -81,46 +80,15 @@ public class CSRSubmatrix {
     return prod;
   }
 
-  public void free() {
-  }
-
   public int size() {
-    return (int) indices.size();
-  }
-
-  private class MultiplicationRunnable implements Runnable {
-
-    private final Doubles v;
-    private final Product product;
-    private final AtomicInteger workPtr;
-    private final int batchSize;
-
-    private MultiplicationRunnable(Doubles v, Product product, AtomicInteger workPtr, int batchSize) {
-      this.v = v;
-      this.product = product;
-      this.workPtr = workPtr;
-      this.batchSize = batchSize;
-    }
-
-    @Override
-    public void run() {
-      int i;
-      while ((i = workPtr.getAndAdd(batchSize)) < indices.size()) {
-        for (int j = i; j < Math.min(i + batchSize, indices.size()); j++) {
-//          int row = indices.get(j);
-          double p = rowScalarProduct(j, v, product);
-          product.createResultEntry(j, p, v);
-        }
-      }
-    }
-
+    return indices.length;
   }
 
   static class DefaultProduct implements Product {
 
-    private final Doubles resultBuf;
+    private final double[] resultBuf;
 
-    DefaultProduct(Doubles resultBuf) {
+    DefaultProduct(double[] resultBuf) {
       this.resultBuf = resultBuf;
     }
 
@@ -130,9 +98,37 @@ public class CSRSubmatrix {
     }
 
     @Override
-    public void createResultEntry(int row, double value, Doubles arg) {
-      resultBuf.set(row, value);
+    public void createResultEntry(int row, double value, double[] arg) {
+      resultBuf[row] = value;
     }
+  }
+
+  private class MultiplicationRunnable implements Runnable {
+
+    private final double[] v;
+    private final Product product;
+    private final AtomicInteger workPtr;
+    private final int batchSize;
+
+    private MultiplicationRunnable(double[] v, Product product, AtomicInteger workPtr, int batchSize) {
+      this.v = v;
+      this.product = product;
+      this.workPtr = workPtr;
+      this.batchSize = batchSize;
+    }
+
+    @Override
+    public void run() {
+      int i;
+      while ((i = workPtr.getAndAdd(batchSize)) < indices.length) {
+        for (int j = i; j < Math.min(i + batchSize, indices.length); j++) {
+//          int row = indices.get(j);
+          double p = rowScalarProduct(j, v, product);
+          product.createResultEntry(j, p, v);
+        }
+      }
+    }
+
   }
 
 }

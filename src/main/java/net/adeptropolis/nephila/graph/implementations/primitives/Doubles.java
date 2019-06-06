@@ -4,10 +4,6 @@ public interface Doubles {
 
   void resize(long newSize);
 
-  double get(long idx);
-
-  void set(long idx, double value);
-
   long size();
 
   void free();
@@ -18,6 +14,10 @@ public interface Doubles {
     set(idx1, val2);
     set(idx2, val1);
   }
+
+  double get(long idx);
+
+  void set(long idx, double value);
 
   default int compareEntries(long idx1, long idx2) {
     return Double.compare(get(idx1), get(idx2));

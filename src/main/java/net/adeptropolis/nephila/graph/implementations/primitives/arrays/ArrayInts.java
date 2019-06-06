@@ -1,8 +1,8 @@
 package net.adeptropolis.nephila.graph.implementations.primitives.arrays;
 
-import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
 
-public class ArrayInts implements IntBuffer {
+public class ArrayInts implements Ints {
 
   static final int BIN_BITS = 22; // 4M
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;

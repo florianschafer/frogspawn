@@ -21,19 +21,26 @@ public class Buffers {
     UNSAFE.freeMemory(buffer);
   }
 
-  private static long alloc(long bytes) {
-    return UNSAFE.allocateMemory(bytes);
+  public static long allocInts(long size) {
+    return alloc(size << INT_SHIFT);
   }
 
   /* INTEGERS */
   /* ============================================= */
 
-  public static long allocInts(long size) {
-    return alloc(size << INT_SHIFT);
+  private static long alloc(long bytes) {
+    return UNSAFE.allocateMemory(bytes);
   }
 
   public static long resizeInts(long buffer, long size) {
     return UNSAFE.reallocateMemory(buffer, size << INT_SHIFT);
+  }
+
+  public static void swapInts(long buffer, long idx1, long idx2) {
+    int val1 = getInt(buffer, idx1);
+    int val2 = getInt(buffer, idx2);
+    setInt(buffer, idx1, val2);
+    setInt(buffer, idx2, val1);
   }
 
   public static int getInt(long buffer, long idx) {
@@ -42,13 +49,6 @@ public class Buffers {
 
   public static void setInt(long buffer, long idx, int value) {
     UNSAFE.putInt(buffer + (idx << INT_SHIFT), value);
-  }
-
-  public static void swapInts(long buffer, long idx1, long idx2) {
-    int val1 = getInt(buffer, idx1);
-    int val2 = getInt(buffer, idx2);
-    setInt(buffer, idx1, val2);
-    setInt(buffer, idx2, val1);
   }
 
   public static int[] toIntArray(long buffer, int size) {
@@ -72,19 +72,19 @@ public class Buffers {
     return UNSAFE.reallocateMemory(buffer, size << LONG_SHIFT);
   }
 
+  public static void swapLongs(long buffer, long idx1, long idx2) {
+    long val1 = getLong(buffer, idx1);
+    long val2 = getLong(buffer, idx2);
+    setLong(buffer, idx1, val2);
+    setLong(buffer, idx2, val1);
+  }
+
   public static long getLong(long buffer, long idx) {
     return UNSAFE.getLong(buffer + (idx << LONG_SHIFT));
   }
 
   public static void setLong(long buffer, long idx, long value) {
     UNSAFE.putLong(buffer + (idx << LONG_SHIFT), value);
-  }
-
-  public static void swapLongs(long buffer, long idx1, long idx2) {
-    long val1 = getLong(buffer, idx1);
-    long val2 = getLong(buffer, idx2);
-    setLong(buffer, idx1, val2);
-    setLong(buffer, idx2, val1);
   }
 
   public static long[] toLongArray(long buffer, int size) {
@@ -109,19 +109,19 @@ public class Buffers {
     return UNSAFE.reallocateMemory(buffer, size << DOUBLE_SHIFT);
   }
 
+  public static void swapDoubles(long buffer, long idx1, long idx2) {
+    double val1 = getDouble(buffer, idx1);
+    double val2 = getDouble(buffer, idx2);
+    setDouble(buffer, idx1, val2);
+    setDouble(buffer, idx2, val1);
+  }
+
   public static double getDouble(long buffer, long idx) {
     return UNSAFE.getDouble(buffer + (idx << DOUBLE_SHIFT));
   }
 
   public static void setDouble(long buffer, long idx, double value) {
     UNSAFE.putDouble(buffer + (idx << DOUBLE_SHIFT), value);
-  }
-
-  public static void swapDoubles(long buffer, long idx1, long idx2) {
-    double val1 = getDouble(buffer, idx1);
-    double val2 = getDouble(buffer, idx2);
-    setDouble(buffer, idx1, val2);
-    setDouble(buffer, idx2, val1);
   }
 
   public static double[] toDoubleArray(long buffer, int size) {

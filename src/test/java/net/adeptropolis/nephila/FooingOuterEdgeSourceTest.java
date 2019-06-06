@@ -1,11 +1,9 @@
 package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.graph.implementations.*;
-import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
-import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
-import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
 import net.adeptropolis.nephila.graph.LabeledEdge;
+import net.adeptropolis.nephila.graph.implementations.CSRStorage;
+import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.implementations.NormalizedLaplacianCSRSubmatrix;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,26 +20,26 @@ public class FooingOuterEdgeSourceTest {
   @Test
   public void sccStuff() {
 
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
-    CSRStorageBuilder b = new CSRStorageBuilder();
-    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
-    CSRStorage storage = b.build();
-
-    IntBuffer indices = new ArrayInts(storage.getNumRows());
-    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
-    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
-
-    TarjanSCC tarjanSCC = new TarjanSCC(mat);
-    tarjanSCC.compute(comp -> {
-      System.out.println(comp.size());
-    });
-
-
-    indices.free();
-    mat.free();
-    storage.free();
+////    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+////    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+//    CSRStorageBuilder b = new CSRStorageBuilder();
+//    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+//    CSRStorage storage = b.build();
+//
+//    Ints indices = new ArrayInts(storage.getNumRows());
+//    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
+//    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+//
+//    TarjanSCC tarjanSCC = new TarjanSCC(mat);
+//    tarjanSCC.compute(comp -> {
+//      System.out.println(comp.size());
+//    });
+//
+//
+//    indices.free();
+//    mat.free();
+//    storage.free();
 
 
   }
@@ -57,8 +55,9 @@ public class FooingOuterEdgeSourceTest {
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
-    IntBuffer indices = new ArrayInts(storage.getNumRows());
-    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
+    int[] indices = new int[storage.getNumRows()];
+    for (int i = 0; i < storage.getNumRows(); i++) indices[i] = i;
+    ;
 
     NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
     long start = System.nanoTime();
@@ -66,8 +65,6 @@ public class FooingOuterEdgeSourceTest {
     long runTimeMs = (System.nanoTime() - start) / 1000000000L;
     System.out.println("Runtime: " + runTimeMs + "s");
 
-    indices.free();
-    mat.free();
     storage.free();
 
 
@@ -83,13 +80,13 @@ public class FooingOuterEdgeSourceTest {
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
-    IntBuffer indices = new ArrayInts(storage.getNumRows());
-    Doubles arg = new ArrayDoubles(storage.getNumRows());
-    Doubles res = new ArrayDoubles(storage.getNumRows());
+    int[] indices = new int[storage.getNumRows()];
+    double[] arg = new double[storage.getNumRows()];
+    double[] res = new double[storage.getNumRows()];
 
     for (int i = 0; i < storage.getNumRows(); i++) {
-      indices.set(i, i);
-      arg.set(i, i);
+      indices[i] = i;
+      arg[i] = i;
     }
 
     NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
@@ -97,18 +94,12 @@ public class FooingOuterEdgeSourceTest {
     System.out.println("Finished building matrix");
     System.out.println("NumRows: " + storage.getNumRows());
     long start = System.nanoTime();
-    for (int i = 0 ; i < 2500; i++) {
+    for (int i = 0; i < 2500; i++) {
       mat.multiplySpectrallyShiftedNormalizedLaplacian(arg, res);
     }
     long runTimeMs = (System.nanoTime() - start) / (2500L * 1000000L);
     System.out.println("Avg runtime: " + runTimeMs + "ms");
 
-
-
-    res.free();
-    arg.free();
-    indices.free();
-    mat.free();
     storage.free();
 
 
@@ -176,6 +167,26 @@ public class FooingOuterEdgeSourceTest {
   interface LabeledEdgeSource<T> {
 
     Stream<LabeledEdge<T>> edges();
+////    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+////    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+//    CSRStorageBuilder b = new CSRStorageBuilder();
+//    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+//    CSRStorage storage = b.build();
+//
+//    Ints indices = new ArrayInts(storage.getNumRows());
+//    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
+//    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+//
+//    TarjanSCC tarjanSCC = new TarjanSCC(mat);
+//    tarjanSCC.compute(comp -> {
+//      System.out.println(comp.size());
+//    });
+//
+//
+//    indices.free();
+//    mat.free();
+//    storage.free();
 
   }
 

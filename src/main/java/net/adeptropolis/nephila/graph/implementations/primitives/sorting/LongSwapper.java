@@ -18,11 +18,14 @@ package net.adeptropolis.nephila.graph.implementations.primitives.sorting;
  * limitations under the License.
  */
 
-/** An object that can swap elements whose position is specified by longs. **/
+/**
+ * An object that can swap elements whose position is specified by longs.
+ **/
 
 @FunctionalInterface
 public interface LongSwapper {
-  /** Swaps the data at the given positions.
+  /**
+   * Swaps the data at the given positions.
    *
    * @param a the first position to swap.
    * @param b the second position to swap.

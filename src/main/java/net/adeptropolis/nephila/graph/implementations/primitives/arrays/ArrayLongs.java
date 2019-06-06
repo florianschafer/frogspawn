@@ -1,8 +1,8 @@
 package net.adeptropolis.nephila.graph.implementations.primitives.arrays;
 
-import net.adeptropolis.nephila.graph.implementations.primitives.LongBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Longs;
 
-public class ArrayLongs implements LongBuffer {
+public class ArrayLongs implements Longs {
 
   static final int BIN_BITS = 22; // 4M
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;

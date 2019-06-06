@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 // Todo: This class is a mess resource-wise!
 
-public class LabeledTSVGraphSource implements GraphSource  {
+public class LabeledTSVGraphSource implements GraphSource {
 
   private static final Pattern TSVParsePattern = Pattern.compile("\\s*(?<weight>[0-9]+)\t+(?<u>[^\t]+)\t+(?<v>.+)\\s*");
   private final Path path;
@@ -27,32 +27,6 @@ public class LabeledTSVGraphSource implements GraphSource  {
   public LabeledTSVGraphSource(Path path) {
     this.path = path;
     this.labelMap = computeLabelMap();
-  }
-
-  @Override
-  public IntStream vertices() {
-    return labelMap.entrySet()
-            .parallelStream()
-            .mapToInt(Map.Entry::getValue);
-  }
-
-  @Override
-  public int vertexCount() {
-    return labelMap.size();
-  }
-
-  @Override
-  public Stream<Edge> edges() {
-    ThreadLocal<Edge> localEdges = ThreadLocal.withInitial(() -> new Edge(0, 0, 0.0));
-    return parseLabeledEdges()
-            .parallel()
-            .map(labeledEdge -> {
-              Edge edge = localEdges.get();
-              edge.u = labelMap.get(labeledEdge.u);
-              edge.v = labelMap.get(labeledEdge.v);
-              edge.weight = labeledEdge.weight;
-              return edge;
-            });
   }
 
   private ConcurrentMap<String, Integer> computeLabelMap() {
@@ -96,5 +70,31 @@ public class LabeledTSVGraphSource implements GraphSource  {
       throw new RuntimeException(e);
     }
 
+  }
+
+  @Override
+  public IntStream vertices() {
+    return labelMap.entrySet()
+            .parallelStream()
+            .mapToInt(Map.Entry::getValue);
+  }
+
+  @Override
+  public int vertexCount() {
+    return labelMap.size();
+  }
+
+  @Override
+  public Stream<Edge> edges() {
+    ThreadLocal<Edge> localEdges = ThreadLocal.withInitial(() -> new Edge(0, 0, 0.0));
+    return parseLabeledEdges()
+            .parallel()
+            .map(labeledEdge -> {
+              Edge edge = localEdges.get();
+              edge.u = labelMap.get(labeledEdge.u);
+              edge.v = labelMap.get(labeledEdge.v);
+              edge.weight = labeledEdge.weight;
+              return edge;
+            });
   }
 }

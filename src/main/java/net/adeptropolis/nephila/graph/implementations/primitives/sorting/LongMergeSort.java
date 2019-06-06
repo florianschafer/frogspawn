@@ -24,7 +24,8 @@ public class LongMergeSort {
 
   private static final long MERGESORT_NO_REC = 16;
 
-  /** Sorts the specified range of elements using the specified swapper and according to the order induced by the specified
+  /**
+   * Sorts the specified range of elements using the specified swapper and according to the order induced by the specified
    * comparator using mergesort.
    *
    * <p>This sort is guaranteed to be <i>stable</i>: equal elements will not be reordered as a result
@@ -32,9 +33,9 @@ public class LongMergeSort {
    * standard mergesort, as its running time is <i>O</i>(<var>n</var>&nbsp;(log&nbsp;<var>n</var>)<sup>2</sup>), but it does not allocate additional memory; as a result, it can be
    * used as a generic sorting algorithm.
    *
-   * @param from the index of the first element (inclusive) to be sorted.
-   * @param to the index of the last element (exclusive) to be sorted.
-   * @param c the comparator to determine the order of the generic data (arguments are positions).
+   * @param from    the index of the first element (inclusive) to be sorted.
+   * @param to      the index of the last element (exclusive) to be sorted.
+   * @param c       the comparator to determine the order of the generic data (arguments are positions).
    * @param swapper an object that knows how to swap the elements at any two positions.
    */
   public static void mergeSort(final long from, final long to, final LongComparator c, final LongSwapper swapper) {
@@ -89,8 +90,7 @@ public class LongMergeSort {
     if (mid - from > to - mid) {
       firstCut = from + (mid - from) / 2;
       secondCut = lowerBound(mid, to, firstCut, comp);
-    }
-    else {
+    } else {
       secondCut = mid + (to - mid) / 2;
       firstCut = upperBound(from, mid, secondCut, comp);
     }
@@ -124,8 +124,8 @@ public class LongMergeSort {
    * comparison function.
    *
    * @param from the index of the first element (inclusive) to be included in the binary search.
-   * @param to the index of the last element (exclusive) to be included in the binary search.
-   * @param pos the position of the element to be searched for.
+   * @param to   the index of the last element (exclusive) to be included in the binary search.
+   * @param pos  the position of the element to be searched for.
    * @param comp the comparison function.
    * @return the largest index i such that, for every j in the range {@code [first..i)},
    * {@code comp.compare(j, pos)} is {@code true}.
@@ -139,8 +139,7 @@ public class LongMergeSort {
       if (comp.compare(middle, pos) < 0) {
         from = middle + 1;
         len -= half + 1;
-      }
-      else {
+      } else {
         len = half;
       }
     }
@@ -154,7 +153,7 @@ public class LongMergeSort {
    * function.
    *
    * @param from the index of the first element (inclusive) to be included in the binary search.
-   * @param pos the position of the element to be searched for.
+   * @param pos  the position of the element to be searched for.
    * @param comp the comparison function.
    * @return The largest index i such that, for every j in the range {@code [first..i)},
    * {@code comp.compare(pos, j)} is {@code false}.
@@ -166,8 +165,7 @@ public class LongMergeSort {
       long middle = from + half;
       if (comp.compare(pos, middle) < 0) {
         len = half;
-      }
-      else {
+      } else {
         from = middle + 1;
         len -= half + 1;
       }

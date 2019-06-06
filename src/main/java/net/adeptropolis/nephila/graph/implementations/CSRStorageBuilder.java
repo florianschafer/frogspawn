@@ -3,7 +3,7 @@ package net.adeptropolis.nephila.graph.implementations;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
-import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
 import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
 import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
 import net.adeptropolis.nephila.graph.implementations.primitives.sorting.LongMergeSort;
@@ -16,9 +16,13 @@ public class CSRStorageBuilder {
   private final long sizeIncrement;
   private long reservedSize;
   private long ptr = 0L;
-  private IntBuffer rowIndices;
-  private IntBuffer colIndices;
+  private Ints rowIndices;
+  private Ints colIndices;
   private Doubles values;
+
+  public CSRStorageBuilder() {
+    this(DEFAULT_SIZE_INCREMENT, DEFAULT_SIZE_INCREMENT);
+  }
 
   CSRStorageBuilder(long initialReservedSize, long sizeIncrement) {
     Preconditions.checkArgument(initialReservedSize > 0, "Inital reserved size must be > 0");
@@ -29,8 +33,10 @@ public class CSRStorageBuilder {
     this.values = new ArrayDoubles(initialReservedSize);
   }
 
-  public CSRStorageBuilder() {
-    this(DEFAULT_SIZE_INCREMENT, DEFAULT_SIZE_INCREMENT);
+  public CSRStorageBuilder addSymmetric(int row, int col, double value) {
+    add(row, col, value);
+    if (row != col) add(col, row, value);
+    return this;
   }
 
   public CSRStorageBuilder add(int row, int col, double value) {
@@ -39,10 +45,17 @@ public class CSRStorageBuilder {
     return this;
   }
 
-  public CSRStorageBuilder addSymmetric(int row, int col, double value) {
-    add(row, col, value);
-    if (row != col) add(col, row, value);
-    return this;
+  private void set(long i, int row, int col, double value) {
+    rowIndices.set(i, row);
+    colIndices.set(i, col);
+    values.set(i, value);
+  }
+
+  private void resize(long newSize) {
+    reservedSize = newSize;
+    rowIndices.resize(newSize);
+    colIndices.resize(newSize);
+    values.resize(newSize);
   }
 
   public CSRStorage build() {
@@ -60,19 +73,6 @@ public class CSRStorageBuilder {
     rowIndices.free();
 
     return new CSRStorage(numRows, ptr, rowPtrs, colIndices, values);
-  }
-
-  private void set(long i, int row, int col, double value) {
-    rowIndices.set(i, row);
-    colIndices.set(i, col);
-    values.set(i, value);
-  }
-
-  private void resize(long newSize) {
-    reservedSize = newSize;
-    rowIndices.resize(newSize);
-    colIndices.resize(newSize);
-    values.resize(newSize);
   }
 
   private void sort() {
