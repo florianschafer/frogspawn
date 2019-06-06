@@ -16,7 +16,7 @@ public class CSRSubmatrix {
   private static final ExecutorService multiplicationService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
   private static final Future[] futures = new Future[THREAD_POOL_SIZE];
 
-  private final CSRStorage data;
+  final CSRStorage data;
   protected final IntBuffer indices;
 
   public CSRSubmatrix(CSRStorage data, IntBuffer indices) {
@@ -82,6 +82,10 @@ public class CSRSubmatrix {
   }
 
   public void free() {
+  }
+
+  public int size() {
+    return (int) indices.size();
   }
 
   private class MultiplicationRunnable implements Runnable {

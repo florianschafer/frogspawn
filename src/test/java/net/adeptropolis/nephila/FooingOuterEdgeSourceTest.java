@@ -1,16 +1,13 @@
 package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
-import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
-import net.adeptropolis.nephila.graph.implementations.CSRSubmatrix;
-import net.adeptropolis.nephila.graph.implementations.NormalizedLaplacianCSRSubmatrix;
-import net.adeptropolis.nephila.graph.implementations.buffers.*;
+import net.adeptropolis.nephila.graph.implementations.*;
+import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
 import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
 import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,13 +19,40 @@ import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
 
+  @Test
+  public void sccStuff() {
+
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+    CSRStorageBuilder b = new CSRStorageBuilder();
+    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+    CSRStorage storage = b.build();
+
+    IntBuffer indices = new ArrayIntBuffer(storage.getNumRows());
+    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
+    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
+
+    TarjanSCC tarjanSCC = new TarjanSCC(mat);
+    tarjanSCC.compute(comp -> {
+      System.out.println(comp.size());
+    });
+
+
+    indices.free();
+    mat.free();
+    storage.free();
+
+
+  }
+
 
   @Test
   public void eigenstuff() {
 
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
