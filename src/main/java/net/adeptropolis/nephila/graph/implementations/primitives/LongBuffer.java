@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations.buffers;
+package net.adeptropolis.nephila.graph.implementations.primitives;
 
 public interface LongBuffer {
 

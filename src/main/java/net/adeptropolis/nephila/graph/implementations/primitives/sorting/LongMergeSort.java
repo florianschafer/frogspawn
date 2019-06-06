@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations.buffers.sorting;
+package net.adeptropolis.nephila.graph.implementations.primitives.sorting;
 
 
 /*

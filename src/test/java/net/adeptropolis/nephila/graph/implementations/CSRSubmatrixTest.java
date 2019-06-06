@@ -1,9 +1,9 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -16,8 +16,8 @@ public class CSRSubmatrixTest {
   @Test
   public void fullRowScalarProduct() {
     CSRStorageBuilder b = new CSRStorageBuilder();
-    IntBuffer indices = new ArrayIntBuffer(10000);
-    DoubleBuffer vec = new ArrayDoubleBuffer(10000);
+    IntBuffer indices = new ArrayInts(10000);
+    Doubles vec = new ArrayDoubles(10000);
     for (int i = 0; i < 10000; i++) {
       b.add(1, i, i + 1);
       indices.set(i, i);
@@ -35,8 +35,8 @@ public class CSRSubmatrixTest {
 
   @Test
   public void emptyIndexScalarProduct() {
-    IntBuffer indices = new ArrayIntBuffer(0);
-    DoubleBuffer vec = new ArrayDoubleBuffer(0);
+    IntBuffer indices = new ArrayInts(0);
+    Doubles vec = new ArrayDoubles(0);
     CSRStorage storage = new CSRStorageBuilder().add(0, 0, 17).build();
     CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
     double p = mat.rowScalarProduct(0, vec, INNER_PROD);
@@ -49,11 +49,11 @@ public class CSRSubmatrixTest {
 
   @Test
   public void emptyRowScalarProduct() {
-    IntBuffer indices = new ArrayIntBuffer(3);
+    IntBuffer indices = new ArrayInts(3);
     indices.set(0, 0);
     indices.set(1, 2);
     indices.set(2, 3);
-    DoubleBuffer vec = new ArrayDoubleBuffer(3);
+    Doubles vec = new ArrayDoubles(3);
     vec.set(0, 9);
     vec.set(1, 11);
     vec.set(2, 13);
@@ -69,11 +69,11 @@ public class CSRSubmatrixTest {
 
   @Test
   public void scalarProductWithEntryOverhang() {
-    IntBuffer indices = new ArrayIntBuffer(3);
+    IntBuffer indices = new ArrayInts(3);
     indices.set(0, 0);
     indices.set(1, 2);
     indices.set(2, 3);
-    DoubleBuffer vec = new ArrayDoubleBuffer(3);
+    Doubles vec = new ArrayDoubles(3);
     vec.set(0, 9);
     vec.set(1, 11);
     vec.set(2, 13);
@@ -94,12 +94,12 @@ public class CSRSubmatrixTest {
 
   @Test
   public void scalarProductWithIndexOverhang() {
-    IntBuffer indices = new ArrayIntBuffer(4);
+    IntBuffer indices = new ArrayInts(4);
     indices.set(0, 0);
     indices.set(1, 2);
     indices.set(2, 3);
     indices.set(3, 4);
-    DoubleBuffer vec = new ArrayDoubleBuffer(4);
+    Doubles vec = new ArrayDoubles(4);
     vec.set(0, 7);
     vec.set(1, 11);
     vec.set(2, 13);
@@ -119,10 +119,10 @@ public class CSRSubmatrixTest {
 
   @Test
   public void singleEntryScalarProductWithIndexOverhang() {
-    IntBuffer indices = new ArrayIntBuffer(2);
+    IntBuffer indices = new ArrayInts(2);
     indices.set(0, 0);
     indices.set(1, 2);
-    DoubleBuffer vec = new ArrayDoubleBuffer(2);
+    Doubles vec = new ArrayDoubles(2);
     vec.set(0, 7);
     vec.set(1, 11);
     CSRStorage storage = new CSRStorageBuilder().add(0, 2, 23).build();
@@ -137,9 +137,9 @@ public class CSRSubmatrixTest {
 
   @Test
   public void singleIndexyScalarProductWithEntryOverhang() {
-    IntBuffer indices = new ArrayIntBuffer(1);
+    IntBuffer indices = new ArrayInts(1);
     indices.set(0, 0);
-    DoubleBuffer vec = new ArrayDoubleBuffer(4);
+    Doubles vec = new ArrayDoubles(4);
     vec.set(0, 7);
     CSRStorage storage = new CSRStorageBuilder()
             .add(0, 0, 11)
@@ -158,14 +158,14 @@ public class CSRSubmatrixTest {
   @Test
   public void multiplication() {
 
-    IntBuffer indices = new ArrayIntBuffer(4);
+    IntBuffer indices = new ArrayInts(4);
 
     indices.set(0, 0);
     indices.set(1, 2);
     indices.set(2, 3);
     indices.set(3, 4);
 
-    DoubleBuffer vec = new ArrayDoubleBuffer(4);
+    Doubles vec = new ArrayDoubles(4);
     vec.set(0, 43);
     vec.set(1, 47);
     vec.set(2, 53);
@@ -186,7 +186,7 @@ public class CSRSubmatrixTest {
             .build();
     CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
 
-    DoubleBuffer res = new ArrayDoubleBuffer(indices.size());
+    Doubles res = new ArrayDoubles(indices.size());
     mat.multiply(vec, res);
     assertThat(res.get(0), is(2d * 43d));
     assertThat(res.get(1), is(17d * 47d + 19d * 53 + 23d * 59));

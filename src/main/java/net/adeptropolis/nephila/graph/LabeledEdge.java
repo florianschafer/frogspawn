@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations.old;
+package net.adeptropolis.nephila.graph;
 
 public class LabeledEdge<T> {
 

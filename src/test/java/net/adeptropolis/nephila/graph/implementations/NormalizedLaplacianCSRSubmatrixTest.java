@@ -1,9 +1,9 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class NormalizedLaplacianCSRSubmatrixTest {
 
   @Test
   public void simpleNormalizedLaplacian() {
-    IntBuffer indices = new ArrayIntBuffer(6);
+    IntBuffer indices = new ArrayInts(6);
     for (int i = 0; i < 6; i++) indices.set(i, i);
     CSRStorage storage = new CSRStorageBuilder()
             .add(0, 1, 1)
@@ -57,7 +57,7 @@ public class NormalizedLaplacianCSRSubmatrixTest {
 
   @Test
   public void normalizedLaplacianSubset() {
-    IntBuffer indices = new ArrayIntBuffer(5);
+    IntBuffer indices = new ArrayInts(5);
     indices.set(0, 0);
     for (int i = 1; i < 5; i++) indices.set(i, i + 1);
     CSRStorage storage = new CSRStorageBuilder()
@@ -90,14 +90,14 @@ public class NormalizedLaplacianCSRSubmatrixTest {
   @Test
   public void spectrallyShiftedProduct() {
     withBipartiteAdjacencyMatrix(mat -> {
-      DoubleBuffer v = new ArrayDoubleBuffer(6);
+      Doubles v = new ArrayDoubles(6);
       v.set(0, 43);
       v.set(1, 47);
       v.set(2, 53);
       v.set(3, 59);
       v.set(4, 61);
       v.set(5, 67);
-      DoubleBuffer result = new ArrayDoubleBuffer(6);
+      Doubles result = new ArrayDoubles(6);
       mat.multiplySpectrallyShiftedNormalizedLaplacian(v, result);
       assertThat(result.get(0), closeTo(-17.3263, 1E-4));
       assertThat(result.get(1), closeTo(-2.0033, 1E-4));
@@ -113,7 +113,7 @@ public class NormalizedLaplacianCSRSubmatrixTest {
   @Test
   public void v2() {
     withBipartiteAdjacencyMatrix(mat -> {
-      DoubleBuffer v2 = mat.bipartiteLambda2Eigenvector(1E-9);
+      Doubles v2 = mat.bipartiteLambda2Eigenvector(1E-9);
       assertThat(v2.get(0), closeTo(0.470144, 1E-6));
       assertThat(v2.get(1), closeTo(0.316409, 1E-6));
       assertThat(v2.get(2), closeTo(-0.422907, 1E-6));
@@ -125,7 +125,7 @@ public class NormalizedLaplacianCSRSubmatrixTest {
   }
 
   private void withBipartiteAdjacencyMatrix(Consumer<NormalizedLaplacianCSRSubmatrix> matConsumer) {
-    IntBuffer indices = new ArrayIntBuffer(6);
+    IntBuffer indices = new ArrayInts(6);
     for (int i = 0; i < 6; i++) indices.set(i, i);
     CSRStorage storage = new CSRStorageBuilder()
             .addSymmetric(0, 3, 2)
@@ -156,8 +156,8 @@ public class NormalizedLaplacianCSRSubmatrixTest {
 
 
   private List<Double> verifyNormLaplacianCol(NormalizedLaplacianCSRSubmatrix mat, int col, double... expected) {
-    DoubleBuffer resultsBuf = new ArrayDoubleBuffer(mat.size());
-    DoubleBuffer v = new ArrayDoubleBuffer(mat.size());
+    Doubles resultsBuf = new ArrayDoubles(mat.size());
+    Doubles v = new ArrayDoubles(mat.size());
     for (int i = 0; i < mat.size(); i++) v.set(i, i == col ? 1 : 0);
     mat.multiplyNormalizedLaplacian(v, resultsBuf);
     List<Double> colVec = IntStream.range(0, mat.size())

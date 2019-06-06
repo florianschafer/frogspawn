@@ -1,13 +1,13 @@
-package net.adeptropolis.nephila.graph.implementations.buffers.unsafe;
+package net.adeptropolis.nephila.graph.implementations.primitives.unsafe;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.LongBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.LongBuffer;
 
-public class UnsafeLongBuffer implements LongBuffer {
+public class UnsafeLongs implements LongBuffer {
 
   private long buffer;
   private long size;
 
-  public UnsafeLongBuffer(long initialSize) {
+  public UnsafeLongs(long initialSize) {
     size = initialSize;
     buffer = Buffers.allocLongs(initialSize);
   }

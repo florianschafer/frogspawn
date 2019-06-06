@@ -1,11 +1,9 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graph.Edge;
-import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
+import net.adeptropolis.nephila.graph.LabeledEdge;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;

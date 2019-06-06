@@ -1,20 +1,19 @@
-package net.adeptropolis.nephila.graph.implementations.buffers.arrays;
+package net.adeptropolis.nephila.graph.implementations.primitives.arrays;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
 import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ArrayIntBufferTest {
+public class ArrayIntsTest {
 
-  private static final long BASE_SIZE = (1 << ArrayIntBuffer.BIN_BITS);
+  private static final long BASE_SIZE = (1 << ArrayInts.BIN_BITS);
 
   @Test
   public void basicCheck() {
-    ArrayIntBuffer b = new ArrayIntBuffer(BASE_SIZE);
+    ArrayInts b = new ArrayInts(BASE_SIZE);
     assertThat(b.size(), is(BASE_SIZE));
     for (long i = 0; i < BASE_SIZE; i++) b.set(i, (int) (3 * i));
     for (long i = 0; i < BASE_SIZE; i++) assertThat(b.get(i), is((int)(3 * i)));
@@ -22,7 +21,7 @@ public class ArrayIntBufferTest {
 
   @Test
   public void resizingWorks() {
-    ArrayIntBuffer b = new ArrayIntBuffer(BASE_SIZE);
+    ArrayInts b = new ArrayInts(BASE_SIZE);
     assertThat(b.size(), is(BASE_SIZE));
     for (long i = 0; i < BASE_SIZE; i++) b.set(i, (int) (4 * i));
     b.resize(2 * BASE_SIZE);
@@ -33,7 +32,7 @@ public class ArrayIntBufferTest {
 
   @Test
   public void searchDenseIntArray() {
-    IntBuffer buf = new ArrayIntBuffer(BASE_SIZE);
+    IntBuffer buf = new ArrayInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i,i);
     buf.sort(10000);
     for (int i = 0; i < 10000; i++) Assert.assertThat(buf.searchSorted(i, 10000), greaterThanOrEqualTo(0L));
@@ -41,7 +40,7 @@ public class ArrayIntBufferTest {
 
   @Test
   public void searchSparseIntArray() {
-    IntBuffer buf = new ArrayIntBuffer(BASE_SIZE);
+    IntBuffer buf = new ArrayInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, i * 13);
     buf.sort(10000);
     for (int i = 0; i < 10000; i++) {
@@ -52,7 +51,7 @@ public class ArrayIntBufferTest {
 
   @Test
   public void searchVerySparse() {
-    IntBuffer buf = new ArrayIntBuffer(BASE_SIZE);
+    IntBuffer buf = new ArrayInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, 0);
     buf.set(9998, 60);
     buf.set(9999, 100);

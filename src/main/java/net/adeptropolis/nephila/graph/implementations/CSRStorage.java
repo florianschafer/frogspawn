@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
 
 public class CSRStorage {
 
@@ -10,9 +10,9 @@ public class CSRStorage {
 
   private final long[] rowPtrs;
   private final IntBuffer colIndices;
-  private final DoubleBuffer values;
+  private final Doubles values;
 
-  CSRStorage(int numRows, long nnz, long[] rowPtrs, IntBuffer colIndices, DoubleBuffer values) {
+  CSRStorage(int numRows, long nnz, long[] rowPtrs, IntBuffer colIndices, Doubles values) {
     this.numRows = numRows;
     this.nnz = nnz;
     this.rowPtrs = rowPtrs;
@@ -41,7 +41,7 @@ public class CSRStorage {
     return colIndices;
   }
 
-  public DoubleBuffer getValues() {
+  public Doubles getValues() {
     return values;
   }
 

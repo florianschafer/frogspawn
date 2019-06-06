@@ -1,13 +1,13 @@
-package net.adeptropolis.nephila.graph.implementations.buffers.unsafe;
+package net.adeptropolis.nephila.graph.implementations.primitives.unsafe;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
 
-public class UnsafeDoubleBuffer implements DoubleBuffer {
+public class UnsafeDoubles implements Doubles {
 
   private long buffer;
   private long size;
 
-  public UnsafeDoubleBuffer(long initialSize) {
+  public UnsafeDoubles(long initialSize) {
     size = initialSize;
     buffer = Buffers.allocDoubles(initialSize);
   }

@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -53,7 +53,7 @@ public class TarjanSCC {
     traverseNeighbors(i, componentConsumer);
 
     if (lowLinks[i] == compIndices[i]) {
-      IntBuffer comp = new ArrayIntBuffer(adj.indices.size());
+      IntBuffer comp = new ArrayInts(adj.indices.size());
       int compSize = 0;
       while (true) {
         int w = stack[--stackSize];

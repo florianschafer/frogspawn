@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +24,7 @@ public class CSRSubmatrix {
     this.indices = indices;
   }
 
-  public synchronized void multiply(final DoubleBuffer v, final Product product) {
+  public synchronized void multiply(final Doubles v, final Product product) {
     int threads = Math.min(THREAD_POOL_SIZE, 1 + (int) (indices.size() / (THREAD_POOL_SIZE * THREAD_BATCH_SIZE)));
     AtomicInteger workPtr = new AtomicInteger(0);
     for (int threadId = 0; threadId < threads; threadId++) {
@@ -39,11 +39,11 @@ public class CSRSubmatrix {
     }
   }
 
-  public synchronized void multiply(final DoubleBuffer v, final DoubleBuffer resultBuf) {
+  public synchronized void multiply(final Doubles v, final Doubles resultBuf) {
     multiply(v, new DefaultProduct(resultBuf));
   }
 
-  double rowScalarProduct(final int row, final DoubleBuffer v, final Product product) {
+  double rowScalarProduct(final int row, final Doubles v, final Product product) {
     if (indices.size() == 0) return 0;
     int origRow = indices.get(row);
     long low = data.getRowPtrs()[origRow];
@@ -90,12 +90,12 @@ public class CSRSubmatrix {
 
   private class MultiplicationRunnable implements Runnable {
 
-    private final DoubleBuffer v;
+    private final Doubles v;
     private final Product product;
     private final AtomicInteger workPtr;
     private final int batchSize;
 
-    private MultiplicationRunnable(DoubleBuffer v, Product product, AtomicInteger workPtr, int batchSize) {
+    private MultiplicationRunnable(Doubles v, Product product, AtomicInteger workPtr, int batchSize) {
       this.v = v;
       this.product = product;
       this.workPtr = workPtr;
@@ -118,9 +118,9 @@ public class CSRSubmatrix {
 
   static class DefaultProduct implements Product {
 
-    private final DoubleBuffer resultBuf;
+    private final Doubles resultBuf;
 
-    DefaultProduct(DoubleBuffer resultBuf) {
+    DefaultProduct(Doubles resultBuf) {
       this.resultBuf = resultBuf;
     }
 
@@ -130,7 +130,7 @@ public class CSRSubmatrix {
     }
 
     @Override
-    public void createResultEntry(int row, double value, DoubleBuffer arg) {
+    public void createResultEntry(int row, double value, Doubles arg) {
       resultBuf.set(row, value);
     }
   }

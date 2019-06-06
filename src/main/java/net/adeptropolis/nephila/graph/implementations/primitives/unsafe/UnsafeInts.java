@@ -1,13 +1,13 @@
-package net.adeptropolis.nephila.graph.implementations.buffers.unsafe;
+package net.adeptropolis.nephila.graph.implementations.primitives.unsafe;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
 
-public class UnsafeIntBuffer implements IntBuffer {
+public class UnsafeInts implements IntBuffer {
 
   private long buffer;
   private long size;
 
-  public UnsafeIntBuffer(long initialSize) {
+  public UnsafeInts(long initialSize) {
     size = initialSize;
     buffer = Buffers.allocInts(initialSize);
   }

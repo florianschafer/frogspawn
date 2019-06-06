@@ -1,7 +1,7 @@
-package net.adeptropolis.nephila.graph.implementations.buffers;
+package net.adeptropolis.nephila.graph.implementations.primitives;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.sorting.IntSortHelper;
-import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
+import net.adeptropolis.nephila.graph.implementations.primitives.sorting.IntSortHelper;
+import net.adeptropolis.nephila.graph.implementations.primitives.sorting.LongMergeSort;
 
 public interface IntBuffer {
 

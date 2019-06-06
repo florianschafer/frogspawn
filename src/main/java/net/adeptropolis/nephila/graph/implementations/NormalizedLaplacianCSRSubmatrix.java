@@ -1,8 +1,8 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,22 +11,22 @@ import org.slf4j.LoggerFactory;
 public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(NormalizedLaplacianCSRSubmatrix.class);
-  private final DoubleBuffer v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0)
-  private final DoubleBuffer invDegSqrts; // Inverse square roots of degrees
+  private final Doubles v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0)
+  private final Doubles invDegSqrts; // Inverse square roots of degrees
 
   // TODO: Create a vector D^(-0.5)v and use that one for multiplication (instead of invDegSqrts.get(row) * value)
 
   public NormalizedLaplacianCSRSubmatrix(CSRStorage data, IntBuffer indices) {
     super(data, indices);
-    invDegSqrts = new ArrayDoubleBuffer(indices.size());
-    v0 = new ArrayDoubleBuffer(indices.size());
+    invDegSqrts = new ArrayDoubles(indices.size());
+    v0 = new ArrayDoubles(indices.size());
     computeAuxData();
   }
 
   private void computeAuxData() {
 
     // Compute degrees. Store in scratch. Abuse v0 for storing the ones
-    ArrayDoubleBuffer scratch = new ArrayDoubleBuffer(indices.size());
+    ArrayDoubles scratch = new ArrayDoubles(indices.size());
     for (int i = 0; i < indices.size(); i++) v0.set(i, 1);
     super.multiply(v0, scratch);
 
@@ -43,7 +43,7 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
 
   }
 
-  public void multiplyNormalizedLaplacian(DoubleBuffer v, DoubleBuffer result) {
+  public void multiplyNormalizedLaplacian(Doubles v, Doubles result) {
     // Put weighted argument vector into scratch (D^-1/2 v)
     // for (int i = 0; i < indices.size(); i++) scratch.set(i, invDegSqrts.get(i) * v.get(i));
     NormalizedLaplacianProduct prod = new NormalizedLaplacianProduct(result, invDegSqrts);
@@ -51,7 +51,7 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
   }
 
   // NOTE: Biparite graphs only!!! ||v|| must be 1 !!!
-  public void multiplySpectrallyShiftedNormalizedLaplacian(DoubleBuffer v, DoubleBuffer result) {
+  public void multiplySpectrallyShiftedNormalizedLaplacian(Doubles v, Doubles result) {
 //    https://math.stackexchange.com/questions/2214641/shifting-eigenvalues-of-a-matrix
     SpectrallyShiftingNormalizedLaplacianProduct prod = new SpectrallyShiftingNormalizedLaplacianProduct(v, v0, result, invDegSqrts);
     multiply(v, prod);
@@ -60,10 +60,10 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
 
   // TODO: caller should allocate x. Probably transition to arrays!
   // TODO: Error computation is not optimal!
-  public DoubleBuffer bipartiteLambda2Eigenvector(double precision) {
-    DoubleBuffer x = new ArrayDoubleBuffer(size());
-    DoubleBuffer multRes = new ArrayDoubleBuffer(size());
-    DoubleBuffer lastResult = new ArrayDoubleBuffer(size());
+  public Doubles bipartiteLambda2Eigenvector(double precision) {
+    Doubles x = new ArrayDoubles(size());
+    Doubles multRes = new ArrayDoubles(size());
+    Doubles lastResult = new ArrayDoubles(size());
     double initialEntryVal = 1.0 / Math.sqrt(size());
     for (int i = 0; i < size(); i++) {
       // TODO: Find better initial vector, must be ||.|| == 1
@@ -89,8 +89,8 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
   // TODO: call should allocate x. Probably transition to arrays!
   // TODO: Error computation is not optimal!
   public byte[] bipartiteLambda2EigenvectorSignums(double maxAlternations, int minIterations) {
-    DoubleBuffer x = new ArrayDoubleBuffer(size());
-    DoubleBuffer multRes = new ArrayDoubleBuffer(size());
+    Doubles x = new ArrayDoubles(size());
+    Doubles multRes = new ArrayDoubles(size());
     byte[] lastSignums = new byte[size()];
     double initialEntryVal = 1.0 / Math.sqrt(size());
     for (int i = 0; i < size(); i++) {
@@ -120,7 +120,7 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
   }
 
     // Also normalizes signum, s.t. the first entry is always positive
-  private void normVec(DoubleBuffer x, DoubleBuffer result) {
+  private void normVec(Doubles x, Doubles result) {
     double primSig = Math.signum(x.get(0));
     double sum = 0;
     for (int i = 0; i < x.size(); i++) sum += x.get(i) * x.get(i);
@@ -141,10 +141,10 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
 
   static class NormalizedLaplacianProduct implements Product {
 
-    private final DoubleBuffer resultBuf;
-    private final DoubleBuffer invDegSqrts;
+    private final Doubles resultBuf;
+    private final Doubles invDegSqrts;
 
-    NormalizedLaplacianProduct(final DoubleBuffer resultBuf, final DoubleBuffer invDegSqrts) {
+    NormalizedLaplacianProduct(final Doubles resultBuf, final Doubles invDegSqrts) {
       this.resultBuf = resultBuf;
       this.invDegSqrts = invDegSqrts;
     }
@@ -155,7 +155,7 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
     }
 
     @Override
-    public void createResultEntry(int row, double value, DoubleBuffer arg) {
+    public void createResultEntry(int row, double value, Doubles arg) {
       // Latter term comes from diagonals
       resultBuf.set(row, invDegSqrts.get(row) * value + arg.get(row));
     }
@@ -164,13 +164,13 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
   // NOTE!!!: This ONLY works for bipartite graphs!!!
   static class SpectrallyShiftingNormalizedLaplacianProduct implements Product {
 
-    private final DoubleBuffer resultBuf;
-    private final DoubleBuffer invDegSqrts;
-    private final DoubleBuffer v0;
+    private final Doubles resultBuf;
+    private final Doubles invDegSqrts;
+    private final Doubles v0;
     private final double scal;
 
     // NOTE: ||v|| MUST BE 1
-    SpectrallyShiftingNormalizedLaplacianProduct(DoubleBuffer v, DoubleBuffer v0, DoubleBuffer resultBuf, DoubleBuffer invDegSqrts) {
+    SpectrallyShiftingNormalizedLaplacianProduct(Doubles v, Doubles v0, Doubles resultBuf, Doubles invDegSqrts) {
       this.resultBuf = resultBuf;
       this.invDegSqrts = invDegSqrts;
       this.v0 = v0;
@@ -185,7 +185,7 @@ public class NormalizedLaplacianCSRSubmatrix extends CSRSubmatrix {
     }
 
     @Override
-    public void createResultEntry(int row, double value, DoubleBuffer arg) {
+    public void createResultEntry(int row, double value, Doubles arg) {
       resultBuf.set(row, invDegSqrts.get(row) * value + 2 * (v0.get(row) * scal) - arg.get(row));
     }
   }

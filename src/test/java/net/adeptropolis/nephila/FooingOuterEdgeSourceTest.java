@@ -1,11 +1,11 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graph.implementations.*;
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
-import net.adeptropolis.nephila.graph.implementations.old.LabeledEdge;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
+import net.adeptropolis.nephila.graph.LabeledEdge;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class FooingOuterEdgeSourceTest {
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
-    IntBuffer indices = new ArrayIntBuffer(storage.getNumRows());
+    IntBuffer indices = new ArrayInts(storage.getNumRows());
     for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
     CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
 
@@ -57,7 +57,7 @@ public class FooingOuterEdgeSourceTest {
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
-    IntBuffer indices = new ArrayIntBuffer(storage.getNumRows());
+    IntBuffer indices = new ArrayInts(storage.getNumRows());
     for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
 
     NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
@@ -83,9 +83,9 @@ public class FooingOuterEdgeSourceTest {
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
-    IntBuffer indices = new ArrayIntBuffer(storage.getNumRows());
-    DoubleBuffer arg = new ArrayDoubleBuffer(storage.getNumRows());
-    DoubleBuffer res = new ArrayDoubleBuffer(storage.getNumRows());
+    IntBuffer indices = new ArrayInts(storage.getNumRows());
+    Doubles arg = new ArrayDoubles(storage.getNumRows());
+    Doubles res = new ArrayDoubles(storage.getNumRows());
 
     for (int i = 0; i < storage.getNumRows(); i++) {
       indices.set(i, i);

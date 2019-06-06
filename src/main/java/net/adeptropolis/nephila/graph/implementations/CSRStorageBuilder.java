@@ -2,12 +2,12 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongComparator;
-import net.adeptropolis.nephila.graph.implementations.buffers.DoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.IntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayDoubleBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.arrays.ArrayIntBuffer;
-import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.implementations.buffers.sorting.LongSwapper;
+import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.IntBuffer;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayDoubles;
+import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
+import net.adeptropolis.nephila.graph.implementations.primitives.sorting.LongMergeSort;
+import net.adeptropolis.nephila.graph.implementations.primitives.sorting.LongSwapper;
 
 public class CSRStorageBuilder {
 
@@ -18,15 +18,15 @@ public class CSRStorageBuilder {
   private long ptr = 0L;
   private IntBuffer rowIndices;
   private IntBuffer colIndices;
-  private DoubleBuffer values;
+  private Doubles values;
 
   CSRStorageBuilder(long initialReservedSize, long sizeIncrement) {
     Preconditions.checkArgument(initialReservedSize > 0, "Inital reserved size must be > 0");
     this.reservedSize = initialReservedSize;
     this.sizeIncrement = sizeIncrement;
-    this.rowIndices = new ArrayIntBuffer(initialReservedSize);
-    this.colIndices = new ArrayIntBuffer(initialReservedSize);
-    this.values = new ArrayDoubleBuffer(initialReservedSize);
+    this.rowIndices = new ArrayInts(initialReservedSize);
+    this.colIndices = new ArrayInts(initialReservedSize);
+    this.values = new ArrayDoubles(initialReservedSize);
   }
 
   public CSRStorageBuilder() {
@@ -48,7 +48,7 @@ public class CSRStorageBuilder {
   public CSRStorage build() {
 
     if (ptr == 0L) {
-      return new CSRStorage(0, 0, new long[0], new ArrayIntBuffer(0), new ArrayDoubleBuffer(0));
+      return new CSRStorage(0, 0, new long[0], new ArrayInts(0), new ArrayDoubles(0));
     }
 
     sort();
