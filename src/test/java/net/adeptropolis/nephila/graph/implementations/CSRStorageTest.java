@@ -33,8 +33,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowWithNoColumnSelected() {
     withDefaultView((view, traversal) -> {
-      view.indices[0] = 5;
-      view.indicesSize = 1;
+      view.set(new int[]{5});
       view.traverseRow(5, traversal);
       assertThat(traversal.entries, empty());
     });
@@ -43,9 +42,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowWithNotAllColIndicesSelected() {
     withDefaultView((view, traversal) -> {
-      view.indices[0] = 1;
-      view.indices[1] = 2;
-      view.indicesSize = 2;
+      view.set(new int[]{1, 2});
       view.traverseRow(0, traversal);
       assertThat(traversal.entries, contains(
               Entry.of(0, 0, 2),
@@ -77,8 +74,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowByIndices() {
     withDefaultView((view, traversal) -> {
-      view.indices[0] = 3;
-      view.indicesSize = 1;
+      view.set(new int[]{3});
       view.traverseRow(0, traversal);
       assertThat(traversal.entries, contains(Entry.of(0, 0, 6)));
     });
@@ -123,7 +119,7 @@ public class CSRStorageTest {
       this.value = value;
     }
 
-    public static Entry of(int rowIdx, int colIdx, double value) {
+    static Entry of(int rowIdx, int colIdx, double value) {
       return new Entry(rowIdx, colIdx, value);
     }
 

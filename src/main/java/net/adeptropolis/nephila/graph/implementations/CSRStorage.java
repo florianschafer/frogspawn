@@ -4,6 +4,8 @@ import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
 import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
 import net.adeptropolis.nephila.graph.implementations.primitives.search.InterpolationSearch;
 
+import java.util.Arrays;
+
 public class CSRStorage {
 
   private final int numRows;
@@ -124,7 +126,11 @@ public class CSRStorage {
       }
     }
 
-
+    public void set(int[] newIndices) {
+      Arrays.sort(newIndices);
+      System.arraycopy(newIndices, 0, indices, 0, newIndices.length);
+      indicesSize = newIndices.length;
+    }
 
   }
 

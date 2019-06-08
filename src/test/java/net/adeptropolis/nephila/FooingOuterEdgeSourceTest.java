@@ -3,7 +3,7 @@ package net.adeptropolis.nephila;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
-import net.adeptropolis.nephila.graph.implementations.NormalizedLaplacianCSRSubmatrix;
+import net.adeptropolis.nephila.graph.implementations.old.NormalizedLaplacianCSRSubmatrix;
 import org.junit.Test;
 
 import java.io.IOException;

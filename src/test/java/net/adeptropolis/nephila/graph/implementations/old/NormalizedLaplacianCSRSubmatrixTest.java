@@ -1,5 +1,8 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.implementations.old;
 
+import net.adeptropolis.nephila.graph.implementations.CSRStorage;
+import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.implementations.old.NormalizedLaplacianCSRSubmatrix;
 import org.junit.Test;
 
 import java.util.Arrays;

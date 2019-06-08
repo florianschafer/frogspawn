@@ -1,5 +1,6 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.implementations.old;
 
+import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

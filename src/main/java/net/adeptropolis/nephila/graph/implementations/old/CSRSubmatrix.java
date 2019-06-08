@@ -1,5 +1,6 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.implementations.old;
 
+import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.primitives.search.InterpolationSearch;
 
 import java.util.concurrent.ExecutionException;
