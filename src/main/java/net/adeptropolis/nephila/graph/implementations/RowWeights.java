@@ -4,20 +4,17 @@ import java.util.Arrays;
 
 public class RowWeights implements EntryVisitor {
 
-//  todo: cleanup or make CSR Traversal reusable
-
   private final CSRStorage.View view;
-  private final CSRViewTraversal CSRViewTraversal;
   private final double[] weights;
 
   public RowWeights(CSRStorage.View view) {
     this.view = view;
-    this.CSRViewTraversal = new CSRViewTraversal(this.view);
     this.weights = new double[view.maxSize()];
   }
 
-  public void update() {
-    CSRViewTraversal.traverse(this);
+  public RowWeights update() {
+    view.traverse(this);
+    return this;
   }
 
   public double[] get() {
