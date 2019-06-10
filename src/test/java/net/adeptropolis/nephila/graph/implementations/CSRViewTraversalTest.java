@@ -8,43 +8,43 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.is;
 
-public class ParallelRowTraversalTest {
+public class CSRViewTraversalTest {
 
   @Test
   public void traversalVisitsAllEntries() {
     withLargeDenseMatrix(view -> {
-      FingerprintingTraversal traversal = new FingerprintingTraversal();
-      ParallelRowTraversal rowTraversal = new ParallelRowTraversal(traversal, view);
-      rowTraversal.traverseRows();
-      MatcherAssert.assertThat(traversal.getFingerprint(), is(582167083500d));
-      rowTraversal.cleanup();
+      FingerprintingVisitor visitor = new FingerprintingVisitor();
+      CSRViewTraversal viewTraversal = new CSRViewTraversal(view);
+      viewTraversal.traverse(visitor);
+      MatcherAssert.assertThat(visitor.getFingerprint(), is(582167083500d));
+      viewTraversal.cleanup();
     });
   }
 
   @Test
   public void traversalIgnoresNonSelectedEntries() {
     withLargeDenseMatrix(view -> {
-      FingerprintingTraversal traversal = new FingerprintingTraversal();
-      ParallelRowTraversal rowTraversal = new ParallelRowTraversal(traversal, view);
+      FingerprintingVisitor visitor = new FingerprintingVisitor();
+      CSRViewTraversal viewTraversal = new CSRViewTraversal(view);
       view.indicesSize = 999;
-      rowTraversal.traverseRows();
-      MatcherAssert.assertThat(traversal.getFingerprint(), is(579840743502d));
-      rowTraversal.cleanup();
+      viewTraversal.traverse(visitor);
+      MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
+      viewTraversal.cleanup();
     });
   }
 
   @Test
   public void traversalAllowsReuse() {
     withLargeDenseMatrix(view -> {
-      FingerprintingTraversal traversal = new FingerprintingTraversal();
-      ParallelRowTraversal rowTraversal = new ParallelRowTraversal(traversal, view);
+      FingerprintingVisitor visitor = new FingerprintingVisitor();
+      CSRViewTraversal viewTraversal = new CSRViewTraversal(view);
       view.indicesSize = 999;
-      rowTraversal.traverseRows();
-      MatcherAssert.assertThat(traversal.getFingerprint(), is(579840743502d));
+      viewTraversal.traverse(visitor);
+      MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
       view.indicesSize = 998;
-      rowTraversal.traverseRows();
-      MatcherAssert.assertThat(traversal.getFingerprint(), is(577521382520d));
-      rowTraversal.cleanup();
+      viewTraversal.traverse(visitor);
+      MatcherAssert.assertThat(visitor.getFingerprint(), is(577521382520d));
+      viewTraversal.cleanup();
     });
   }
 
@@ -61,11 +61,11 @@ public class ParallelRowTraversalTest {
     storage.free();
   }
 
-  class FingerprintingTraversal implements RowTraversal {
+  class FingerprintingVisitor implements EntryVisitor {
 
     private final AtomicDouble fingerprint;
 
-    FingerprintingTraversal() {
+    FingerprintingVisitor() {
       fingerprint = new AtomicDouble();
     }
 

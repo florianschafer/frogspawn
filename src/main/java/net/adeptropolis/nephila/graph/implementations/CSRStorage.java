@@ -32,6 +32,8 @@ public class CSRStorage {
     values.free();
   }
 
+  // TODO: Remove all those getters!
+
   public int getNumRows() {
     return numRows;
   }
@@ -85,7 +87,7 @@ public class CSRStorage {
       this.indicesSize = numRows;
     }
 
-    public void traverseRow(final int rowIdx, final RowTraversal traversal) {
+    public void traverseRow(final int rowIdx, final EntryVisitor visitor) {
 
       if (indicesSize == 0) return;
       int row = indices[rowIdx];
@@ -94,32 +96,32 @@ public class CSRStorage {
       if (low == high) return;
 
       if (indicesSize > high - low)
-        traverseRowByEntries(rowIdx, traversal, low, high);
+        traverseRowByEntries(rowIdx, visitor, low, high);
       else
-        traverseRowByIndices(rowIdx, traversal, low, high);
+        traverseRowByIndices(rowIdx, visitor, low, high);
 
     }
 
-    private void traverseRowByEntries(final int rowIdx, final RowTraversal traversal, final long low, final long high) {
+    private void traverseRowByEntries(final int rowIdx, final EntryVisitor visitor, final long low, final long high) {
       int secPtr = 0;
       int colIdx;
       for (long ptr = low; ptr < high; ptr++) {
         colIdx = InterpolationSearch.search(indices, colIndices.get(ptr), secPtr, indicesSize - 1);
         if (colIdx >= 0) {
-          traversal.visit(rowIdx, colIdx, values.get(ptr));
+          visitor.visit(rowIdx, colIdx, values.get(ptr));
           secPtr = colIdx + 1;
         }
         if (secPtr >= indicesSize) break;
       }
     }
 
-    private void traverseRowByIndices(final int rowIdx, final RowTraversal traversal, final long low, final long high) {
+    private void traverseRowByIndices(final int rowIdx, final EntryVisitor visitor, final long low, final long high) {
       long ptr = low;
       long retrievedIdx;
       for (int colIdx = 0; colIdx < indicesSize; colIdx++) {
         retrievedIdx = InterpolationSearch.search(colIndices, indices[colIdx], ptr, high);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
-          traversal.visit(rowIdx, colIdx, values.get(retrievedIdx));
+          visitor.visit(rowIdx, colIdx, values.get(retrievedIdx));
           ptr = retrievedIdx + 1;
         }
         if (ptr >= high) break;
@@ -130,6 +132,10 @@ public class CSRStorage {
       Arrays.sort(newIndices);
       System.arraycopy(newIndices, 0, indices, 0, newIndices.length);
       indicesSize = newIndices.length;
+    }
+
+    public int maxSize() {
+      return indices.length;
     }
 
   }

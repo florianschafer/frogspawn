@@ -16,35 +16,35 @@ public class CSRStorageTest {
   public void traverseEmptyMatrix() {
     CSRStorage storage = new CSRStorageBuilder().build();
     CSRStorage.View view = storage.view();
-    CollectingRowTraversal traversal = new CollectingRowTraversal();
-    view.traverseRow(0, traversal);
-    assertThat(traversal.entries, empty());
+    CollectingEntryVisitor visitor = new CollectingEntryVisitor();
+    view.traverseRow(0, visitor);
+    assertThat(visitor.entries, empty());
     storage.free();
   }
 
   @Test
   public void traverseEmptyRow() {
-      withDefaultView((view, traversal) -> {
-        view.traverseRow(2, traversal);
-        assertThat(traversal.entries, empty());
+      withDefaultView((view, visitor) -> {
+        view.traverseRow(2, visitor);
+        assertThat(visitor.entries, empty());
       });
   }
 
   @Test
   public void traverseRowWithNoColumnSelected() {
-    withDefaultView((view, traversal) -> {
+    withDefaultView((view, visitor) -> {
       view.set(new int[]{5});
-      view.traverseRow(5, traversal);
-      assertThat(traversal.entries, empty());
+      view.traverseRow(5, visitor);
+      assertThat(visitor.entries, empty());
     });
   }
 
   @Test
   public void traverseRowWithNotAllColIndicesSelected() {
-    withDefaultView((view, traversal) -> {
+    withDefaultView((view, visitor) -> {
       view.set(new int[]{1, 2});
-      view.traverseRow(0, traversal);
-      assertThat(traversal.entries, contains(
+      view.traverseRow(0, visitor);
+      assertThat(visitor.entries, contains(
               Entry.of(0, 0, 2),
               Entry.of(0, 1, 3)));
     });
@@ -52,9 +52,9 @@ public class CSRStorageTest {
 
   @Test
   public void traverseFullRow() {
-    withDefaultView((view, traversal) -> {
-      view.traverseRow(1, traversal);
-      assertThat(traversal.entries, contains(
+    withDefaultView((view, visitor) -> {
+      view.traverseRow(1, visitor);
+      assertThat(visitor.entries, contains(
               Entry.of(1, 1, 2),
               Entry.of(1, 2, 3),
               Entry.of(1, 4, 7)));
@@ -63,9 +63,9 @@ public class CSRStorageTest {
 
   @Test
   public void traverseRowByEntries() {
-    withDefaultView((view, traversal) -> {
-      view.traverseRow(3, traversal);
-      assertThat(traversal.entries, contains(
+    withDefaultView((view, visitor) -> {
+      view.traverseRow(3, visitor);
+      assertThat(visitor.entries, contains(
               Entry.of(3, 1, 5),
               Entry.of(3, 3, 6)));
     });
@@ -73,14 +73,14 @@ public class CSRStorageTest {
 
   @Test
   public void traverseRowByIndices() {
-    withDefaultView((view, traversal) -> {
+    withDefaultView((view, visitor) -> {
       view.set(new int[]{3});
-      view.traverseRow(0, traversal);
-      assertThat(traversal.entries, contains(Entry.of(0, 0, 6)));
+      view.traverseRow(0, visitor);
+      assertThat(visitor.entries, contains(Entry.of(0, 0, 6)));
     });
   }
 
-  private void withDefaultView(BiConsumer<CSRStorage.View, CollectingRowTraversal> viewConsumer) {
+  private void withDefaultView(BiConsumer<CSRStorage.View, CollectingEntryVisitor> viewConsumer) {
     CSRStorage storage = new CSRStorageBuilder()
             .add(1,1, 2)
             .add(1,2, 3)
@@ -92,11 +92,11 @@ public class CSRStorageTest {
             .add(5,7,11)
             .build();
     CSRStorage.View view = storage.view();
-    viewConsumer.accept(view, new CollectingRowTraversal());
+    viewConsumer.accept(view, new CollectingEntryVisitor());
     storage.free();
   }
 
-  private class CollectingRowTraversal implements RowTraversal {
+  private class CollectingEntryVisitor implements EntryVisitor {
 
     private final List<Entry> entries = Lists.newArrayList();
 
