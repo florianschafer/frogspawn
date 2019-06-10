@@ -34,7 +34,7 @@ public class RowWeightsTest {
             .add(1, 2, 5)
             .add(1, 3, 7)
             .build();
-    CSRStorage.View view = storage.view();
+    CSRStorage.View view = storage.defaultView();
     RowWeights rowWeights = new RowWeights(view);
 
 

@@ -14,6 +14,7 @@ public class CSRStorage {
   private final long[] rowPtrs;
   private final Ints colIndices;
   private final Doubles values;
+  private final View defaultView;
 
   CSRStorage(int numRows, long nnz, long[] rowPtrs, Ints colIndices, Doubles values) {
     this.numRows = numRows;
@@ -21,13 +22,15 @@ public class CSRStorage {
     this.rowPtrs = rowPtrs;
     this.colIndices = colIndices;
     this.values = values;
+    this.defaultView = new View();
   }
 
-  public View view() {
-    return new View();
+  public View defaultView() {
+    return defaultView;
   }
 
   public void free() {
+    defaultView.cleanup();
     colIndices.free();
     values.free();
   }
@@ -79,12 +82,18 @@ public class CSRStorage {
 
     public final int[] indices;
     public int indicesSize;
+    public final CSRViewTraversal traversal;
 
     View() {
-      // Init with default (full) view
+      // Init with default (full) defaultView
       this.indices = new int[numRows];
       for (int i = 0; i < numRows; i++) this.indices[i] = i;
       this.indicesSize = numRows;
+      this.traversal = new CSRViewTraversal(this);
+    }
+
+    public void traverse(final EntryVisitor visitor) {
+      traversal.traverse(visitor);
     }
 
     public void traverseRow(final int rowIdx, final EntryVisitor visitor) {
@@ -136,6 +145,10 @@ public class CSRStorage {
 
     public int maxSize() {
       return indices.length;
+    }
+
+    public void cleanup() {
+      traversal.cleanup();
     }
 
   }

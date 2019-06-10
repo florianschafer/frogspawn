@@ -14,10 +14,8 @@ public class CSRViewTraversalTest {
   public void traversalVisitsAllEntries() {
     withLargeDenseMatrix(view -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      CSRViewTraversal viewTraversal = new CSRViewTraversal(view);
-      viewTraversal.traverse(visitor);
+      view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(582167083500d));
-      viewTraversal.cleanup();
     });
   }
 
@@ -25,11 +23,9 @@ public class CSRViewTraversalTest {
   public void traversalIgnoresNonSelectedEntries() {
     withLargeDenseMatrix(view -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      CSRViewTraversal viewTraversal = new CSRViewTraversal(view);
       view.indicesSize = 999;
-      viewTraversal.traverse(visitor);
+      view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
-      viewTraversal.cleanup();
     });
   }
 
@@ -37,14 +33,12 @@ public class CSRViewTraversalTest {
   public void traversalAllowsReuse() {
     withLargeDenseMatrix(view -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      CSRViewTraversal viewTraversal = new CSRViewTraversal(view);
       view.indicesSize = 999;
-      viewTraversal.traverse(visitor);
+      view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
       view.indicesSize = 998;
-      viewTraversal.traverse(visitor);
+      view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(577521382520d));
-      viewTraversal.cleanup();
     });
   }
 
@@ -57,7 +51,7 @@ public class CSRViewTraversalTest {
       }
     }
     CSRStorage storage = builder.build();
-    viewConsumer.accept(storage.view());
+    viewConsumer.accept(storage.defaultView());
     storage.free();
   }
 

@@ -15,7 +15,7 @@ public class CSRStorageTest {
   @Test
   public void traverseEmptyMatrix() {
     CSRStorage storage = new CSRStorageBuilder().build();
-    CSRStorage.View view = storage.view();
+    CSRStorage.View view = storage.defaultView();
     CollectingEntryVisitor visitor = new CollectingEntryVisitor();
     view.traverseRow(0, visitor);
     assertThat(visitor.entries, empty());
@@ -91,7 +91,7 @@ public class CSRStorageTest {
             .add(5,6,9)
             .add(5,7,11)
             .build();
-    CSRStorage.View view = storage.view();
+    CSRStorage.View view = storage.defaultView();
     viewConsumer.accept(view, new CollectingEntryVisitor());
     storage.free();
   }
