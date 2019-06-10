@@ -105,6 +105,11 @@ public class CSRStorageTest {
       entries.add(Entry.of(rowIdx, colIdx, value));
     }
 
+    @Override
+    public void reset() {
+      entries.clear();
+    }
+
   }
 
   private static class Entry {
