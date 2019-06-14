@@ -21,7 +21,6 @@ public class RowWeightsTest {
     });
   }
 
-
   @Test
   public void maskedColumsDoNotContribute() {
     withDefaultMatrix(view -> {

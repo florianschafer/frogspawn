@@ -97,7 +97,6 @@ public class CSRStorage {
     }
 
     public void traverseRow(final int rowIdx, final EntryVisitor visitor) {
-
       if (indicesSize == 0) return;
       int row = indices[rowIdx];
       long low = rowPtrs[row];
@@ -128,7 +127,7 @@ public class CSRStorage {
       long ptr = low;
       long retrievedIdx;
       for (int colIdx = 0; colIdx < indicesSize; colIdx++) {
-        retrievedIdx = InterpolationSearch.search(colIndices, indices[colIdx], ptr, high);
+        retrievedIdx = InterpolationSearch.search(colIndices, indices[colIdx], ptr, high - 1);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
           visitor.visit(rowIdx, colIdx, values.get(retrievedIdx));
           ptr = retrievedIdx + 1;

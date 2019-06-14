@@ -139,6 +139,9 @@ public class CSRStorageBuilder {
     return rowPtrs;
   }
 
+  public void addSymmetric(int i, int i1) {
+  }
+
 
   private class SortHelper implements LongSwapper, LongComparator {
 
