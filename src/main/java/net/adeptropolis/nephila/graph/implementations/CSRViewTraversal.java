@@ -19,14 +19,14 @@ public class CSRViewTraversal {
   private final CSRStorage.View view;
   private final AtomicInteger workPtr;
 
-  public CSRViewTraversal(CSRStorage.View view) {
+  CSRViewTraversal(CSRStorage.View view) {
     this.view = view;
     this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
     this.futures =  new Future[THREAD_POOL_SIZE];
     this.workPtr = new AtomicInteger();
   }
 
-  protected synchronized void traverse(final EntryVisitor visitor) {
+  synchronized void traverse(final EntryVisitor visitor) {
     visitor.reset();
     workPtr.set(0);
     for (int i = 0; i < THREAD_POOL_SIZE; i++) futures[i] = executorService.submit(() -> fetchAndProcess(visitor));
@@ -48,7 +48,7 @@ public class CSRViewTraversal {
     }
   }
 
-  public void cleanup() {
+  void cleanup() {
     executorService.shutdown();
   }
 

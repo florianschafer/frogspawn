@@ -26,16 +26,16 @@ public class SpectrallyShiftedNormalizedLaplacian {
     return this;
   }
 
-  // !!!! ATTENTION! ||v|| is expected to have length 1 !!!!
-  // !!!! ATTENTION! Modified v in place !!!!
-  public synchronized void multiply(double[] v) {
-    for (int i = 0; i < view.indicesSize; i++) multArgument[i] = -invDegSqrts[i] * v[i];
+  // !!!! ATTENTION! ||x|| is expected to have length 1 !!!!
+  // !!!! ATTENTION! Modifies v in place !!!!
+  // !!!! ATTENTION! Matrix diagonals are expected to be 0 !!!!
+  public synchronized void multiply(double[] x) {
+    for (int i = 0; i < view.indicesSize; i++) multArgument[i] = -invDegSqrts[i] * x[i];
     double[] multResult = csrVectorProduct.multiply(multArgument);
     double mu = 0;
-    for (int i = 0; i < view.indicesSize; i++) {
-      mu += 2 * v0[i] * v[i];
-      v[i] = invDegSqrts[i] * multResult[i] + mu * v0[i] - v[i];
-    }
+    for (int i = 0; i < view.indicesSize; i++) mu += v0[i] * x[i];
+    for (int i = 0; i < view.indicesSize; i++) x[i] = invDegSqrts[i] * multResult[i] + mu * v0[i] - x[i];
+//    for (int i = 0; i < view.indicesSize; i++) x[i] = invDegSqrts[i] * multResult[i] + 2 * ( mu * v0[i]);// - x[i];
   }
 
   // Normalize vector <x> into <multResult>
