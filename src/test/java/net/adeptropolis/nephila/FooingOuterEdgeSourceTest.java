@@ -1,6 +1,7 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graph.LabeledEdge;
+import net.adeptropolis.nephila.graph.implementations.BipartiteSSNLSolver;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
 import net.adeptropolis.nephila.graph.implementations.old.NormalizedLaplacianCSRSubmatrix;
@@ -49,19 +50,19 @@ public class FooingOuterEdgeSourceTest {
   public void eigenstuff() {
 
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
     int[] indices = new int[storage.getNumRows()];
     for (int i = 0; i < storage.getNumRows(); i++) indices[i] = i;
-    ;
-
-    NormalizedLaplacianCSRSubmatrix mat = new NormalizedLaplacianCSRSubmatrix(storage, indices);
+    CSRStorage.View view = storage.defaultView();
+    BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
     long start = System.nanoTime();
-    byte[] v2Sigs = mat.bipartiteLambda2EigenvectorSignums(1E-6, 100);
+//    double[] v2 = solver.approxV2(1E-6);
+    double[] v2 = solver.approxV2Signatures(1E-6, 100);
     long runTimeMs = (System.nanoTime() - start) / 1000000000L;
     System.out.println("Runtime: " + runTimeMs + "s");
 

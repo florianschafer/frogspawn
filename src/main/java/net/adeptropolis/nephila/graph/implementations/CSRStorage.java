@@ -115,6 +115,7 @@ public class CSRStorage {
       int colIdx;
       for (long ptr = low; ptr < high; ptr++) {
         colIdx = InterpolationSearch.search(indices, colIndices.get(ptr), secPtr, indicesSize - 1);
+//        System.out.printf("%d %d %d -- %d\n", colIndices.get(ptr), secPtr, indicesSize - 1, colIdx);
         if (colIdx >= 0) {
           visitor.visit(rowIdx, colIdx, values.get(ptr));
           secPtr = colIdx + 1;
