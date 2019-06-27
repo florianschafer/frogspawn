@@ -5,8 +5,8 @@ import java.util.Arrays;
 public class CSRVectorProduct implements EntryVisitor {
 
   private final CSRStorage.View view;
-  private double[] argument;
   private final double[] result;
+  private double[] argument;
 
   public CSRVectorProduct(CSRStorage.View view) {
     this.view = view;

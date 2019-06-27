@@ -2,10 +2,10 @@ package net.adeptropolis.nephila.graph.implementations;
 
 
 /*
-* Spectrally shifting solver for the normalized Laplacian eigenvalue problem
-* ATTENTION: The Laplacian is supposed to be that of a BIPARTITE GRAPH!
-*
-* */
+ * Spectrally shifting solver for the normalized Laplacian eigenvalue problem
+ * ATTENTION: The Laplacian is supposed to be that of a BIPARTITE GRAPH!
+ *
+ * */
 
 import java.util.function.Function;
 
@@ -34,18 +34,6 @@ public class BipartiteSSNLSolver {
     });
   }
 
-  public double[] approxV2Signatures(double maxAlternations, int minIterations) {
-    return powerIteration((iterations) -> {
-      long signumDist = 0;
-      for (int i = 0; i < view.indicesSize; i++) {
-        byte prevSig = (byte) Math.signum(prevY[i]);
-        byte sig = (byte) Math.signum(x[i]);
-        signumDist += sig == prevSig ? 0 : 1;
-      }
-      return iterations >= minIterations && signumDist / (double) view.indicesSize <= maxAlternations;
-    });
-  }
-
   // TODO: Find better initial vector, must be ||.|| == 1
   private synchronized double[] powerIteration(Function<Integer, Boolean> terminator) {
     double initialEntry = 1.0 / Math.sqrt(view.indicesSize);
@@ -60,10 +48,6 @@ public class BipartiteSSNLSolver {
     }
     System.out.printf("Solver finished after %d iterations\n", iterations);
     return x;
-  }
-
-  public void update() {
-    normalizedLaplacian.update();
   }
 
   // !!!! ATTENTION! ||x|| is expected to have length 1 !!!!
@@ -83,6 +67,22 @@ public class BipartiteSSNLSolver {
     for (int i = 0; i < size; i++) sum += vec[i] * vec[i];
     double norm = Math.sqrt(sum);
     for (int i = 0; i < size; i++) result[i] = sig * vec[i] / norm;
+  }
+
+  public double[] approxV2Signatures(double maxAlternations, int minIterations) {
+    return powerIteration((iterations) -> {
+      long signumDist = 0;
+      for (int i = 0; i < view.indicesSize; i++) {
+        byte prevSig = (byte) Math.signum(prevY[i]);
+        byte sig = (byte) Math.signum(x[i]);
+        signumDist += sig == prevSig ? 0 : 1;
+      }
+      return iterations >= minIterations && signumDist / (double) view.indicesSize <= maxAlternations;
+    });
+  }
+
+  public void update() {
+    normalizedLaplacian.update();
   }
 
 }

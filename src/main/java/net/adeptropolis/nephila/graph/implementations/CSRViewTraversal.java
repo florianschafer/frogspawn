@@ -22,7 +22,7 @@ public class CSRViewTraversal {
   CSRViewTraversal(CSRStorage.View view) {
     this.view = view;
     this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-    this.futures =  new Future[THREAD_POOL_SIZE];
+    this.futures = new Future[THREAD_POOL_SIZE];
     this.workPtr = new AtomicInteger();
   }
 

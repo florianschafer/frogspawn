@@ -77,12 +77,12 @@ public class CSRStorage {
   public class View {
 
     /*
-    *  A View on an index subset of the given matrix
-    */
+     *  A View on an index subset of the given matrix
+     */
 
     final int[] indices;
-    public int indicesSize;
     final CSRViewTraversal traversal;
+    public int indicesSize;
 
     View() {
       // Init with default (full) defaultView
