@@ -24,7 +24,7 @@ public class CSRStorageBuilder {
     this(DEFAULT_SIZE_INCREMENT, DEFAULT_SIZE_INCREMENT);
   }
 
-  CSRStorageBuilder(long initialReservedSize, long sizeIncrement) {
+  private CSRStorageBuilder(long initialReservedSize, long sizeIncrement) {
     Preconditions.checkArgument(initialReservedSize > 0, "Inital reserved size must be > 0");
     this.reservedSize = initialReservedSize;
     this.sizeIncrement = sizeIncrement;
@@ -138,10 +138,6 @@ public class CSRStorageBuilder {
 
     return rowPtrs;
   }
-
-  public void addSymmetric(int i, int i1) {
-  }
-
 
   private class SortHelper implements LongSwapper, LongComparator {
 

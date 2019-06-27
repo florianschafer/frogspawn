@@ -7,10 +7,7 @@ package net.adeptropolis.nephila.graph.implementations;
 *
 * */
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class BipartiteSSNLSolver {
 
@@ -60,7 +57,6 @@ public class BipartiteSSNLSolver {
       iterations++;
       if (terminator.apply(iterations)) break;
       System.arraycopy(x, 0, prevY, 0, view.indicesSize);
-      if (iterations % 100 == 0) System.out.printf("%d iterations\n", iterations);
     }
     System.out.printf("Solver finished after %d iterations\n", iterations);
     return x;
@@ -81,12 +77,12 @@ public class BipartiteSSNLSolver {
 
   // Normalize vector <x> into <multResult>
   // Also normalizes the signum of <x>, s.t. the first entry is always positive
-  private void normVec(double[] x, double[] result, int size) {
-    double sig = Math.signum(x[0]);
+  private void normVec(double[] vec, double[] result, int size) {
+    double sig = Math.signum(vec[0]);
     double sum = 0;
-    for (int i = 0; i < size; i++) sum += x[i] * x[i];
+    for (int i = 0; i < size; i++) sum += vec[i] * vec[i];
     double norm = Math.sqrt(sum);
-    for (int i = 0; i < size; i++) result[i] = sig * x[i] / norm;
+    for (int i = 0; i < size; i++) result[i] = sig * vec[i] / norm;
   }
 
 }

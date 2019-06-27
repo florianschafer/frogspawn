@@ -45,15 +45,15 @@ public class CSRStorage {
     return nnz;
   }
 
-  public long[] getRowPtrs() {
+  long[] getRowPtrs() {
     return rowPtrs;
   }
 
-  public Ints getColIndices() {
+  Ints getColIndices() {
     return colIndices;
   }
 
-  public Doubles getValues() {
+  Doubles getValues() {
     return values;
   }
 
@@ -80,9 +80,9 @@ public class CSRStorage {
     *  A View on an index subset of the given matrix
     */
 
-    public final int[] indices;
+    final int[] indices;
     public int indicesSize;
-    public final CSRViewTraversal traversal;
+    final CSRViewTraversal traversal;
 
     View() {
       // Init with default (full) defaultView
@@ -115,7 +115,6 @@ public class CSRStorage {
       int colIdx;
       for (long ptr = low; ptr < high; ptr++) {
         colIdx = InterpolationSearch.search(indices, colIndices.get(ptr), secPtr, indicesSize - 1);
-//        System.out.printf("%d %d %d -- %d\n", colIndices.get(ptr), secPtr, indicesSize - 1, colIdx);
         if (colIdx >= 0) {
           visitor.visit(rowIdx, colIdx, values.get(ptr));
           secPtr = colIdx + 1;
@@ -143,11 +142,11 @@ public class CSRStorage {
       indicesSize = newIndices.length;
     }
 
-    public int maxSize() {
+    int maxSize() {
       return indices.length;
     }
 
-    public void cleanup() {
+    void cleanup() {
       traversal.cleanup();
     }
 

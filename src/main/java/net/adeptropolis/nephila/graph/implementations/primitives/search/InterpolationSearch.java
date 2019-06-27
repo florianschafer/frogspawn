@@ -49,7 +49,7 @@ public class InterpolationSearch {
     int midVal;
 
     while ((highVal != lowVal) && (key >= lowVal) && (key <= highVal)) {
-      mid = low + ((key - lowVal) * (high - low) / (highVal - lowVal));
+      mid = (int)(low + (((key - lowVal) * (long)(high - low)) / (highVal - lowVal)));
       midVal = array[mid];
       if (key > midVal) {
         low = mid + 1;
