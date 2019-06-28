@@ -9,12 +9,8 @@ public class RowWeights implements EntryVisitor {
 
   public RowWeights(CSRStorage.View view) {
     this.view = view;
-    this.weights = new double[view.maxSize()];
-  }
-
-  public RowWeights update() {
+    this.weights = new double[view.size()];
     view.traverse(this);
-    return this;
   }
 
   public double[] get() {
@@ -28,7 +24,7 @@ public class RowWeights implements EntryVisitor {
 
   @Override
   public void reset() {
-    Arrays.fill(weights, 0, view.indicesSize, 0);
+    Arrays.fill(weights, 0, view.size(), 0);
   }
 
 }

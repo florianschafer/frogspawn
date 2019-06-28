@@ -19,14 +19,14 @@ public class BipartiteSSNLSolver {
   public BipartiteSSNLSolver(CSRStorage.View view) {
     this.view = view;
     this.normalizedLaplacian = new NormalizedLaplacian(view);
-    this.x = new double[view.maxSize()];
-    this.prevY = new double[view.maxSize()];
+    this.x = new double[view.size()];
+    this.prevY = new double[view.size()];
   }
 
   public double[] approxV2(double precision) {
     return powerIteration((iterations) -> {
       double maxDist = 0;
-      for (int i = 0; i < view.indicesSize; i++) {
+      for (int i = 0; i < view.size(); i++) {
         double d = Math.abs(prevY[i] - x[i]);
         if (d > maxDist) maxDist = d;
       }
@@ -36,15 +36,15 @@ public class BipartiteSSNLSolver {
 
   // TODO: Find better initial vector, must be ||.|| == 1
   private synchronized double[] powerIteration(Function<Integer, Boolean> terminator) {
-    double initialEntry = 1.0 / Math.sqrt(view.indicesSize);
-    for (int i = 0; i < view.indicesSize; i++) x[i] = prevY[i] = initialEntry;
+    double initialEntry = 1.0 / Math.sqrt(view.size());
+    for (int i = 0; i < view.size(); i++) x[i] = prevY[i] = initialEntry;
     int iterations = 0;
     while (true) {
       double[] y = multiply(x);
-      normVec(y, x, view.indicesSize);
+      normVec(y, x, view.size());
       iterations++;
       if (terminator.apply(iterations)) break;
-      System.arraycopy(x, 0, prevY, 0, view.indicesSize);
+      System.arraycopy(x, 0, prevY, 0, view.size());
     }
     System.out.printf("Solver finished after %d iterations\n", iterations);
     return x;
@@ -53,9 +53,9 @@ public class BipartiteSSNLSolver {
   // !!!! ATTENTION! ||x|| is expected to have length 1 !!!!
   synchronized double[] multiply(double[] x) {
     double mu = 0;
-    for (int i = 0; i < view.indicesSize; i++) mu += normalizedLaplacian.getV0()[i] * x[i];
+    for (int i = 0; i < view.size(); i++) mu += normalizedLaplacian.getV0()[i] * x[i];
     double[] y = normalizedLaplacian.multiply(x);
-    for (int i = 0; i < view.indicesSize; i++) y[i] += 2 * (mu * normalizedLaplacian.getV0()[i] - x[i]);
+    for (int i = 0; i < view.size(); i++) y[i] += 2 * (mu * normalizedLaplacian.getV0()[i] - x[i]);
     return y;
   }
 
@@ -72,17 +72,13 @@ public class BipartiteSSNLSolver {
   public double[] approxV2Signatures(double maxAlternations, int minIterations) {
     return powerIteration((iterations) -> {
       long signumDist = 0;
-      for (int i = 0; i < view.indicesSize; i++) {
+      for (int i = 0; i < view.size(); i++) {
         byte prevSig = (byte) Math.signum(prevY[i]);
         byte sig = (byte) Math.signum(x[i]);
         signumDist += sig == prevSig ? 0 : 1;
       }
-      return iterations >= minIterations && signumDist / (double) view.indicesSize <= maxAlternations;
+      return iterations >= minIterations && signumDist / (double) view.size() <= maxAlternations;
     });
-  }
-
-  public void update() {
-    normalizedLaplacian.update();
   }
 
 }

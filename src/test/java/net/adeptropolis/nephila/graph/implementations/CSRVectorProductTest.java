@@ -11,8 +11,8 @@ public class CSRVectorProductTest {
 
   @Test
   public void simpleMultiplication() {
-    withDefaultView(view -> {
-      double[] res = new CSRVectorProduct(view).multiply(new double[]{17, 19, 23});
+    withStorage(mat -> {
+      double[] res = new CSRVectorProduct(mat.defaultView()).multiply(new double[]{17, 19, 23});
       assertThat(res[0], is(206.0));
       assertThat(res[1], is(437.0));
       assertThat(res[2], is(593.0));
@@ -21,8 +21,8 @@ public class CSRVectorProductTest {
 
   @Test
   public void subsetMultiplication() {
-    withDefaultView(view -> {
-      view.set(new int[]{0,2});
+    withStorage(mat -> {
+      CSRStorage.View view = mat.view(new int[]{0, 2});
       double[] res = new CSRVectorProduct(view).multiply(new double[]{29, 31});
       assertThat(res[0], is(213.0));
       assertThat(res[1], is(548.0));
@@ -30,7 +30,7 @@ public class CSRVectorProductTest {
   }
 
 
-  private void withDefaultView(Consumer<CSRStorage.View> viewConsumer) {
+  private void withStorage(Consumer<CSRStorage> storageConsumer) {
     CSRStorage storage = new CSRStorageBuilder()
             .addSymmetric(0, 0, 2)
             .addSymmetric(0, 1, 3)
@@ -39,7 +39,7 @@ public class CSRVectorProductTest {
             .addSymmetric(1, 2, 11)
             .addSymmetric(2, 2, 13)
             .build();
-    viewConsumer.accept(storage.defaultView());
+    storageConsumer.accept(storage);
     storage.free();
   }
 

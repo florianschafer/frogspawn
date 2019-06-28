@@ -13,18 +13,18 @@ public class ConnectedComponents {
   private final IntLinkedOpenHashSet ccQueue;
   private final IntOpenHashSet currentCC;
 
-  public ConnectedComponents(CSRStorage storage) {
-    this.view = storage.defaultView();
+  public ConnectedComponents(CSRStorage.View view) {
+    this.view = view;
     this.visitor = new CCVisitor();
     this.globalQueue = new IntLinkedOpenHashSet();
     this.ccQueue = new IntLinkedOpenHashSet();
     this.currentCC = new IntOpenHashSet();
   }
 
-  public void foo() {
+  public synchronized void foo() {
 
     globalQueue.clear();
-    for (int i = 0; i < view.indicesSize; i++) globalQueue.add(i);
+    for (int i = 0; i < view.size(); i++) globalQueue.add(i);
 
     while (!globalQueue.isEmpty()) {
       visitor.reset();

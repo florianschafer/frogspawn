@@ -8,22 +8,22 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.is;
 
-public class CSRViewTraversalTest {
+public class CSRTraversalTest {
 
   @Test
   public void traversalVisitsAllEntries() {
-    withLargeDenseMatrix(view -> {
+    withLargeDenseMatrix(mat -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      view.traverse(visitor);
+      mat.defaultView().traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(582167083500d));
     });
   }
 
   @Test
   public void traversalIgnoresNonSelectedEntries() {
-    withLargeDenseMatrix(view -> {
+    withLargeDenseMatrix(mat -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      view.indicesSize = 999;
+      CSRStorage.View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
     });
@@ -31,19 +31,24 @@ public class CSRViewTraversalTest {
 
   @Test
   public void traversalAllowsReuse() {
-    withLargeDenseMatrix(view -> {
+    withLargeDenseMatrix(mat -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      view.indicesSize = 999;
+      CSRStorage.View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
-      view.indicesSize = 998;
+      view = mat.view(indicesWithSize(998));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(577521382520d));
     });
   }
 
+  private int[] indicesWithSize(int size) {
+    int[] indices = new int[size];
+    for (int i = 0; i < size; i++) indices[i] = i;
+    return indices;
+  }
 
-  private void withLargeDenseMatrix(Consumer<CSRStorage.View> viewConsumer) {
+  private void withLargeDenseMatrix(Consumer<CSRStorage> storageConsumer) {
     CSRStorageBuilder builder = new CSRStorageBuilder();
     for (int i = 0; i < 1000; i++) {
       for (int j = i + 1; j < 1000; j++) {
@@ -51,7 +56,7 @@ public class CSRViewTraversalTest {
       }
     }
     CSRStorage storage = builder.build();
-    viewConsumer.accept(storage.defaultView());
+    storageConsumer.accept(storage);
     storage.free();
   }
 

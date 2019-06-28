@@ -58,7 +58,6 @@ public class FooingOuterEdgeSourceTest {
 
     CSRStorage.View view = storage.defaultView();
     BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
-    solver.update();
     long start = System.nanoTime();
 //    double[] v2 = solver.approxV2(1E-6);
     double[] v2 = solver.approxV2Signatures(1E-6, 100);

@@ -11,8 +11,8 @@ public class RowWeightsTest {
 
   @Test
   public void defaultWeights() {
-    withDefaultMatrix(view -> {
-      RowWeights rowWeights = new RowWeights(view).update();
+    withDefaultMatrix(mat -> {
+      RowWeights rowWeights = new RowWeights(mat.defaultView());
       double[] weights = rowWeights.get();
       assertThat(weights[0], is(5.0));
       assertThat(weights[1], is(14.0));
@@ -23,9 +23,9 @@ public class RowWeightsTest {
 
   @Test
   public void maskedColumsDoNotContribute() {
-    withDefaultMatrix(view -> {
-      view.set(new int[]{0, 2, 3});
-      RowWeights rowWeights = new RowWeights(view).update();
+    withDefaultMatrix(mat -> {
+      CSRStorage.View view = mat.view(new int[]{0, 2, 3});
+      RowWeights rowWeights = new RowWeights(view);
       double[] weights = rowWeights.get();
       assertThat(weights[0], is(3.0));
       assertThat(weights[1], is(3.0));
@@ -33,14 +33,14 @@ public class RowWeightsTest {
     });
   }
 
-  private void withDefaultMatrix(Consumer<CSRStorage.View> viewConsumer) {
+  private void withDefaultMatrix(Consumer<CSRStorage> storageConsumer) {
     CSRStorage storage = new CSRStorageBuilder()
             .addSymmetric(0, 1, 2)
             .addSymmetric(0, 2, 3)
             .addSymmetric(1, 2, 5)
             .addSymmetric(1, 3, 7)
             .build();
-    viewConsumer.accept(storage.defaultView());
+    storageConsumer.accept(storage);
     storage.free();
   }
 

@@ -30,17 +30,16 @@ public class NormalizedLaplacianTest {
 
     CSRStorage.View view = storage.defaultView();
     NormalizedLaplacian laplacian = new NormalizedLaplacian(view);
-    laplacian.update();
     double invSqrt8 = -1.0 / Math.sqrt(8);
     double quarter = -1.0 / 4;
     double half = -1.0 / 2;
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 0, 1, invSqrt8, 0, 0, invSqrt8, 0);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 1, invSqrt8, 1, invSqrt8, invSqrt8, quarter, 0);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 2, 0, invSqrt8, 1, 0, 0, half);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 3, 0, invSqrt8, 0, 1, invSqrt8, 0);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 4, invSqrt8, quarter, 0, invSqrt8, 1, invSqrt8);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 5, 0, 0, half, 0, invSqrt8, 1);
-    verifyV0(laplacian, view.indicesSize, 3.5355e-01, 5.0000e-01, 3.5355e-01, 3.5355e-01, 5.0000e-01 , 3.5355e-01);
+    verifyNormLaplacianCol(laplacian, view.size(), 0, 1, invSqrt8, 0, 0, invSqrt8, 0);
+    verifyNormLaplacianCol(laplacian, view.size(), 1, invSqrt8, 1, invSqrt8, invSqrt8, quarter, 0);
+    verifyNormLaplacianCol(laplacian, view.size(), 2, 0, invSqrt8, 1, 0, 0, half);
+    verifyNormLaplacianCol(laplacian, view.size(), 3, 0, invSqrt8, 0, 1, invSqrt8, 0);
+    verifyNormLaplacianCol(laplacian, view.size(), 4, invSqrt8, quarter, 0, invSqrt8, 1, invSqrt8);
+    verifyNormLaplacianCol(laplacian, view.size(), 5, 0, 0, half, 0, invSqrt8, 1);
+    verifyV0(laplacian, view.size(), 3.5355e-01, 5.0000e-01, 3.5355e-01, 3.5355e-01, 5.0000e-01 , 3.5355e-01);
     storage.free();
   }
 
@@ -59,20 +58,18 @@ public class NormalizedLaplacianTest {
             .addSymmetric(4, 5, 1)
             .build();
 
-    CSRStorage.View view = storage.defaultView();
-    view.set(new int[]{0, 2, 3, 4, 5});
+    CSRStorage.View view = storage.view(new int[]{0, 2, 3, 4, 5});
     NormalizedLaplacian laplacian = new NormalizedLaplacian(view);
-    laplacian.update();
     double inv2Sqrt8 = -2.0 / Math.sqrt(8);
     double inv1Sqrt8 = -1.0 / Math.sqrt(8);
     double inv1Sqrt2 = -1.0 / Math.sqrt(2);
     double inv1Sqrt4 = -1.0 / Math.sqrt(4);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 0, 1, 0, 0, inv2Sqrt8, 0);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 1, 0, 1, 0, 0, inv1Sqrt2);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 2, 0, 0, 1, inv1Sqrt4, 0);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 3, inv2Sqrt8, 0, inv1Sqrt4, 1, inv1Sqrt8);
-    verifyNormLaplacianCol(laplacian, view.indicesSize, 4, 0, inv1Sqrt2, 0, inv1Sqrt8, 1);
-    verifyV0(laplacian, view.indicesSize, 0.44721, 0.31623, 0.31623, 0.63246, 0.44721);
+    verifyNormLaplacianCol(laplacian, view.size(), 0, 1, 0, 0, inv2Sqrt8, 0);
+    verifyNormLaplacianCol(laplacian, view.size(), 1, 0, 1, 0, 0, inv1Sqrt2);
+    verifyNormLaplacianCol(laplacian, view.size(), 2, 0, 0, 1, inv1Sqrt4, 0);
+    verifyNormLaplacianCol(laplacian, view.size(), 3, inv2Sqrt8, 0, inv1Sqrt4, 1, inv1Sqrt8);
+    verifyNormLaplacianCol(laplacian, view.size(), 4, 0, inv1Sqrt2, 0, inv1Sqrt8, 1);
+    verifyV0(laplacian, view.size(), 0.44721, 0.31623, 0.31623, 0.63246, 0.44721);
     storage.free();
   }
 

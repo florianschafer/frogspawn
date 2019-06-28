@@ -20,7 +20,6 @@ public class BipartiteSSNLSolverTest {
   public void spectrallyShiftedProduct() {
     withBipartiteAdjacencyMatrix(view -> {
       BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
-      solver.update();
       double[] v = {43, 47, 53, 59, 61, 67};
       double[] y = solver.multiply(v);
       assertThat(y[0], closeTo(-17.3263, 1E-4));
@@ -36,7 +35,6 @@ public class BipartiteSSNLSolverTest {
   public void v2() {
     withBipartiteAdjacencyMatrix(view -> {
       BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
-      solver.update();
       double[] v2 = solver.approxV2(1E-9);
       assertThat(v2[0], closeTo(0.470144, 1E-6));
       assertThat(v2[1], closeTo(0.316409, 1E-6));
@@ -51,7 +49,6 @@ public class BipartiteSSNLSolverTest {
   public void v2Signums() {
     withBipartiteAdjacencyMatrix(view -> {
       BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
-      solver.update();
       double[] v2 = solver.approxV2Signatures(1E-6, 100);
       int[] signatures = Arrays.stream(v2).mapToInt(x -> (int) Math.signum(x)).toArray();
       assertThat(signatures[0], is(1));

@@ -4,9 +4,9 @@ import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
 import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
 import net.adeptropolis.nephila.graph.implementations.primitives.search.InterpolationSearch;
 
-import java.util.Arrays;
-
 public class CSRStorage {
+
+  private final CSRTraversal traversal = new CSRTraversal();
 
   private final int numRows;
   private final long nnz;
@@ -14,7 +14,6 @@ public class CSRStorage {
   private final long[] rowPtrs;
   private final Ints colIndices;
   private final Doubles values;
-  private final View defaultView;
 
   CSRStorage(int numRows, long nnz, long[] rowPtrs, Ints colIndices, Doubles values) {
     this.numRows = numRows;
@@ -22,17 +21,22 @@ public class CSRStorage {
     this.rowPtrs = rowPtrs;
     this.colIndices = colIndices;
     this.values = values;
-    this.defaultView = new View();
+  }
+
+  public View view(int[] indices) {
+    return new View(indices);
   }
 
   public View defaultView() {
-    return defaultView;
+    int[] indices = new int[numRows];
+    for (int i = 0; i < numRows; i++) indices[i] = i;
+    return view(indices);
   }
 
   public void free() {
-    defaultView.cleanup();
     colIndices.free();
     values.free();
+    traversal.cleanup();
   }
 
   // TODO: Remove all those getters!
@@ -81,29 +85,31 @@ public class CSRStorage {
      */
 
     final int[] indices;
-    final CSRViewTraversal traversal;
-    public int indicesSize;
 
-    View() {
-      // Init with default (full) defaultView
-      this.indices = new int[numRows];
-      for (int i = 0; i < numRows; i++) this.indices[i] = i;
-      this.indicesSize = numRows;
-      this.traversal = new CSRViewTraversal(this);
+    View(int[] indices) {
+      this.indices = indices;
+    }
+
+    public View subview(int[] subviewIndices) {
+      return new View(subviewIndices);
+    }
+
+    public int size() {
+      return indices.length;
     }
 
     public void traverse(final EntryVisitor visitor) {
-      traversal.traverse(visitor);
+      traversal.traverse(visitor, this);
     }
 
     public void traverseRow(final int rowIdx, final EntryVisitor visitor) {
-      if (indicesSize == 0) return;
+      if (indices.length == 0) return;
       int row = indices[rowIdx];
       long low = rowPtrs[row];
       long high = rowPtrs[row + 1];
       if (low == high) return;
 
-      if (indicesSize > high - low)
+      if (indices.length > high - low)
         traverseRowByEntries(rowIdx, visitor, low, high);
       else
         traverseRowByIndices(rowIdx, visitor, low, high);
@@ -114,19 +120,19 @@ public class CSRStorage {
       int secPtr = 0;
       int colIdx;
       for (long ptr = low; ptr < high; ptr++) {
-        colIdx = InterpolationSearch.search(indices, colIndices.get(ptr), secPtr, indicesSize - 1);
+        colIdx = InterpolationSearch.search(indices, colIndices.get(ptr), secPtr, indices.length - 1);
         if (colIdx >= 0) {
           visitor.visit(rowIdx, colIdx, values.get(ptr));
           secPtr = colIdx + 1;
         }
-        if (secPtr >= indicesSize) break;
+        if (secPtr >= indices.length) break;
       }
     }
 
     private void traverseRowByIndices(final int rowIdx, final EntryVisitor visitor, final long low, final long high) {
       long ptr = low;
       long retrievedIdx;
-      for (int colIdx = 0; colIdx < indicesSize; colIdx++) {
+      for (int colIdx = 0; colIdx < indices.length; colIdx++) {
         retrievedIdx = InterpolationSearch.search(colIndices, indices[colIdx], ptr, high - 1);
         if (retrievedIdx >= 0 && retrievedIdx < high) {
           visitor.visit(rowIdx, colIdx, values.get(retrievedIdx));
@@ -134,20 +140,6 @@ public class CSRStorage {
         }
         if (ptr >= high) break;
       }
-    }
-
-    public void set(int[] newIndices) {
-      Arrays.sort(newIndices);
-      System.arraycopy(newIndices, 0, indices, 0, newIndices.length);
-      indicesSize = newIndices.length;
-    }
-
-    int maxSize() {
-      return indices.length;
-    }
-
-    void cleanup() {
-      traversal.cleanup();
     }
 
   }

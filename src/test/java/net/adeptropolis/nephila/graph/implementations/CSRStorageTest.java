@@ -24,26 +24,16 @@ public class CSRStorageTest {
 
   @Test
   public void traverseEmptyRow() {
-      withDefaultView((view, visitor) -> {
-        view.traverseRow(2, visitor);
+      withDefaultMatrix((mat, visitor) -> {
+        mat.defaultView().traverseRow(2, visitor);
         assertThat(visitor.entries, empty());
       });
   }
 
   @Test
-  public void traverseRowWithNoColumnSelected() {
-    withDefaultView((view, visitor) -> {
-      view.set(new int[]{5});
-      view.traverseRow(5, visitor);
-      assertThat(visitor.entries, empty());
-    });
-  }
-
-  @Test
   public void traverseRowWithNotAllColIndicesSelected() {
-    withDefaultView((view, visitor) -> {
-      view.set(new int[]{1, 2});
-      view.traverseRow(0, visitor);
+    withDefaultMatrix((mat, visitor) -> {
+      mat.view(new int[]{1, 2}).traverseRow(0, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(0, 0, 2),
               Entry.of(0, 1, 3)));
@@ -52,8 +42,8 @@ public class CSRStorageTest {
 
   @Test
   public void traverseFullRow() {
-    withDefaultView((view, visitor) -> {
-      view.traverseRow(1, visitor);
+    withDefaultMatrix((mat, visitor) -> {
+      mat.defaultView().traverseRow(1, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(1, 1, 2),
               Entry.of(1, 2, 3),
@@ -63,8 +53,8 @@ public class CSRStorageTest {
 
   @Test
   public void traverseRowByEntries() {
-    withDefaultView((view, visitor) -> {
-      view.traverseRow(3, visitor);
+    withDefaultMatrix((mat, visitor) -> {
+      mat.defaultView().traverseRow(3, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(3, 1, 5),
               Entry.of(3, 3, 6)));
@@ -73,14 +63,13 @@ public class CSRStorageTest {
 
   @Test
   public void traverseRowByIndices() {
-    withDefaultView((view, visitor) -> {
-      view.set(new int[]{3});
-      view.traverseRow(0, visitor);
+    withDefaultMatrix((mat, visitor) -> {
+      mat.view(new int[]{3}).traverseRow(0, visitor);
       assertThat(visitor.entries, contains(Entry.of(0, 0, 6)));
     });
   }
 
-  private void withDefaultView(BiConsumer<CSRStorage.View, CollectingEntryVisitor> viewConsumer) {
+  private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEntryVisitor> consumer) {
     CSRStorage storage = new CSRStorageBuilder()
             .add(1,1, 2)
             .add(1,2, 3)
@@ -91,8 +80,7 @@ public class CSRStorageTest {
             .add(5,6,9)
             .add(5,7,11)
             .build();
-    CSRStorage.View view = storage.defaultView();
-    viewConsumer.accept(view, new CollectingEntryVisitor());
+    consumer.accept(storage, new CollectingEntryVisitor());
     storage.free();
   }
 

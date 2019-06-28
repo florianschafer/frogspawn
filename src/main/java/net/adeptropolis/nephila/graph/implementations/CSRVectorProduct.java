@@ -10,7 +10,7 @@ public class CSRVectorProduct implements EntryVisitor {
 
   public CSRVectorProduct(CSRStorage.View view) {
     this.view = view;
-    this.result = new double[view.maxSize()]; // Preallocate a single, reusable instance
+    this.result = new double[view.size()]; // Preallocate a single, reusable instance
   }
 
   public synchronized double[] multiply(double[] argument) {
@@ -27,7 +27,7 @@ public class CSRVectorProduct implements EntryVisitor {
 
   @Override
   public void reset() {
-    Arrays.fill(result, 0, view.indicesSize, 0);
+    Arrays.fill(result, 0, view.size(), 0);
   }
 
 }

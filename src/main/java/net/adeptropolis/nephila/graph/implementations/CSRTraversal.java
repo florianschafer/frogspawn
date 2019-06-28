@@ -9,27 +9,25 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 // TODO: Improve / optimize threading, object churn and runnable re-use
 
-public class CSRViewTraversal {
+class CSRTraversal {
 
   private static final int THREAD_BATCH_SIZE = 64;
   private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
   private final ExecutorService executorService;
   private final Future[] futures;
 
-  private final CSRStorage.View view;
   private final AtomicInteger workPtr;
 
-  CSRViewTraversal(CSRStorage.View view) {
-    this.view = view;
+  CSRTraversal() {
     this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
     this.futures = new Future[THREAD_POOL_SIZE];
     this.workPtr = new AtomicInteger();
   }
 
-  synchronized void traverse(final EntryVisitor visitor) {
+  synchronized void traverse(final EntryVisitor visitor, CSRStorage.View view) {
     visitor.reset();
     workPtr.set(0);
-    for (int i = 0; i < THREAD_POOL_SIZE; i++) futures[i] = executorService.submit(() -> fetchAndProcess(visitor));
+    for (int i = 0; i < THREAD_POOL_SIZE; i++) futures[i] = executorService.submit(() -> fetchAndProcess(visitor, view));
     for (int i = 0; i < THREAD_POOL_SIZE; i++) {
       try {
         futures[i].get();
@@ -39,10 +37,10 @@ public class CSRViewTraversal {
     }
   }
 
-  private void fetchAndProcess(final EntryVisitor visitor) {
+  private void fetchAndProcess(final EntryVisitor visitor, CSRStorage.View view) {
     int i;
-    while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < view.indicesSize) {
-      for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, view.indicesSize); j++) {
+    while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < view.size()) {
+      for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, view.size()); j++) {
         view.traverseRow(j, visitor);
       }
     }
