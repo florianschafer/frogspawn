@@ -3,6 +3,10 @@ package net.adeptropolis.nephila.graph.implementations;
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+
+// TODO: This one might need some more optimization
 // TODO: Prealloc sets to some sensible size
 
 public class ConnectedComponents {
@@ -21,7 +25,7 @@ public class ConnectedComponents {
     this.currentCC = new IntOpenHashSet();
   }
 
-  public synchronized void foo() {
+  public void find(Consumer<CSRStorage.View> componentConsumer) {
 
     globalQueue.clear();
     for (int i = 0; i < view.size(); i++) globalQueue.add(i);
@@ -30,25 +34,31 @@ public class ConnectedComponents {
       visitor.reset();
       int i = globalQueue.removeFirstInt();
       ccQueue.add(i);
-      currentCC.add(i);
       while (!ccQueue.isEmpty()) {
         int j = ccQueue.removeFirstInt();
         currentCC.add(j);
         view.traverseRow(j, visitor);
       }
+
+      finalizeComponent(componentConsumer);
+
       globalQueue.removeAll(currentCC);
     }
 
+  }
+
+  private void finalizeComponent(Consumer<CSRStorage.View> componentConsumer) {
+    int[] componentIndices = currentCC.toIntArray();
+    for (int j = 0; j < componentIndices.length; j++) componentIndices[j] = view.get(componentIndices[j]); // Map view indices to actual matrix indices
+    Arrays.parallelSort(componentIndices);
+    componentConsumer.accept(view.subview(componentIndices));
   }
 
   private class CCVisitor implements EntryVisitor {
 
     @Override
     public void visit(int rowIdx, int colIdx, double value) {
-      if (!ccQueue.contains(colIdx) && !currentCC.contains(colIdx)) {
-        ccQueue.add(colIdx);
-        currentCC.add(colIdx);
-      }
+      if (!ccQueue.contains(colIdx) && !currentCC.contains(colIdx)) ccQueue.add(colIdx);
     }
 
     @Override

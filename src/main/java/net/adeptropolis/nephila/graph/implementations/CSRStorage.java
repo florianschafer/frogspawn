@@ -98,6 +98,10 @@ public class CSRStorage {
       return indices.length;
     }
 
+    public int get(int idx) {
+      return indices[idx];
+    }
+
     public void traverse(final EntryVisitor visitor) {
       traversal.traverse(visitor, this);
     }

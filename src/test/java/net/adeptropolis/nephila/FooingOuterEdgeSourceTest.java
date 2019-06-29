@@ -4,6 +4,7 @@ import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.implementations.BipartiteSSNLSolver;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.implementations.ConnectedComponents;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,28 +19,22 @@ import java.util.stream.Stream;
 public class FooingOuterEdgeSourceTest {
 
   @Test
-  public void sccStuff() {
+  public void ccStuff() {
 
-////    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-////    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
-//    CSRStorageBuilder b = new CSRStorageBuilder();
-//    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
-//    CSRStorage storage = b.build();
-//
-//    Ints indices = new ArrayInts(storage.getNumRows());
-//    for (int i = 0; i < storage.getNumRows(); i++) indices.set(i, i);
-//    CSRSubmatrix mat = new CSRSubmatrix(storage, indices);
-//
-//    TarjanSCC tarjanSCC = new TarjanSCC(mat);
-//    tarjanSCC.compute(comp -> {
-//      System.out.println(comp.size());
-//    });
-//
-//
-//    indices.free();
-//    mat.free();
-//    storage.free();
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+    CSRStorageBuilder b = new CSRStorageBuilder();
+    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+    CSRStorage storage = b.build();
+
+    ConnectedComponents connectedComponents = new ConnectedComponents(storage.defaultView());
+    connectedComponents.find(component -> {
+      System.out.printf("Found component of size %d\n", component.size());
+    });
+
+
+    storage.free();
 
 
   }
