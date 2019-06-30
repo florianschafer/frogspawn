@@ -20,17 +20,6 @@ public class NormalizedLaplacian {
     computeAuxVectors();
   }
 
-  public synchronized double[] multiply(double[] x) {
-    for (int i = 0; i < view.size(); i++) multArgument[i] = -invDegSqrts[i] * x[i];
-    double[] multResult = halfProduct.multiply(multArgument);
-    for (int i = 0; i < view.size(); i++) multResult[i] = invDegSqrts[i] * multResult[i] + x[i];
-    return multResult;
-  }
-
-  public double[] getV0() {
-    return v0;
-  }
-
   private void computeAuxVectors() {
     double[] weights = rowWeights.get();
     double sqrSum = 0;
@@ -41,6 +30,17 @@ public class NormalizedLaplacian {
     }
     double norm = Math.sqrt(sqrSum);
     for (int i = 0; i < view.size(); i++) v0[i] = Math.sqrt(weights[i]) / norm;
+  }
+
+  public synchronized double[] multiply(double[] x) {
+    for (int i = 0; i < view.size(); i++) multArgument[i] = -invDegSqrts[i] * x[i];
+    double[] multResult = halfProduct.multiply(multArgument);
+    for (int i = 0; i < view.size(); i++) multResult[i] = invDegSqrts[i] * multResult[i] + x[i];
+    return multResult;
+  }
+
+  public double[] getV0() {
+    return v0;
   }
 
 }

@@ -24,10 +24,25 @@ public class CSRStorageTest {
 
   @Test
   public void traverseEmptyRow() {
-      withDefaultMatrix((mat, visitor) -> {
-        mat.defaultView().traverseRow(2, visitor);
-        assertThat(visitor.entries, empty());
-      });
+    withDefaultMatrix((mat, visitor) -> {
+      mat.defaultView().traverseRow(2, visitor);
+      assertThat(visitor.entries, empty());
+    });
+  }
+
+  private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEntryVisitor> consumer) {
+    CSRStorage storage = new CSRStorageBuilder()
+            .add(1, 1, 2)
+            .add(1, 2, 3)
+            .add(1, 4, 7)
+            .add(3, 3, 6)
+            .add(3, 1, 5)
+            .add(4, 5, 7)
+            .add(5, 6, 9)
+            .add(5, 7, 11)
+            .build();
+    consumer.accept(storage, new CollectingEntryVisitor());
+    storage.free();
   }
 
   @Test
@@ -69,37 +84,6 @@ public class CSRStorageTest {
     });
   }
 
-  private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEntryVisitor> consumer) {
-    CSRStorage storage = new CSRStorageBuilder()
-            .add(1,1, 2)
-            .add(1,2, 3)
-            .add(1,4,7)
-            .add(3,3, 6)
-            .add(3,1, 5)
-            .add(4,5,7)
-            .add(5,6,9)
-            .add(5,7,11)
-            .build();
-    consumer.accept(storage, new CollectingEntryVisitor());
-    storage.free();
-  }
-
-  private class CollectingEntryVisitor implements EntryVisitor {
-
-    private final List<Entry> entries = Lists.newArrayList();
-
-    @Override
-    public void visit(int rowIdx, int colIdx, double value) {
-      entries.add(Entry.of(rowIdx, colIdx, value));
-    }
-
-    @Override
-    public void reset() {
-      entries.clear();
-    }
-
-  }
-
   private static class Entry {
 
     private final int rowIdx;
@@ -129,6 +113,22 @@ public class CSRStorageTest {
     public String toString() {
       return String.format("(%d, %d, %f)", rowIdx, colIdx, value);
     }
+  }
+
+  private class CollectingEntryVisitor implements EntryVisitor {
+
+    private final List<Entry> entries = Lists.newArrayList();
+
+    @Override
+    public void visit(int rowIdx, int colIdx, double value) {
+      entries.add(Entry.of(rowIdx, colIdx, value));
+    }
+
+    @Override
+    public void reset() {
+      entries.clear();
+    }
+
   }
 
 }

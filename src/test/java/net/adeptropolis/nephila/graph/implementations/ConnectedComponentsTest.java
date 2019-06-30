@@ -16,22 +16,6 @@ public class ConnectedComponentsTest {
     withButterfly(new int[]{0, 1, 2, 3, 4, 5, 6}, new int[]{0, 1, 2, 3, 4, 5, 6});
   }
 
-  @Test
-  public void removingNonBridgePreservesComponent() {
-    withButterfly(new int[]{0, 2, 3, 4, 5, 6}, new int[]{0, 2, 3, 4, 5, 6});
-  }
-
-  @Test
-  public void splitAtMiddleHub() {
-    withButterfly(new int[]{1, 2, 3, 4, 5, 6}, new int[]{1, 2, 3}, new int[]{4, 5, 6});
-  }
-
-  @Test
-  public void splitMultiple() {
-    withButterfly(new int[]{1, 3, 4, 5, 6}, new int[]{1}, new int[]{3}, new int[]{4, 5, 6});
-  }
-
-
   private void withButterfly(int[] viewIndices, int[]... expected) {
     CSRStorage butterfly = new CSRStorageBuilder()
             .addSymmetric(0, 1, 1)
@@ -56,6 +40,20 @@ public class ConnectedComponentsTest {
     }
   }
 
+  @Test
+  public void removingNonBridgePreservesComponent() {
+    withButterfly(new int[]{0, 2, 3, 4, 5, 6}, new int[]{0, 2, 3, 4, 5, 6});
+  }
+
+  @Test
+  public void splitAtMiddleHub() {
+    withButterfly(new int[]{1, 2, 3, 4, 5, 6}, new int[]{1, 2, 3}, new int[]{4, 5, 6});
+  }
+
+  @Test
+  public void splitMultiple() {
+    withButterfly(new int[]{1, 3, 4, 5, 6}, new int[]{1}, new int[]{3}, new int[]{4, 5, 6});
+  }
 
 
 }

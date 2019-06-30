@@ -19,6 +19,18 @@ public class CSRTraversalTest {
     });
   }
 
+  private void withLargeDenseMatrix(Consumer<CSRStorage> storageConsumer) {
+    CSRStorageBuilder builder = new CSRStorageBuilder();
+    for (int i = 0; i < 1000; i++) {
+      for (int j = i + 1; j < 1000; j++) {
+        builder.addSymmetric(i, j, i + j);
+      }
+    }
+    CSRStorage storage = builder.build();
+    storageConsumer.accept(storage);
+    storage.free();
+  }
+
   @Test
   public void traversalIgnoresNonSelectedEntries() {
     withLargeDenseMatrix(mat -> {
@@ -27,6 +39,12 @@ public class CSRTraversalTest {
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
     });
+  }
+
+  private int[] indicesWithSize(int size) {
+    int[] indices = new int[size];
+    for (int i = 0; i < size; i++) indices[i] = i;
+    return indices;
   }
 
   @Test
@@ -40,24 +58,6 @@ public class CSRTraversalTest {
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(577521382520d));
     });
-  }
-
-  private int[] indicesWithSize(int size) {
-    int[] indices = new int[size];
-    for (int i = 0; i < size; i++) indices[i] = i;
-    return indices;
-  }
-
-  private void withLargeDenseMatrix(Consumer<CSRStorage> storageConsumer) {
-    CSRStorageBuilder builder = new CSRStorageBuilder();
-    for (int i = 0; i < 1000; i++) {
-      for (int j = i + 1; j < 1000; j++) {
-        builder.addSymmetric(i, j, i + j);
-      }
-    }
-    CSRStorage storage = builder.build();
-    storageConsumer.accept(storage);
-    storage.free();
   }
 
   class FingerprintingVisitor implements EntryVisitor {
@@ -78,15 +78,15 @@ public class CSRTraversalTest {
       fingerprint.addAndGet(rowIdx * value + colIdx);
     }
 
-    @Override
-    public void reset() {
-      fingerprint.set(0);
-    }
-
     private void burnCycles() {
       double sum = 0;
       for (int i = 0; i < 5000; i++) sum += Math.sqrt(i);
       if (Math.round(sum) % 12345 == 0) System.out.println("Ignore this");
+    }
+
+    @Override
+    public void reset() {
+      fingerprint.set(0);
     }
   }
 

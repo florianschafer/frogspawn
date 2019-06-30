@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class CSRVectorProductTest {
 
@@ -19,17 +19,6 @@ public class CSRVectorProductTest {
     });
   }
 
-  @Test
-  public void subsetMultiplication() {
-    withStorage(mat -> {
-      CSRStorage.View view = mat.view(new int[]{0, 2});
-      double[] res = new CSRVectorProduct(view).multiply(new double[]{29, 31});
-      assertThat(res[0], is(213.0));
-      assertThat(res[1], is(548.0));
-    });
-  }
-
-
   private void withStorage(Consumer<CSRStorage> storageConsumer) {
     CSRStorage storage = new CSRStorageBuilder()
             .addSymmetric(0, 0, 2)
@@ -41,6 +30,16 @@ public class CSRVectorProductTest {
             .build();
     storageConsumer.accept(storage);
     storage.free();
+  }
+
+  @Test
+  public void subsetMultiplication() {
+    withStorage(mat -> {
+      CSRStorage.View view = mat.view(new int[]{0, 2});
+      double[] res = new CSRVectorProduct(view).multiply(new double[]{29, 31});
+      assertThat(res[0], is(213.0));
+      assertThat(res[1], is(548.0));
+    });
   }
 
 }
