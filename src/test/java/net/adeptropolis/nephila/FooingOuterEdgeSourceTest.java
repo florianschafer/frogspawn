@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -22,16 +23,22 @@ public class FooingOuterEdgeSourceTest {
   public void ccStuff() {
 
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
+    long start = System.nanoTime();
     ConnectedComponents connectedComponents = new ConnectedComponents(storage.defaultView());
+    AtomicInteger comps = new AtomicInteger();
     connectedComponents.find(component -> {
+      comps.getAndIncrement();
       System.out.printf("Found component of size %d\n", component.size());
     });
+    System.out.println(comps.get());
+    long runTimeMs = (System.nanoTime() - start) / 1000000000L;
+    System.out.println("Runtime: " + runTimeMs + "s");
 
 
     storage.free();

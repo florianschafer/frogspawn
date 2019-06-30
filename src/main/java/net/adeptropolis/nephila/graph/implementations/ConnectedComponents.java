@@ -1,28 +1,29 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
 
 // TODO: This one might need some more optimization
 // TODO: Prealloc sets to some sensible size
+// TODO: IntRBTreeSets are only chosen because of faster clear(). Check.
 
 public class ConnectedComponents {
 
   private final CSRStorage.View view;
   private final CCVisitor visitor;
-  private final IntLinkedOpenHashSet globalQueue;
-  private final IntLinkedOpenHashSet ccQueue;
-  private final IntOpenHashSet currentCC;
+  private IntLinkedOpenHashSet globalQueue;
+  private IntRBTreeSet ccQueue;
+  private IntRBTreeSet currentCC;
 
   public ConnectedComponents(CSRStorage.View view) {
     this.view = view;
     this.visitor = new CCVisitor();
     this.globalQueue = new IntLinkedOpenHashSet();
-    this.ccQueue = new IntLinkedOpenHashSet();
-    this.currentCC = new IntOpenHashSet();
+    this.ccQueue = new IntRBTreeSet();
+    this.currentCC = new IntRBTreeSet();
   }
 
   public void find(Consumer<CSRStorage.View> componentConsumer) {
@@ -35,7 +36,7 @@ public class ConnectedComponents {
       int i = globalQueue.removeFirstInt();
       ccQueue.add(i);
       while (!ccQueue.isEmpty()) {
-        int j = ccQueue.removeFirstInt();
+        int j = ccQueue.firstInt(); ccQueue.remove(j);
         currentCC.add(j);
         view.traverseRow(j, visitor);
       }
@@ -51,6 +52,7 @@ public class ConnectedComponents {
     int[] componentIndices = currentCC.toIntArray();
     for (int j = 0; j < componentIndices.length; j++) componentIndices[j] = view.get(componentIndices[j]); // Map view indices to actual matrix indices
     Arrays.parallelSort(componentIndices);
+//    System.out.println("Remaining: " + globalQueue.size());
     componentConsumer.accept(view.subview(componentIndices));
   }
 
