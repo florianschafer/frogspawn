@@ -23,14 +23,14 @@ public class CSRStorage {
     this.values = values;
   }
 
-  public View view(int[] indices) {
-    return new View(indices);
-  }
-
   public View defaultView() {
     int[] indices = new int[numRows];
     for (int i = 0; i < numRows; i++) indices[i] = i;
     return view(indices);
+  }
+
+  public View view(int[] indices) {
+    return new View(indices);
   }
 
   public void free() {

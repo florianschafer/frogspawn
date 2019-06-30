@@ -27,7 +27,8 @@ class CSRTraversal {
   synchronized void traverse(final EntryVisitor visitor, CSRStorage.View view) {
     visitor.reset();
     workPtr.set(0);
-    for (int i = 0; i < THREAD_POOL_SIZE; i++) futures[i] = executorService.submit(() -> fetchAndProcess(visitor, view));
+    for (int i = 0; i < THREAD_POOL_SIZE; i++)
+      futures[i] = executorService.submit(() -> fetchAndProcess(visitor, view));
     for (int i = 0; i < THREAD_POOL_SIZE; i++) {
       try {
         futures[i].get();

@@ -48,7 +48,7 @@ public class InterpolationSearchTest {
   public void searchDenseIntArray() {
     int[] arr = new int[BASE_SIZE];
     for (int i = 0; i < 10000; i++) arr[i] = i;
-    Arrays.sort(arr, 0,10000);
+    Arrays.sort(arr, 0, 10000);
     for (int i = 0; i < 10000; i++)
       Assert.assertThat(InterpolationSearch.search(arr, i, 0, 9999), greaterThanOrEqualTo(0));
   }
@@ -56,8 +56,8 @@ public class InterpolationSearchTest {
   @Test
   public void searchSparseIntArray() {
     int[] arr = new int[BASE_SIZE];
-    for (int i = 0; i < 10000; i++) arr[i] = i *13;
-    Arrays.sort(arr, 0,10000);
+    for (int i = 0; i < 10000; i++) arr[i] = i * 13;
+    Arrays.sort(arr, 0, 10000);
     for (int i = 0; i < 10000; i++) {
       if (i % 13 == 0) Assert.assertThat(InterpolationSearch.search(arr, i, 0, 9999), greaterThanOrEqualTo(0));
       else Assert.assertThat(InterpolationSearch.search(arr, i, 0, 9999), lessThan(0));

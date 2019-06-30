@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
@@ -29,6 +28,31 @@ public class BipartiteSSNLSolverTest {
       assertThat(y[4], closeTo(1.1999, 1E-4));
       assertThat(y[5], closeTo(1.1598, 1E-4));
     });
+  }
+
+  private void withBipartiteAdjacencyMatrix(Consumer<CSRStorage.View> viewConsumer) {
+    CSRStorage storage = new CSRStorageBuilder()
+            .addSymmetric(0, 3, 2)
+            .addSymmetric(0, 4, 3)
+            .addSymmetric(0, 5, 5)
+            .addSymmetric(1, 3, 7)
+            .addSymmetric(1, 4, 11)
+            .addSymmetric(1, 5, 13)
+            .addSymmetric(2, 3, 17)
+            .addSymmetric(2, 4, 19)
+            .addSymmetric(2, 5, 23)
+            .addSymmetric(3, 0, 2)
+            .addSymmetric(3, 1, 7)
+            .addSymmetric(3, 2, 17)
+            .addSymmetric(4, 0, 3)
+            .addSymmetric(4, 1, 11)
+            .addSymmetric(4, 2, 19)
+            .addSymmetric(5, 0, 5)
+            .addSymmetric(5, 1, 13)
+            .addSymmetric(5, 2, 23)
+            .build();
+    viewConsumer.accept(storage.defaultView());
+    storage.free();
   }
 
   @Test
@@ -58,31 +82,6 @@ public class BipartiteSSNLSolverTest {
       assertThat(signatures[4], is(1));
       assertThat(signatures[5], is(1));
     });
-  }
-
-  private void withBipartiteAdjacencyMatrix(Consumer<CSRStorage.View> viewConsumer) {
-    CSRStorage storage = new CSRStorageBuilder()
-            .addSymmetric(0, 3, 2)
-            .addSymmetric(0, 4, 3)
-            .addSymmetric(0, 5, 5)
-            .addSymmetric(1, 3, 7)
-            .addSymmetric(1, 4, 11)
-            .addSymmetric(1, 5, 13)
-            .addSymmetric(2, 3, 17)
-            .addSymmetric(2, 4, 19)
-            .addSymmetric(2, 5, 23)
-            .addSymmetric(3, 0, 2)
-            .addSymmetric(3, 1, 7)
-            .addSymmetric(3, 2, 17)
-            .addSymmetric(4, 0, 3)
-            .addSymmetric(4, 1, 11)
-            .addSymmetric(4, 2, 19)
-            .addSymmetric(5, 0, 5)
-            .addSymmetric(5, 1, 13)
-            .addSymmetric(5, 2, 23)
-            .build();
-    viewConsumer.accept(storage.defaultView());
-    storage.free();
   }
 
 }

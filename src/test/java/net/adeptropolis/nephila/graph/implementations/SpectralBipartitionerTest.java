@@ -16,11 +16,6 @@ public class SpectralBipartitionerTest {
     withTwoWeaklyLinkedCompleteBipartiteGraphs(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8}, new int[]{0, 1, 2, 3, 4}, new int[]{5, 6, 7, 8});
   }
 
-  @Test
-  public void partitionSubset() {
-    withTwoWeaklyLinkedCompleteBipartiteGraphs(new int[]{0, 1, 2, 3, 4, 5, 6, 8}, new int[]{0, 1, 2, 3, 4}, new int[]{5, 6, 8});
-  }
-
   private void withTwoWeaklyLinkedCompleteBipartiteGraphs(int[] viewIndices, int[]... expected) {
 
     CSRStorage graph = new CSRStorageBuilder()
@@ -47,6 +42,11 @@ public class SpectralBipartitionerTest {
         assertThat("Partition has member", component.get(j), is(expected[i][j]));
       }
     }
+  }
+
+  @Test
+  public void partitionSubset() {
+    withTwoWeaklyLinkedCompleteBipartiteGraphs(new int[]{0, 1, 2, 3, 4, 5, 6, 8}, new int[]{0, 1, 2, 3, 4}, new int[]{5, 6, 8});
   }
 
 

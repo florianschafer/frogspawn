@@ -36,7 +36,8 @@ public class ConnectedComponents {
       int i = globalQueue.removeFirstInt();
       ccQueue.add(i);
       while (!ccQueue.isEmpty()) {
-        int j = ccQueue.firstInt(); ccQueue.remove(j);
+        int j = ccQueue.firstInt();
+        ccQueue.remove(j);
         currentCC.add(j);
         view.traverseRow(j, visitor);
       }
@@ -50,7 +51,8 @@ public class ConnectedComponents {
 
   private void finalizeComponent(Consumer<CSRStorage.View> componentConsumer) {
     int[] componentIndices = currentCC.toIntArray();
-    for (int j = 0; j < componentIndices.length; j++) componentIndices[j] = view.get(componentIndices[j]); // Map view indices to actual matrix indices
+    for (int j = 0; j < componentIndices.length; j++)
+      componentIndices[j] = view.get(componentIndices[j]); // Map view indices to actual matrix indices
     Arrays.parallelSort(componentIndices);
 //    System.out.println("Remaining: " + globalQueue.size());
     componentConsumer.accept(view.subview(componentIndices));
