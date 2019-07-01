@@ -16,22 +16,21 @@ public class SpectralBipartitioner {
     this.view = view;
   }
 
-  public void partition(Consumer<CSRStorage.View> partitionConsumer) {
+  public void partition(Consumer<Partition> partitionConsumer) {
     BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
     double[] v2 = solver.approxV2Signatures(MAX_ALTERNATIONS, MIN_ITERATIONS);
     partitionConsumer.accept(extractSubview(v2, x -> x >= 0));
     partitionConsumer.accept(extractSubview(v2, x -> x < 0));
   }
 
-
-  private CSRStorage.View extractSubview(double[] v2, DoubleToBooleanFunction selector) {
+  private Partition extractSubview(double[] v2, DoubleToBooleanFunction selector) {
     int viewSize = 0;
     for (double v : v2) if (selector.apply(v)) viewSize++;
     int[] partition = new int[viewSize];
     int partitionIdx = 0;
     for (int i = 0; i < v2.length; i++) if (selector.apply(v2[i])) partition[partitionIdx++] = view.get(i);
     Arrays.parallelSort(partition);
-    return view.subview(partition);
+    return Partition.of(view.subview(partition), view);
   }
 
   @FunctionalInterface

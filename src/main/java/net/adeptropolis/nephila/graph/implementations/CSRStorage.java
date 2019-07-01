@@ -102,6 +102,10 @@ public class CSRStorage {
       return indices[idx];
     }
 
+    public int getIndex(int val) {
+      return InterpolationSearch.search(indices, val, 0, indices.length - 1);
+    }
+
     public void traverse(final EntryVisitor visitor) {
       traversal.traverse(visitor, this);
     }
