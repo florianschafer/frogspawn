@@ -32,7 +32,7 @@ public class SpectralBipartitionerTest {
             .addSymmetric(7, 8, 1)
             .build();
     List<CSRStorage.View> partitions = Lists.newArrayList();
-    new SpectralBipartitioner(graph.view(viewIndices)).partition(p -> partitions.add(p.getView()));
+    new SpectralBipartitioner(graph.view(viewIndices)).partition(partitions::add);
     assertThat("Number of partitions should agree", partitions.size(), is(expected.length));
     partitions.sort(Comparator.comparingInt(comp -> comp.get(0)));
     for (int i = 0; i < partitions.size(); i++) {

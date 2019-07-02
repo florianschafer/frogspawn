@@ -1,5 +1,6 @@
 package net.adeptropolis.nephila;
 
+import net.adeptropolis.nephila.clustering.RecursiveSpectralClustering;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.implementations.BipartiteSSNLSolver;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
@@ -18,6 +19,28 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
+
+  @Test
+  public void clusteringStuff() {
+
+//     TODO: Change partition back into something like partitionMetrics
+//     calculate consistency AFTER low-scoring vertices have been removed
+
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+    CSRStorageBuilder b = new CSRStorageBuilder();
+    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+    CSRStorage storage = b.build();
+
+    new RecursiveSpectralClustering(storage).compute();
+
+
+    storage.free();
+
+
+  }
+
 
   @Test
   public void ccStuff() {
