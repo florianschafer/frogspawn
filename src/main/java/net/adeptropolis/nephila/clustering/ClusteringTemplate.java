@@ -13,15 +13,18 @@ public class ClusteringTemplate {
     this.rootWeights = new RowWeights(this.rootView).get();
   }
 
-  public double[] computeVertexScores(CSRStorage.View partition) {
-    double[] partitonWeights = new RowWeights(partition).get();
-    double[] scores = new double[partition.size()];
+  public double[] computeVertexConsistencies(CSRStorage.View partition) {
+    double[] partitionWeights = new RowWeights(partition).get();
+    double[] cuts = new double[partition.size()];
     for (int i = 0; i < partition.size(); i++) {
-      double weightRelToParent = rootWeights[rootView.getIndex(partition.get(i))];
-      double weightRelToChild = partitonWeights[i];
-      scores[i] = (weightRelToParent > 0) ? weightRelToChild / weightRelToParent : 0;
+      double weightRelToRoot = rootWeights[rootView.getIndex(partition.get(i))];
+      double weightRelToChild = partitionWeights[i];
+      cuts[i] = (weightRelToRoot > 0) ? weightRelToChild / weightRelToRoot : 0;
     }
-    return scores;
+    return cuts;
   }
 
+  public CSRStorage.View getRootView() {
+    return rootView;
+  }
 }

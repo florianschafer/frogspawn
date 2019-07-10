@@ -7,18 +7,19 @@ import java.util.function.Consumer;
 
 public class SpectralBipartitioner {
 
-  private static final double MAX_ALTERNATIONS = 1E-6;
-  private static final int MIN_ITERATIONS = 50;
+  private static final int MIN_ITERATIONS = 15;
 
   private final CSRStorage.View view;
+  private final double maxAlternations;
 
-  public SpectralBipartitioner(CSRStorage.View view) {
+  public SpectralBipartitioner(CSRStorage.View view, double maxAlternations) {
     this.view = view;
+    this.maxAlternations = maxAlternations;
   }
 
   public void partition(Consumer<CSRStorage.View> partitionConsumer) {
     BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
-    double[] v2 = solver.approxV2Signatures(MAX_ALTERNATIONS, MIN_ITERATIONS);
+    double[] v2 = solver.approxV2Signatures(maxAlternations, MIN_ITERATIONS);
     partitionConsumer.accept(extractSubview(v2, x -> x >= 0));
     partitionConsumer.accept(extractSubview(v2, x -> x < 0));
   }

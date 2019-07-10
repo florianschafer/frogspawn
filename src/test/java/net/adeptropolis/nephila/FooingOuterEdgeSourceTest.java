@@ -32,8 +32,10 @@ public class FooingOuterEdgeSourceTest {
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
+    System.out.println(storage.getNnz());
+    System.out.println(storage.getNumRows());
 
-    new RecursiveSpectralClustering(storage).compute();
+    new RecursiveSpectralClustering(storage, 50, 0.7, 1E-5).compute();
 
 
     storage.free();

@@ -44,7 +44,7 @@ public class ClusteringTemplateTest {
             .addSymmetric(5, 3, 23)
             .build();
     ClusteringTemplate template = new ClusteringTemplate(graph);
-    double[] scores = template.computeVertexScores(graph.view(childIndices));
+    double[] scores = template.computeVertexConsistencies(graph.view(childIndices));
     assertThat("Score array has correct length", scores.length, is(childIndices.length));
     for (int i = 0; i < expectedScores.length; i++)
       assertThat("Score matches", scores[i], closeTo(expectedScores[i], 1E-6));
