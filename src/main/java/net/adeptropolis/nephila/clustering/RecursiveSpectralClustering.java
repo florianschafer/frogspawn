@@ -18,12 +18,12 @@ public class RecursiveSpectralClustering {
   private final ClusteringTemplate template;
   private final PriorityQueue<Branch> queue;
 
-  public RecursiveSpectralClustering(CSRStorage graph, int minPartitionSize, double minVertexConsistency, double maxAlternations) {
+  public RecursiveSpectralClustering(ClusteringTemplate template, double minVertexConsistency, double maxAlternations, int minPartitionSize) {
+    this.template = template;
     this.minPartitionSize = minPartitionSize;
     this.minVertexConsistency = minVertexConsistency;
     this.maxAlternations = maxAlternations;
     this.queue = new PriorityQueue<>();
-    this.template = new ClusteringTemplate(graph);
   }
 
   public Cluster compute() {
@@ -44,11 +44,10 @@ public class RecursiveSpectralClustering {
 
   private void spectralPartition(Branch branch) {
     new SpectralBipartitioner(branch.view, maxAlternations).partition(partition -> {
-      if (partition.size() == branch.view.size()) {
-        // Could not cluster further. This should only happen in rare instances where we don't fully converge. Stop right here
-        branch.addViewToRemainder();
-      } else if (partition.size() < minPartitionSize) {
-        branch.addViewToRemainder();
+      if (partition.size() < minPartitionSize || partition.size() == branch.view.size()) {
+        // 1st Condition: trivial
+        // 2nd: Could not cluster further. This should only happen in rare instances where we don't fully converge. Stop right here
+        branch.cluster.addToRemainder(partition);
       } else {
         View consistentSubview = ensureConsistency(branch, partition);
         if (consistentSubview.size() < minPartitionSize) {
@@ -68,6 +67,8 @@ public class RecursiveSpectralClustering {
 
   private View ensureConsistency(Branch branch, View partition) {
     IntRBTreeSet remainingVertices = new IntRBTreeSet(partition.getIndices());
+
+    int rounds = 0;
     while (true) {
       int prevSize = remainingVertices.size();
       int[] vertices = remainingVertices.toIntArray();
@@ -80,18 +81,22 @@ public class RecursiveSpectralClustering {
           remainingVertices.remove(subview.get(i));
         }
       }
-      if (remainingVertices.size() == prevSize) return subview;
+      rounds++;
+      if (remainingVertices.size() == prevSize) {
+        System.out.printf("Concistency step finished after %d iterations. Remaining: %d / %d\n", rounds, remainingVertices.size(), partition.size());
+        return subview;
+      };
     }
   }
 
   private void partitionComponents(Branch branch) {
     new ConnectedComponents(branch.view).find(component -> {
       if (component.size() == branch.view.size()) {
-        // Special case: We only have a single CC => Relabel cluster to COMPONENT and re-add
+        // Special case: We only have a single CC => Label cluster as COMPONENT and re-add to queue
         branch.type = Branch.Type.COMPONENT;
         queue.add(branch);
       } else if (component.size() < minPartitionSize) {
-        branch.addViewToRemainder();
+        branch.cluster.addToRemainder(component);
       } else {
         enqueueBranch(Branch.Type.COMPONENT, branch.cluster, component);
       }
@@ -113,10 +118,6 @@ public class RecursiveSpectralClustering {
     @Override
     public int compareTo(Branch other) {
       return Integer.compare(view.size(), other.view.size());
-    }
-
-    void addViewToRemainder() {
-      cluster.addToRemainder(view);
     }
 
     private enum Type {

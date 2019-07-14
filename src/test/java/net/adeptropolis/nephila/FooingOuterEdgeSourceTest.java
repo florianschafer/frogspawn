@@ -1,5 +1,9 @@
 package net.adeptropolis.nephila;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.ClusterMetrics;
+import net.adeptropolis.nephila.clustering.ClusteringTemplate;
 import net.adeptropolis.nephila.clustering.RecursiveSpectralClustering;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.implementations.BipartiteSSNLSolver;
@@ -14,8 +18,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.IntConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
@@ -29,13 +36,22 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
+    Int2ObjectOpenHashMap<String> inverseLabels = g.inverseLabels();
     CSRStorageBuilder b = new CSRStorageBuilder();
     g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
-    System.out.println(storage.getNnz());
-    System.out.println(storage.getNumRows());
 
-    new RecursiveSpectralClustering(storage, 50, 0.7, 1E-5).compute();
+    ClusteringTemplate template = new ClusteringTemplate(storage);
+    Cluster root = new RecursiveSpectralClustering(template, 0.7, 1E-6, 50)
+            .compute();
+    root.traverseSubclusters(cluster -> {
+//      todo: investigate slowness, label multiplicity, heap space (remove xmx)
+      ClusterMetrics metrics = template.aggregateMetrics(cluster);
+      String label = IntStream.range(0, Math.min(3, metrics.getSortedVertices().length))
+              .mapToObj(i -> String.format("%s [%.3f]", inverseLabels.get(metrics.getSortedVertices()[i]), metrics.getScores()[i]))
+              .collect(Collectors.joining(", "));
+      System.out.println(label);
+    });
 
 
     storage.free();

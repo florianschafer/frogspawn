@@ -1,5 +1,6 @@
 package net.adeptropolis.nephila;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.adeptropolis.nephila.graph.Edge;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 
@@ -37,6 +38,12 @@ public class LabeledTSVGraphSource implements GraphSource {
             .parallel()
             .forEach(label -> indices.computeIfAbsent(label, (x) -> currentIdx.getAndIncrement()));
     return indices;
+  }
+
+  public Int2ObjectOpenHashMap<String> inverseLabels() {
+    Int2ObjectOpenHashMap<String> reverseMap = new Int2ObjectOpenHashMap<>();
+    labelMap.entrySet().stream().forEach(entry -> reverseMap.put(entry.getValue(), entry.getKey()));
+    return reverseMap;
   }
 
   private Stream<LabeledEdge<String>> parseLabeledEdges() {
