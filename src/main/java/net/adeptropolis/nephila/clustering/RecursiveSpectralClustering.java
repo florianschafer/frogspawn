@@ -73,7 +73,6 @@ public class RecursiveSpectralClustering {
   private View ensureConsistency(Branch branch, View partition) {
     IntRBTreeSet remainingVertices = new IntRBTreeSet(partition.getIndices());
 
-    int rounds = 0;
     while (true) {
       int prevSize = remainingVertices.size();
       int[] vertices = remainingVertices.toIntArray();
@@ -86,11 +85,7 @@ public class RecursiveSpectralClustering {
           remainingVertices.remove(subview.get(i));
         }
       }
-      rounds++;
-      if (remainingVertices.size() == prevSize) {
-        System.out.printf("Concistency step finished after %d iterations. Remaining: %d / %d\n", rounds, remainingVertices.size(), partition.size());
-        return subview;
-      };
+      if (remainingVertices.size() == prevSize) return subview;
     }
   }
 

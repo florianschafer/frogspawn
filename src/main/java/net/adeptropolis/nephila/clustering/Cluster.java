@@ -1,10 +1,12 @@
 package net.adeptropolis.nephila.clustering;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -15,12 +17,12 @@ public class Cluster {
 
   private Cluster parent;
 
-  private List<Cluster> children;
+  private Set<Cluster> children;
 
   public Cluster(Cluster parent) {
     this.parent = parent;
     this.remainder = new IntArrayList();
-    this.children = Lists.newArrayList();
+    this.children = Sets.newHashSet();
     if (parent != null) parent.children.add(this);
   }
 
@@ -67,12 +69,8 @@ public class Cluster {
     this.parent = parent;
   }
 
-  public List<Cluster> getChildren() {
+  public Set<Cluster> getChildren() {
     return children;
-  }
-
-  public void setChildren(List<Cluster> children) {
-    this.children = children;
   }
 
   public IntArrayList getRemainder() {

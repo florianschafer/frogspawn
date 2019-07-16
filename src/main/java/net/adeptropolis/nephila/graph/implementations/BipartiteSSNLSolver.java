@@ -36,6 +36,7 @@ public class BipartiteSSNLSolver {
 
   // TODO: Find better initial vector, must be ||.|| == 1
   private synchronized double[] powerIteration(Function<Integer, Boolean> terminator) {
+    long startTime = System.nanoTime();
     double initialEntry = 1.0 / Math.sqrt(view.size());
     for (int i = 0; i < view.size(); i++) x[i] = prevY[i] = initialEntry;
     int iterations = 0;
@@ -46,7 +47,10 @@ public class BipartiteSSNLSolver {
       if (terminator.apply(iterations)) break;
       System.arraycopy(x, 0, prevY, 0, view.size());
     }
-    System.out.printf("Solver finished after %d iterations\n", iterations);
+
+    long duration = System.nanoTime() - startTime;
+    long entryDur = duration / (iterations * view.size());
+    System.out.printf("Solver finished after %d iterations in %dms (%dns / (entries * iterations))\n", iterations, duration / 1000000, entryDur);
     return x;
   }
 

@@ -45,13 +45,13 @@ public class FooingOuterEdgeSourceTest {
     CSRStorage storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
-    Cluster root = new RecursiveSpectralClustering(template, 0.6, 0.9,1E-6, 50)
+    Cluster root = new RecursiveSpectralClustering(template, 0.6, 0.95,1E-6, 50)
             .compute();
 
     HashMap<String, String> allClusters = new HashMap<>();
     root.traverseSubclusters(cluster -> {
       ClusterMetrics metrics = template.aggregateMetrics(cluster);
-      String labels = IntStream.range(0, Math.min(3, metrics.getSortedVertices().length))
+      String labels = IntStream.range(0, Math.min(5, metrics.getSortedVertices().length))
               .mapToObj(i -> String.format("%s [%.3f]", inverseLabels.get(metrics.getSortedVertices()[i]), metrics.getScores()[i]))
               .collect(Collectors.joining("\\n"));
       String combinedLabel = String.format("%s\\n%s", metrics.getSortedVertices().length, labels);
@@ -61,6 +61,7 @@ public class FooingOuterEdgeSourceTest {
     PrintWriter writer = new PrintWriter("/home/florian/tmp/clusters.dot");
     writer.println("graph g {");
     writer.println("\tnode[shape=box, fontname = helvetica]");
+    writer.println("\trankdir=LR;");
     allClusters.forEach((key, value) -> writer.printf("\t%s [label=\"%s\"]\n", key, value));
     root.traverseGraphEdges((parent, child) -> writer.printf("\t%s -- %s\n", parent.id(), child.id()));
     writer.println("}");

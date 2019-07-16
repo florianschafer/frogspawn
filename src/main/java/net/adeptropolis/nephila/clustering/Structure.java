@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.adeptropolis.nephila.clustering.RecursiveSpectralClustering.Branch;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
+import net.adeptropolis.nephila.graph.implementations.CSRStorage.View;
 
 import java.util.Arrays;
 
@@ -23,7 +23,7 @@ public class Structure {
     Cluster parent = cluster.getParent();
     if (parent != null && cluster.getParent().getChildren().size() == 1) {
       parent.addToRemainder(cluster.getRemainder());
-      parent.getChildren().remove(cluster); // TODO: Make children a set
+      parent.getChildren().remove(cluster);
       branch.setCluster(parent);
     }
     return branch;
@@ -32,45 +32,37 @@ public class Structure {
   // NOTE: Modifies branch in-place
   public Branch applyPostRecursion(Branch branch) {
 
-//    Cluster cluster = branch.getCluster();
-//    Cluster parent = cluster.getParent();
-//
-//    if (parent != null) System.out.println("OVL: " + parentOverlap(branch, parent));
-//
-//    while (parent != null && parentOverlap(branch, parent) < minParentOverlap) {
-//      if (parent.getParent() == null) break;
-//      parent = parent.getParent();
-//    }
-//    if (parent != null && cluster.getParent() != null && cluster.getParent() != parent) {
-//      cluster.getParent().getChildren().remove(cluster); // TODO: Make children a set
-//      cluster.setParent(parent);
-//      parent.getChildren().add(cluster);
-//    }
+    Cluster cluster = branch.getCluster();
+    Cluster ancestor = cluster.getParent();
+    if (ancestor == null) return branch;
 
+    while (ancestorOverlap(branch, ancestor) < minParentOverlap) {
+      if (ancestor.getParent() == null) break;
+      ancestor = ancestor.getParent();
+    }
+
+    if (ancestor != cluster.getParent()) {
+      cluster.getParent().getChildren().remove(cluster);
+      cluster.setParent(ancestor);
+      ancestor.getChildren().add(cluster);
+    }
     return branch;
   }
 
-  private double parentOverlap(Branch branch, Cluster parent) {
+  // NOTE: This REALLY only works for ancestors!
+  private double ancestorOverlap(Branch branch, Cluster parent) {
+    View view = finalizedView(branch.getCluster(), branch.getView());
+    View parentView = finalizedView(branch.getCluster().getParent(), branch.getView());
+    return template.overlapScore(view, parentView);
+  }
 
-    // TODO: This sucks
-    IntArrayList vertices = branch.getCluster().aggregateVertices();
-    for (int v : branch.getView().getIndices()) vertices.add(v);
-    int[] clusterVertices = vertices.toIntArray();
-    Arrays.parallelSort(clusterVertices);
-
-    if (clusterVertices.length == 0 ) return 0;
-
-    CSRStorage.View clusterView = template.getRootView().subview(clusterVertices);
-    int[] parentVertices = parent.aggregateVertices().toIntArray();
-    Arrays.parallelSort(parentVertices);
-
-    if (parentVertices.length == 0) return 0;
-
-    CSRStorage.View parentView = template.getRootView().subview(parentVertices);
-
-    System.out.println("S: " + clusterView.size() +  " / " + parentView.size());
-
-    return template.overlapScore(clusterView, parentView);
+  private View finalizedView(Cluster cluster, View clusterView) {
+    // TODO: This is super-inefficient
+    IntArrayList vertices = cluster.aggregateVertices();
+    for (int v : clusterView.getIndices()) vertices.add(v);
+    int[] combinedVertices = vertices.toIntArray();
+    Arrays.parallelSort(combinedVertices);
+    return clusterView.subview(combinedVertices);
   }
 
 

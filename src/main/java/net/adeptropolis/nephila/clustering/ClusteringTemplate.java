@@ -6,6 +6,7 @@ import net.adeptropolis.nephila.graph.implementations.RowWeights;
 import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 
 public class ClusteringTemplate {
@@ -34,7 +35,6 @@ public class ClusteringTemplate {
     for (int i = 0; i < partition.size(); i++) {
       refWeight += refWeights[refPartition.getIndex(partition.get(i))];
       weight += weights[i];
-      System.out.printf("%f -- %f", refWeight, weight);
     }
 
     return (refWeight > 0) ? weight / refWeight : 0.0;
@@ -61,7 +61,15 @@ public class ClusteringTemplate {
 
     double[] aggregateConsistencies = relOverlap(aggregateView, aggregateWeights, rootView, rootWeights);
     double[] scores = new double[aggregateVertices.length];
-    for (int i = 0; i < aggregateView.size(); i++) scores[i] = Math.log(aggregateWeights[i]) * aggregateConsistencies[i];
+
+    // NOTE: The > 0 is actually a dirty hack around the fact that when Structure re-arranges a cluster
+    // In the post-recursion step and a parent is overstepped, there is a chance that some adjacent vertices are no longer there
+    // The proper solution would be to re-run ensureConsistency here (and thus take care of the fallout)
+    // However, note that this doesn't really happen that often
+    // DEBUG CODE:
+    // long count = IntStream.range(0, aggregateView.size()).filter(i -> aggregateWeights[i] == 0).count();
+    // System.out.printf("Lost %d / %d vertices\n", count, aggregateWeights.length);
+    for (int i = 0; i < aggregateView.size(); i++) scores[i] = aggregateWeights[i] > 0 ? Math.log(aggregateWeights[i]) * aggregateConsistencies[i] :  0;
 
     it.unimi.dsi.fastutil.Arrays.mergeSort(0, aggregateVertices.length,
             (i, j) -> Double.compare(scores[j], scores[i]),
