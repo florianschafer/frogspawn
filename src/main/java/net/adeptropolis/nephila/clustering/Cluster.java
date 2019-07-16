@@ -11,8 +11,11 @@ import java.util.function.Consumer;
 public class Cluster {
 
   private final IntArrayList remainder;
-  private final Cluster parent;
-  private final List<Cluster> children;
+
+
+  private Cluster parent;
+
+  private List<Cluster> children;
 
   public Cluster(Cluster parent) {
     this.parent = parent;
@@ -27,6 +30,10 @@ public class Cluster {
 
   void addToRemainder(int v) {
     remainder.add(v);
+  }
+
+  public void addToRemainder(IntArrayList vertices) {
+    remainder.addAll(vertices);
   }
 
   public void traverseGraphEdges(BiConsumer<Cluster, Cluster> edgeConsumer) {
@@ -45,6 +52,31 @@ public class Cluster {
     IntArrayList vertices = new IntArrayList();
     traverseSubclusters(cluster -> vertices.addAll(cluster.remainder));
     return vertices;
+  }
+
+  public String id() {
+    // TODO: Find a more sensible id (e.g. cluster coordinates)
+    return String.valueOf(Math.abs(this.hashCode()));
+  }
+
+  public Cluster getParent() {
+    return parent;
+  }
+
+  public void setParent(Cluster parent) {
+    this.parent = parent;
+  }
+
+  public List<Cluster> getChildren() {
+    return children;
+  }
+
+  public void setChildren(List<Cluster> children) {
+    this.children = children;
+  }
+
+  public IntArrayList getRemainder() {
+    return remainder;
   }
 
 }

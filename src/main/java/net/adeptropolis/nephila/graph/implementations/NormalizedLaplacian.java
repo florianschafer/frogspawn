@@ -5,7 +5,7 @@ public class NormalizedLaplacian {
   private final CSRStorage.View view;
   private final RowWeights rowWeights;
   private final double[] multArgument;
-  private final CSRVectorProduct halfProduct; // Standard matrix product
+  private final CSRVectorProduct matProduct; // Standard matrix product
 
   private final double[] v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0)
   private final double[] invDegSqrts; // Inverse square roots of row weights
@@ -16,7 +16,7 @@ public class NormalizedLaplacian {
     this.multArgument = new double[view.size()]; // Preallocate a single, reusable instance
     this.v0 = new double[view.size()];
     this.invDegSqrts = new double[view.size()];
-    this.halfProduct = new CSRVectorProduct(this.view);
+    this.matProduct = new CSRVectorProduct(this.view);
     computeAuxVectors();
   }
 
@@ -34,7 +34,7 @@ public class NormalizedLaplacian {
 
   public synchronized double[] multiply(double[] x) {
     for (int i = 0; i < view.size(); i++) multArgument[i] = -invDegSqrts[i] * x[i];
-    double[] multResult = halfProduct.multiply(multArgument);
+    double[] multResult = matProduct.multiply(multArgument);
     for (int i = 0; i < view.size(); i++) multResult[i] = invDegSqrts[i] * multResult[i] + x[i];
     return multResult;
   }

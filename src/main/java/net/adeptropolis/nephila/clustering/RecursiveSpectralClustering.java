@@ -1,13 +1,16 @@
 package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage.View;
 import net.adeptropolis.nephila.graph.implementations.ConnectedComponents;
 import net.adeptropolis.nephila.graph.implementations.SpectralBipartitioner;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;
+
+// TODO:
+//  1) Find proper merging criteria
+//  2) Intruduce a monte-carlo style multiplication on submatrices!!!
 
 public class RecursiveSpectralClustering {
 
@@ -17,13 +20,15 @@ public class RecursiveSpectralClustering {
 
   private final ClusteringTemplate template;
   private final PriorityQueue<Branch> queue;
+  private final Structure structure;
 
-  public RecursiveSpectralClustering(ClusteringTemplate template, double minVertexConsistency, double maxAlternations, int minPartitionSize) {
+  public RecursiveSpectralClustering(ClusteringTemplate template, double minVertexConsistency, double minParentOverlap, double maxAlternations, int minPartitionSize) {
     this.template = template;
     this.minPartitionSize = minPartitionSize;
     this.minVertexConsistency = minVertexConsistency;
     this.maxAlternations = maxAlternations;
     this.queue = new PriorityQueue<>();
+    this.structure = new Structure(template, minParentOverlap);
   }
 
   public Cluster compute() {
@@ -32,7 +37,7 @@ public class RecursiveSpectralClustering {
     Branch rootBranch = new Branch(Branch.Type.ROOT, rootView, rootCluster);
     queue.add(rootBranch);
     while (!queue.isEmpty()) {
-      Branch branch = queue.poll();
+      Branch branch = structure.applyPreRecursion(queue.poll());
       if (branch.type == Branch.Type.COMPONENT) {
         spectralPartition(branch);
       } else {
@@ -62,7 +67,7 @@ public class RecursiveSpectralClustering {
   private void enqueueBranch(Branch.Type type, Cluster parent, View consistentSubview) {
     Cluster childCluster = new Cluster(parent);
     Branch childBranch = new Branch(type, consistentSubview, childCluster);
-    queue.add(childBranch);
+    queue.add(structure.applyPostRecursion(childBranch));
   }
 
   private View ensureConsistency(Branch branch, View partition) {
@@ -74,7 +79,7 @@ public class RecursiveSpectralClustering {
       int[] vertices = remainingVertices.toIntArray();
       Arrays.parallelSort(vertices);
       View subview = branch.view.subview(vertices);
-      double[] vertexConsistencies = template.computeVertexConsistencies(subview);
+      double[] vertexConsistencies = template.globalOverlap(subview);
       for (int i = 0; i < subview.size(); i++) {
         if (vertexConsistencies[i] < minVertexConsistency) {
           branch.cluster.addToRemainder(subview.get(i));
@@ -103,11 +108,13 @@ public class RecursiveSpectralClustering {
     });
   }
 
-  private static class Branch implements Comparable<Branch> {
+  static class Branch implements Comparable<Branch> {
 
     private Type type;
+
     private final View view;
-    private final Cluster cluster;
+
+    private Cluster cluster;
 
     Branch(Type type, View view, Cluster cluster) {
       this.type = type;
@@ -122,6 +129,18 @@ public class RecursiveSpectralClustering {
 
     private enum Type {
       ROOT, COMPONENT, SPECTRAL
+    }
+
+    public View getView() {
+      return view;
+    }
+
+    public Cluster getCluster() {
+      return cluster;
+    }
+
+    public void setCluster(Cluster cluster) {
+      this.cluster = cluster;
     }
 
   }

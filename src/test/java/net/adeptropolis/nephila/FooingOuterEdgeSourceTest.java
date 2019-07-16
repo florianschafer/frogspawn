@@ -12,10 +12,13 @@ import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
 import net.adeptropolis.nephila.graph.implementations.ConnectedComponents;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
@@ -28,7 +31,7 @@ import java.util.stream.Stream;
 public class FooingOuterEdgeSourceTest {
 
   @Test
-  public void clusteringStuff() {
+  public void clusteringStuff() throws FileNotFoundException {
 
 //     TODO: Change partition back into something like partitionMetrics
 //     calculate consistency AFTER low-scoring vertices have been removed
@@ -42,16 +45,34 @@ public class FooingOuterEdgeSourceTest {
     CSRStorage storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
-    Cluster root = new RecursiveSpectralClustering(template, 0.7, 1E-6, 50)
+    Cluster root = new RecursiveSpectralClustering(template, 0.6, 0.9,1E-6, 50)
             .compute();
+
+    HashMap<String, String> allClusters = new HashMap<>();
     root.traverseSubclusters(cluster -> {
-//      todo: investigate slowness, label multiplicity, heap space (remove xmx)
       ClusterMetrics metrics = template.aggregateMetrics(cluster);
-      String label = IntStream.range(0, Math.min(3, metrics.getSortedVertices().length))
+      String labels = IntStream.range(0, Math.min(3, metrics.getSortedVertices().length))
               .mapToObj(i -> String.format("%s [%.3f]", inverseLabels.get(metrics.getSortedVertices()[i]), metrics.getScores()[i]))
-              .collect(Collectors.joining(", "));
-      System.out.println(label);
+              .collect(Collectors.joining("\\n"));
+      String combinedLabel = String.format("%s\\n%s", metrics.getSortedVertices().length, labels);
+      allClusters.put(cluster.id(), combinedLabel);
     });
+
+    PrintWriter writer = new PrintWriter("/home/florian/tmp/clusters.dot");
+    writer.println("graph g {");
+    writer.println("\tnode[shape=box, fontname = helvetica]");
+    allClusters.forEach((key, value) -> writer.printf("\t%s [label=\"%s\"]\n", key, value));
+    root.traverseGraphEdges((parent, child) -> writer.printf("\t%s -- %s\n", parent.id(), child.id()));
+    writer.println("}");
+    writer.close();
+
+//    root.traverseSubclusters(cluster -> {
+//      ClusterMetrics metrics = template.aggregateMetrics(cluster);
+//      String label = IntStream.range(0, Math.min(3, metrics.getSortedVertices().length))
+//              .mapToObj(i -> String.format("%s [%.3f]", inverseLabels.get(metrics.getSortedVertices()[i]), metrics.getScores()[i]))
+//              .collect(Collectors.joining(", "));
+//      System.out.println(metrics.getSortedVertices().length + label);
+//    });
 
 
     storage.free();

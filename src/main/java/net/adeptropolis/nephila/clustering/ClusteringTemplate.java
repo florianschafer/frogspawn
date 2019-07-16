@@ -6,10 +6,6 @@ import net.adeptropolis.nephila.graph.implementations.RowWeights;
 import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 
 public class ClusteringTemplate {
@@ -22,17 +18,35 @@ public class ClusteringTemplate {
     this.rootWeights = new RowWeights(this.rootView).get();
   }
 
-  public double[] computeVertexConsistencies(View partition) {
+  public double[] globalOverlap(View partition) {
     double[] partitionWeights = new RowWeights(partition).get();
-    return computeVertexConsistencies(partition, partitionWeights);
+    return relOverlap(partition, partitionWeights, rootView, rootWeights);
   }
 
-  private double[] computeVertexConsistencies(View partition, double[] partitionWeights) {
+  // !!! |refPartition| > |partition|
+  public double overlapScore(View partition, View refPartition) {
+    double[] weights = new RowWeights(partition).get();
+    double[] refWeights = new RowWeights(refPartition).get();
+
+    double refWeight = 0;
+    double weight = 0;
+
+    for (int i = 0; i < partition.size(); i++) {
+      refWeight += refWeights[refPartition.getIndex(partition.get(i))];
+      weight += weights[i];
+      System.out.printf("%f -- %f", refWeight, weight);
+    }
+
+    return (refWeight > 0) ? weight / refWeight : 0.0;
+  }
+
+  // !!! |refPartition| > |partition|
+  private double[] relOverlap(View partition, double[] weights, View refPartition, double[] refWeights) {
     double[] cuts = new double[partition.size()];
     for (int i = 0; i < partition.size(); i++) {
-      double weightRelToRoot = rootWeights[rootView.getIndex(partition.get(i))];
-      double weightRelToChild = partitionWeights[i];
-      cuts[i] = (weightRelToRoot > 0) ? weightRelToChild / weightRelToRoot : 0;
+      double refWeight = refWeights[refPartition.getIndex(partition.get(i))];
+      double weight = weights[i];
+      cuts[i] = (refWeight > 0) ? weight / refWeight : 0;
     }
     return cuts;
   }
@@ -45,7 +59,7 @@ public class ClusteringTemplate {
 
     double[] aggregateWeights = new RowWeights(aggregateView).get();
 
-    double[] aggregateConsistencies = computeVertexConsistencies(aggregateView, aggregateWeights);
+    double[] aggregateConsistencies = relOverlap(aggregateView, aggregateWeights, rootView, rootWeights);
     double[] scores = new double[aggregateVertices.length];
     for (int i = 0; i < aggregateView.size(); i++) scores[i] = Math.log(aggregateWeights[i]) * aggregateConsistencies[i];
 
