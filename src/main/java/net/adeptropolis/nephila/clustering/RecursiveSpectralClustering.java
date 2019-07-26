@@ -12,6 +12,8 @@ import java.util.PriorityQueue;
 //  1) Find proper merging criteria
 //  2) Intruduce a monte-carlo style multiplication on submatrices!!!
 
+//TODO: Check whether a binary overlap (or something else) would even make more sense!
+
 public class RecursiveSpectralClustering {
 
   private final int minPartitionSize;
@@ -22,13 +24,13 @@ public class RecursiveSpectralClustering {
   private final PriorityQueue<Branch> queue;
   private final Structure structure;
 
-  public RecursiveSpectralClustering(ClusteringTemplate template, double minVertexConsistency, double minParentOverlap, double maxAlternations, int minPartitionSize) {
+  public RecursiveSpectralClustering(ClusteringTemplate template, double minVertexConsistency, double minParentOverlap, double maxAlternations, int minPartitionSize, boolean collapseSingletons) {
     this.template = template;
     this.minPartitionSize = minPartitionSize;
     this.minVertexConsistency = minVertexConsistency;
     this.maxAlternations = maxAlternations;
     this.queue = new PriorityQueue<>();
-    this.structure = new Structure(template, minParentOverlap);
+    this.structure = new Structure(template, minParentOverlap, collapseSingletons);
   }
 
   public Cluster compute() {

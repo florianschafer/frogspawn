@@ -11,20 +11,24 @@ public class Structure {
   // TODO: Used here once again. Move all this logic into Cluster
   private final ClusteringTemplate template;
   private final double minParentOverlap;
+  private final boolean collapseSingletons;
 
-  public Structure(ClusteringTemplate template, double minParentOverlap) {
+  public Structure(ClusteringTemplate template, double minParentOverlap, boolean collapseSingletons) {
     this.template = template;
     this.minParentOverlap = minParentOverlap;
+    this.collapseSingletons = collapseSingletons;
   }
 
   // NOTE: Modifies branch in-place
   public Branch applyPreRecursion(Branch branch) {
-    Cluster cluster = branch.getCluster();
-    Cluster parent = cluster.getParent();
-    if (parent != null && cluster.getParent().getChildren().size() == 1) {
-      parent.addToRemainder(cluster.getRemainder());
-      parent.getChildren().remove(cluster);
-      branch.setCluster(parent);
+    if (collapseSingletons) {
+      Cluster cluster = branch.getCluster();
+      Cluster parent = cluster.getParent();
+      if (parent != null && cluster.getParent().getChildren().size() == 1) {
+        parent.addToRemainder(cluster.getRemainder());
+        parent.getChildren().remove(cluster);
+        branch.setCluster(parent);
+      }
     }
     return branch;
   }

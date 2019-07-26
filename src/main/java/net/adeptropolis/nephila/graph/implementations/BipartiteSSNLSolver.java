@@ -49,8 +49,8 @@ public class BipartiteSSNLSolver {
     }
 
     long duration = System.nanoTime() - startTime;
-    long entryDur = duration / (iterations * view.size());
-    System.out.printf("Solver finished after %d iterations in %dms (%dns / (entries * iterations))\n", iterations, duration / 1000000, entryDur);
+    long iterationDur = duration / iterations;
+    System.out.printf("Solver finished for %d entries after %d iterations in %dms (%dns / iteration)\n", view.size(), iterations, duration / 1000000, iterationDur);
     return x;
   }
 
