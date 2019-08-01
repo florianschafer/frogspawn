@@ -73,7 +73,7 @@ public class BipartiteSSNLSolverTest {
   public void v2Signums() {
     withBipartiteAdjacencyMatrix(view -> {
       BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
-      double[] v2 = solver.approxV2Signatures(1E-6, 100);
+      double[] v2 = solver.approxV2Signatures(1E-6, 100, 10000);
       int[] signatures = Arrays.stream(v2).mapToInt(x -> (int) Math.signum(x)).toArray();
       assertThat(signatures[0], is(1));
       assertThat(signatures[1], is(1));

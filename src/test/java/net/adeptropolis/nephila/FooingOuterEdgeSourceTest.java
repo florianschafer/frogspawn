@@ -1,10 +1,7 @@
 package net.adeptropolis.nephila;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.adeptropolis.nephila.clustering.Cluster;
-import net.adeptropolis.nephila.clustering.ClusterMetrics;
-import net.adeptropolis.nephila.clustering.ClusteringTemplate;
-import net.adeptropolis.nephila.clustering.RecursiveSpectralClustering;
+import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.implementations.BipartiteSSNLSolver;
 import net.adeptropolis.nephila.graph.implementations.CSRStorage;
@@ -30,6 +27,49 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class FooingOuterEdgeSourceTest {
+
+  @Test
+  public void indexStuff() throws FileNotFoundException {
+
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+    Int2ObjectOpenHashMap<String> inverseLabels = g.inverseLabels();
+    CSRStorageBuilder b = new CSRStorageBuilder();
+    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+    CSRStorage storage = b.build();
+
+    ClusteringTemplate template = new ClusteringTemplate(storage);
+    Cluster root = new RecursiveSpectralClustering(template, 0.6, 0.9,1E-6, 10, false)
+            .compute();
+
+    ClusterIndex clusterIndex = new ClusterIndex(root);
+//    clusterIndex.getCommon()
+
+
+    HashMap<String, String> allClusters = new HashMap<>();
+    root.traverseSubclusters(cluster -> {
+      ClusterMetrics metrics = template.aggregateMetrics(cluster);
+
+      String labels = IntStream.range(0, metrics.getSortedVertices().length)
+              .limit(16)
+              .mapToObj(i -> String.format("%s [%.3f]", inverseLabels.get(metrics.getSortedVertices()[i]), metrics.getScores()[i]))
+              .collect(Collectors.joining("\\n"));
+      String combinedLabel = String.format("%s\\n%s", metrics.getSortedVertices().length, labels);
+      allClusters.put(cluster.id(), combinedLabel);
+    });
+
+    PrintWriter writer = new PrintWriter("/home/florian/tmp/clusters.dot");
+    writer.println("graph g {");
+    writer.println("\tnode[shape=box, fontname = helvetica]");
+    writer.println("\trankdir=LR;");
+    allClusters.forEach((key, value) -> writer.printf("\t%s [label=\"%s\"]\n", key, value));
+    root.traverseGraphEdges((parent, child) -> writer.printf("\t%s -- %s\n", parent.id(), child.id()));
+    writer.println("}");
+    writer.close();
+
+    storage.free();
+
+
+  }
 
   @Test
   public void wikiStuff() throws FileNotFoundException {
@@ -78,9 +118,9 @@ public class FooingOuterEdgeSourceTest {
 //     TODO: Change partition back into something like partitionMetrics
 //     calculate consistency AFTER low-scoring vertices have been removed
 
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.2M.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
     Int2ObjectOpenHashMap<String> inverseLabels = g.inverseLabels();
@@ -89,14 +129,14 @@ public class FooingOuterEdgeSourceTest {
     CSRStorage storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
-    Cluster root = new RecursiveSpectralClustering(template, 0.55, 0.9,1E-6, 10, false)
+    Cluster root = new RecursiveSpectralClustering(template, 0.05, 0.9,1E-5, 10, false)
 //    Cluster root = new RecursiveSpectralClustering(template, 0.6, 0.95,1E-6, 50)
             .compute();
 
     HashMap<String, String> allClusters = new HashMap<>();
     root.traverseSubclusters(cluster -> {
       ClusterMetrics metrics = template.aggregateMetrics(cluster);
-      String labels = IntStream.range(0, Math.min(10, metrics.getSortedVertices().length))
+      String labels = IntStream.range(0, Math.min(1000, metrics.getSortedVertices().length))
               .mapToObj(i -> String.format("%s [%.3f]", inverseLabels.get(metrics.getSortedVertices()[i]), metrics.getScores()[i]))
               .collect(Collectors.joining("\\n"));
       String combinedLabel = String.format("%s\\n%s", metrics.getSortedVertices().length, labels);
@@ -170,7 +210,7 @@ public class FooingOuterEdgeSourceTest {
     BipartiteSSNLSolver solver = new BipartiteSSNLSolver(view);
     long start = System.nanoTime();
 //    double[] v2 = solver.approxV2(1E-6);
-    double[] v2 = solver.approxV2Signatures(1E-6, 100);
+    double[] v2 = solver.approxV2Signatures(1E-6, 100, 10000);
     long runTimeMs = (System.nanoTime() - start) / 1000000000L;
     System.out.println("Runtime: " + runTimeMs + "s");
 

@@ -49,8 +49,7 @@ public class BipartiteSSNLSolver {
     }
 
     long duration = System.nanoTime() - startTime;
-    long iterationDur = duration / iterations;
-    System.out.printf("Solver finished for %d entries after %d iterations in %dms (%dns / iteration)\n", view.size(), iterations, duration / 1000000, iterationDur);
+    System.out.printf("%d entries converged after %d iterations in %dms\n", view.size(), iterations, duration / 1000000);
     return x;
   }
 
@@ -73,13 +72,17 @@ public class BipartiteSSNLSolver {
     for (int i = 0; i < size; i++) result[i] = sig * vec[i] / norm;
   }
 
-  public double[] approxV2Signatures(double maxAlternations, int minIterations) {
+  public double[] approxV2Signatures(double maxAlternations, int minIterations, int maxIterations) {
     return powerIteration((iterations) -> {
       long signumDist = 0;
       for (int i = 0; i < view.size(); i++) {
         byte prevSig = (byte) Math.signum(prevY[i]);
         byte sig = (byte) Math.signum(x[i]);
         signumDist += sig == prevSig ? 0 : 1;
+      }
+      if (iterations >= maxIterations) {
+        System.out.printf("WARN: Terminated after %d iterations. Alternation ratio is %f\n", iterations, signumDist / (double) view.size());
+        return true;
       }
       return iterations >= minIterations && signumDist / (double) view.size() <= maxAlternations;
     });

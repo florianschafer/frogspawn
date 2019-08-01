@@ -10,10 +10,12 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+
+// TODO: Implement proper equals, hash!
+
 public class Cluster {
 
   private final IntArrayList remainder;
-
 
   private Cluster parent;
 
@@ -75,6 +77,16 @@ public class Cluster {
 
   public IntArrayList getRemainder() {
     return remainder;
+  }
+
+  public int depth() {
+    int depth = 0;
+    Cluster cursor = this;
+    while (cursor.parent != null) {
+      depth += 1;
+      cursor = cursor.parent;
+    }
+    return depth;
   }
 
 }
