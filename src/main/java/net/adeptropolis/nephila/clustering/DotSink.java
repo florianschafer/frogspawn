@@ -9,7 +9,8 @@ import java.util.stream.IntStream;
 
 // TODO: Clean up, replace println and hashmaps
 
-public class DotSink implements HierarchySink {
+// TODO: Iek!
+public class DotSink implements HierarchySink<Object> {
 
   private final Path path;
   private final int labelSize;
@@ -20,9 +21,10 @@ public class DotSink implements HierarchySink {
   }
 
   @Override
-  public void consume(ClusteringTemplate template, Cluster root, String[] labelMap) {
+  public Object consume(ClusteringTemplate template, Cluster root, String[] labelMap) {
     HashMap<String, String> allClusters = collectClusters(template, root, labelMap);
     writeDot(root, allClusters);
+    return null;
   }
 
   private HashMap<String, String> collectClusters(ClusteringTemplate template, Cluster root, String[] labelMap) {
@@ -30,7 +32,7 @@ public class DotSink implements HierarchySink {
     root.traverseSubclusters(cluster -> {
       ClusterMetrics metrics = template.aggregateMetrics(cluster);
       String labels = IntStream.range(0, Math.min(labelSize, metrics.getSortedVertices().length))
-              .mapToObj(i -> String.format("%s [%.2f]", labelMap[metrics.getSortedVertices()[i]], metrics.getScores()[i]))
+              .mapToObj(i -> String.format("%s [%.2f]", labelMap[metrics.getSortedVertices()[i]], metrics.getIntraClusterWeights()[i]))
               .collect(Collectors.joining("\\n"));
       String combinedLabel = String.format("%s\\n%s", metrics.getSortedVertices().length, labels);
       allClusters.put(cluster.id(), combinedLabel);

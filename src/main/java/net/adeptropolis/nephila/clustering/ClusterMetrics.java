@@ -2,19 +2,22 @@ package net.adeptropolis.nephila.clustering;
 
 public class ClusterMetrics {
 
+  private final int[] sortedVertices;
+  private final double[] intraClusterWeights;
+  private final double[] clusterLikelihood;
+
+  public ClusterMetrics(int[] sortedVertices, double[] intraClusterWeights, double[] clusterLikelihood) {
+    this.sortedVertices = sortedVertices;
+    this.intraClusterWeights = intraClusterWeights;
+    this.clusterLikelihood = clusterLikelihood;
+  }
+
   public int[] getSortedVertices() {
     return sortedVertices;
   }
 
-  public double[] getScores() {
-    return scores;
+  public double[] getIntraClusterWeights() {
+    return intraClusterWeights;
   }
 
-  private final int[] sortedVertices;
-  private final double[] scores;
-
-  public ClusterMetrics(int[] sortedVertices, double[] scores) {
-    this.sortedVertices = sortedVertices;
-    this.scores = scores;
-  }
 }

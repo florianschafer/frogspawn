@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.clustering;
 
-public interface HierarchySink {
+public interface HierarchySink<T> {
 
-  void consume(ClusteringTemplate template, Cluster root, String[] labelMap);
+  T consume(ClusteringTemplate template, Cluster root, String[] labelMap);
 
 }

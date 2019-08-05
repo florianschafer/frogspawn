@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
 // TODO:
 //  1) Find proper merging criteria
 //  2) Intruduce a monte-carlo style multiplication on submatrices!!!
+//  3) Current implementation still allows clusters below min size. Possibly need to add check after post-iteration processing
 
 //TODO: Check whether a binary overlap (or something else) would even make more sense!
 

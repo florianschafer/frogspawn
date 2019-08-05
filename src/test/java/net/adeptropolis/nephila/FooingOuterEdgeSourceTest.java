@@ -6,11 +6,11 @@ import net.adeptropolis.nephila.graph.implementations.CSRStorage;
 import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,12 +25,10 @@ public class FooingOuterEdgeSourceTest {
 //     calculate consistency AFTER low-scoring vertices have been removed
 
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.2M.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
-
-
 
 
     CSRStorageBuilder b = new CSRStorageBuilder();
@@ -38,14 +36,18 @@ public class FooingOuterEdgeSourceTest {
     CSRStorage storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
-    Cluster root = new RecursiveSpectralClustering(template, 0.1, 0.9,1E-6, 200, false)
-            .compute();
+//    Cluster root = new RecursiveSpectralClustering(template, 0.3, 0.85,1E-6, 150, true).compute();
+    Cluster root = new RecursiveSpectralClustering(template, 0.05, 0.0,1E-6, 100, false).compute();
+
+//    Alternative approach ,in pre-recursion: Use a maxSimilarity and join in when appropriate
+//    also todo: If we don't need consistency measure in score, don't compute it
 
     String[] inverseLabels = g.inverseLabels();
     new DotSink(Paths.get("/home/florian/tmp/clusters.dot"), 8)
             .consume(template, root, inverseLabels);
 
-
+    List<String> topLeafs = new TopLeafSink(30).consume(template, root, inverseLabels);
+    topLeafs.forEach(System.out::println);
 
 
     storage.free();

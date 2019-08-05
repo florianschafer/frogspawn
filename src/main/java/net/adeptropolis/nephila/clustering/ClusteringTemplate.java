@@ -6,7 +6,6 @@ import net.adeptropolis.nephila.graph.implementations.RowWeights;
 import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 
 public class ClusteringTemplate {
@@ -59,8 +58,8 @@ public class ClusteringTemplate {
 
     double[] aggregateWeights = new RowWeights(aggregateView).get();
 
-    double[] aggregateConsistencies = relOverlap(aggregateView, aggregateWeights, rootView, rootWeights);
-    double[] scores = new double[aggregateVertices.length];
+    double[] likelihood = relOverlap(aggregateView, aggregateWeights, rootView, rootWeights);
+//    double[] scores = new double[aggregateVertices.length];
 
     // NOTE: The > 0 is actually a dirty hack around the fact that when Structure re-arranges a cluster
     // In the post-recursion step and a parent is overstepped, there is a chance that some adjacent vertices are no longer there
@@ -69,15 +68,14 @@ public class ClusteringTemplate {
     // DEBUG CODE:
     // long count = IntStream.range(0, aggregateView.size()).filter(i -> aggregateWeights[i] == 0).count();
     // System.out.printf("Lost %d / %d vertices\n", count, aggregateWeights.length);
-    for (int i = 0; i < aggregateView.size(); i++) scores[i] = aggregateWeights[i] > 0 ? Math.log(aggregateWeights[i]) * aggregateConsistencies[i] :  0;
-
+//    for (int i = 0; i < aggregateView.size(); i++) scores[i] = aggregateWeights[i] > 0 ? aggregateWeights[i] /* Math.log(aggregateWeights[i]) * aggregateConsistencies[i] */ :  0;
     it.unimi.dsi.fastutil.Arrays.mergeSort(0, aggregateVertices.length,
-            (i, j) -> Double.compare(scores[j], scores[i]),
+            (i, j) -> Double.compare(aggregateWeights[j], aggregateWeights[i]),
             (i, j) -> {
               Arr.swap(aggregateVertices, i, j);
-              Arr.swap(scores, i, j); });
+              Arr.swap(aggregateWeights, i, j); });
 
-    return new ClusterMetrics(aggregateVertices, scores);
+    return new ClusterMetrics(aggregateVertices, aggregateWeights, likelihood);
 
   }
 
