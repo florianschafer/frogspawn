@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
-import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

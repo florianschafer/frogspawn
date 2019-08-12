@@ -1,7 +1,9 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.backend;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
 import org.junit.Test;
 
 import java.util.List;
@@ -65,12 +67,12 @@ public class CSRStorageBuilderTest {
     withBuilder(builder, storage -> {
       validator.accept(storage);
       List<Long> rowPtrs = Lists.newArrayList();
-      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.getRowPtrs()[i]);
+      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.rowPtrs[i]);
       List<Integer> colIndices = Lists.newArrayList();
-      for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.getColIndices().get(i));
+      for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.colIndices.get(i));
       List<Double> values = Lists.newArrayList();
-      for (int i = 0; i < storage.getNnz(); i++) values.add(storage.getValues().get(i));
-      assertThat("Last element in row pointers must be nnz", storage.getRowPtrs()[storage.getNumRows()], is(storage.getNnz()));
+      for (int i = 0; i < storage.getNnz(); i++) values.add(storage.values.get(i));
+      assertThat("Last element in row pointers must be nnz", storage.rowPtrs[storage.getNumRows()], is(storage.getNnz()));
       assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
       assertThat("Column indices should match", colIndices, is(expectedColIndices));
       assertThat("Values should match", values, is(expectedValues));

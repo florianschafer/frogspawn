@@ -2,6 +2,8 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import net.adeptropolis.nephila.graph.backend.EdgeVisitor;
+import net.adeptropolis.nephila.graph.backend.View;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -12,13 +14,13 @@ import java.util.function.Consumer;
 
 public class ConnectedComponents {
 
-  private final CSRStorage.View view;
+  private final View view;
   private final CCVisitor visitor;
   private IntLinkedOpenHashSet globalQueue;
   private IntRBTreeSet ccQueue;
   private IntRBTreeSet currentCC;
 
-  public ConnectedComponents(CSRStorage.View view) {
+  public ConnectedComponents(View view) {
     this.view = view;
     this.visitor = new CCVisitor();
     this.globalQueue = new IntLinkedOpenHashSet();
@@ -26,7 +28,7 @@ public class ConnectedComponents {
     this.currentCC = new IntRBTreeSet();
   }
 
-  public void find(Consumer<CSRStorage.View> componentConsumer) {
+  public void find(Consumer<View> componentConsumer) {
 
     globalQueue.clear();
     for (int i = 0; i < view.size(); i++) globalQueue.add(i);
@@ -39,7 +41,7 @@ public class ConnectedComponents {
         int j = ccQueue.firstInt();
         ccQueue.remove(j);
         currentCC.add(j);
-        view.traverseRow(j, visitor);
+        view.traverseIncidentEdges(j, visitor);
       }
 
       finalizeComponent(componentConsumer);
@@ -49,7 +51,7 @@ public class ConnectedComponents {
 
   }
 
-  private void finalizeComponent(Consumer<CSRStorage.View> componentConsumer) {
+  private void finalizeComponent(Consumer<View> componentConsumer) {
     int[] componentIndices = currentCC.toIntArray();
     for (int j = 0; j < componentIndices.length; j++)
       componentIndices[j] = view.get(componentIndices[j]); // Map view indices to actual matrix indices
@@ -57,11 +59,11 @@ public class ConnectedComponents {
     componentConsumer.accept(view.subview(componentIndices));
   }
 
-  private class CCVisitor implements EntryVisitor {
+  private class CCVisitor implements EdgeVisitor {
 
     @Override
-    public void visit(int rowIdx, int colIdx, double value) {
-      if (!ccQueue.contains(colIdx) && !currentCC.contains(colIdx)) ccQueue.add(colIdx);
+    public void visit(int u, int v, double weight) {
+      if (!ccQueue.contains(v) && !currentCC.contains(v)) ccQueue.add(v);
     }
 
     @Override

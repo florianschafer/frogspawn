@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.backend;
 
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.longs.LongComparator;

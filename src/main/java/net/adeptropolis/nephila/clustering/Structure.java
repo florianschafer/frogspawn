@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.adeptropolis.nephila.clustering.RecursiveSpectralClustering.Branch;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage.View;
+import net.adeptropolis.nephila.graph.backend.View;
 
 import java.util.Arrays;
 

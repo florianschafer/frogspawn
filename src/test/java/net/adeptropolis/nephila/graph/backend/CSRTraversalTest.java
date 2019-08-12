@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.backend;
 
 import com.google.common.util.concurrent.AtomicDouble;
 import org.hamcrest.MatcherAssert;
@@ -35,7 +35,7 @@ public class CSRTraversalTest {
   public void traversalIgnoresNonSelectedEntries() {
     withLargeDenseMatrix(mat -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      CSRStorage.View view = mat.view(indicesWithSize(999));
+      View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
     });
@@ -51,7 +51,7 @@ public class CSRTraversalTest {
   public void traversalAllowsReuse() {
     withLargeDenseMatrix(mat -> {
       FingerprintingVisitor visitor = new FingerprintingVisitor();
-      CSRStorage.View view = mat.view(indicesWithSize(999));
+      View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
       view = mat.view(indicesWithSize(998));
@@ -60,7 +60,7 @@ public class CSRTraversalTest {
     });
   }
 
-  class FingerprintingVisitor implements EntryVisitor {
+  class FingerprintingVisitor implements EdgeVisitor {
 
     private final AtomicDouble fingerprint;
 
@@ -73,9 +73,9 @@ public class CSRTraversalTest {
     }
 
     @Override
-    public void visit(int rowIdx, int colIdx, double value) {
+    public void visit(int u, int v, double weight) {
       burnCycles();
-      fingerprint.addAndGet(rowIdx * value + colIdx);
+      fingerprint.addAndGet(u * weight + v);
     }
 
     private void burnCycles() {

@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.backend;
 
 import com.google.common.collect.Lists;
 import org.junit.Test;
@@ -15,9 +15,9 @@ public class CSRStorageTest {
   @Test
   public void traverseEmptyMatrix() {
     CSRStorage storage = new CSRStorageBuilder().build();
-    CSRStorage.View view = storage.defaultView();
-    CollectingEntryVisitor visitor = new CollectingEntryVisitor();
-    view.traverseRow(0, visitor);
+    View view = storage.defaultView();
+    CollectingEdgeVisitor visitor = new CollectingEdgeVisitor();
+    view.traverseIncidentEdges(0, visitor);
     assertThat(visitor.entries, empty());
     storage.free();
   }
@@ -25,12 +25,12 @@ public class CSRStorageTest {
   @Test
   public void traverseEmptyRow() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.defaultView().traverseRow(2, visitor);
+      mat.defaultView().traverseIncidentEdges(2, visitor);
       assertThat(visitor.entries, empty());
     });
   }
 
-  private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEntryVisitor> consumer) {
+  private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEdgeVisitor> consumer) {
     CSRStorage storage = new CSRStorageBuilder()
             .add(1, 1, 2)
             .add(1, 2, 3)
@@ -41,14 +41,14 @@ public class CSRStorageTest {
             .add(5, 6, 9)
             .add(5, 7, 11)
             .build();
-    consumer.accept(storage, new CollectingEntryVisitor());
+    consumer.accept(storage, new CollectingEdgeVisitor());
     storage.free();
   }
 
   @Test
   public void traverseRowWithNotAllColIndicesSelected() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.view(new int[]{1, 2}).traverseRow(0, visitor);
+      mat.view(new int[]{1, 2}).traverseIncidentEdges(0, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(0, 0, 2),
               Entry.of(0, 1, 3)));
@@ -58,7 +58,7 @@ public class CSRStorageTest {
   @Test
   public void traverseFullRow() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.defaultView().traverseRow(1, visitor);
+      mat.defaultView().traverseIncidentEdges(1, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(1, 1, 2),
               Entry.of(1, 2, 3),
@@ -69,7 +69,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowByEntries() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.defaultView().traverseRow(3, visitor);
+      mat.defaultView().traverseIncidentEdges(3, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(3, 1, 5),
               Entry.of(3, 3, 6)));
@@ -79,7 +79,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowByIndices() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.view(new int[]{3}).traverseRow(0, visitor);
+      mat.view(new int[]{3}).traverseIncidentEdges(0, visitor);
       assertThat(visitor.entries, contains(Entry.of(0, 0, 6)));
     });
   }
@@ -115,13 +115,13 @@ public class CSRStorageTest {
     }
   }
 
-  private class CollectingEntryVisitor implements EntryVisitor {
+  private class CollectingEdgeVisitor implements EdgeVisitor {
 
     private final List<Entry> entries = Lists.newArrayList();
 
     @Override
-    public void visit(int rowIdx, int colIdx, double value) {
-      entries.add(Entry.of(rowIdx, colIdx, value));
+    public void visit(int u, int v, double weight) {
+      entries.add(Entry.of(u, v, weight));
     }
 
     @Override

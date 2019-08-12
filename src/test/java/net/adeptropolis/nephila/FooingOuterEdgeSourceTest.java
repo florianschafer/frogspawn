@@ -2,10 +2,11 @@ package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.graph.LabeledEdge;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
-import net.adeptropolis.nephila.graph.implementations.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
 import org.junit.Test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,15 +20,17 @@ import java.util.stream.Stream;
 public class FooingOuterEdgeSourceTest {
 
   @Test
-  public void clusteringStuff() {
+  public void clusteringStuff() throws FileNotFoundException {
 
 //     TODO: Change partition back into something like partitionMetrics
 //     calculate consistency AFTER low-scoring vertices have been removed
 
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.5M.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.2M.pairs"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.250k.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.500k.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/fb_names.30M.tsv"));
 
 
@@ -48,7 +51,6 @@ public class FooingOuterEdgeSourceTest {
 
     List<String> topLeafs = new TopLeafSink(30).consume(template, root, inverseLabels);
     topLeafs.forEach(System.out::println);
-
 
     storage.free();
 

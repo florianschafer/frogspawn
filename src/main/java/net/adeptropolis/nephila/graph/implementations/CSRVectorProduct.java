@@ -1,14 +1,17 @@
 package net.adeptropolis.nephila.graph.implementations;
 
+import net.adeptropolis.nephila.graph.backend.EdgeVisitor;
+import net.adeptropolis.nephila.graph.backend.View;
+
 import java.util.Arrays;
 
-public class CSRVectorProduct implements EntryVisitor {
+public class CSRVectorProduct implements EdgeVisitor {
 
-  private final CSRStorage.View view;
+  private final View view;
   private final double[] result;
   private double[] argument;
 
-  public CSRVectorProduct(CSRStorage.View view) {
+  public CSRVectorProduct(View view) {
     this.view = view;
     this.result = new double[view.size()]; // Preallocate a single, reusable instance
   }
@@ -20,9 +23,9 @@ public class CSRVectorProduct implements EntryVisitor {
   }
 
   @Override
-  public void visit(int rowIdx, int colIdx, double value) {
+  public void visit(int u, int v, double weight) {
     // TODO: Do something against range checks on the LHS (extend visitor interface to rows)
-    result[rowIdx] += value * argument[colIdx];
+    result[u] += weight * argument[v];
   }
 
   @Override

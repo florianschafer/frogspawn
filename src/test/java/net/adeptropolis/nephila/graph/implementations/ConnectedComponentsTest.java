@@ -1,6 +1,9 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.collect.Lists;
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
 import java.util.Comparator;
@@ -27,12 +30,12 @@ public class ConnectedComponentsTest {
             .addSymmetric(4, 5, 1)
             .addSymmetric(5, 6, 1)
             .build();
-    List<CSRStorage.View> components = Lists.newArrayList();
+    List<View> components = Lists.newArrayList();
     new ConnectedComponents(butterfly.view(viewIndices)).find(components::add);
     assertThat("Number of components should agree", components.size(), is(expected.length));
     components.sort(Comparator.comparingInt(comp -> comp.get(0)));
     for (int i = 0; i < components.size(); i++) {
-      CSRStorage.View component = components.get(i);
+      View component = components.get(i);
       assertThat("Component size should agree", component.size(), is(expected[i].length));
       for (int j = 0; j < component.size(); j++) {
         assertThat("Component has member", component.get(j), is(expected[i][j]));

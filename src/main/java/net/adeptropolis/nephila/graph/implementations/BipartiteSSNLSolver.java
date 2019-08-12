@@ -7,16 +7,18 @@ package net.adeptropolis.nephila.graph.implementations;
  *
  * */
 
+import net.adeptropolis.nephila.graph.backend.View;
+
 import java.util.function.Function;
 
 public class BipartiteSSNLSolver {
 
-  private final CSRStorage.View view;
+  private final View view;
   private final NormalizedLaplacian normalizedLaplacian;
   private final double[] x;
   private final double[] prevY;
 
-  public BipartiteSSNLSolver(CSRStorage.View view) {
+  public BipartiteSSNLSolver(View view) {
     this.view = view;
     this.normalizedLaplacian = new NormalizedLaplacian(view);
     this.x = new double[view.size()];

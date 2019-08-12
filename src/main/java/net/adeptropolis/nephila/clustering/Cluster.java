@@ -1,11 +1,9 @@
 package net.adeptropolis.nephila.clustering;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.View;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -28,7 +26,7 @@ public class Cluster {
     if (parent != null) parent.children.add(this);
   }
 
-  void addToRemainder(CSRStorage.View view) {
+  void addToRemainder(View view) {
     for (int v : view.getIndices()) addToRemainder(v);
   }
 

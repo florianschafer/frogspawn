@@ -1,6 +1,9 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.collect.Lists;
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
 import java.util.Comparator;
@@ -31,12 +34,12 @@ public class SpectralBipartitionerTest {
             .addSymmetric(7, 6, 1)
             .addSymmetric(7, 8, 1)
             .build();
-    List<CSRStorage.View> partitions = Lists.newArrayList();
+    List<View> partitions = Lists.newArrayList();
     new SpectralBipartitioner(graph.view(viewIndices), 1E-9).partition(partitions::add);
     assertThat("Number of partitions should agree", partitions.size(), is(expected.length));
     partitions.sort(Comparator.comparingInt(comp -> comp.get(0)));
     for (int i = 0; i < partitions.size(); i++) {
-      CSRStorage.View component = partitions.get(i);
+      View component = partitions.get(i);
       assertThat("Partition size should agree", component.size(), is(expected[i].length));
       for (int j = 0; j < component.size(); j++) {
         assertThat("Partition has member", component.get(j), is(expected[i][j]));

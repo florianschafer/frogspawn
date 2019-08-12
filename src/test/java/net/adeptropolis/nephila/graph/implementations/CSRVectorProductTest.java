@@ -1,5 +1,8 @@
 package net.adeptropolis.nephila.graph.implementations;
 
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
 import java.util.function.Consumer;
@@ -35,7 +38,7 @@ public class CSRVectorProductTest {
   @Test
   public void subsetMultiplication() {
     withStorage(mat -> {
-      CSRStorage.View view = mat.view(new int[]{0, 2});
+      View view = mat.view(new int[]{0, 2});
       double[] res = new CSRVectorProduct(view).multiply(new double[]{29, 31});
       assertThat(res[0], is(213.0));
       assertThat(res[1], is(548.0));

@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage.View;
+import net.adeptropolis.nephila.graph.backend.View;
 import net.adeptropolis.nephila.graph.implementations.ConnectedComponents;
 import net.adeptropolis.nephila.graph.implementations.SpectralBipartitioner;
 

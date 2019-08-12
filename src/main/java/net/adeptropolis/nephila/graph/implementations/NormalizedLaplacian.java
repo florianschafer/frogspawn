@@ -1,8 +1,10 @@
 package net.adeptropolis.nephila.graph.implementations;
 
+import net.adeptropolis.nephila.graph.backend.View;
+
 public class NormalizedLaplacian {
 
-  private final CSRStorage.View view;
+  private final View view;
   private final RowWeights rowWeights;
   private final double[] multArgument;
   private final CSRVectorProduct matProduct; // Standard matrix product
@@ -10,7 +12,7 @@ public class NormalizedLaplacian {
   private final double[] v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0)
   private final double[] invDegSqrts; // Inverse square roots of row weights
 
-  public NormalizedLaplacian(CSRStorage.View view) {
+  public NormalizedLaplacian(View view) {
     this.view = view;
     this.rowWeights = new RowWeights(view);
     this.multArgument = new double[view.size()]; // Preallocate a single, reusable instance

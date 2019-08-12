@@ -1,5 +1,8 @@
 package net.adeptropolis.nephila.graph.implementations;
 
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
 import java.util.function.Consumer;
@@ -35,7 +38,7 @@ public class RowWeightsTest {
   @Test
   public void maskedColumsDoNotContribute() {
     withDefaultMatrix(mat -> {
-      CSRStorage.View view = mat.view(new int[]{0, 2, 3});
+      View view = mat.view(new int[]{0, 2, 3});
       RowWeights rowWeights = new RowWeights(view);
       double[] weights = rowWeights.get();
       assertThat(weights[0], is(3.0));

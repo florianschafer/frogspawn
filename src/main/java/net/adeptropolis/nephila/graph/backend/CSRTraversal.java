@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.backend;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +24,7 @@ class CSRTraversal {
     this.workPtr = new AtomicInteger();
   }
 
-  synchronized void traverse(final EntryVisitor visitor, CSRStorage.View view) {
+  synchronized void traverse(final EdgeVisitor visitor, View view) {
     visitor.reset();
     workPtr.set(0);
     for (int i = 0; i < THREAD_POOL_SIZE; i++)
@@ -38,11 +38,11 @@ class CSRTraversal {
     }
   }
 
-  private void fetchAndProcess(final EntryVisitor visitor, CSRStorage.View view) {
+  private void fetchAndProcess(final EdgeVisitor visitor, View view) {
     int i;
     while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < view.size()) {
       for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, view.size()); j++) {
-        view.traverseRow(j, visitor);
+        view.traverseIncidentEdges(j, visitor);
       }
     }
   }

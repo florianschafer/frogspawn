@@ -1,12 +1,11 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.implementations.CSRStorage;
-import net.adeptropolis.nephila.graph.implementations.CSRStorage.View;
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.View;
 import net.adeptropolis.nephila.graph.implementations.RowWeights;
 import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
-
 
 public class ClusteringTemplate {
 
@@ -32,8 +31,11 @@ public class ClusteringTemplate {
     double weight = 0;
 
     for (int i = 0; i < partition.size(); i++) {
-      refWeight += refWeights[refPartition.getIndex(partition.get(i))];
-      weight += weights[i];
+      int idx = refPartition.getIndex(partition.get(i));
+      if (idx >= 0) {
+        refWeight += refWeights[idx];
+        weight += weights[i];
+      }
     }
 
     return (refWeight > 0) ? weight / refWeight : 0.0;

@@ -1,5 +1,8 @@
 package net.adeptropolis.nephila.graph.implementations;
 
+import net.adeptropolis.nephila.graph.backend.CSRStorage;
+import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,7 +31,7 @@ public class NormalizedLaplacianTest {
             .add(5, 4, 1)
             .build();
 
-    CSRStorage.View view = storage.defaultView();
+    View view = storage.defaultView();
     NormalizedLaplacian laplacian = new NormalizedLaplacian(view);
     double invSqrt8 = -1.0 / Math.sqrt(8);
     double quarter = -1.0 / 4;
@@ -72,7 +75,7 @@ public class NormalizedLaplacianTest {
             .addSymmetric(4, 5, 1)
             .build();
 
-    CSRStorage.View view = storage.view(new int[]{0, 2, 3, 4, 5});
+    View view = storage.view(new int[]{0, 2, 3, 4, 5});
     NormalizedLaplacian laplacian = new NormalizedLaplacian(view);
     double inv2Sqrt8 = -2.0 / Math.sqrt(8);
     double inv1Sqrt8 = -1.0 / Math.sqrt(8);
