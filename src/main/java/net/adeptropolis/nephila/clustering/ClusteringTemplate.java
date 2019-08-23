@@ -31,7 +31,7 @@ public class ClusteringTemplate {
     double weight = 0;
 
     for (int i = 0; i < partition.size(); i++) {
-      int idx = refPartition.getIndex(partition.get(i));
+      int idx = refPartition.getIndex(partition.getVertex(i));
       if (idx >= 0) {
         refWeight += refWeights[idx];
         weight += weights[i];
@@ -45,7 +45,7 @@ public class ClusteringTemplate {
   private double[] relOverlap(View partition, double[] weights, View refPartition, double[] refWeights) {
     double[] cuts = new double[partition.size()];
     for (int i = 0; i < partition.size(); i++) {
-      double refWeight = refWeights[refPartition.getIndex(partition.get(i))];
+      double refWeight = refWeights[refPartition.getIndex(partition.getVertex(i))];
       double weight = weights[i];
       cuts[i] = (refWeight > 0) ? weight / refWeight : 0;
     }

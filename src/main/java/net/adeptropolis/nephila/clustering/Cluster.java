@@ -27,7 +27,7 @@ public class Cluster {
   }
 
   void addToRemainder(View view) {
-    for (int v : view.getIndices()) addToRemainder(v);
+    for (int v : view.getVertices()) addToRemainder(v);
   }
 
   void addToRemainder(int v) {

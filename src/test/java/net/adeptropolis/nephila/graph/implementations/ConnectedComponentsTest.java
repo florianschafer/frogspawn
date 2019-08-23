@@ -33,12 +33,12 @@ public class ConnectedComponentsTest {
     List<View> components = Lists.newArrayList();
     new ConnectedComponents(butterfly.view(viewIndices)).find(components::add);
     assertThat("Number of components should agree", components.size(), is(expected.length));
-    components.sort(Comparator.comparingInt(comp -> comp.get(0)));
+    components.sort(Comparator.comparingInt(comp -> comp.getVertex(0)));
     for (int i = 0; i < components.size(); i++) {
       View component = components.get(i);
       assertThat("Component size should agree", component.size(), is(expected[i].length));
       for (int j = 0; j < component.size(); j++) {
-        assertThat("Component has member", component.get(j), is(expected[i][j]));
+        assertThat("Component has member", component.getVertex(j), is(expected[i][j]));
       }
     }
   }

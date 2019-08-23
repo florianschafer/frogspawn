@@ -3,7 +3,7 @@ package net.adeptropolis.nephila.graph.backend;
 import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
 import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
 
-// TODO: Make indices an efficiently-flushable sorted set?
+// TODO: Make vertices an efficiently-flushable sorted set?
 
 public class CSRStorage {
 

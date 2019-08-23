@@ -17,7 +17,7 @@ public class CSRStorageTest {
     CSRStorage storage = new CSRStorageBuilder().build();
     View view = storage.defaultView();
     CollectingEdgeVisitor visitor = new CollectingEdgeVisitor();
-    view.traverseIncidentEdges(0, visitor);
+    view.traverseAdjacent(0, visitor);
     assertThat(visitor.entries, empty());
     storage.free();
   }
@@ -25,7 +25,7 @@ public class CSRStorageTest {
   @Test
   public void traverseEmptyRow() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.defaultView().traverseIncidentEdges(2, visitor);
+      mat.defaultView().traverseAdjacent(2, visitor);
       assertThat(visitor.entries, empty());
     });
   }
@@ -48,7 +48,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowWithNotAllColIndicesSelected() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.view(new int[]{1, 2}).traverseIncidentEdges(0, visitor);
+      mat.view(new int[]{1, 2}).traverseAdjacent(0, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(0, 0, 2),
               Entry.of(0, 1, 3)));
@@ -58,7 +58,7 @@ public class CSRStorageTest {
   @Test
   public void traverseFullRow() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.defaultView().traverseIncidentEdges(1, visitor);
+      mat.defaultView().traverseAdjacent(1, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(1, 1, 2),
               Entry.of(1, 2, 3),
@@ -69,7 +69,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowByEntries() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.defaultView().traverseIncidentEdges(3, visitor);
+      mat.defaultView().traverseAdjacent(3, visitor);
       assertThat(visitor.entries, contains(
               Entry.of(3, 1, 5),
               Entry.of(3, 3, 6)));
@@ -79,7 +79,7 @@ public class CSRStorageTest {
   @Test
   public void traverseRowByIndices() {
     withDefaultMatrix((mat, visitor) -> {
-      mat.view(new int[]{3}).traverseIncidentEdges(0, visitor);
+      mat.view(new int[]{3}).traverseAdjacent(0, visitor);
       assertThat(visitor.entries, contains(Entry.of(0, 0, 6)));
     });
   }

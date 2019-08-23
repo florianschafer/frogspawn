@@ -74,7 +74,7 @@ public class RecursiveSpectralClustering {
   }
 
   private View ensureConsistency(Branch branch, View partition) {
-    IntRBTreeSet remainingVertices = new IntRBTreeSet(partition.getIndices());
+    IntRBTreeSet remainingVertices = new IntRBTreeSet(partition.getVertices());
 
     while (true) {
       int prevSize = remainingVertices.size();
@@ -84,8 +84,8 @@ public class RecursiveSpectralClustering {
       double[] vertexConsistencies = template.globalOverlap(subview);
       for (int i = 0; i < subview.size(); i++) {
         if (vertexConsistencies[i] < minVertexConsistency) {
-          branch.cluster.addToRemainder(subview.get(i));
-          remainingVertices.remove(subview.get(i));
+          branch.cluster.addToRemainder(subview.getVertex(i));
+          remainingVertices.remove(subview.getVertex(i));
         }
       }
       if (remainingVertices.size() == prevSize) return subview;

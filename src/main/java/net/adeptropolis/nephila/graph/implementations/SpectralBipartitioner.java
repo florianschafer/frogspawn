@@ -32,7 +32,7 @@ public class SpectralBipartitioner {
     for (double v : v2) if (selector.apply(v)) viewSize++;
     int[] partition = new int[viewSize];
     int partitionIdx = 0;
-    for (int i = 0; i < v2.length; i++) if (selector.apply(v2[i])) partition[partitionIdx++] = view.get(i);
+    for (int i = 0; i < v2.length; i++) if (selector.apply(v2[i])) partition[partitionIdx++] = view.getVertex(i);
     Arrays.parallelSort(partition);
     return view.subview(partition);
   }

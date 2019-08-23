@@ -24,9 +24,9 @@ class VertexIndex<T> {
 //  public Stream<Edge> mapEdges(FooingOuterEdgeSourceTest.LabeledEdgeSource<T> edgeSource) {
 //    ThreadLocal<Edge> edges = ThreadLocal.withInitial(() -> new Edge(0, 0, 0.0));
 //    return edgeSource.edges().parallel().map(labeledEdge -> {
-//      Edge edge = edges.get();
-//      edge.u = indices.get(labeledEdge.u);
-//      edge.v = indices.get(labeledEdge.v);
+//      Edge edge = edges.getVertex();
+//      edge.u = indices.getVertex(labeledEdge.u);
+//      edge.v = indices.getVertex(labeledEdge.v);
 //      edge.weight = labeledEdge.weight;
 //      return edge;
 //    });

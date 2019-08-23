@@ -2,6 +2,8 @@ package net.adeptropolis.nephila.graph.backend;
 
 import net.adeptropolis.nephila.graph.implementations.primitives.search.InterpolationSearch;
 
+// TODO: Remove calls to subview
+
 public class View {
 
   /*
@@ -9,11 +11,11 @@ public class View {
    */
 
   private CSRStorage csrStorage;
-  final int[] indices;
+  private final int[] vertices;
 
-  View(CSRStorage csrStorage, int[] indices) {
+  View(CSRStorage csrStorage, int[] vertices) {
     this.csrStorage = csrStorage;
-    this.indices = indices;
+    this.vertices = vertices;
   }
 
   public View subview(int[] subviewIndices) {
@@ -21,57 +23,53 @@ public class View {
   }
 
   public int size() {
-    return indices.length;
+    return vertices.length;
   }
 
-  public int get(int idx) {
-    return indices[idx];
+  public int[] getVertices() {
+    return vertices;
   }
 
-  public int[] getIndices() {
-    return indices;
+  public int getVertex(int idx) {
+    return vertices[idx];
   }
 
   public int getIndex(int val) {
-    return InterpolationSearch.search(indices, val, 0, indices.length - 1);
+    return InterpolationSearch.search(vertices, val, 0, vertices.length - 1);
   }
 
   public void traverse(final EdgeVisitor visitor) {
     csrStorage.traversal.traverse(visitor, this);
   }
 
-  public void traverseIncidentEdges(final int u, final EdgeVisitor visitor) {
-    if (indices.length == 0) return;
-    int row = indices[u];
-    long low = csrStorage.rowPtrs[row];
-    long high = csrStorage.rowPtrs[row + 1];
+  public void traverseAdjacent(final int idx, final EdgeVisitor visitor) {
+    if (vertices.length == 0) return;
+    int v = vertices[idx];
+    long low = csrStorage.rowPtrs[v];
+    long high = csrStorage.rowPtrs[v + 1];
     if (low == high) return;
-
-    if (indices.length > high - low)
-      traverseRowByEntries(u, visitor, low, high);
-    else
-      traverseRowByIndices(u, visitor, low, high);
-
+    if (vertices.length > high - low) traverseByAdjacent(idx, visitor, low, high);
+    else traverseByIndices(idx, visitor, low, high);
   }
 
-  private void traverseRowByEntries(final int rowIdx, final EdgeVisitor visitor, final long low, final long high) {
+  private void traverseByAdjacent(final int rowIdx, final EdgeVisitor visitor, final long low, final long high) {
     int secPtr = 0;
     int colIdx;
     for (long ptr = low; ptr < high; ptr++) {
-      colIdx = InterpolationSearch.search(indices, csrStorage.colIndices.get(ptr), secPtr, indices.length - 1);
+      colIdx = InterpolationSearch.search(vertices, csrStorage.colIndices.get(ptr), secPtr, vertices.length - 1);
       if (colIdx >= 0) {
         visitor.visit(rowIdx, colIdx, csrStorage.values.get(ptr));
         secPtr = colIdx + 1;
       }
-      if (secPtr >= indices.length) break;
+      if (secPtr >= vertices.length) break;
     }
   }
 
-  private void traverseRowByIndices(final int rowIdx, final EdgeVisitor visitor, final long low, final long high) {
+  private void traverseByIndices(final int rowIdx, final EdgeVisitor visitor, final long low, final long high) {
     long ptr = low;
     long retrievedIdx;
-    for (int colIdx = 0; colIdx < indices.length; colIdx++) {
-      retrievedIdx = InterpolationSearch.search(csrStorage.colIndices, indices[colIdx], ptr, high - 1);
+    for (int colIdx = 0; colIdx < vertices.length; colIdx++) {
+      retrievedIdx = InterpolationSearch.search(csrStorage.colIndices, vertices[colIdx], ptr, high - 1);
       if (retrievedIdx >= 0 && retrievedIdx < high) {
         visitor.visit(rowIdx, colIdx, csrStorage.values.get(retrievedIdx));
         ptr = retrievedIdx + 1;

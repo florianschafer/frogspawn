@@ -41,7 +41,7 @@ public class ConnectedComponents {
         int j = ccQueue.firstInt();
         ccQueue.remove(j);
         currentCC.add(j);
-        view.traverseIncidentEdges(j, visitor);
+        view.traverseAdjacent(j, visitor);
       }
 
       finalizeComponent(componentConsumer);
@@ -54,7 +54,7 @@ public class ConnectedComponents {
   private void finalizeComponent(Consumer<View> componentConsumer) {
     int[] componentIndices = currentCC.toIntArray();
     for (int j = 0; j < componentIndices.length; j++)
-      componentIndices[j] = view.get(componentIndices[j]); // Map view indices to actual matrix indices
+      componentIndices[j] = view.getVertex(componentIndices[j]); // Map view indices to actual matrix indices
     Arrays.parallelSort(componentIndices);
     componentConsumer.accept(view.subview(componentIndices));
   }

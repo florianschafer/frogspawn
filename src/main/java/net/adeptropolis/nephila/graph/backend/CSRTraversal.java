@@ -42,7 +42,7 @@ class CSRTraversal {
     int i;
     while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < view.size()) {
       for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, view.size()); j++) {
-        view.traverseIncidentEdges(j, visitor);
+        view.traverseAdjacent(j, visitor);
       }
     }
   }

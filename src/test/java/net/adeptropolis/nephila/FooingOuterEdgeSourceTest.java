@@ -25,13 +25,13 @@ public class FooingOuterEdgeSourceTest {
 //     TODO: Change partition back into something like partitionMetrics
 //     calculate consistency AFTER low-scoring vertices have been removed
 
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/fb_names.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/fb_names.5M.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.2M.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.5M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.2M.pairs"));
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.250k.pairs"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.500k.pairs"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.500k.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
 
     CSRStorageBuilder b = new CSRStorageBuilder();

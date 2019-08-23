@@ -37,12 +37,12 @@ public class SpectralBipartitionerTest {
     List<View> partitions = Lists.newArrayList();
     new SpectralBipartitioner(graph.view(viewIndices), 1E-9).partition(partitions::add);
     assertThat("Number of partitions should agree", partitions.size(), is(expected.length));
-    partitions.sort(Comparator.comparingInt(comp -> comp.get(0)));
+    partitions.sort(Comparator.comparingInt(comp -> comp.getVertex(0)));
     for (int i = 0; i < partitions.size(); i++) {
       View component = partitions.get(i);
       assertThat("Partition size should agree", component.size(), is(expected[i].length));
       for (int j = 0; j < component.size(); j++) {
-        assertThat("Partition has member", component.get(j), is(expected[i][j]));
+        assertThat("Partition has member", component.getVertex(j), is(expected[i][j]));
       }
     }
   }

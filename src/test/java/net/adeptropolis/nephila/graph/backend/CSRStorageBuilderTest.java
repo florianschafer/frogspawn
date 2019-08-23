@@ -74,7 +74,7 @@ public class CSRStorageBuilderTest {
       for (int i = 0; i < storage.getNnz(); i++) values.add(storage.values.get(i));
       assertThat("Last element in row pointers must be nnz", storage.rowPtrs[storage.getNumRows()], is(storage.getNnz()));
       assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
-      assertThat("Column indices should match", colIndices, is(expectedColIndices));
+      assertThat("Column vertices should match", colIndices, is(expectedColIndices));
       assertThat("Values should match", values, is(expectedValues));
     });
   }

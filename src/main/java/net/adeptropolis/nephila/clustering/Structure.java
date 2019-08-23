@@ -63,7 +63,7 @@ public class Structure {
   private View finalizedView(Cluster cluster, View clusterView) {
     // TODO: This is super-inefficient
     IntArrayList vertices = cluster.aggregateVertices();
-    for (int v : clusterView.getIndices()) vertices.add(v);
+    for (int v : clusterView.getVertices()) vertices.add(v);
     int[] combinedVertices = vertices.toIntArray();
     Arrays.parallelSort(combinedVertices);
     return clusterView.subview(combinedVertices);
