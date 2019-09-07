@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.collect.Lists;
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -21,18 +21,18 @@ public class SpectralBipartitionerTest {
 
   private void withTwoWeaklyLinkedCompleteBipartiteGraphs(int[] viewIndices, int[]... expected) {
 
-    CSRStorage graph = new CSRStorageBuilder()
-            .addSymmetric(0, 1, 1)
-            .addSymmetric(0, 2, 1)
-            .addSymmetric(0, 3, 1)
-            .addSymmetric(4, 1, 1)
-            .addSymmetric(4, 2, 1)
-            .addSymmetric(4, 3, 1)
-            .addSymmetric(5, 3, 0.5)
-            .addSymmetric(5, 6, 1)
-            .addSymmetric(5, 8, 1)
-            .addSymmetric(7, 6, 1)
-            .addSymmetric(7, 8, 1)
+    CSRStorage graph = new UndirectedCSRStorageBuilder()
+            .add(0, 1, 1)
+            .add(0, 2, 1)
+            .add(0, 3, 1)
+            .add(4, 1, 1)
+            .add(4, 2, 1)
+            .add(4, 3, 1)
+            .add(5, 3, 0.5)
+            .add(5, 6, 1)
+            .add(5, 8, 1)
+            .add(7, 6, 1)
+            .add(7, 8, 1)
             .build();
     List<View> partitions = Lists.newArrayList();
     new SpectralBipartitioner(graph.view(viewIndices), 1E-9).partition(partitions::add);

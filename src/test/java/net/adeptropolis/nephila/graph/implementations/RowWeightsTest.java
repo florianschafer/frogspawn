@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -25,11 +25,11 @@ public class RowWeightsTest {
   }
 
   private void withDefaultMatrix(Consumer<CSRStorage> storageConsumer) {
-    CSRStorage storage = new CSRStorageBuilder()
-            .addSymmetric(0, 1, 2)
-            .addSymmetric(0, 2, 3)
-            .addSymmetric(1, 2, 5)
-            .addSymmetric(1, 3, 7)
+    CSRStorage storage = new UndirectedCSRStorageBuilder()
+            .add(0, 1, 2)
+            .add(0, 2, 3)
+            .add(1, 2, 5)
+            .add(1, 3, 7)
             .build();
     storageConsumer.accept(storage);
     storage.free();

@@ -1,9 +1,9 @@
-package net.adeptropolis.nephila.graph.implementations.primitives.sorting;
+package net.adeptropolis.nephila.graph.backend.primitives.sorting;
 
 
 /*
  * Copyright (C) 2002-2017 Sebastiano Vigna
- * Shamelessly taken and modified to support long indices 2019 by Florian Schaefer
+ * Shamelessly taken and modified to support long indices 2019 Florian Schaefer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

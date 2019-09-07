@@ -1,7 +1,6 @@
-package net.adeptropolis.nephila.graph.implementations.primitives.search;
+package net.adeptropolis.nephila.graph.backend.primitives.search;
 
-import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
-import net.adeptropolis.nephila.graph.implementations.primitives.arrays.ArrayInts;
+import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,7 +15,7 @@ public class InterpolationSearchTest {
 
   @Test
   public void searchBigDenseIntArray() {
-    Ints buf = new ArrayInts(BASE_SIZE);
+    BigInts buf = new BigInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, i);
     buf.sort(10000);
     for (int i = 0; i < 10000; i++)
@@ -25,7 +24,7 @@ public class InterpolationSearchTest {
 
   @Test
   public void searchBigSparseIntArray() {
-    Ints buf = new ArrayInts(BASE_SIZE);
+    BigInts buf = new BigInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, i * 13);
     buf.sort(10000);
     for (int i = 0; i < 10000; i++) {
@@ -36,7 +35,7 @@ public class InterpolationSearchTest {
 
   @Test
   public void searchBigVerySparse() {
-    Ints buf = new ArrayInts(BASE_SIZE);
+    BigInts buf = new BigInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, 0);
     buf.set(9998, 60);
     buf.set(9999, 100);

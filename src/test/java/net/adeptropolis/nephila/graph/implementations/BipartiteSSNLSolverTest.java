@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -34,25 +34,25 @@ public class BipartiteSSNLSolverTest {
   }
 
   private void withBipartiteAdjacencyMatrix(Consumer<View> viewConsumer) {
-    CSRStorage storage = new CSRStorageBuilder()
-            .addSymmetric(0, 3, 2)
-            .addSymmetric(0, 4, 3)
-            .addSymmetric(0, 5, 5)
-            .addSymmetric(1, 3, 7)
-            .addSymmetric(1, 4, 11)
-            .addSymmetric(1, 5, 13)
-            .addSymmetric(2, 3, 17)
-            .addSymmetric(2, 4, 19)
-            .addSymmetric(2, 5, 23)
-            .addSymmetric(3, 0, 2)
-            .addSymmetric(3, 1, 7)
-            .addSymmetric(3, 2, 17)
-            .addSymmetric(4, 0, 3)
-            .addSymmetric(4, 1, 11)
-            .addSymmetric(4, 2, 19)
-            .addSymmetric(5, 0, 5)
-            .addSymmetric(5, 1, 13)
-            .addSymmetric(5, 2, 23)
+    CSRStorage storage = new UndirectedCSRStorageBuilder()
+            .add(0, 3, 2)
+            .add(0, 4, 3)
+            .add(0, 5, 5)
+            .add(1, 3, 7)
+            .add(1, 4, 11)
+            .add(1, 5, 13)
+            .add(2, 3, 17)
+            .add(2, 4, 19)
+            .add(2, 5, 23)
+            .add(3, 0, 2)
+            .add(3, 1, 7)
+            .add(3, 2, 17)
+            .add(4, 0, 3)
+            .add(4, 1, 11)
+            .add(4, 2, 19)
+            .add(5, 0, 5)
+            .add(5, 1, 13)
+            .add(5, 2, 23)
             .build();
     viewConsumer.accept(storage.defaultView());
     storage.free();

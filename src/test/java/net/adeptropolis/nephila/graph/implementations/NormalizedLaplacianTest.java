@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class NormalizedLaplacianTest {
 
   @Test
   public void simpleNormalizedLaplacian() {
-    CSRStorage storage = new CSRStorageBuilder()
+    CSRStorage storage = new UndirectedCSRStorageBuilder()
             .add(0, 1, 1)
             .add(0, 4, 1)
             .add(1, 0, 1)
@@ -62,17 +62,17 @@ public class NormalizedLaplacianTest {
 
   @Test
   public void normalizedLaplacianSubset() {
-    CSRStorage storage = new CSRStorageBuilder()
-            .addSymmetric(0, 1, 20)
-            .addSymmetric(0, 4, 2)
-            .addSymmetric(1, 1, 30)
-            .addSymmetric(1, 2, 80)
-            .addSymmetric(1, 3, 90)
-            .addSymmetric(1, 4, 100)
-            .addSymmetric(1, 5, 100)
-            .addSymmetric(2, 5, 1)
-            .addSymmetric(3, 4, 1)
-            .addSymmetric(4, 5, 1)
+    CSRStorage storage = new UndirectedCSRStorageBuilder()
+            .add(0, 1, 20)
+            .add(0, 4, 2)
+            .add(1, 1, 30)
+            .add(1, 2, 80)
+            .add(1, 3, 90)
+            .add(1, 4, 100)
+            .add(1, 5, 100)
+            .add(2, 5, 1)
+            .add(3, 4, 1)
+            .add(4, 5, 1)
             .build();
 
     View view = storage.view(new int[]{0, 2, 3, 4, 5});

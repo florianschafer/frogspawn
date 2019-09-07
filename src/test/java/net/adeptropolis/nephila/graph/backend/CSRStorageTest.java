@@ -14,7 +14,7 @@ public class CSRStorageTest {
 
   @Test
   public void traverseEmptyMatrix() {
-    CSRStorage storage = new CSRStorageBuilder().build();
+    CSRStorage storage = new UndirectedCSRStorageBuilder().build();
     View view = storage.defaultView();
     CollectingEdgeVisitor visitor = new CollectingEdgeVisitor();
     view.traverseAdjacent(0, visitor);
@@ -31,7 +31,7 @@ public class CSRStorageTest {
   }
 
   private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEdgeVisitor> consumer) {
-    CSRStorage storage = new CSRStorageBuilder()
+    CSRStorage storage = new UndirectedCSRStorageBuilder()
             .add(1, 1, 2)
             .add(1, 2, 3)
             .add(1, 4, 7)

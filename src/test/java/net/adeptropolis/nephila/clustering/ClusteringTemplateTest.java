@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.clustering;
 
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,16 +32,16 @@ public class ClusteringTemplateTest {
 
   private void verifyK3_3SubsetScores(int[] childIndices, double[] expectedScores) {
     assertThat("Indices size equals expected size", childIndices.length, is(expectedScores.length));
-    CSRStorage graph = new CSRStorageBuilder()
-            .addSymmetric(0, 1, 2)
-            .addSymmetric(0, 2, 3)
-            .addSymmetric(0, 3, 5)
-            .addSymmetric(4, 1, 7)
-            .addSymmetric(4, 2, 11)
-            .addSymmetric(4, 3, 13)
-            .addSymmetric(5, 1, 17)
-            .addSymmetric(5, 2, 19)
-            .addSymmetric(5, 3, 23)
+    CSRStorage graph = new UndirectedCSRStorageBuilder()
+            .add(0, 1, 2)
+            .add(0, 2, 3)
+            .add(0, 3, 5)
+            .add(4, 1, 7)
+            .add(4, 2, 11)
+            .add(4, 3, 13)
+            .add(5, 1, 17)
+            .add(5, 2, 19)
+            .add(5, 3, 23)
             .build();
     ClusteringTemplate template = new ClusteringTemplate(graph);
     double[] scores = template.globalOverlap(graph.view(childIndices));

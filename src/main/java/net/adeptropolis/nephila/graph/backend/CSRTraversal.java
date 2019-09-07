@@ -24,7 +24,7 @@ class CSRTraversal {
     this.workPtr = new AtomicInteger();
   }
 
-  synchronized void traverse(final EdgeVisitor visitor, View view) {
+  void traverse(final EdgeVisitor visitor, View view) {
     visitor.reset();
     workPtr.set(0);
     for (int i = 0; i < THREAD_POOL_SIZE; i++)

@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.collect.Lists;
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -20,15 +20,15 @@ public class ConnectedComponentsTest {
   }
 
   private void withButterfly(int[] viewIndices, int[]... expected) {
-    CSRStorage butterfly = new CSRStorageBuilder()
-            .addSymmetric(0, 1, 1)
-            .addSymmetric(0, 2, 1)
-            .addSymmetric(1, 2, 1)
-            .addSymmetric(2, 3, 1)
-            .addSymmetric(0, 4, 1)
-            .addSymmetric(0, 5, 1)
-            .addSymmetric(4, 5, 1)
-            .addSymmetric(5, 6, 1)
+    CSRStorage butterfly = new UndirectedCSRStorageBuilder()
+            .add(0, 1, 1)
+            .add(0, 2, 1)
+            .add(1, 2, 1)
+            .add(2, 3, 1)
+            .add(0, 4, 1)
+            .add(0, 5, 1)
+            .add(4, 5, 1)
+            .add(5, 6, 1)
             .build();
     List<View> components = Lists.newArrayList();
     new ConnectedComponents(butterfly.view(viewIndices)).find(components::add);

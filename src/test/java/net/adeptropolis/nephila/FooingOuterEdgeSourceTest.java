@@ -3,7 +3,7 @@ package net.adeptropolis.nephila;
 import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -34,8 +34,8 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
 
-    CSRStorageBuilder b = new CSRStorageBuilder();
-    g.edges().sequential().forEach(e -> b.addSymmetric(e.u, e.v, e.weight));
+    UndirectedCSRStorageBuilder b = new UndirectedCSRStorageBuilder();
+    g.edges().sequential().forEach(e -> b.add(e.u, e.v, e.weight));
     CSRStorage storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);

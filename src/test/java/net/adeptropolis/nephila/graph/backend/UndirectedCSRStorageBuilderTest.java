@@ -2,8 +2,6 @@ package net.adeptropolis.nephila.graph.backend;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.CSRStorageBuilder;
 import org.junit.Test;
 
 import java.util.List;
@@ -13,7 +11,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class CSRStorageBuilderTest {
+public class UndirectedCSRStorageBuilderTest {
 
   @Test
   public void emptyMatrix() {
@@ -23,22 +21,15 @@ public class CSRStorageBuilderTest {
     });
   }
 
-  private static void withBuilder(Function<CSRStorageBuilder, CSRStorageBuilder> builder,
-                                  Consumer<CSRStorage> validator) {
-    CSRStorage storage = builder.apply(new CSRStorageBuilder()).build();
-    validator.accept(storage);
-    storage.free();
-  }
-
   @Test
   public void memoryFootprintReporting() {
     withBuilder(b -> b
             .add(0, 0, 1.0)
             .add(0, 1, 1.0), storage -> {
-      assertThat(storage.getNnz(), is(2L));
-      assertThat(storage.getNumRows(), is(1));
-      assertThat(storage.memoryFootprint(), is(40L));
-      assertThat(storage.fmtMemoryFootprint(), is("40 bytes"));
+      assertThat(storage.getNnz(), is(3L));
+      assertThat(storage.getNumRows(), is(2));
+      assertThat(storage.memoryFootprint(), is(60L));
+      assertThat(storage.fmtMemoryFootprint(), is("60 bytes"));
     });
   }
 
@@ -51,32 +42,12 @@ public class CSRStorageBuilderTest {
                     .add(0, 7, 0.7)
                     .add(5, 0, 5.0)
                     .add(0, 1, 0.1), storage -> {
-              assertThat(storage.getNnz(), is(6L));
-              assertThat(storage.getNumRows(), is(6));
+              assertThat(storage.getNnz(), is(11L));
+              assertThat(storage.getNumRows(), is(8));
             },
-            ImmutableList.of(0L, 3L, 3L, 4L, 4L, 4L),
-            ImmutableList.of(0, 1, 7, 1, 0, 3),
-            ImmutableList.of(0.0, 0.1, 0.7, 2.1, 5.0, 5.3));
-  }
-
-  private static void withBuilder(Function<CSRStorageBuilder, CSRStorageBuilder> builder,
-                                  Consumer<CSRStorage> validator,
-                                  List<Long> expectedRowPtrs,
-                                  List<Integer> expectedColIndices,
-                                  List<Double> expectedValues) {
-    withBuilder(builder, storage -> {
-      validator.accept(storage);
-      List<Long> rowPtrs = Lists.newArrayList();
-      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.rowPtrs[i]);
-      List<Integer> colIndices = Lists.newArrayList();
-      for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.colIndices.get(i));
-      List<Double> values = Lists.newArrayList();
-      for (int i = 0; i < storage.getNnz(); i++) values.add(storage.values.get(i));
-      assertThat("Last element in row pointers must be nnz", storage.rowPtrs[storage.getNumRows()], is(storage.getNnz()));
-      assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
-      assertThat("Column vertices should match", colIndices, is(expectedColIndices));
-      assertThat("Values should match", values, is(expectedValues));
-    });
+            ImmutableList.of(0L, 4L, 6L, 7L, 8L, 8L, 10L, 10L),
+            ImmutableList.of(0, 1, 5, 7, 0, 2, 1, 5, 0, 3, 0),
+            ImmutableList.of(0.0, 0.1, 5.0, 0.7, 0.1, 2.1, 2.1, 5.3, 5.0, 5.3, 0.7));
   }
 
   @Test
@@ -150,13 +121,43 @@ public class CSRStorageBuilderTest {
                     .add(1, 1, 1)
                     .add(1, 2, 2)
                     .add(1, 3, 3), storage -> {
-              assertThat(storage.getNnz(), is(3L));
-              assertThat(storage.getNumRows(), is(2));
+              assertThat(storage.getNnz(), is(5L));
+              assertThat(storage.getNumRows(), is(4));
             },
-            ImmutableList.of(0L, 0L),
-            ImmutableList.of(1, 2, 3),
-            ImmutableList.of(1.0, 2.0, 3.0));
+            ImmutableList.of(0L, 0L, 3L, 4L),
+            ImmutableList.of(1, 2, 3, 1, 1),
+            ImmutableList.of(1.0, 2.0, 3.0, 2.0, 3.0));
   }
 
+  private static void withBuilder(Function<UndirectedCSRStorageBuilder, UndirectedCSRStorageBuilder> builder,
+                                  Consumer<CSRStorage> validator) {
+    CSRStorage storage = builder.apply(new UndirectedCSRStorageBuilder()).build();
+    validator.accept(storage);
+    storage.free();
+  }
+
+  private static void withBuilder(Function<UndirectedCSRStorageBuilder, UndirectedCSRStorageBuilder> builder,
+                                  Consumer<CSRStorage> validator,
+                                  List<Long> expectedRowPtrs,
+                                  List<Integer> expectedColIndices,
+                                  List<Double> expectedValues) {
+    withBuilder(builder, storage -> {
+      validator.accept(storage);
+      List<Long> rowPtrs = Lists.newArrayList();
+      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.rowPtrs[i]);
+      List<Integer> colIndices = Lists.newArrayList();
+      for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.colIndices.get(i));
+      List<Double> values = Lists.newArrayList();
+      for (int i = 0; i < storage.getNnz(); i++) values.add(storage.values.get(i));
+      assertThat("Last element in row pointers must be nnz", storage.rowPtrs[storage.getNumRows()], is(storage.getNnz()));
+      assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
+      assertThat("Column vertices should match", colIndices, is(expectedColIndices));
+      assertThat("Values should match", values, is(expectedValues));
+    });
+  }
+
+  private void foo() {
+
+  }
 
 }

@@ -1,16 +1,16 @@
-package net.adeptropolis.nephila.graph.implementations.primitives.search;
+package net.adeptropolis.nephila.graph.backend.primitives.search;
 
 /* NOTE
 *  -  All search methods REQUIRE the input to be SORTED!!!
    -  Returns -1 if no match was found
 */
 
-import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
+import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 
 public class InterpolationSearch {
 
   // high is inclusive!
-  public static long search(Ints ints, int key, long low, long high) {
+  public static long search(BigInts ints, int key, long low, long high) {
 
     long mid;
 

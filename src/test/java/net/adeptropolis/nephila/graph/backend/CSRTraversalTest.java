@@ -20,10 +20,10 @@ public class CSRTraversalTest {
   }
 
   private void withLargeDenseMatrix(Consumer<CSRStorage> storageConsumer) {
-    CSRStorageBuilder builder = new CSRStorageBuilder();
+    UndirectedCSRStorageBuilder builder = new UndirectedCSRStorageBuilder();
     for (int i = 0; i < 1000; i++) {
       for (int j = i + 1; j < 1000; j++) {
-        builder.addSymmetric(i, j, i + j);
+        builder.add(i, j, i + j);
       }
     }
     CSRStorage storage = builder.build();

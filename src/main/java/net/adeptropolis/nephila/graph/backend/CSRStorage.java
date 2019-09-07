@@ -1,9 +1,9 @@
 package net.adeptropolis.nephila.graph.backend;
 
-import net.adeptropolis.nephila.graph.implementations.primitives.Doubles;
-import net.adeptropolis.nephila.graph.implementations.primitives.Ints;
-
 // TODO: Make vertices an efficiently-flushable sorted set?
+
+import net.adeptropolis.nephila.graph.backend.primitives.BigDoubles;
+import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 
 public class CSRStorage {
 
@@ -13,10 +13,10 @@ public class CSRStorage {
   private final long nnz;
 
   final long[] rowPtrs;
-  final Ints colIndices;
-  final Doubles values;
+  final BigInts colIndices;
+  final BigDoubles values;
 
-  CSRStorage(int numRows, long nnz, long[] rowPtrs, Ints colIndices, Doubles values) {
+  CSRStorage(int numRows, long nnz, long[] rowPtrs, BigInts colIndices, BigDoubles values) {
     this.numRows = numRows;
     this.nnz = nnz;
     this.rowPtrs = rowPtrs;
@@ -35,8 +35,6 @@ public class CSRStorage {
   }
 
   public void free() {
-    colIndices.free();
-    values.free();
     traversal.cleanup();
   }
 
