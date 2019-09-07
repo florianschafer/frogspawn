@@ -22,12 +22,17 @@ public class BigFloatsTest {
   @Test
   public void resize() {
     BigFloats b = new BigFloats(0);
-    for (long i = 0; i < BIN_SIZE; i++) b.set(i, 2.71f * i);
     b.resize(2 * BIN_SIZE);
-    assertThat(b.size(), is(BIN_SIZE));
-    for (long i = BIN_SIZE; i < 2 * BIN_SIZE; i++) b.set(i, 2.71f * i);
-    assertThat(b.size(), is(2 * BIN_SIZE));
-    for (long i = 0; i < 2 * BIN_SIZE; i++) assertThat(b.get(i), is(2.71f * i));
+    assertThat(b.bins(), is(2));
+  }
+
+  @Test
+  public void autoResize() {
+    BigFloats b = new BigFloats(0);
+    for (long i = 0; i < 10 * BIN_SIZE; i++) b.set(i, 2.71f * i);
+    assertThat(b.size(), is(10 * BIN_SIZE));
+    for (long i = 0; i < 10 * BIN_SIZE; i++) assertThat(b.get(i), is(2.71f * i));
+    assertThat(b.bins(), is(16));
   }
 
   @Test

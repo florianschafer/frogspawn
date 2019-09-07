@@ -22,12 +22,17 @@ public class BigIntsTest {
   @Test
   public void resize() {
     BigInts b = new BigInts(0);
-    for (long i = 0; i < BIN_SIZE; i++) b.set(i, (int) (4 * i));
     b.resize(2 * BIN_SIZE);
-    assertThat(b.size(), is(BIN_SIZE));
-    for (long i = BIN_SIZE; i < 2 * BIN_SIZE; i++) b.set(i, (int) (4 * i));
-    assertThat(b.size(), is(2 * BIN_SIZE));
-    for (long i = 0; i < 2 * BIN_SIZE; i++) assertThat(b.get(i), is((int) (4 * i)));
+    assertThat(b.bins(), is(2));
+  }
+
+  @Test
+  public void autoResize() {
+    BigInts b = new BigInts(0);
+    for (int i = 0; i < 10 * BIN_SIZE; i++) b.set(i, 271 * i);
+    assertThat(b.size(), is(10 * BIN_SIZE));
+    for (int i = 0; i < 10 * BIN_SIZE; i++) assertThat(b.get(i), is(271 * i));
+    assertThat(b.bins(), is(16));
   }
 
   @Test

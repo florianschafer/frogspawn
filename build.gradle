@@ -2,6 +2,13 @@ plugins {
     id 'java'
 }
 
+task buildDocs(type: Javadoc) {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    destinationDir = reporting.file("docs")
+    options.memberLevel = JavadocMemberLevel.PUBLIC
+}
+
 group 'net.adeptropolis'
 version '1.0'
 

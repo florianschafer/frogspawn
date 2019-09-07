@@ -4,6 +4,7 @@ import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.graph.LabeledEdge;
 import net.adeptropolis.nephila.graph.backend.CSRStorage;
 import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+@Ignore
 public class FooingOuterEdgeSourceTest {
 
   @Test

@@ -6,8 +6,9 @@ import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongSwapper;
 
 public class BigFloats implements LongSwapper, LongComparator {
 
-  static final int BIN_BITS = 13;
+  static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
+  private static final long GROWTH_FACTOR = 2L;
 
   private float[][] data = null;
   private long size = 0;
@@ -24,7 +25,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   public void resize(long capacity) {
     int currentbins = (data != null) ? data.length : 0;
-    int requestedBins = (int) (capacity >> BIN_BITS) + 1;
+    int requestedBins = Math.max(1, (int) (((capacity - 1) >> BIN_BITS) + 1));
     if (requestedBins == currentbins) return;
     float[][] newData = new float[requestedBins][];
     if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
@@ -37,8 +38,10 @@ public class BigFloats implements LongSwapper, LongComparator {
   }
 
   public void set(long idx, float value) {
+    int bin = (int) (idx >> BIN_BITS);
+    if (data == null || bin >= data.length) resize(GROWTH_FACTOR * idx);
     if (idx >= size) size = idx + 1;
-    data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)] = value;
+    data[bin][(int) (idx & BIN_MASK)] = value;
   }
 
   public long size() {
@@ -48,6 +51,10 @@ public class BigFloats implements LongSwapper, LongComparator {
   public BigFloats sort() {
     LongMergeSort.mergeSort(0, size, this, this);
     return this;
+  }
+
+  int bins() {
+    return data.length;
   }
 
   @Override
