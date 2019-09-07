@@ -41,4 +41,10 @@ public class BigDoublesTest {
     assertThat(b, is(not(BigDoubles.of(3))));
   }
 
+  @Test
+  public void sort() {
+    BigDoubles sorted = BigDoubles.of(9d, 8d, 6d, 7d, 3d, 5d, 4d, 2d, 0d, 1d).sort();
+    assertThat(sorted, is(BigDoubles.of(0d, 1d, 2d, 3d, 4d, 5d, 6d, 7d, 8d, 9d)));
+  }
+
 }

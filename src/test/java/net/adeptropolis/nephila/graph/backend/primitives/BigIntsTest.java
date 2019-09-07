@@ -41,4 +41,11 @@ public class BigIntsTest {
     assertThat(b, is(not(BigInts.of(3))));
   }
 
+  @Test
+  public void sort() {
+    BigInts sorted = BigInts.of(9, 8, 6, 7, 3, 5, 4, 2, 0, 1).sort();
+    assertThat(sorted, is(BigInts.of(0, 1, 2, 3, 4, 5, 6, 7, 8, 9)));
+  }
+
+
 }

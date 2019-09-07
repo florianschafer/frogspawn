@@ -41,4 +41,10 @@ public class BigLongsTest {
     assertThat(b, is(not(BigLongs.of(3L))));
   }
 
+  @Test
+  public void sort() {
+    BigLongs sorted = BigLongs.of(9L, 8L, 6L, 7L, 3L, 5L, 4L, 2L, 0L, 1L).sort();
+    assertThat(sorted, is(BigLongs.of(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L)));
+  }
+
 }

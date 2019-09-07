@@ -41,4 +41,10 @@ public class BigFloatsTest {
     assertThat(b, is(not(BigFloats.of(3f))));
   }
 
+  @Test
+  public void sort() {
+    BigFloats sorted = BigFloats.of(9f, 8f, 6f, 7f, 3f, 5f, 4f, 2f, 0f, 1f).sort();
+    assertThat(sorted, is(BigFloats.of(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f)));
+  }
+
 }

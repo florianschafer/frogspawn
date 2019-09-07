@@ -17,7 +17,7 @@ public class InterpolationSearchTest {
   public void searchBigDenseIntArray() {
     BigInts buf = new BigInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, i);
-    buf.sort(10000);
+    buf.sort();
     for (int i = 0; i < 10000; i++)
       Assert.assertThat(InterpolationSearch.search(buf, i, 0, 9999), greaterThanOrEqualTo(0L));
   }
@@ -26,7 +26,7 @@ public class InterpolationSearchTest {
   public void searchBigSparseIntArray() {
     BigInts buf = new BigInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, i * 13);
-    buf.sort(10000);
+    buf.sort();
     for (int i = 0; i < 10000; i++) {
       if (i % 13 == 0) Assert.assertThat(InterpolationSearch.search(buf, i, 0, 9999), greaterThanOrEqualTo(0L));
       else Assert.assertThat(InterpolationSearch.search(buf, i, 0, 9999), lessThan(0L));

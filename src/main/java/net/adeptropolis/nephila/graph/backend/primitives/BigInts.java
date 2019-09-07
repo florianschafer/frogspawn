@@ -45,8 +45,9 @@ public class BigInts implements LongSwapper, LongComparator {
     return size;
   }
 
-  public void sort(long size) {
+  public BigInts sort() {
     LongMergeSort.mergeSort(0, size, this, this);
+    return this;
   }
 
   @Override

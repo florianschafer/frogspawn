@@ -45,8 +45,9 @@ public class BigLongs implements LongSwapper, LongComparator {
     return size;
   }
 
-  public void sort(long size) {
+  public BigLongs sort() {
     LongMergeSort.mergeSort(0, size, this, this);
+    return this;
   }
 
   @Override

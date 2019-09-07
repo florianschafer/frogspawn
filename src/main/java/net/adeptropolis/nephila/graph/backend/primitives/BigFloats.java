@@ -45,8 +45,9 @@ public class BigFloats implements LongSwapper, LongComparator {
     return size;
   }
 
-  public void sort(long size) {
+  public BigFloats sort() {
     LongMergeSort.mergeSort(0, size, this, this);
+    return this;
   }
 
   @Override
