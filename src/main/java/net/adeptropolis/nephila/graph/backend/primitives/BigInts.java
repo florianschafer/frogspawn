@@ -1,8 +1,8 @@
 package net.adeptropolis.nephila.graph.backend.primitives;
 
-import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongSwapper;
+import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongComparator;
+import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongSwapper;
 
 /** A big (i.e. long-indexed) array of ints.
  * @author Florian Schaefer

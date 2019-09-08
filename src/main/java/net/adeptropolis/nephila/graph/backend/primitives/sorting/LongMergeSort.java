@@ -1,9 +1,13 @@
 package net.adeptropolis.nephila.graph.backend.primitives.sorting;
 
-
 /*
+ *
+ * This class is derived from Fastutil's Arrays class to allow for usage of long indices.
+ * The original license can be found below.
+
+  ======================================================================================
+
  * Copyright (C) 2002-2017 Sebastiano Vigna
- * Shamelessly taken and modified to support long indices 2019 Florian Schaefer
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +22,7 @@ package net.adeptropolis.nephila.graph.backend.primitives.sorting;
  * limitations under the License.
  */
 
-import it.unimi.dsi.fastutil.longs.LongComparator;
+import java.util.Comparator;
 
 public class LongMergeSort {
 
@@ -173,5 +177,57 @@ public class LongMergeSort {
     return from;
   }
 
+  /**
+   * An object that can swap elements whose position is specified by longs.
+   **/
+
+  @FunctionalInterface
+  public interface LongSwapper {
+    /**
+     * Swaps the data at the given positions.
+     *
+     * @param a the first position to swap.
+     * @param b the second position to swap.
+     */
+    void swap(long a, long b);
+  }
+
+  /**
+   * A type-specific {@link Comparator}; provides methods to compare two primitive
+   * types both as objects and as primitive types.
+   *
+   * <p>
+   * Note that {@code fastutil} provides a corresponding abstract class that can
+   * be used to implement this interface just by specifying the type-specific
+   * comparator.
+   *
+   * @see Comparator
+   */
+  @FunctionalInterface
+  public interface LongComparator extends Comparator<Long> {
+    /**
+     * Compares its two primitive-type arguments for order. Returns a negative
+     * integer, zero, or a positive integer as the first argument is less than,
+     * equal to, or greater than the second.
+     *
+     * @see java.util.Comparator
+     * @return a negative integer, zero, or a positive integer as the first argument
+     *         is less than, equal to, or greater than the second.
+     */
+    int compare(long k1, long k2);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * This implementation delegates to the corresponding type-specific method.
+     *
+     * @deprecated Please use the corresponding type-specific method instead.
+     */
+    @Deprecated
+    @Override
+    default int compare(Long ok1, Long ok2) {
+      return compare(ok1.longValue(), ok2.longValue());
+    }
+  }
 
 }
+

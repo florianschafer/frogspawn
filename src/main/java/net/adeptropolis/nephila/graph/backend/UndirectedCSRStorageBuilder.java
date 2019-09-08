@@ -1,10 +1,10 @@
 package net.adeptropolis.nephila.graph.backend;
 
-import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.backend.primitives.BigDoubles;
 import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongSwapper;
+import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongComparator;
+import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongSwapper;
 
 public class UndirectedCSRStorageBuilder {
 
