@@ -1,13 +1,12 @@
-package net.adeptropolis.nephila.graph.backend.primitives;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.SortOps;
+import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
 
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 /**
- * A big (i.e. long-indexed) array of longs.
+ * A big (i.e. long-indexed) array of ints.
  *
  * @author Florian Schaefer
  * @author florian@adeptropolis.net
@@ -15,13 +14,13 @@ import java.util.stream.LongStream;
  * @since 1.0
  */
 
-public class BigLongs implements SortOps {
+public class BigInts implements SortOps {
 
   static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
   private static final long GROWTH_FACTOR = 2L;
 
-  private long[][] data = null;
+  private int[][] data = null;
   private long size = 0;
 
   /**
@@ -30,21 +29,21 @@ public class BigLongs implements SortOps {
    * @param initialCapacity Initial storage capacity
    */
 
-  public BigLongs(long initialCapacity) {
+  public BigInts(long initialCapacity) {
     resize(initialCapacity);
   }
 
   /**
-   * Create a new BigLongs instance from a given list of longs
+   * Create a new BigInts instance from a given list of ints
    *
-   * @param values Any number of longs
-   * @return new BigLongs instance
+   * @param values Any number of ints
+   * @return new BigInts instance
    */
 
-  public static BigLongs of(long... values) {
-    BigLongs longs = new BigLongs(values.length);
-    for (int i = 0; i < values.length; i++) longs.set(i, values[i]);
-    return longs;
+  public static BigInts of(int... values) {
+    BigInts ints = new BigInts(values.length);
+    for (int i = 0; i < values.length; i++) ints.set(i, values[i]);
+    return ints;
   }
 
   /**
@@ -57,9 +56,9 @@ public class BigLongs implements SortOps {
     int currentbins = (data != null) ? data.length : 0;
     int requestedBins = Math.max(1, (int) (((capacity - 1) >> BIN_BITS) + 1));
     if (requestedBins == currentbins) return;
-    long[][] newData = new long[requestedBins][];
+    int[][] newData = new int[requestedBins][];
     if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
-    for (int i = currentbins; i < requestedBins; i++) newData[i] = new long[1 << BIN_BITS];
+    for (int i = currentbins; i < requestedBins; i++) newData[i] = new int[1 << BIN_BITS];
     if (currentbins > requestedBins) size = capacity;
     data = newData;
   }
@@ -71,7 +70,7 @@ public class BigLongs implements SortOps {
    * @return Value at index idx
    */
 
-  public long get(long idx) {
+  public int get(long idx) {
     return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
   }
 
@@ -82,7 +81,7 @@ public class BigLongs implements SortOps {
    * @param value Value
    */
 
-  public void set(long idx, long value) {
+  public void set(long idx, int value) {
     int bin = (int) (idx >> BIN_BITS);
     if (bin >= data.length) resize(GROWTH_FACTOR * idx);
     if (idx >= size) size = idx + 1;
@@ -105,7 +104,7 @@ public class BigLongs implements SortOps {
    * @return this
    */
 
-  public BigLongs sort() {
+  public BigInts sort() {
     LongMergeSort.mergeSort(0, size, this);
     return this;
   }
@@ -130,8 +129,9 @@ public class BigLongs implements SortOps {
 
   @Override
   public int compare(long idx1, long idx2) {
-    return Long.compare(get(idx1), get(idx2));
+    return Integer.compare(get(idx1), get(idx2));
   }
+
 
   /**
    * Swap values between two indices
@@ -142,16 +142,16 @@ public class BigLongs implements SortOps {
 
   @Override
   public void swap(long idx1, long idx2) {
-    long val1 = get(idx1);
-    long val2 = get(idx2);
+    int val1 = get(idx1);
+    int val2 = get(idx2);
     set(idx1, val2);
     set(idx2, val1);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof BigLongs)) return false;
-    BigLongs other = (BigLongs) obj;
+    if (!(obj instanceof BigInts)) return false;
+    BigInts other = (BigInts) obj;
     if (size != other.size) return false;
     for (int i = 0; i < size; i++) if (get(i) != other.get(i)) return false;
     return true;
@@ -161,5 +161,4 @@ public class BigLongs implements SortOps {
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
-
 }

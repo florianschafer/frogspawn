@@ -1,13 +1,12 @@
-package net.adeptropolis.nephila.graph.backend.primitives;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.SortOps;
+import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
 
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 /**
- * A big (i.e. long-indexed) primiti array of doubles.
+ * A big (i.e. long-indexed) array of floats.
  *
  * @author Florian Schaefer
  * @author florian@adeptropolis.net
@@ -15,13 +14,13 @@ import java.util.stream.LongStream;
  * @since 1.0
  */
 
-public class BigDoubles implements SortOps {
+public class BigFloats implements SortOps {
 
   static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
   private static final long GROWTH_FACTOR = 2L;
 
-  private double[][] data = null;
+  private float[][] data = null;
   private long size = 0;
 
   /**
@@ -30,21 +29,21 @@ public class BigDoubles implements SortOps {
    * @param initialCapacity Initial storage capacity
    */
 
-  public BigDoubles(long initialCapacity) {
+  public BigFloats(long initialCapacity) {
     resize(initialCapacity);
   }
 
   /**
-   * Create a new BigDoubles instance from a given list of doubles
+   * Create a new BigFloats instance from a given list of floats
    *
-   * @param values Any number of doubles
-   * @return new BigDoubles instance
+   * @param values Any number of floats
+   * @return new BigFloats instance
    */
 
-  public static BigDoubles of(double... values) {
-    BigDoubles doubles = new BigDoubles(values.length);
-    for (int i = 0; i < values.length; i++) doubles.set(i, values[i]);
-    return doubles;
+  public static BigFloats of(float... values) {
+    BigFloats floats = new BigFloats(values.length);
+    for (int i = 0; i < values.length; i++) floats.set(i, values[i]);
+    return floats;
   }
 
   /**
@@ -57,9 +56,9 @@ public class BigDoubles implements SortOps {
     int currentbins = (data != null) ? data.length : 0;
     int requestedBins = Math.max(1, (int) (((capacity - 1) >> BIN_BITS) + 1));
     if (requestedBins == currentbins) return;
-    double[][] newData = new double[requestedBins][];
+    float[][] newData = new float[requestedBins][];
     if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
-    for (int i = currentbins; i < requestedBins; i++) newData[i] = new double[1 << BIN_BITS];
+    for (int i = currentbins; i < requestedBins; i++) newData[i] = new float[1 << BIN_BITS];
     if (currentbins > requestedBins) size = capacity;
     data = newData;
   }
@@ -71,7 +70,7 @@ public class BigDoubles implements SortOps {
    * @return Value at index idx
    */
 
-  public double get(long idx) {
+  public float get(long idx) {
     return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
   }
 
@@ -82,7 +81,7 @@ public class BigDoubles implements SortOps {
    * @param value Value
    */
 
-  public void set(long idx, double value) {
+  public void set(long idx, float value) {
     int bin = (int) (idx >> BIN_BITS);
     if (data == null || bin >= data.length) resize(GROWTH_FACTOR * idx);
     if (idx >= size) size = idx + 1;
@@ -105,7 +104,7 @@ public class BigDoubles implements SortOps {
    * @return this
    */
 
-  public BigDoubles sort() {
+  public BigFloats sort() {
     LongMergeSort.mergeSort(0, size, this);
     return this;
   }
@@ -130,7 +129,7 @@ public class BigDoubles implements SortOps {
 
   @Override
   public int compare(long idx1, long idx2) {
-    return Double.compare(get(idx1), get(idx2));
+    return Float.compare(get(idx1), get(idx2));
   }
 
   /**
@@ -142,16 +141,16 @@ public class BigDoubles implements SortOps {
 
   @Override
   public void swap(long idx1, long idx2) {
-    double val1 = get(idx1);
-    double val2 = get(idx2);
+    float val1 = get(idx1);
+    float val2 = get(idx2);
     set(idx1, val2);
     set(idx2, val1);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof BigDoubles)) return false;
-    BigDoubles other = (BigDoubles) obj;
+    if (!(obj instanceof BigFloats)) return false;
+    BigFloats other = (BigFloats) obj;
     if (size != other.size) return false;
     for (int i = 0; i < size; i++) if (get(i) != other.get(i)) return false;
     return true;

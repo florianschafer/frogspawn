@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.backend;
 
-import net.adeptropolis.nephila.graph.backend.primitives.search.InterpolationSearch;
+import net.adeptropolis.nephila.graph.backend.arrays.InterpolationSearch;
 
 // TODO: Remove calls to subview
 

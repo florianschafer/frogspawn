@@ -1,13 +1,12 @@
-package net.adeptropolis.nephila.graph.backend.primitives;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.SortOps;
+import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
 
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 /**
- * A big (i.e. long-indexed) array of ints.
+ * A big (i.e. long-indexed) primiti array of doubles.
  *
  * @author Florian Schaefer
  * @author florian@adeptropolis.net
@@ -15,13 +14,13 @@ import java.util.stream.LongStream;
  * @since 1.0
  */
 
-public class BigInts implements SortOps {
+public class BigDoubles implements SortOps {
 
   static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
   private static final long GROWTH_FACTOR = 2L;
 
-  private int[][] data = null;
+  private double[][] data = null;
   private long size = 0;
 
   /**
@@ -30,21 +29,21 @@ public class BigInts implements SortOps {
    * @param initialCapacity Initial storage capacity
    */
 
-  public BigInts(long initialCapacity) {
+  public BigDoubles(long initialCapacity) {
     resize(initialCapacity);
   }
 
   /**
-   * Create a new BigInts instance from a given list of ints
+   * Create a new BigDoubles instance from a given list of doubles
    *
-   * @param values Any number of ints
-   * @return new BigInts instance
+   * @param values Any number of doubles
+   * @return new BigDoubles instance
    */
 
-  public static BigInts of(int... values) {
-    BigInts ints = new BigInts(values.length);
-    for (int i = 0; i < values.length; i++) ints.set(i, values[i]);
-    return ints;
+  public static BigDoubles of(double... values) {
+    BigDoubles doubles = new BigDoubles(values.length);
+    for (int i = 0; i < values.length; i++) doubles.set(i, values[i]);
+    return doubles;
   }
 
   /**
@@ -57,9 +56,9 @@ public class BigInts implements SortOps {
     int currentbins = (data != null) ? data.length : 0;
     int requestedBins = Math.max(1, (int) (((capacity - 1) >> BIN_BITS) + 1));
     if (requestedBins == currentbins) return;
-    int[][] newData = new int[requestedBins][];
+    double[][] newData = new double[requestedBins][];
     if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
-    for (int i = currentbins; i < requestedBins; i++) newData[i] = new int[1 << BIN_BITS];
+    for (int i = currentbins; i < requestedBins; i++) newData[i] = new double[1 << BIN_BITS];
     if (currentbins > requestedBins) size = capacity;
     data = newData;
   }
@@ -71,7 +70,7 @@ public class BigInts implements SortOps {
    * @return Value at index idx
    */
 
-  public int get(long idx) {
+  public double get(long idx) {
     return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
   }
 
@@ -82,9 +81,9 @@ public class BigInts implements SortOps {
    * @param value Value
    */
 
-  public void set(long idx, int value) {
+  public void set(long idx, double value) {
     int bin = (int) (idx >> BIN_BITS);
-    if (bin >= data.length) resize(GROWTH_FACTOR * idx);
+    if (data == null || bin >= data.length) resize(GROWTH_FACTOR * idx);
     if (idx >= size) size = idx + 1;
     data[bin][(int) (idx & BIN_MASK)] = value;
   }
@@ -105,7 +104,7 @@ public class BigInts implements SortOps {
    * @return this
    */
 
-  public BigInts sort() {
+  public BigDoubles sort() {
     LongMergeSort.mergeSort(0, size, this);
     return this;
   }
@@ -130,9 +129,8 @@ public class BigInts implements SortOps {
 
   @Override
   public int compare(long idx1, long idx2) {
-    return Integer.compare(get(idx1), get(idx2));
+    return Double.compare(get(idx1), get(idx2));
   }
-
 
   /**
    * Swap values between two indices
@@ -143,16 +141,16 @@ public class BigInts implements SortOps {
 
   @Override
   public void swap(long idx1, long idx2) {
-    int val1 = get(idx1);
-    int val2 = get(idx2);
+    double val1 = get(idx1);
+    double val2 = get(idx2);
     set(idx1, val2);
     set(idx2, val1);
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (!(obj instanceof BigInts)) return false;
-    BigInts other = (BigInts) obj;
+    if (!(obj instanceof BigDoubles)) return false;
+    BigDoubles other = (BigDoubles) obj;
     if (size != other.size) return false;
     for (int i = 0; i < size; i++) if (get(i) != other.get(i)) return false;
     return true;
@@ -162,4 +160,5 @@ public class BigInts implements SortOps {
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
+
 }

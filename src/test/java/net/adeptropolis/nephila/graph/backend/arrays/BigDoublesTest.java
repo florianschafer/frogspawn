@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.backend.primitives;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
 import org.junit.Test;
 

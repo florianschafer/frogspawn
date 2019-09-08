@@ -2,8 +2,8 @@ package net.adeptropolis.nephila.graph.backend;
 
 // TODO: Make vertices an efficiently-flushable sorted set?
 
-import net.adeptropolis.nephila.graph.backend.primitives.BigDoubles;
-import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
+import net.adeptropolis.nephila.graph.backend.arrays.BigDoubles;
+import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
 
 public class CSRStorage {
 

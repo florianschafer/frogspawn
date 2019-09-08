@@ -1,9 +1,9 @@
 package net.adeptropolis.nephila.graph.backend;
 
-import net.adeptropolis.nephila.graph.backend.primitives.BigDoubles;
-import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.SortOps;
+import net.adeptropolis.nephila.graph.backend.arrays.BigDoubles;
+import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
+import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort;
+import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
 
 public class UndirectedCSRStorageBuilder {
 

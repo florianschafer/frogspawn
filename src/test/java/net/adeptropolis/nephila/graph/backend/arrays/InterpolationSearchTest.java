@@ -1,6 +1,5 @@
-package net.adeptropolis.nephila.graph.backend.primitives.search;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
-import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,6 +1,7 @@
-package net.adeptropolis.nephila.graph.backend.primitives.sorting;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
-import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
+import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
+import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;

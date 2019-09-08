@@ -1,11 +1,9 @@
-package net.adeptropolis.nephila.graph.backend.primitives.search;
+package net.adeptropolis.nephila.graph.backend.arrays;
 
 /* NOTE
 *  -  All search methods REQUIRE the input to be SORTED!!!
    -  Returns -1 if no match was found
 */
-
-import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 
 /**
  * Perform interpolation search on both big as well as primitive arrays.
