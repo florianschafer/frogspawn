@@ -4,6 +4,13 @@ import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
 import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongSwapper;
 
+/** A big (i.e. long-indexed) array of floats.
+ * @author Florian Schaefer
+ * @author florian@adeptropolis.net
+ * @version 1.0
+ * @since 1.0
+ */
+
 public class BigFloats implements LongSwapper, LongComparator {
 
   static final int BIN_BITS = 17;
@@ -13,15 +20,31 @@ public class BigFloats implements LongSwapper, LongComparator {
   private float[][] data = null;
   private long size = 0;
 
+  /**
+   * Constructor
+   * @param initialCapacity Initial storage capacity
+   */
+
   public BigFloats(long initialCapacity) {
     resize(initialCapacity);
   }
+
+  /**
+   * Create a new BigFloats instance from a given list of floats
+   * @param values Any number of floats
+   * @return new BigFloats instance
+   */
 
   public static BigFloats of(float... values) {
     BigFloats floats = new BigFloats(values.length);
     for (int i = 0; i < values.length; i++) floats.set(i, values[i]);
     return floats;
   }
+
+  /**
+   * Resize to a given capacity
+   * @param capacity Requested storage capacity
+   */
 
   public void resize(long capacity) {
     int currentbins = (data != null) ? data.length : 0;
@@ -30,12 +53,25 @@ public class BigFloats implements LongSwapper, LongComparator {
     float[][] newData = new float[requestedBins][];
     if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
     for (int i = currentbins; i < requestedBins; i++) newData[i] = new float[1 << BIN_BITS];
+    if (currentbins > requestedBins) size = capacity;
     data = newData;
   }
+
+  /**
+   * Retrieve value
+   * @param idx Index
+   * @return Value at index idx
+   */
 
   public float get(long idx) {
     return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
   }
+
+  /**
+   * Set value
+   * @param idx Index
+   * @param value Value
+   */
 
   public void set(long idx, float value) {
     int bin = (int) (idx >> BIN_BITS);
@@ -44,23 +80,51 @@ public class BigFloats implements LongSwapper, LongComparator {
     data[bin][(int) (idx & BIN_MASK)] = value;
   }
 
+  /**
+   * Return size
+   * @return Largest stored index + 1
+   */
+
   public long size() {
     return size;
   }
+
+  /**
+   * Sort (in-place)
+   * @return this
+   */
 
   public BigFloats sort() {
     LongMergeSort.mergeSort(0, size, this, this);
     return this;
   }
 
+  /**
+   * Bin count
+   * @return currently used number of storage bins
+   */
+
   int bins() {
     return data.length;
   }
+
+  /**
+   * Compare two elements
+   * @param idx1 Index
+   * @param idx2 Index
+   * @return Result of comparing the element at idx1 with the one at idx2
+   */
 
   @Override
   public int compare(long idx1, long idx2) {
     return Float.compare(get(idx1), get(idx2));
   }
+
+  /**
+   * Swap values between two indices
+   * @param idx1 Index
+   * @param idx2 Index
+   */
 
   @Override
   public void swap(long idx1, long idx2) {

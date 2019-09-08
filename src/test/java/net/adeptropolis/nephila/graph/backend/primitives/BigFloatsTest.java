@@ -36,6 +36,16 @@ public class BigFloatsTest {
   }
 
   @Test
+  public void shrinkResize() {
+    BigFloats b = new BigFloats(10 * BIN_SIZE);
+    for (long i = 0; i < 10 * BIN_SIZE; i++) b.set(i, 2.71f * i);
+    b.resize(4 * BIN_SIZE);
+    assertThat(b.size(), is(4 * BIN_SIZE));
+    assertThat(b.bins(), is(4));
+    for (long i = 0; i < 4 * BIN_SIZE; i++) assertThat(b.get(i), is(2.71f * i));
+  }
+
+  @Test
   public void equals() {
     BigFloats b = new BigFloats(29);
     b.set(0, 3.1f);

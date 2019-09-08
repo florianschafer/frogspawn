@@ -36,6 +36,16 @@ public class BigIntsTest {
   }
 
   @Test
+  public void shrinkResize() {
+    BigInts b = new BigInts(10 * BIN_SIZE);
+    for (int i = 0; i < 10 * BIN_SIZE; i++) b.set(i, 271 * i);
+    b.resize(4 * BIN_SIZE);
+    assertThat(b.size(), is(4 * BIN_SIZE));
+    assertThat(b.bins(), is(4));
+    for (int i = 0; i < 4 * BIN_SIZE; i++) assertThat(b.get(i), is(271 * i));
+  }
+
+  @Test
   public void equals() {
     BigInts b = new BigInts(29);
     b.set(0, 3);

@@ -35,6 +35,15 @@ public class BigLongsTest {
     assertThat(b.bins(), is(16));
   }
 
+  @Test
+  public void shrinkResize() {
+    BigLongs b = new BigLongs(10L * BIN_SIZE);
+    for (long i = 0; i < 10 * BIN_SIZE; i++) b.set(i, 271L * i);
+    b.resize(4 * BIN_SIZE);
+    assertThat(b.size(), is(4 * BIN_SIZE));
+    assertThat(b.bins(), is(4));
+    for (long i = 0; i < 4 * BIN_SIZE; i++) assertThat(b.get(i), is(271L * i));
+  }
 
   @Test
   public void equals() {
