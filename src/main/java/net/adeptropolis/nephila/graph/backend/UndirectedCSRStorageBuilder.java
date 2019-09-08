@@ -3,8 +3,7 @@ package net.adeptropolis.nephila.graph.backend;
 import net.adeptropolis.nephila.graph.backend.primitives.BigDoubles;
 import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongComparator;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongSwapper;
+import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.SortOps;
 
 public class UndirectedCSRStorageBuilder {
 
@@ -69,8 +68,8 @@ public class UndirectedCSRStorageBuilder {
   }
 
   private void sort() {
-    EdgeSortHelper delegate = new EdgeSortHelper();
-    LongMergeSort.mergeSort(0, ptr, delegate, delegate);
+    EdgeSortOps ops = new EdgeSortOps();
+    LongMergeSort.mergeSort(0, ptr, ops);
   }
 
   // NOTE: Requires the arrays to be sorted!
@@ -131,7 +130,7 @@ public class UndirectedCSRStorageBuilder {
     return vertexPtrs;
   }
 
-  private class EdgeSortHelper implements LongSwapper, LongComparator {
+  private class EdgeSortOps implements SortOps {
 
     @Override
     public int compare(long idx1, long idx2) {

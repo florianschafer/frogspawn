@@ -1,7 +1,6 @@
 package net.adeptropolis.nephila.graph.backend.primitives.sorting;
 
 import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
-import net.adeptropolis.nephila.graph.backend.primitives.BigLongs;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
@@ -10,9 +9,18 @@ import static org.junit.Assert.*;
 public class LongMergeSortTest {
 
   @Test
-  public void mergeSort() {
-    BigInts b = BigInts.of(77, 59, 14, 13, 19, 81, 89, 67, 32, 12);
-    LongMergeSort.mergeSort(0, 10, b, b);
-    assertThat(b, is(BigInts.of(12, 13, 14, 19, 32, 59, 67, 77, 81, 89)));
+  public void tinyList() {
+    BigInts sorted = BigInts.of(4, 2, 1, 3).sort();
+    assertThat(sorted, is(BigInts.of(1, 2, 3, 4)));
   }
+
+  @Test
+  public void mergeSort() {
+    int size = 1 << 20;
+    BigInts b = new BigInts(size);
+    for (int i = 0; i < size; i++) b.set(i, size - i - 1);
+    LongMergeSort.mergeSort(0, size, b);
+    for (int i = 0; i < size; i++) assertThat(b.get(i), is(i));
+  }
+
 }

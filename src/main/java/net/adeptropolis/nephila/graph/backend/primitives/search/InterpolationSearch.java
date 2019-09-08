@@ -7,7 +7,21 @@ package net.adeptropolis.nephila.graph.backend.primitives.search;
 
 import net.adeptropolis.nephila.graph.backend.primitives.BigInts;
 
+/**
+ * Perform interpolation search on both big as well as primitive arrays.
+ * Note that the underlying data structure is <b>ASSUMED TO BE SORTED</b>.
+ */
+
 public class InterpolationSearch {
+
+  /**
+   * Search in BigInts
+   * @param ints Big integer array
+   * @param key Search key
+   * @param low Lower end of the search window. Inclusive.
+   * @param high Lower end of the search window. Also inclusive.
+   * @return Index of the first item matching the key. -1 otherwise.
+   */
 
   // high is inclusive!
   public static long search(BigInts ints, int key, long low, long high) {
@@ -38,6 +52,15 @@ public class InterpolationSearch {
       return -1;
 
   }
+
+  /**
+   * Search in int[]
+   * @param array Primitive int array to be sorted
+   * @param key Search key
+   * @param low Lower end of the search window. Inclusive.
+   * @param high Lower end of the search window. INCLUSIVE.
+   * @return Index of the first item matching the key. -1 otherwise.
+   */
 
   // high is inclusive!
   public static int search(int[] array, int key, int low, int high) {

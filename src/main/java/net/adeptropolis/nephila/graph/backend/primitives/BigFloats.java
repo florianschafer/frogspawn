@@ -1,17 +1,21 @@
 package net.adeptropolis.nephila.graph.backend.primitives;
 
 import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongComparator;
-import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.LongSwapper;
+import net.adeptropolis.nephila.graph.backend.primitives.sorting.LongMergeSort.SortOps;
 
-/** A big (i.e. long-indexed) array of floats.
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
+
+/**
+ * A big (i.e. long-indexed) array of floats.
+ *
  * @author Florian Schaefer
  * @author florian@adeptropolis.net
  * @version 1.0
  * @since 1.0
  */
 
-public class BigFloats implements LongSwapper, LongComparator {
+public class BigFloats implements SortOps {
 
   static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
@@ -22,6 +26,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Constructor
+   *
    * @param initialCapacity Initial storage capacity
    */
 
@@ -31,6 +36,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Create a new BigFloats instance from a given list of floats
+   *
    * @param values Any number of floats
    * @return new BigFloats instance
    */
@@ -43,6 +49,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Resize to a given capacity
+   *
    * @param capacity Requested storage capacity
    */
 
@@ -59,6 +66,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Retrieve value
+   *
    * @param idx Index
    * @return Value at index idx
    */
@@ -69,7 +77,8 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Set value
-   * @param idx Index
+   *
+   * @param idx   Index
    * @param value Value
    */
 
@@ -82,6 +91,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Return size
+   *
    * @return Largest stored index + 1
    */
 
@@ -91,16 +101,18 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Sort (in-place)
+   *
    * @return this
    */
 
   public BigFloats sort() {
-    LongMergeSort.mergeSort(0, size, this, this);
+    LongMergeSort.mergeSort(0, size, this);
     return this;
   }
 
   /**
    * Bin count
+   *
    * @return currently used number of storage bins
    */
 
@@ -110,6 +122,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Compare two elements
+   *
    * @param idx1 Index
    * @param idx2 Index
    * @return Result of comparing the element at idx1 with the one at idx2
@@ -122,6 +135,7 @@ public class BigFloats implements LongSwapper, LongComparator {
 
   /**
    * Swap values between two indices
+   *
    * @param idx1 Index
    * @param idx2 Index
    */
@@ -141,6 +155,11 @@ public class BigFloats implements LongSwapper, LongComparator {
     if (size != other.size) return false;
     for (int i = 0; i < size; i++) if (get(i) != other.get(i)) return false;
     return true;
+  }
+
+  @Override
+  public String toString() {
+    return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
 
 }
