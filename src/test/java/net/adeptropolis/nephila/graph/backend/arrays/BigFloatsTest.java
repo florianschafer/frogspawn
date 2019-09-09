@@ -62,4 +62,9 @@ public class BigFloatsTest {
     assertThat(sorted, is(BigFloats.of(0f, 1f, 2f, 3f, 4f, 5f, 6f, 7f, 8f, 9f)));
   }
 
+  @Test
+  public void stringValue() {
+    assertThat(BigFloats.of(2.71f, 3.14f).toString(), is("2.71, 3.14"));
+  }
+
 }

@@ -62,4 +62,9 @@ public class BigLongsTest {
     assertThat(sorted, is(BigLongs.of(0L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L)));
   }
 
+  @Test
+  public void stringValue() {
+    assertThat(BigLongs.of(271L, 314L).toString(), is("271, 314"));
+  }
+
 }

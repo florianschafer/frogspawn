@@ -1,11 +1,9 @@
 package net.adeptropolis.nephila.graph.backend.arrays;
 
-import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
-import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class LongMergeSortTest {
 

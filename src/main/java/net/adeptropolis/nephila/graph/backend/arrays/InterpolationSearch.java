@@ -1,12 +1,7 @@
 package net.adeptropolis.nephila.graph.backend.arrays;
 
-/* NOTE
-*  -  All search methods REQUIRE the input to be SORTED!!!
-   -  Returns -1 if no match was found
-*/
-
 /**
- * Perform interpolation search on both big as well as primitive arrays.
+ * Perform interpolation search on both primitive as well as big int arrays.
  * Note that the underlying data structure is <b>ASSUMED TO BE SORTED</b>.
  */
 
@@ -17,11 +12,10 @@ public class InterpolationSearch {
    * @param ints Big integer array
    * @param key Search key
    * @param low Lower end of the search window. Inclusive.
-   * @param high Lower end of the search window. Also inclusive.
+   * @param high Lower end of the search window. Inclusive(!)
    * @return Index of the first item matching the key. -1 otherwise.
    */
 
-  // high is inclusive!
   public static long search(BigInts ints, int key, long low, long high) {
 
     long mid;
@@ -56,11 +50,10 @@ public class InterpolationSearch {
    * @param array Primitive int array to be sorted
    * @param key Search key
    * @param low Lower end of the search window. Inclusive.
-   * @param high Lower end of the search window. INCLUSIVE.
+   * @param high Lower end of the search window. Inclusive(!)
    * @return Index of the first item matching the key. -1 otherwise.
    */
 
-  // high is inclusive!
   public static int search(int[] array, int key, int low, int high) {
 
     int mid;
@@ -89,6 +82,5 @@ public class InterpolationSearch {
       return -1;
 
   }
-
 
 }
