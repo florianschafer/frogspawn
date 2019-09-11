@@ -21,19 +21,26 @@ public class UndirectedCSRStorageBuilder {
   }
 
   /**
-   * <p>Add a new undirected edge to the graph.
-   * <a href="http://www.supermanisthegreatest.com">Superman!</a>
-   * </p>
+   * Add a new undirected edge to the graph.
    * @param u left vertex
    * @param v right vertex
    * @param weight edge weight
    * @return this
    */
+
   public UndirectedCSRStorageBuilder add(int u, int v, double weight) {
     set(ptr++, u, v, weight);
     if (u != v) set(ptr++, v, u, weight);
     return this;
   }
+
+  /**
+   * Set an edge buffer element
+   * @param idx Index
+   * @param u Left vertex
+   * @param v Right Vertex
+   * @param weight Edge weight
+   */
 
   private void set(long idx, int u, int v, double weight) {
     if (idx >= size) resize(size + GROW_SIZE);
@@ -41,6 +48,11 @@ public class UndirectedCSRStorageBuilder {
     edges[1].set(idx, v);
     weights.set(idx, weight);
   }
+
+  /**
+   * Resize the edge buffer
+   * @param newSize New size
+   */
 
   private void resize(long newSize) {
     size = newSize;

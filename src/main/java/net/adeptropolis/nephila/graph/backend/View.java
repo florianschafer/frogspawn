@@ -45,8 +45,8 @@ public class View {
   public void traverseAdjacent(final int idx, final EdgeVisitor visitor) {
     if (vertices.length == 0) return;
     int v = vertices[idx];
-    long low = csrStorage.rowPtrs[v];
-    long high = csrStorage.rowPtrs[v + 1];
+    long low = csrStorage.vertexPtrs[v];
+    long high = csrStorage.vertexPtrs[v + 1];
     if (low == high) return;
     if (vertices.length > high - low) traverseByAdjacent(idx, visitor, low, high);
     else traverseByIndices(idx, visitor, low, high);
@@ -56,9 +56,9 @@ public class View {
     int secPtr = 0;
     int colIdx;
     for (long ptr = low; ptr < high; ptr++) {
-      colIdx = InterpolationSearch.search(vertices, csrStorage.colIndices.get(ptr), secPtr, vertices.length - 1);
+      colIdx = InterpolationSearch.search(vertices, csrStorage.neighbours.get(ptr), secPtr, vertices.length - 1);
       if (colIdx >= 0) {
-        visitor.visit(rowIdx, colIdx, csrStorage.values.get(ptr));
+        visitor.visit(rowIdx, colIdx, csrStorage.weights.get(ptr));
         secPtr = colIdx + 1;
       }
       if (secPtr >= vertices.length) break;
@@ -69,9 +69,9 @@ public class View {
     long ptr = low;
     long retrievedIdx;
     for (int colIdx = 0; colIdx < vertices.length; colIdx++) {
-      retrievedIdx = InterpolationSearch.search(csrStorage.colIndices, vertices[colIdx], ptr, high - 1);
+      retrievedIdx = InterpolationSearch.search(csrStorage.neighbours, vertices[colIdx], ptr, high - 1);
       if (retrievedIdx >= 0 && retrievedIdx < high) {
-        visitor.visit(rowIdx, colIdx, csrStorage.values.get(retrievedIdx));
+        visitor.visit(rowIdx, colIdx, csrStorage.weights.get(retrievedIdx));
         ptr = retrievedIdx + 1;
       }
       if (ptr >= high) break;

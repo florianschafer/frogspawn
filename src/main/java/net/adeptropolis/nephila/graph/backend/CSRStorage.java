@@ -1,32 +1,32 @@
 package net.adeptropolis.nephila.graph.backend;
 
-// TODO: Make vertices an efficiently-flushable sorted set?
+// TODO: Make vertices an efficiently iterable + flushable sorted set?
 
 import net.adeptropolis.nephila.graph.backend.arrays.BigDoubles;
 import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
 
 public class CSRStorage {
 
-  final CSRTraversal traversal = new CSRTraversal();
+  final ParallelEdgeTraversal traversal = new ParallelEdgeTraversal();
 
-  private final int numRows;
-  private final long nnz;
+  private final int size;
+  private final long edgeCount;
 
-  final long[] rowPtrs;
-  final BigInts colIndices;
-  final BigDoubles values;
+  final long[] vertexPtrs;
+  final BigInts neighbours;
+  final BigDoubles weights;
 
-  CSRStorage(int numRows, long nnz, long[] rowPtrs, BigInts colIndices, BigDoubles values) {
-    this.numRows = numRows;
-    this.nnz = nnz;
-    this.rowPtrs = rowPtrs;
-    this.colIndices = colIndices;
-    this.values = values;
+  CSRStorage(int size, long edgeCount, long[] vertexPtrs, BigInts neighbours, BigDoubles weights) {
+    this.size = size;
+    this.edgeCount = edgeCount;
+    this.vertexPtrs = vertexPtrs;
+    this.neighbours = neighbours;
+    this.weights = weights;
   }
 
   public View defaultView() {
-    int[] indices = new int[numRows];
-    for (int i = 0; i < numRows; i++) indices[i] = i;
+    int[] indices = new int[size];
+    for (int i = 0; i < size; i++) indices[i] = i;
     return view(indices);
   }
 
@@ -38,29 +38,16 @@ public class CSRStorage {
     traversal.cleanup();
   }
 
-  public int getNumRows() {
-    return numRows;
+  public int getSize() {
+    return size;
   }
 
-  public long getNnz() {
-    return nnz;
-  }
-
-  public String fmtMemoryFootprint() {
-    long fp = memoryFootprint();
-    if (fp >= (1 << 30)) {
-      return String.format("%.2f GB", (double) fp / (1 << 30));
-    } else if (fp >= (1 << 20)) {
-      return String.format("%.2f MB", (double) fp / (1 << 20));
-    } else if (fp >= (1 << 10)) {
-      return String.format("%.2f KB", (double) fp / (1 << 10));
-    } else {
-      return String.format("%d bytes", fp);
-    }
+  public long getEdgeCount() {
+    return edgeCount;
   }
 
   public long memoryFootprint() {
-    return ((numRows + 1) << 3) + (nnz << 2) + (nnz << 3);
+    return 16 + 4 + 8 + ((size + 1) << 3) + (edgeCount << 2) + (edgeCount << 3);
   }
 
 }

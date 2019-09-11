@@ -16,8 +16,8 @@ public class UndirectedCSRStorageBuilderTest {
   @Test
   public void emptyMatrix() {
     withBuilder(Function.identity(), storage -> {
-      assertThat(storage.getNumRows(), is(0));
-      assertThat(storage.getNnz(), is(0L));
+      assertThat(storage.getSize(), is(0));
+      assertThat(storage.getEdgeCount(), is(0L));
     });
   }
 
@@ -26,8 +26,8 @@ public class UndirectedCSRStorageBuilderTest {
     withBuilder(b -> b
             .add(0, 0, 1.0)
             .add(0, 1, 1.0), storage -> {
-      assertThat(storage.getNnz(), is(3L));
-      assertThat(storage.getNumRows(), is(2));
+      assertThat(storage.getEdgeCount(), is(3L));
+      assertThat(storage.getSize(), is(2));
       assertThat(storage.memoryFootprint(), is(60L));
       assertThat(storage.fmtMemoryFootprint(), is("60 bytes"));
     });
@@ -42,8 +42,8 @@ public class UndirectedCSRStorageBuilderTest {
                     .add(0, 7, 0.7)
                     .add(5, 0, 5.0)
                     .add(0, 1, 0.1), storage -> {
-              assertThat(storage.getNnz(), is(11L));
-              assertThat(storage.getNumRows(), is(8));
+              assertThat(storage.getEdgeCount(), is(11L));
+              assertThat(storage.getSize(), is(8));
             },
             ImmutableList.of(0L, 4L, 6L, 7L, 8L, 8L, 10L, 10L),
             ImmutableList.of(0, 1, 5, 7, 0, 2, 1, 5, 0, 3, 0),
@@ -58,8 +58,8 @@ public class UndirectedCSRStorageBuilderTest {
                     .add(0, 0, 5)
                     .add(0, 0, 7)
                     .add(0, 0, 11), storage -> {
-              assertThat(storage.getNnz(), is(1L));
-              assertThat(storage.getNumRows(), is(1));
+              assertThat(storage.getEdgeCount(), is(1L));
+              assertThat(storage.getSize(), is(1));
             },
             ImmutableList.of(0L),
             ImmutableList.of(0),
@@ -75,8 +75,8 @@ public class UndirectedCSRStorageBuilderTest {
                     .add(2, 2, 7)
                     .add(2, 2, 11)
                     .add(3, 3, 13), storage -> {
-              assertThat(storage.getNnz(), is(4L));
-              assertThat(storage.getNumRows(), is(4));
+              assertThat(storage.getEdgeCount(), is(4L));
+              assertThat(storage.getSize(), is(4));
             },
             ImmutableList.of(0L, 1L, 2L, 3L),
             ImmutableList.of(0, 1, 2, 3),
@@ -92,8 +92,8 @@ public class UndirectedCSRStorageBuilderTest {
                     .add(2, 2, 7)
                     .add(3, 3, 11)
                     .add(3, 3, 13), storage -> {
-              assertThat(storage.getNnz(), is(4L));
-              assertThat(storage.getNumRows(), is(4));
+              assertThat(storage.getEdgeCount(), is(4L));
+              assertThat(storage.getSize(), is(4));
             },
             ImmutableList.of(0L, 1L, 2L, 3L),
             ImmutableList.of(0, 1, 2, 3),
@@ -107,8 +107,8 @@ public class UndirectedCSRStorageBuilderTest {
                     .add(2, 2, 3)
                     .add(2, 2, 5)
                     .add(4, 4, 7), storage -> {
-              assertThat(storage.getNnz(), is(3L));
-              assertThat(storage.getNumRows(), is(5));
+              assertThat(storage.getEdgeCount(), is(3L));
+              assertThat(storage.getSize(), is(5));
             },
             ImmutableList.of(0L, 0L, 1L, 2L, 2L),
             ImmutableList.of(1, 2, 4),
@@ -121,8 +121,8 @@ public class UndirectedCSRStorageBuilderTest {
                     .add(1, 1, 1)
                     .add(1, 2, 2)
                     .add(1, 3, 3), storage -> {
-              assertThat(storage.getNnz(), is(5L));
-              assertThat(storage.getNumRows(), is(4));
+              assertThat(storage.getEdgeCount(), is(5L));
+              assertThat(storage.getSize(), is(4));
             },
             ImmutableList.of(0L, 0L, 3L, 4L),
             ImmutableList.of(1, 2, 3, 1, 1),
@@ -144,12 +144,12 @@ public class UndirectedCSRStorageBuilderTest {
     withBuilder(builder, storage -> {
       validator.accept(storage);
       List<Long> rowPtrs = Lists.newArrayList();
-      for (int i = 0; i < storage.getNumRows(); i++) rowPtrs.add(storage.rowPtrs[i]);
+      for (int i = 0; i < storage.getSize(); i++) rowPtrs.add(storage.vertexPtrs[i]);
       List<Integer> colIndices = Lists.newArrayList();
-      for (int i = 0; i < storage.getNnz(); i++) colIndices.add(storage.colIndices.get(i));
+      for (int i = 0; i < storage.getEdgeCount(); i++) colIndices.add(storage.neighbours.get(i));
       List<Double> values = Lists.newArrayList();
-      for (int i = 0; i < storage.getNnz(); i++) values.add(storage.values.get(i));
-      assertThat("Last element in row pointers must be nnz", storage.rowPtrs[storage.getNumRows()], is(storage.getNnz()));
+      for (int i = 0; i < storage.getEdgeCount(); i++) values.add(storage.weights.get(i));
+      assertThat("Last element in row pointers must be nnz", storage.vertexPtrs[storage.getSize()], is(storage.getEdgeCount()));
       assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
       assertThat("Column vertices should match", colIndices, is(expectedColIndices));
       assertThat("Values should match", values, is(expectedValues));

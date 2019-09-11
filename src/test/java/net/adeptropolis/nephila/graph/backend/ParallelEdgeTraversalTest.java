@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.is;
 
-public class CSRTraversalTest {
+public class ParallelEdgeTraversalTest {
 
   @Test
   public void traversalVisitsAllEntries() {

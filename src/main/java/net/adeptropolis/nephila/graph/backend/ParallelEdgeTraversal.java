@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 // TODO: Improve / optimize threading, object churn and runnable re-use
 
-class CSRTraversal {
+class ParallelEdgeTraversal {
 
   private static final int THREAD_BATCH_SIZE = 64;
   private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
@@ -18,7 +18,7 @@ class CSRTraversal {
 
   private final AtomicInteger workPtr;
 
-  CSRTraversal() {
+  ParallelEdgeTraversal() {
     this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
     this.futures = new Future[THREAD_POOL_SIZE];
     this.workPtr = new AtomicInteger();
