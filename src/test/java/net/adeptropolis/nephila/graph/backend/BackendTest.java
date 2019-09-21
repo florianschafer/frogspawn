@@ -10,16 +10,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 
-public class CSRStorageTest {
+public class BackendTest {
 
   @Test
   public void traverseEmptyMatrix() {
-    CSRStorage storage = new UndirectedCSRStorageBuilder().build();
+    Backend storage = new GraphBuilder().build();
     View view = storage.defaultView();
     CollectingEdgeVisitor visitor = new CollectingEdgeVisitor();
     view.traverseAdjacent(0, visitor);
     assertThat(visitor.entries, empty());
-    storage.free();
   }
 
   @Test
@@ -30,8 +29,8 @@ public class CSRStorageTest {
     });
   }
 
-  private void withDefaultMatrix(BiConsumer<CSRStorage, CollectingEdgeVisitor> consumer) {
-    CSRStorage storage = new UndirectedCSRStorageBuilder()
+  private void withDefaultMatrix(BiConsumer<Backend, CollectingEdgeVisitor> consumer) {
+    Backend storage = new GraphBuilder()
             .add(1, 1, 2)
             .add(1, 2, 3)
             .add(1, 4, 7)
@@ -42,7 +41,6 @@ public class CSRStorageTest {
             .add(5, 7, 11)
             .build();
     consumer.accept(storage, new CollectingEdgeVisitor());
-    storage.free();
   }
 
   @Test

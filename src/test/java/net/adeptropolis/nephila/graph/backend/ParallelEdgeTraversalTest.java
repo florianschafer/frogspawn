@@ -19,16 +19,15 @@ public class ParallelEdgeTraversalTest {
     });
   }
 
-  private void withLargeDenseMatrix(Consumer<CSRStorage> storageConsumer) {
-    UndirectedCSRStorageBuilder builder = new UndirectedCSRStorageBuilder();
+  private void withLargeDenseMatrix(Consumer<Backend> storageConsumer) {
+    GraphBuilder builder = new GraphBuilder();
     for (int i = 0; i < 1000; i++) {
       for (int j = i + 1; j < 1000; j++) {
         builder.add(i, j, i + j);
       }
     }
-    CSRStorage storage = builder.build();
+    Backend storage = builder.build();
     storageConsumer.accept(storage);
-    storage.free();
   }
 
   @Test

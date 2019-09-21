@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.Backend;
+import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ public class NormalizedLaplacianTest {
 
   @Test
   public void simpleNormalizedLaplacian() {
-    CSRStorage storage = new UndirectedCSRStorageBuilder()
+    Backend storage = new GraphBuilder()
             .add(0, 1, 1)
             .add(0, 4, 1)
             .add(1, 0, 1)
@@ -43,7 +43,6 @@ public class NormalizedLaplacianTest {
     verifyNormLaplacianCol(laplacian, view.size(), 4, invSqrt8, quarter, 0, invSqrt8, 1, invSqrt8);
     verifyNormLaplacianCol(laplacian, view.size(), 5, 0, 0, half, 0, invSqrt8, 1);
     verifyV0(laplacian, view.size(), 3.5355e-01, 5.0000e-01, 3.5355e-01, 3.5355e-01, 5.0000e-01, 3.5355e-01);
-    storage.free();
   }
 
   private void verifyNormLaplacianCol(NormalizedLaplacian laplacian, int size, int col, double... expected) {
@@ -62,7 +61,7 @@ public class NormalizedLaplacianTest {
 
   @Test
   public void normalizedLaplacianSubset() {
-    CSRStorage storage = new UndirectedCSRStorageBuilder()
+    Backend storage = new GraphBuilder()
             .add(0, 1, 20)
             .add(0, 4, 2)
             .add(1, 1, 30)
@@ -87,7 +86,6 @@ public class NormalizedLaplacianTest {
     verifyNormLaplacianCol(laplacian, view.size(), 3, inv2Sqrt8, 0, inv1Sqrt4, 1, inv1Sqrt8);
     verifyNormLaplacianCol(laplacian, view.size(), 4, 0, inv1Sqrt2, 0, inv1Sqrt8, 1);
     verifyV0(laplacian, view.size(), 0.44721, 0.31623, 0.31623, 0.63246, 0.44721);
-    storage.free();
   }
 
 }

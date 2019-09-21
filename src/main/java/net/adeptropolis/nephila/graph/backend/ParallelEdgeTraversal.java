@@ -13,14 +13,13 @@ class ParallelEdgeTraversal {
 
   private static final int THREAD_BATCH_SIZE = 64;
   private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
-  private final ExecutorService executorService;
-  private final Future[] futures;
+
+  private static final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+  private static final Future[] futures = new Future[THREAD_POOL_SIZE];
 
   private final AtomicInteger workPtr;
 
   ParallelEdgeTraversal() {
-    this.executorService = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-    this.futures = new Future[THREAD_POOL_SIZE];
     this.workPtr = new AtomicInteger();
   }
 
@@ -28,7 +27,7 @@ class ParallelEdgeTraversal {
     visitor.reset();
     workPtr.set(0);
     for (int i = 0; i < THREAD_POOL_SIZE; i++)
-      futures[i] = executorService.submit(() -> fetchAndProcess(visitor, view));
+      futures[i] = executorService.submit(() -> fetchAndProcess(view, visitor));
     for (int i = 0; i < THREAD_POOL_SIZE; i++) {
       try {
         futures[i].get();
@@ -38,7 +37,7 @@ class ParallelEdgeTraversal {
     }
   }
 
-  private void fetchAndProcess(final EdgeVisitor visitor, View view) {
+  private void fetchAndProcess(View view, final EdgeVisitor visitor) {
     int i;
     while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < view.size()) {
       for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, view.size()); j++) {

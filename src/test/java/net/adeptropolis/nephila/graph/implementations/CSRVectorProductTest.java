@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.Backend;
+import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -22,8 +22,8 @@ public class CSRVectorProductTest {
     });
   }
 
-  private void withStorage(Consumer<CSRStorage> storageConsumer) {
-    CSRStorage storage = new UndirectedCSRStorageBuilder()
+  private void withStorage(Consumer<Backend> storageConsumer) {
+    Backend storage = new GraphBuilder()
             .add(0, 0, 2)
             .add(0, 1, 3)
             .add(0, 2, 5)
@@ -32,7 +32,6 @@ public class CSRVectorProductTest {
             .add(2, 2, 13)
             .build();
     storageConsumer.accept(storage);
-    storage.free();
   }
 
   @Test

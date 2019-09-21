@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.CSRStorage;
-import net.adeptropolis.nephila.graph.backend.UndirectedCSRStorageBuilder;
+import net.adeptropolis.nephila.graph.backend.Backend;
+import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -24,15 +24,14 @@ public class RowWeightsTest {
     });
   }
 
-  private void withDefaultMatrix(Consumer<CSRStorage> storageConsumer) {
-    CSRStorage storage = new UndirectedCSRStorageBuilder()
+  private void withDefaultMatrix(Consumer<Backend> storageConsumer) {
+    Backend storage = new GraphBuilder()
             .add(0, 1, 2)
             .add(0, 2, 3)
             .add(1, 2, 5)
             .add(1, 3, 7)
             .build();
     storageConsumer.accept(storage);
-    storage.free();
   }
 
   @Test

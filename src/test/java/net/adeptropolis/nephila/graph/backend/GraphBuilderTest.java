@@ -11,25 +11,13 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class UndirectedCSRStorageBuilderTest {
+public class GraphBuilderTest {
 
   @Test
   public void emptyMatrix() {
     withBuilder(Function.identity(), storage -> {
       assertThat(storage.getSize(), is(0));
       assertThat(storage.getEdgeCount(), is(0L));
-    });
-  }
-
-  @Test
-  public void memoryFootprintReporting() {
-    withBuilder(b -> b
-            .add(0, 0, 1.0)
-            .add(0, 1, 1.0), storage -> {
-      assertThat(storage.getEdgeCount(), is(3L));
-      assertThat(storage.getSize(), is(2));
-      assertThat(storage.memoryFootprint(), is(60L));
-      assertThat(storage.fmtMemoryFootprint(), is("60 bytes"));
     });
   }
 
@@ -129,15 +117,14 @@ public class UndirectedCSRStorageBuilderTest {
             ImmutableList.of(1.0, 2.0, 3.0, 2.0, 3.0));
   }
 
-  private static void withBuilder(Function<UndirectedCSRStorageBuilder, UndirectedCSRStorageBuilder> builder,
-                                  Consumer<CSRStorage> validator) {
-    CSRStorage storage = builder.apply(new UndirectedCSRStorageBuilder()).build();
+  private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
+                                  Consumer<Backend> validator) {
+    Backend storage = builder.apply(new GraphBuilder()).build();
     validator.accept(storage);
-    storage.free();
   }
 
-  private static void withBuilder(Function<UndirectedCSRStorageBuilder, UndirectedCSRStorageBuilder> builder,
-                                  Consumer<CSRStorage> validator,
+  private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
+                                  Consumer<Backend> validator,
                                   List<Long> expectedRowPtrs,
                                   List<Integer> expectedColIndices,
                                   List<Double> expectedValues) {

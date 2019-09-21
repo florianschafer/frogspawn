@@ -5,7 +5,7 @@ import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
 import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort;
 import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
 
-public class UndirectedCSRStorageBuilder {
+public class GraphBuilder {
 
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
@@ -16,7 +16,7 @@ public class UndirectedCSRStorageBuilder {
   private final BigInts[] edges = { new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE) };
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
 
-  public UndirectedCSRStorageBuilder() {
+  public GraphBuilder() {
 
   }
 
@@ -28,7 +28,7 @@ public class UndirectedCSRStorageBuilder {
    * @return this
    */
 
-  public UndirectedCSRStorageBuilder add(int u, int v, double weight) {
+  public GraphBuilder add(int u, int v, double weight) {
     set(ptr++, u, v, weight);
     if (u != v) set(ptr++, v, u, weight);
     return this;
@@ -61,10 +61,10 @@ public class UndirectedCSRStorageBuilder {
     weights.resize(newSize);
   }
 
-  public CSRStorage build() {
+  public Backend build() {
 
     if (ptr == 0L) {
-      return new CSRStorage(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
+      return new Backend(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
 
     sort();
@@ -76,7 +76,7 @@ public class UndirectedCSRStorageBuilder {
     long[] vertexPtrs = computeVertexPointers(numVertices);
     edges[0] = null;
 
-    return new CSRStorage(numVertices, ptr, vertexPtrs, edges[1], weights);
+    return new Backend(numVertices, ptr, vertexPtrs, edges[1], weights);
   }
 
   private void sort() {
