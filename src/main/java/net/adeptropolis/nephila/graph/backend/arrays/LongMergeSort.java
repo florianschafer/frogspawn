@@ -35,9 +35,9 @@ public class LongMergeSort {
    * standard mergesort, as its running time is <i>O</i>(<var>n</var>&nbsp;(log&nbsp;<var>n</var>)<sup>2</sup>), but it does not allocate additional memory; as a result, it can be
    * used as a generic sorting algorithm.
    *
-   * @param from    the index of the first element (inclusive) to be sorted.
-   * @param to      the index of the last element (exclusive) to be sorted.
-   * @param ops     the SortOps implementation for swapping and comparing elements
+   * @param from the index of the first element (inclusive) to be sorted.
+   * @param to   the index of the last element (exclusive) to be sorted.
+   * @param ops  the SortOps implementation for swapping and comparing elements
    */
   public static void mergeSort(final long from, final long to, final SortOps ops) {
     /*
@@ -127,7 +127,7 @@ public class LongMergeSort {
    * @param from the index of the first element (inclusive) to be included in the binary search.
    * @param to   the index of the last element (exclusive) to be included in the binary search.
    * @param pos  the position of the element to be searched for.
-   * @param ops     the SortOps implementation for swapping and comparing elements
+   * @param ops  the SortOps implementation for swapping and comparing elements
    * @return the largest index i such that, for every j in the range {@code [first..i)},
    * {@code comp.compare(j, pos)} is {@code true}.
    */
@@ -155,7 +155,7 @@ public class LongMergeSort {
    *
    * @param from the index of the first element (inclusive) to be included in the binary search.
    * @param pos  the position of the element to be searched for.
-   * @param ops     the SortOps implementation for swapping and comparing elements
+   * @param ops  the SortOps implementation for swapping and comparing elements
    * @return The largest index i such that, for every j in the range {@code [first..i)},
    * {@code comp.compare(pos, j)} is {@code false}.
    */
@@ -189,9 +189,9 @@ public class LongMergeSort {
      * integer, zero, or a positive integer as the first argument is less than,
      * equal to, or greater than the second.
      *
-     * @see java.util.Comparator
      * @return a negative integer, zero, or a positive integer as the first argument
-     *         is less than, equal to, or greater than the second.
+     * is less than, equal to, or greater than the second.
+     * @see java.util.Comparator
      */
     int compare(long k1, long k2);
 

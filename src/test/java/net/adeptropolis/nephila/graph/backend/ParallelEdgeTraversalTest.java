@@ -19,14 +19,14 @@ public class ParallelEdgeTraversalTest {
     });
   }
 
-  private void withLargeDenseMatrix(Consumer<Backend> storageConsumer) {
+  private void withLargeDenseMatrix(Consumer<GraphDataStore> storageConsumer) {
     GraphBuilder builder = new GraphBuilder();
     for (int i = 0; i < 1000; i++) {
       for (int j = i + 1; j < 1000; j++) {
         builder.add(i, j, i + j);
       }
     }
-    Backend storage = builder.build();
+    GraphDataStore storage = builder.build();
     storageConsumer.accept(storage);
   }
 

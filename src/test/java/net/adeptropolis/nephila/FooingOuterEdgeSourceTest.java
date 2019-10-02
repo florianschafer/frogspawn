@@ -2,7 +2,7 @@ package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.graph.LabeledEdge;
-import net.adeptropolis.nephila.graph.backend.Backend;
+import net.adeptropolis.nephila.graph.backend.GraphDataStore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class FooingOuterEdgeSourceTest {
 
     GraphBuilder b = new GraphBuilder();
     g.edges().sequential().forEach(e -> b.add(e.u, e.v, e.weight));
-    Backend storage = b.build();
+    GraphDataStore storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
 //    Cluster root = new RecursiveSpectralClustering(template, 0.3, 0.85,1E-6, 150, true).compute();

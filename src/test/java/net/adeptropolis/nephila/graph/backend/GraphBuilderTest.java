@@ -118,25 +118,25 @@ public class GraphBuilderTest {
   }
 
   private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
-                                  Consumer<Backend> validator) {
-    Backend storage = builder.apply(new GraphBuilder()).build();
+                                  Consumer<GraphDataStore> validator) {
+    GraphDataStore storage = builder.apply(new GraphBuilder()).build();
     validator.accept(storage);
   }
 
   private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
-                                  Consumer<Backend> validator,
+                                  Consumer<GraphDataStore> validator,
                                   List<Long> expectedRowPtrs,
                                   List<Integer> expectedColIndices,
                                   List<Double> expectedValues) {
     withBuilder(builder, storage -> {
       validator.accept(storage);
       List<Long> rowPtrs = Lists.newArrayList();
-      for (int i = 0; i < storage.getSize(); i++) rowPtrs.add(storage.vertexPtrs[i]);
+      for (int i = 0; i < storage.getSize(); i++) rowPtrs.add(storage.pointers[i]);
       List<Integer> colIndices = Lists.newArrayList();
       for (int i = 0; i < storage.getEdgeCount(); i++) colIndices.add(storage.neighbours.get(i));
       List<Double> values = Lists.newArrayList();
       for (int i = 0; i < storage.getEdgeCount(); i++) values.add(storage.weights.get(i));
-      assertThat("Last element in row pointers must be nnz", storage.vertexPtrs[storage.getSize()], is(storage.getEdgeCount()));
+      assertThat("Last element in row pointers must be nnz", storage.pointers[storage.getSize()], is(storage.getEdgeCount()));
       assertThat("Row pointers should match", rowPtrs, is(expectedRowPtrs));
       assertThat("Column vertices should match", colIndices, is(expectedColIndices));
       assertThat("Values should match", values, is(expectedValues));

@@ -10,16 +10,16 @@ public class View {
    *  A View on an index subset of the given matrix
    */
 
-  private Backend backend;
   private final int[] vertices;
+  private GraphDataStore graphDatastore;
 
-  View(Backend backend, int[] vertices) {
-    this.backend = backend;
+  View(GraphDataStore graphDatastore, int[] vertices) {
+    this.graphDatastore = graphDatastore;
     this.vertices = vertices;
   }
 
   public View subview(int[] subviewIndices) {
-    return backend.view(subviewIndices);
+    return graphDatastore.view(subviewIndices);
   }
 
   public int size() {
@@ -47,8 +47,8 @@ public class View {
       return;
     }
     int v = vertices[idx];
-    long low = backend.vertexPtrs[v];
-    long high = backend.vertexPtrs[v + 1];
+    long low = graphDatastore.pointers[v];
+    long high = graphDatastore.pointers[v + 1];
     if (low == high) {
       return;
     }
@@ -63,9 +63,9 @@ public class View {
     int secPtr = 0;
     int colIdx;
     for (long ptr = low; ptr < high; ptr++) {
-      colIdx = InterpolationSearch.search(vertices, backend.neighbours.get(ptr), secPtr, vertices.length - 1);
+      colIdx = InterpolationSearch.search(vertices, graphDatastore.neighbours.get(ptr), secPtr, vertices.length - 1);
       if (colIdx >= 0) {
-        visitor.visit(rowIdx, colIdx, backend.weights.get(ptr));
+        visitor.visit(rowIdx, colIdx, graphDatastore.weights.get(ptr));
         secPtr = colIdx + 1;
       }
       if (secPtr >= vertices.length) break;
@@ -76,9 +76,9 @@ public class View {
     long ptr = low;
     long retrievedIdx;
     for (int colIdx = 0; colIdx < vertices.length; colIdx++) {
-      retrievedIdx = InterpolationSearch.search(backend.neighbours, vertices[colIdx], ptr, high - 1);
+      retrievedIdx = InterpolationSearch.search(graphDatastore.neighbours, vertices[colIdx], ptr, high - 1);
       if (retrievedIdx >= 0 && retrievedIdx < high) {
-        visitor.visit(rowIdx, colIdx, backend.weights.get(retrievedIdx));
+        visitor.visit(rowIdx, colIdx, graphDatastore.weights.get(retrievedIdx));
         ptr = retrievedIdx + 1;
       }
       if (ptr >= high) break;

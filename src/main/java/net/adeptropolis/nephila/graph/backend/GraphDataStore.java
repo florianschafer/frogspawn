@@ -3,19 +3,18 @@ package net.adeptropolis.nephila.graph.backend;
 import net.adeptropolis.nephila.graph.backend.arrays.BigDoubles;
 import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
 
-public class Backend {
+public class GraphDataStore {
 
+  final long[] pointers;
+  final BigInts neighbours;
+  final BigDoubles weights;
   private final int size;
   private final long edgeCount;
 
-  final long[] vertexPtrs;
-  final BigInts neighbours;
-  final BigDoubles weights;
-
-  Backend(int size, long edgeCount, long[] vertexPtrs, BigInts neighbours, BigDoubles weights) {
+  GraphDataStore(int size, long edgeCount, long[] pointers, BigInts neighbours, BigDoubles weights) {
     this.size = size;
     this.edgeCount = edgeCount;
-    this.vertexPtrs = vertexPtrs;
+    this.pointers = pointers;
     this.neighbours = neighbours;
     this.weights = weights;
   }

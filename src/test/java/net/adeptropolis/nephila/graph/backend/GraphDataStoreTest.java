@@ -10,11 +10,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 
-public class BackendTest {
+public class GraphDataStoreTest {
 
   @Test
   public void traverseEmptyMatrix() {
-    Backend storage = new GraphBuilder().build();
+    GraphDataStore storage = new GraphBuilder().build();
     View view = storage.defaultView();
     CollectingEdgeVisitor visitor = new CollectingEdgeVisitor();
     view.traverseAdjacent(0, visitor);
@@ -29,8 +29,8 @@ public class BackendTest {
     });
   }
 
-  private void withDefaultMatrix(BiConsumer<Backend, CollectingEdgeVisitor> consumer) {
-    Backend storage = new GraphBuilder()
+  private void withDefaultMatrix(BiConsumer<GraphDataStore, CollectingEdgeVisitor> consumer) {
+    GraphDataStore storage = new GraphBuilder()
             .add(1, 1, 2)
             .add(1, 2, 3)
             .add(1, 4, 7)

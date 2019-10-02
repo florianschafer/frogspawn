@@ -1,30 +1,19 @@
 package net.adeptropolis.nephila.graph;
 
-import net.adeptropolis.nephila.graph.backend.Backend;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import net.adeptropolis.nephila.graph.backend.EdgeVisitor;
 
-public class Graph {
+import java.util.function.IntConsumer;
+import java.util.stream.IntStream;
 
-  private final Backend backend;
-  private int[] vertexBuf;
-  private int verticesSize;
+public interface Graph {
 
-  public Graph(Backend backend) {
-    this.backend = backend;
-  }
+  int size();
 
-  public void addVertex(int v) {
-    vertexBuf[verticesSize++]= v;
-  }
+  IntStream vertices();
 
-//  public Graph ensureSorted() {
-//    Arrays.cop
-//    if (!sorted) {
-//      Arrays.parallelSort(vertexBuf, 0, verticesSize);
-//      sorted = true;
-//    }
-//    return this;
-//  }
+  void traverse(EdgeVisitor visitor);
 
-
+  void traverseNeighbours(int v, EdgeVisitor visitor);
 
 }

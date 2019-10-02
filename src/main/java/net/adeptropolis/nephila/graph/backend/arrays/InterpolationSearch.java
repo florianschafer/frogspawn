@@ -9,9 +9,10 @@ public class InterpolationSearch {
 
   /**
    * Search in BigInts
+   *
    * @param ints Big integer array
-   * @param key Search key
-   * @param low Lower end of the search window. Inclusive.
+   * @param key  Search key
+   * @param low  Lower end of the search window. Inclusive.
    * @param high Lower end of the search window. Inclusive(!)
    * @return Index of the first item matching the key. -1 otherwise.
    */
@@ -47,10 +48,11 @@ public class InterpolationSearch {
 
   /**
    * Search in int[]
+   *
    * @param array Primitive int array to be sorted
-   * @param key Search key
-   * @param low Lower end of the search window. Inclusive.
-   * @param high Lower end of the search window. Inclusive(!)
+   * @param key   Search key
+   * @param low   Lower end of the search window. Inclusive.
+   * @param high  Lower end of the search window. Inclusive(!)
    * @return Index of the first item matching the key. -1 otherwise.
    */
 

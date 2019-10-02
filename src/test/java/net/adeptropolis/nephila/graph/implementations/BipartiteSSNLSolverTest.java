@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.Backend;
+import net.adeptropolis.nephila.graph.backend.GraphDataStore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class BipartiteSSNLSolverTest {
   }
 
   private void withBipartiteAdjacencyMatrix(Consumer<View> viewConsumer) {
-    Backend storage = new GraphBuilder()
+    GraphDataStore storage = new GraphBuilder()
             .add(0, 3, 2)
             .add(0, 4, 3)
             .add(0, 5, 5)
