@@ -133,7 +133,7 @@ public class GraphBuilderTest {
       List<Long> rowPtrs = Lists.newArrayList();
       for (int i = 0; i < storage.getSize(); i++) rowPtrs.add(storage.pointers[i]);
       List<Integer> colIndices = Lists.newArrayList();
-      for (int i = 0; i < storage.getEdgeCount(); i++) colIndices.add(storage.neighbours.get(i));
+      for (int i = 0; i < storage.getEdgeCount(); i++) colIndices.add(storage.edges.get(i));
       List<Double> values = Lists.newArrayList();
       for (int i = 0; i < storage.getEdgeCount(); i++) values.add(storage.weights.get(i));
       assertThat("Last element in row pointers must be nnz", storage.pointers[storage.getSize()], is(storage.getEdgeCount()));

@@ -20,12 +20,12 @@ public class GraphBuilder {
 
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
-  private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
+  private final BigInts[] edges = { new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE) };
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
 
-  GraphBuilder() {
+  public GraphBuilder() {
 
   }
 
@@ -111,8 +111,8 @@ public class GraphBuilder {
 
     if (ptr == 0) return;
 
-    int[] activeEdge = new int[]{edges[0].get(0), edges[1].get(0)};
-    double activeValue = weights.get(0);
+    int[] currentEdge = new int[]{edges[0].get(0), edges[1].get(0)};
+    double currentValue = weights.get(0);
 
     int[] edge = new int[2];
     double val;
@@ -125,17 +125,17 @@ public class GraphBuilder {
       edge[1] = edges[1].get(scrollPtr);
       val = weights.get(scrollPtr);
 
-      if (edge[0] == activeEdge[0] && edge[1] == activeEdge[1]) {
-        activeValue += val;
+      if (edge[0] == currentEdge[0] && edge[1] == currentEdge[1]) {
+        currentValue += val;
       } else {
-        if (writePtr < scrollPtr) set(writePtr++, activeEdge[0], activeEdge[1], activeValue);
-        activeEdge[0] = edge[0];
-        activeEdge[1] = edge[1];
-        activeValue = val;
+        if (writePtr < scrollPtr) set(writePtr++, currentEdge[0], currentEdge[1], currentValue);
+        currentEdge[0] = edge[0];
+        currentEdge[1] = edge[1];
+        currentValue = val;
       }
     }
 
-    set(writePtr++, activeEdge[0], activeEdge[1], activeValue);
+    set(writePtr++, currentEdge[0], currentEdge[1], currentValue);
     ptr = writePtr;
 
   }
@@ -150,7 +150,7 @@ public class GraphBuilder {
 
 
   /**
-   * For every vertex, compute its pointer relative to both arrays storing neighbours and weights
+   * For every vertex, compute its pointer relative to both arrays storing edges and weights
    *
    * @param graphSize Size of the graph
    * @return Array whose i-th entry points to the first edge of vertex i
