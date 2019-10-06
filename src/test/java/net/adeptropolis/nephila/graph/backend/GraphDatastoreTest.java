@@ -10,13 +10,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 
-public class GraphDataStoreTest {
+public class GraphDatastoreTest {
 
   @Test
   public void traverseEmptyMatrix() {
-    GraphDataStore storage = new GraphBuilder().build();
+    GraphDatastore storage = new GraphBuilder().build();
     View view = storage.defaultView();
-    CollectingEdgeVisitor visitor = new CollectingEdgeVisitor();
+    CollectingEdgeConsumer visitor = new CollectingEdgeConsumer();
     view.traverseAdjacent(0, visitor);
     assertThat(visitor.entries, empty());
   }
@@ -29,8 +29,8 @@ public class GraphDataStoreTest {
     });
   }
 
-  private void withDefaultMatrix(BiConsumer<GraphDataStore, CollectingEdgeVisitor> consumer) {
-    GraphDataStore storage = new GraphBuilder()
+  private void withDefaultMatrix(BiConsumer<GraphDatastore, CollectingEdgeConsumer> consumer) {
+    GraphDatastore storage = new GraphBuilder()
             .add(1, 1, 2)
             .add(1, 2, 3)
             .add(1, 4, 7)
@@ -40,7 +40,7 @@ public class GraphDataStoreTest {
             .add(5, 6, 9)
             .add(5, 7, 11)
             .build();
-    consumer.accept(storage, new CollectingEdgeVisitor());
+    consumer.accept(storage, new CollectingEdgeConsumer());
   }
 
   @Test
@@ -113,12 +113,12 @@ public class GraphDataStoreTest {
     }
   }
 
-  private class CollectingEdgeVisitor implements EdgeVisitor {
+  private class CollectingEdgeConsumer implements EdgeConsumer {
 
     private final List<Entry> entries = Lists.newArrayList();
 
     @Override
-    public void visit(int u, int v, double weight) {
+    public void accept(int u, int v, double weight) {
       entries.add(Entry.of(u, v, weight));
     }
 

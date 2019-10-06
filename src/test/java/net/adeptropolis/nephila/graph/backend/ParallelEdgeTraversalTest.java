@@ -13,27 +13,27 @@ public class ParallelEdgeTraversalTest {
   @Test
   public void traversalVisitsAllEntries() {
     withLargeDenseMatrix(mat -> {
-      FingerprintingVisitor visitor = new FingerprintingVisitor();
+      FingerprintingConsumer visitor = new FingerprintingConsumer();
       mat.defaultView().traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(582167083500d));
     });
   }
 
-  private void withLargeDenseMatrix(Consumer<GraphDataStore> storageConsumer) {
+  private void withLargeDenseMatrix(Consumer<GraphDatastore> storageConsumer) {
     GraphBuilder builder = new GraphBuilder();
     for (int i = 0; i < 1000; i++) {
       for (int j = i + 1; j < 1000; j++) {
         builder.add(i, j, i + j);
       }
     }
-    GraphDataStore storage = builder.build();
+    GraphDatastore storage = builder.build();
     storageConsumer.accept(storage);
   }
 
   @Test
   public void traversalIgnoresNonSelectedEntries() {
     withLargeDenseMatrix(mat -> {
-      FingerprintingVisitor visitor = new FingerprintingVisitor();
+      FingerprintingConsumer visitor = new FingerprintingConsumer();
       View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
@@ -49,7 +49,7 @@ public class ParallelEdgeTraversalTest {
   @Test
   public void traversalAllowsReuse() {
     withLargeDenseMatrix(mat -> {
-      FingerprintingVisitor visitor = new FingerprintingVisitor();
+      FingerprintingConsumer visitor = new FingerprintingConsumer();
       View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
       MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
@@ -59,11 +59,11 @@ public class ParallelEdgeTraversalTest {
     });
   }
 
-  class FingerprintingVisitor implements EdgeVisitor {
+  class FingerprintingConsumer implements EdgeConsumer {
 
     private final AtomicDouble fingerprint;
 
-    FingerprintingVisitor() {
+    FingerprintingConsumer() {
       fingerprint = new AtomicDouble();
     }
 
@@ -72,7 +72,7 @@ public class ParallelEdgeTraversalTest {
     }
 
     @Override
-    public void visit(int u, int v, double weight) {
+    public void accept(int u, int v, double weight) {
       burnCycles();
       fingerprint.addAndGet(u * weight + v);
     }

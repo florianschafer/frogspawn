@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.graph.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import net.adeptropolis.nephila.graph.backend.EdgeVisitor;
+import net.adeptropolis.nephila.graph.backend.EdgeConsumer;
 import net.adeptropolis.nephila.graph.backend.View;
 
 import java.util.Arrays;
@@ -15,14 +15,14 @@ import java.util.function.Consumer;
 public class ConnectedComponents {
 
   private final View view;
-  private final CCVisitor visitor;
+  private final CCConsumer visitor;
   private IntLinkedOpenHashSet globalQueue;
   private IntRBTreeSet ccQueue;
   private IntRBTreeSet currentCC;
 
   public ConnectedComponents(View view) {
     this.view = view;
-    this.visitor = new CCVisitor();
+    this.visitor = new CCConsumer();
     this.globalQueue = new IntLinkedOpenHashSet();
     this.ccQueue = new IntRBTreeSet();
     this.currentCC = new IntRBTreeSet();
@@ -59,10 +59,10 @@ public class ConnectedComponents {
     componentConsumer.accept(view.subview(componentIndices));
   }
 
-  private class CCVisitor implements EdgeVisitor {
+  private class CCConsumer implements EdgeConsumer {
 
     @Override
-    public void visit(int u, int v, double weight) {
+    public void accept(int u, int v, double weight) {
       if (!ccQueue.contains(v) && !currentCC.contains(v)) ccQueue.add(v);
     }
 

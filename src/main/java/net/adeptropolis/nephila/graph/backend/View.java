@@ -11,9 +11,9 @@ public class View {
    */
 
   private final int[] vertices;
-  private GraphDataStore graphDatastore;
+  private GraphDatastore graphDatastore;
 
-  View(GraphDataStore graphDatastore, int[] vertices) {
+  View(GraphDatastore graphDatastore, int[] vertices) {
     this.graphDatastore = graphDatastore;
     this.vertices = vertices;
   }
@@ -38,11 +38,11 @@ public class View {
     return InterpolationSearch.search(vertices, v, 0, vertices.length - 1);
   }
 
-  public void traverse(final EdgeVisitor visitor) {
+  public void traverse(EdgeConsumer visitor) {
     new ParallelEdgeTraversal().traverse(visitor, this);
   }
 
-  public void traverseAdjacent(final int idx, final EdgeVisitor visitor) {
+  public void traverseAdjacent(int idx, EdgeConsumer visitor) {
     if (vertices.length == 0) {
       return;
     }
@@ -59,26 +59,26 @@ public class View {
     }
   }
 
-  private void traverseByAdjacent(final int rowIdx, final EdgeVisitor visitor, final long low, final long high) {
+  private void traverseByAdjacent(final int rowIdx, final EdgeConsumer visitor, final long low, final long high) {
     int secPtr = 0;
     int colIdx;
     for (long ptr = low; ptr < high; ptr++) {
       colIdx = InterpolationSearch.search(vertices, graphDatastore.edges.get(ptr), secPtr, vertices.length - 1);
       if (colIdx >= 0) {
-        visitor.visit(rowIdx, colIdx, graphDatastore.weights.get(ptr));
+        visitor.accept(rowIdx, colIdx, graphDatastore.weights.get(ptr));
         secPtr = colIdx + 1;
       }
       if (secPtr >= vertices.length) break;
     }
   }
 
-  private void traverseByIndices(final int rowIdx, final EdgeVisitor visitor, final long low, final long high) {
+  private void traverseByIndices(final int rowIdx, final EdgeConsumer visitor, final long low, final long high) {
     long ptr = low;
     long retrievedIdx;
     for (int i = 0; i < vertices.length; i++) {
       retrievedIdx = InterpolationSearch.search(graphDatastore.edges, vertices[i], ptr, high - 1);
       if (retrievedIdx >= 0 && retrievedIdx < high) {
-        visitor.visit(rowIdx, i, graphDatastore.weights.get(retrievedIdx));
+        visitor.accept(rowIdx, i, graphDatastore.weights.get(retrievedIdx));
         ptr = retrievedIdx + 1;
       }
       if (ptr >= high) break;

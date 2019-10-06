@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.backend.GraphDataStore;
+import net.adeptropolis.nephila.graph.backend.GraphDatastore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class ClusteringTemplateTest {
 
   private void verifyK3_3SubsetScores(int[] childIndices, double[] expectedScores) {
     assertThat("Indices size equals expected size", childIndices.length, is(expectedScores.length));
-    GraphDataStore graph = new GraphBuilder()
+    GraphDatastore graph = new GraphBuilder()
             .add(0, 1, 2)
             .add(0, 2, 3)
             .add(0, 3, 5)

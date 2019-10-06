@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.GraphDataStore;
+import net.adeptropolis.nephila.graph.backend.GraphDatastore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
@@ -22,8 +22,8 @@ public class CSRVectorProductTest {
     });
   }
 
-  private void withStorage(Consumer<GraphDataStore> storageConsumer) {
-    GraphDataStore storage = new GraphBuilder()
+  private void withStorage(Consumer<GraphDatastore> storageConsumer) {
+    GraphDatastore storage = new GraphBuilder()
             .add(0, 0, 2)
             .add(0, 1, 3)
             .add(0, 2, 5)

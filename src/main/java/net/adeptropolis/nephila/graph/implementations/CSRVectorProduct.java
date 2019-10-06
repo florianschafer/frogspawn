@@ -1,11 +1,11 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.EdgeVisitor;
+import net.adeptropolis.nephila.graph.backend.EdgeConsumer;
 import net.adeptropolis.nephila.graph.backend.View;
 
 import java.util.Arrays;
 
-public class CSRVectorProduct implements EdgeVisitor {
+public class CSRVectorProduct implements EdgeConsumer {
 
   private final View view;
   private final double[] result;
@@ -23,7 +23,7 @@ public class CSRVectorProduct implements EdgeVisitor {
   }
 
   @Override
-  public void visit(int u, int v, double weight) {
+  public void accept(int u, int v, double weight) {
     // TODO: Do something against range checks on the LHS (extend visitor interface to rows)
     result[u] += weight * argument[v];
   }

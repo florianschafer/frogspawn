@@ -79,9 +79,9 @@ public class GraphBuilder {
    * @return A new immutable Graph instance
    */
 
-  public GraphDataStore build() {
+  public GraphDatastore build() {
     if (ptr == 0L) {
-      return new GraphDataStore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
+      return new GraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
 
     sort();
@@ -90,7 +90,7 @@ public class GraphBuilder {
 
     int graphSize = edges[0].get(ptr - 1) + 1;
     long[] pointers = computePointers(graphSize);
-    return new GraphDataStore(graphSize, ptr, pointers, edges[1], weights);
+    return new GraphDatastore(graphSize, ptr, pointers, edges[1], weights);
   }
 
   /**

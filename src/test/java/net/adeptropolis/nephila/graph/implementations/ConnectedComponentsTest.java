@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.graph.implementations;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.nephila.graph.backend.GraphDataStore;
+import net.adeptropolis.nephila.graph.backend.GraphDatastore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class ConnectedComponentsTest {
   }
 
   private void withButterfly(int[] viewIndices, int[]... expected) {
-    GraphDataStore butterfly = new GraphBuilder()
+    GraphDatastore butterfly = new GraphBuilder()
             .add(0, 1, 1)
             .add(0, 2, 1)
             .add(1, 2, 1)

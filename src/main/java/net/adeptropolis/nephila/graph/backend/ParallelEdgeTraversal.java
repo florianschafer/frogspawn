@@ -1,5 +1,7 @@
 package net.adeptropolis.nephila.graph.backend;
 
+import net.adeptropolis.nephila.graph.Graph;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 // TODO: Improve / optimize threading, object churn and runnable re-use
 
-class ParallelEdgeTraversal {
+public class ParallelEdgeTraversal {
 
   private static final int THREAD_BATCH_SIZE = 64;
   private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
@@ -19,11 +21,35 @@ class ParallelEdgeTraversal {
 
   private final AtomicInteger workPtr;
 
-  ParallelEdgeTraversal() {
+  public ParallelEdgeTraversal() {
     this.workPtr = new AtomicInteger();
   }
 
-  void traverse(final EdgeVisitor visitor, View view) {
+  public void traverse(EdgeConsumer consumer, Graph graph) {
+    consumer.reset();
+    workPtr.set(0);
+    for (int i = 0; i < THREAD_POOL_SIZE; i++)
+      futures[i] = executorService.submit(() -> fetchAndProcess(graph, consumer));
+    for (int i = 0; i < THREAD_POOL_SIZE; i++) {
+      try {
+        futures[i].get();
+      } catch (InterruptedException | ExecutionException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private void fetchAndProcess(Graph graph, EdgeConsumer consumer) {
+    int i;
+    while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < graph.size()) {
+      for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, graph.size()); j++) {
+        graph.traverseByLocalId(j, consumer);
+      }
+    }
+  }
+
+  @Deprecated
+  void traverse(EdgeConsumer visitor, View view) {
     visitor.reset();
     workPtr.set(0);
     for (int i = 0; i < THREAD_POOL_SIZE; i++)
@@ -37,7 +63,8 @@ class ParallelEdgeTraversal {
     }
   }
 
-  private void fetchAndProcess(View view, final EdgeVisitor visitor) {
+  @Deprecated
+  private void fetchAndProcess(View view, EdgeConsumer visitor) {
     int i;
     while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < view.size()) {
       for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, view.size()); j++) {

@@ -1,11 +1,11 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.EdgeVisitor;
+import net.adeptropolis.nephila.graph.backend.EdgeConsumer;
 import net.adeptropolis.nephila.graph.backend.View;
 
 import java.util.Arrays;
 
-public class RowWeights implements EdgeVisitor {
+public class RowWeights implements EdgeConsumer {
 
   private final View view;
   private final double[] weights;
@@ -21,7 +21,7 @@ public class RowWeights implements EdgeVisitor {
   }
 
   @Override
-  public void visit(final int u, final int v, final double weight) {
+  public void accept(final int u, final int v, final double weight) {
     weights[u] += weight;
   }
 

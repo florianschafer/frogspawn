@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.GraphDataStore;
+import net.adeptropolis.nephila.graph.backend.GraphDatastore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
@@ -12,7 +12,7 @@ public class NormalizedLaplacianTest {
 
   @Test
   public void simpleNormalizedLaplacian() {
-    GraphDataStore storage = new GraphBuilder()
+    GraphDatastore storage = new GraphBuilder()
             .add(0, 1, 1)
             .add(0, 4, 1)
             .add(1, 0, 1)
@@ -61,7 +61,7 @@ public class NormalizedLaplacianTest {
 
   @Test
   public void normalizedLaplacianSubset() {
-    GraphDataStore storage = new GraphBuilder()
+    GraphDatastore storage = new GraphBuilder()
             .add(0, 1, 20)
             .add(0, 4, 2)
             .add(1, 1, 30)

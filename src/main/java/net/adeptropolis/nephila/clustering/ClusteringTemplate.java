@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.backend.GraphDataStore;
+import net.adeptropolis.nephila.graph.backend.GraphDatastore;
 import net.adeptropolis.nephila.graph.backend.View;
 import net.adeptropolis.nephila.graph.implementations.RowWeights;
 import net.adeptropolis.nephila.helpers.Arr;
@@ -12,7 +12,7 @@ public class ClusteringTemplate {
   private final View rootView;
   private final double[] rootWeights;
 
-  public ClusteringTemplate(GraphDataStore graph) {
+  public ClusteringTemplate(GraphDatastore graph) {
     this.rootView = graph.defaultView();
     this.rootWeights = new RowWeights(this.rootView).get();
   }

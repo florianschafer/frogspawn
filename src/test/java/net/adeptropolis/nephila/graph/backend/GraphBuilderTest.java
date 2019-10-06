@@ -118,13 +118,13 @@ public class GraphBuilderTest {
   }
 
   private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
-                                  Consumer<GraphDataStore> validator) {
-    GraphDataStore storage = builder.apply(new GraphBuilder()).build();
+                                  Consumer<GraphDatastore> validator) {
+    GraphDatastore storage = builder.apply(new GraphBuilder()).build();
     validator.accept(storage);
   }
 
   private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
-                                  Consumer<GraphDataStore> validator,
+                                  Consumer<GraphDatastore> validator,
                                   List<Long> expectedRowPtrs,
                                   List<Integer> expectedColIndices,
                                   List<Double> expectedValues) {

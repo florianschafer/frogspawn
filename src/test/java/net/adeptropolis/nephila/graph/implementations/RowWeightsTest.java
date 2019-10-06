@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila.graph.implementations;
 
-import net.adeptropolis.nephila.graph.backend.GraphDataStore;
+import net.adeptropolis.nephila.graph.backend.GraphDatastore;
 import net.adeptropolis.nephila.graph.backend.GraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
@@ -24,8 +24,8 @@ public class RowWeightsTest {
     });
   }
 
-  private void withDefaultMatrix(Consumer<GraphDataStore> storageConsumer) {
-    GraphDataStore storage = new GraphBuilder()
+  private void withDefaultMatrix(Consumer<GraphDatastore> storageConsumer) {
+    GraphDatastore storage = new GraphBuilder()
             .add(0, 1, 2)
             .add(0, 2, 3)
             .add(1, 2, 5)
