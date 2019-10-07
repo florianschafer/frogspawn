@@ -2,8 +2,9 @@ package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.graph.LabeledEdge;
-import net.adeptropolis.nephila.graph.backend.GraphDatastore;
-import net.adeptropolis.nephila.graph.backend.GraphBuilder;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphBuilder;
+import net.adeptropolis.nephila.graph.backend.DeprecatedCompressedSparseGraphBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,9 +37,9 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
 
-    GraphBuilder b = new GraphBuilder();
+    DeprecatedCompressedSparseGraphBuilder b = new DeprecatedCompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> b.add(e.u, e.v, e.weight));
-    GraphDatastore storage = b.build();
+    CompressedSparseGraphDatastore storage = b.build();
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
 //    Cluster root = new RecursiveSpectralClustering(template, 0.3, 0.85,1E-6, 150, true).compute();

@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.algorithms;
 
 import net.adeptropolis.nephila.graph.backend.EdgeConsumer;
 import net.adeptropolis.nephila.graph.backend.View;

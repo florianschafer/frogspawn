@@ -23,7 +23,7 @@ import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
  * @version 1.0
  */
 
-public class GraphDatastore {
+public class CompressedSparseGraphDatastore {
 
   public final long[] pointers;
   public final BigInts edges;
@@ -31,7 +31,7 @@ public class GraphDatastore {
   private final int size;
   private final long edgeCount;
 
-  GraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
+  CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
     this.size = size;
     this.edgeCount = edgeCount;
     this.pointers = pointers;

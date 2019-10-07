@@ -10,11 +10,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 
-public class GraphDatastoreTest {
+public class CompressedSparseGraphDatastoreTest {
 
   @Test
   public void traverseEmptyMatrix() {
-    GraphDatastore storage = new GraphBuilder().build();
+    CompressedSparseGraphDatastore storage = new DeprecatedCompressedSparseGraphBuilder().build();
     View view = storage.defaultView();
     CollectingEdgeConsumer visitor = new CollectingEdgeConsumer();
     view.traverseAdjacent(0, visitor);
@@ -29,8 +29,8 @@ public class GraphDatastoreTest {
     });
   }
 
-  private void withDefaultMatrix(BiConsumer<GraphDatastore, CollectingEdgeConsumer> consumer) {
-    GraphDatastore storage = new GraphBuilder()
+  private void withDefaultMatrix(BiConsumer<CompressedSparseGraphDatastore, CollectingEdgeConsumer> consumer) {
+    CompressedSparseGraphDatastore storage = new DeprecatedCompressedSparseGraphBuilder()
             .add(1, 1, 2)
             .add(1, 2, 3)
             .add(1, 4, 7)

@@ -3,12 +3,12 @@ package net.adeptropolis.nephila.graph.backend;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graph.Graph;
 
-public class GraphImpl implements Graph {
+public class CompressedSparseGraph implements Graph {
 
   private final ThreadLocal<DefaultVertexIterator> vertexIterators = ThreadLocal.withInitial(DefaultVertexIterator::new);
-  private final GraphDatastore datastore;
+  private final CompressedSparseGraphDatastore datastore;
 
-  public GraphImpl(GraphDatastore datastore) {
+  public CompressedSparseGraph(CompressedSparseGraphDatastore datastore) {
     this.datastore = datastore;
   }
 
@@ -63,7 +63,7 @@ public class GraphImpl implements Graph {
 
   @Override
   public Graph inducedSubgraph(IntIterator vertices) {
-    return new InducedSubgraph(datastore, vertices);
+    return new CompressedInducedSparseSubgraph(datastore, vertices);
   }
 
   public class DefaultVertexIterator implements VertexIterator {

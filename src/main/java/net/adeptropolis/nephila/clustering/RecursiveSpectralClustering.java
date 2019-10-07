@@ -2,8 +2,8 @@ package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graph.backend.View;
-import net.adeptropolis.nephila.graph.implementations.ConnectedComponents;
-import net.adeptropolis.nephila.graph.implementations.SpectralBipartitioner;
+import net.adeptropolis.nephila.graph.algorithms.ConnectedComponents;
+import net.adeptropolis.nephila.graph.algorithms.SpectralBipartitioner;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;

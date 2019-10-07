@@ -11,9 +11,9 @@ public class View {
    */
 
   private final int[] vertices;
-  private GraphDatastore graphDatastore;
+  private CompressedSparseGraphDatastore graphDatastore;
 
-  View(GraphDatastore graphDatastore, int[] vertices) {
+  View(CompressedSparseGraphDatastore graphDatastore, int[] vertices) {
     this.graphDatastore = graphDatastore;
     this.vertices = vertices;
   }

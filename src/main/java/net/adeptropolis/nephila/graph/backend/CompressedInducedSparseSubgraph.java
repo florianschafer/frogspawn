@@ -7,14 +7,14 @@ import net.adeptropolis.nephila.graph.backend.arrays.InterpolationSearch;
 
 import java.util.Arrays;
 
-public class InducedSubgraph implements Graph {
+public class CompressedInducedSparseSubgraph implements Graph {
 
   // TODO: Think about reusing vertex iterators again
 
   private int[] vertices; // TODO: Think about reusable arrays
-  private final GraphDatastore datastore;
+  private final CompressedSparseGraphDatastore datastore;
 
-  public InducedSubgraph(GraphDatastore datastore, IntIterator vertices) {
+  public CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
     this.datastore = datastore;
     this.vertices = IntIterators.unwrap(vertices);
     Arrays.parallelSort(this.vertices, 0, size()); // TODO: Might be sorted already
@@ -90,7 +90,7 @@ public class InducedSubgraph implements Graph {
 
   @Override
   public Graph inducedSubgraph(IntIterator vertices) {
-    return new InducedSubgraph(datastore, vertices);
+    return new CompressedInducedSparseSubgraph(datastore, vertices);
   }
 
 }

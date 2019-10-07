@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class GraphBuilderTest {
+public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void emptyMatrix() {
@@ -117,14 +117,14 @@ public class GraphBuilderTest {
             ImmutableList.of(1.0, 2.0, 3.0, 2.0, 3.0));
   }
 
-  private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
-                                  Consumer<GraphDatastore> validator) {
-    GraphDatastore storage = builder.apply(new GraphBuilder()).build();
+  private static void withBuilder(Function<CompressedSparseGraphBuilder, CompressedSparseGraphBuilder> builder,
+                                  Consumer<CompressedSparseGraphDatastore> validator) {
+    CompressedSparseGraphDatastore storage = builder.apply(new CompressedSparseGraphBuilder()).buildDatastore();
     validator.accept(storage);
   }
 
-  private static void withBuilder(Function<GraphBuilder, GraphBuilder> builder,
-                                  Consumer<GraphDatastore> validator,
+  private static void withBuilder(Function<CompressedSparseGraphBuilder, CompressedSparseGraphBuilder> builder,
+                                  Consumer<CompressedSparseGraphDatastore> validator,
                                   List<Long> expectedRowPtrs,
                                   List<Integer> expectedColIndices,
                                   List<Double> expectedValues) {

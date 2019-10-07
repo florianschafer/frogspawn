@@ -13,7 +13,7 @@ public class InterpolationSearch {
    * @param ints Big integer array
    * @param key  Search key
    * @param low  Lower end of the search window. Inclusive.
-   * @param high Lower end of the search window. Inclusive(!)
+   * @param high Higher end of the search window. Inclusive(!)
    * @return Index of the first item matching the key. -1 otherwise.
    */
 
@@ -52,7 +52,7 @@ public class InterpolationSearch {
    * @param array Primitive int array to be sorted
    * @param key   Search key
    * @param low   Lower end of the search window. Inclusive.
-   * @param high  Lower end of the search window. Inclusive(!)
+   * @param high  Higher end of the search window. Inclusive(!)
    * @return Index of the first item matching the key. -1 otherwise.
    */
 

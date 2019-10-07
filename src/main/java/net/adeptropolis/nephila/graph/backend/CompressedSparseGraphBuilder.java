@@ -1,5 +1,7 @@
 package net.adeptropolis.nephila.graph.backend;
 
+import com.google.common.annotations.VisibleForTesting;
+import net.adeptropolis.nephila.graph.Graph;
 import net.adeptropolis.nephila.graph.backend.arrays.BigDoubles;
 import net.adeptropolis.nephila.graph.backend.arrays.BigInts;
 import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort;
@@ -16,7 +18,7 @@ import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
  * @since 1.0
  */
 
-public class GraphBuilder {
+public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
@@ -25,7 +27,7 @@ public class GraphBuilder {
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
 
-  public GraphBuilder() {
+  public CompressedSparseGraphBuilder() {
 
   }
 
@@ -38,7 +40,8 @@ public class GraphBuilder {
    * @return this
    */
 
-  public GraphBuilder add(int u, int v, double weight) {
+  @Override
+  public CompressedSparseGraphBuilder add(int u, int v, double weight) {
     set(ptr++, u, v, weight);
     if (u != v) set(ptr++, v, u, weight);
     return this;
@@ -79,9 +82,16 @@ public class GraphBuilder {
    * @return A new immutable Graph instance
    */
 
-  public GraphDatastore build() {
+  @Override
+  public CompressedSparseGraph build() {
+    CompressedSparseGraphDatastore datastore = buildDatastore();
+    return new CompressedSparseGraph(datastore);
+  }
+
+  @VisibleForTesting
+  CompressedSparseGraphDatastore buildDatastore() {
     if (ptr == 0L) {
-      return new GraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
+      return new CompressedSparseGraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
 
     sort();
@@ -90,7 +100,7 @@ public class GraphBuilder {
 
     int graphSize = edges[0].get(ptr - 1) + 1;
     long[] pointers = computePointers(graphSize);
-    return new GraphDatastore(graphSize, ptr, pointers, edges[1], weights);
+    return new CompressedSparseGraphDatastore(graphSize, ptr, pointers, edges[1], weights);
   }
 
   /**

@@ -1,8 +1,9 @@
-package net.adeptropolis.nephila.graph.implementations;
+package net.adeptropolis.nephila.graph.algorithms;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.nephila.graph.backend.GraphDatastore;
-import net.adeptropolis.nephila.graph.backend.GraphBuilder;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphBuilder;
+import net.adeptropolis.nephila.graph.backend.DeprecatedCompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graph.backend.View;
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class SpectralBipartitionerTest {
 
   private void withTwoWeaklyLinkedCompleteBipartiteGraphs(int[] viewIndices, int[]... expected) {
 
-    GraphDatastore graph = new GraphBuilder()
+    CompressedSparseGraphDatastore graph = new DeprecatedCompressedSparseGraphBuilder()
             .add(0, 1, 1)
             .add(0, 2, 1)
             .add(0, 3, 1)

@@ -1,8 +1,8 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.backend.GraphDatastore;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
 import net.adeptropolis.nephila.graph.backend.View;
-import net.adeptropolis.nephila.graph.implementations.RowWeights;
+import net.adeptropolis.nephila.graph.algorithms.RowWeights;
 import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
@@ -12,7 +12,7 @@ public class ClusteringTemplate {
   private final View rootView;
   private final double[] rootWeights;
 
-  public ClusteringTemplate(GraphDatastore graph) {
+  public ClusteringTemplate(CompressedSparseGraphDatastore graph) {
     this.rootView = graph.defaultView();
     this.rootWeights = new RowWeights(this.rootView).get();
   }

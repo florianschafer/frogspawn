@@ -19,14 +19,14 @@ public class ParallelEdgeTraversalTest {
     });
   }
 
-  private void withLargeDenseMatrix(Consumer<GraphDatastore> storageConsumer) {
-    GraphBuilder builder = new GraphBuilder();
+  private void withLargeDenseMatrix(Consumer<CompressedSparseGraphDatastore> storageConsumer) {
+    DeprecatedCompressedSparseGraphBuilder builder = new DeprecatedCompressedSparseGraphBuilder();
     for (int i = 0; i < 1000; i++) {
       for (int j = i + 1; j < 1000; j++) {
         builder.add(i, j, i + j);
       }
     }
-    GraphDatastore storage = builder.build();
+    CompressedSparseGraphDatastore storage = builder.build();
     storageConsumer.accept(storage);
   }
 

@@ -1,7 +1,8 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.backend.GraphDatastore;
-import net.adeptropolis.nephila.graph.backend.GraphBuilder;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
+import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphBuilder;
+import net.adeptropolis.nephila.graph.backend.DeprecatedCompressedSparseGraphBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,7 +33,7 @@ public class ClusteringTemplateTest {
 
   private void verifyK3_3SubsetScores(int[] childIndices, double[] expectedScores) {
     assertThat("Indices size equals expected size", childIndices.length, is(expectedScores.length));
-    GraphDatastore graph = new GraphBuilder()
+    CompressedSparseGraphDatastore graph = new DeprecatedCompressedSparseGraphBuilder()
             .add(0, 1, 2)
             .add(0, 2, 3)
             .add(0, 3, 5)
