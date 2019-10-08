@@ -14,7 +14,7 @@ public class CompressedSparseGraph implements Graph {
 
   @Override
   public int size() {
-    return datastore.getSize();
+    return datastore.size();
   }
 
   @Override
@@ -70,7 +70,7 @@ public class CompressedSparseGraph implements Graph {
 
     int idx;
 
-    public DefaultVertexIterator reset() {
+    DefaultVertexIterator reset() {
       idx = 0;
       return this;
     }

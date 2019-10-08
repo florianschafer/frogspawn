@@ -9,8 +9,8 @@ import net.adeptropolis.nephila.graph.backend.arrays.LongMergeSort.SortOps;
 
 /**
  * <p>Build new Graph instances</p>
- * <p>This little gizmo creates a new graph from an arbitrary number of (not necessarily unique or sorted)
- * weighted edge triples.</p>
+ * <p>This little gizmo creates a new compressed sparse graph from an arbitrary
+ * number of (not necessarily unique or sorted) weighted edge triples.</p>
  *
  * @author Florian Schaefer
  * @author florian@adeptropolis.net
@@ -26,10 +26,6 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
-
-  public CompressedSparseGraphBuilder() {
-
-  }
 
   /**
    * Add a new undirected edge to the graph.
