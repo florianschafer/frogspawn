@@ -5,6 +5,13 @@ package net.adeptropolis.nephila.graph.algorithms;
  * Spectrally shifting solver for the normalized Laplacian eigenvalue problem
  * ATTENTION: The Laplacian is supposed to be that of a BIPARTITE GRAPH!
  *
+ *
+ * The Maths
+ * ==========
+ *
+ * This solver finds the eigenvector associated with the second-smallest eigenvalue of the Normalized Laplacian
+ * of the graph.
+ *
  * */
 
 import net.adeptropolis.nephila.graph.backend.View;

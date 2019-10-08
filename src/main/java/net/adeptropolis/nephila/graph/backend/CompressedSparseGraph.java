@@ -12,6 +12,10 @@ public class CompressedSparseGraph implements Graph {
     this.datastore = datastore;
   }
 
+  public static CompressedSparseGraphBuilder builder() {
+    return new CompressedSparseGraphBuilder();
+  }
+
   @Override
   public int size() {
     return datastore.size();
@@ -30,7 +34,7 @@ public class CompressedSparseGraph implements Graph {
   @Override
   public void traverseByGlobalId(int leftEndpoint, EdgeConsumer consumer) {
 
-    if (size() == 0) {
+    if (size() == 0 || leftEndpoint < 0) {
       return;
     }
 

@@ -2,16 +2,13 @@ package net.adeptropolis.nephila.graph.backend;
 
 import org.junit.Test;
 
+import static net.adeptropolis.nephila.graph.backend.CompressedSparseGraph.builder;
 import static net.adeptropolis.nephila.graph.backend.arrays.Helpers.assertEquals;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class CompressedSparseGraphBuilderTest {
-
-  private static CompressedSparseGraphBuilder builder() {
-    return new CompressedSparseGraphBuilder();
-  }
 
   @Test
   public void emptyGraph() {

@@ -37,14 +37,18 @@ public class CompressedInducedSparseSubgraph implements Graph {
 
   @Override
   public void traverseByGlobalId(int leftEndpoint, EdgeConsumer consumer) {
-    if (size() == 0) {
+
+    if (size() == 0 || leftEndpoint < 0) {
       return;
     }
+
     long low = datastore.pointers[leftEndpoint];
     long high = datastore.pointers[leftEndpoint + 1];
+
     if (low == high) {
       return;
     }
+
     if (size() > high - low) {
       traverseByAdjacent(leftEndpoint, consumer, low, high);
     } else {
