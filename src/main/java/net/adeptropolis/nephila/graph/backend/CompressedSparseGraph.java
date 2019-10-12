@@ -32,7 +32,7 @@ public class CompressedSparseGraph implements Graph {
   }
 
   @Override
-  public void traverseByGlobalId(int leftEndpoint, EdgeConsumer consumer) {
+  public void traverse(int leftEndpoint, EdgeConsumer consumer) {
 
     if (size() == 0 || leftEndpoint < 0) {
       return;

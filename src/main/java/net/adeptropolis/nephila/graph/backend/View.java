@@ -4,6 +4,7 @@ import net.adeptropolis.nephila.graph.backend.arrays.InterpolationSearch;
 
 // TODO: Remove calls to subview
 
+@Deprecated
 public class View {
 
   /*

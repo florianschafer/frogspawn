@@ -4,17 +4,13 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.nephila.graph.Edge;
 import net.adeptropolis.nephila.graph.Graph;
-import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static net.adeptropolis.nephila.graph.backend.CompressedSparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CompressedSparseGraphTest {
+public class CompressedSparseGraphTest extends GraphTestBase {
 
   private static CompressedSparseGraph defaultGraph = builder()
           .add(0, 1, 2)
@@ -23,13 +19,6 @@ public class CompressedSparseGraphTest {
           .add(4, 10, 7)
           .add(4, 11, 11)
           .build();
-
-  private CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();;
-
-  @Before
-  public void init() {
-    consumer.reset();
-  }
 
   @Test
   public void size() {
@@ -84,8 +73,8 @@ public class CompressedSparseGraphTest {
   }
 
   @Test
-  public void traverseByGlobalId() {
-    defaultGraph.traverseByGlobalId (4, consumer);
+  public void traverseById() {
+    defaultGraph.traverse (defaultGraph.localVertexId(4), consumer);
     assertThat(consumer.edges, containsInAnyOrder(
             Edge.of(4, 9, 5),
             Edge.of(4, 10, 7),
@@ -93,8 +82,8 @@ public class CompressedSparseGraphTest {
   }
 
   @Test
-  public void traverseNonExistentGlobalId() {
-    defaultGraph.traverseByGlobalId (-1, consumer);
+  public void traverseNonExistentId() {
+    defaultGraph.traverse(-1, consumer);
     assertThat(consumer.edges.size(), is(0));
   }
 
@@ -103,23 +92,5 @@ public class CompressedSparseGraphTest {
     Graph subgraph = defaultGraph.inducedSubgraph(IntIterators.wrap(new int[]{4, 11}));
     assertThat(subgraph.size(), is(2));
   }
-
-
-
-  private class CollectingEdgeConsumer implements EdgeConsumer {
-
-    List<Edge> edges = new ArrayList<>();
-
-    @Override
-    public void accept(int u, int v, double weight) {
-      edges.add(Edge.of(u, v, weight));
-    }
-
-    @Override
-    public void reset() {
-      edges.clear();
-    }
-  }
-
 
 }

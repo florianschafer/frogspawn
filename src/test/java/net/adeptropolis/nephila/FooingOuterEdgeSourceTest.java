@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +22,28 @@ import java.util.stream.Stream;
 
 @Ignore
 public class FooingOuterEdgeSourceTest {
+
+  // Found bug: freq must not be float
+
+  @Test
+  public void jdStuff() throws FileNotFoundException {
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/tmp/jds.graph.3.tsv"));
+    DeprecatedCompressedSparseGraphBuilder b = new DeprecatedCompressedSparseGraphBuilder();
+    g.edges().sequential().forEach(e -> b.add(e.u, e.v, e.weight));
+    CompressedSparseGraphDatastore storage = b.build();
+    ClusteringTemplate template = new ClusteringTemplate(storage);
+    Cluster root = new RecursiveSpectralClustering(template,
+            0.2, // 0.4 == broad overview, 0.25 gives good drilldown
+            0.9,
+            1E-6,
+            15,
+            false).compute(); // TODO: Shouldn't this be true?
+    String[] inverseLabels = g.inverseLabels();
+    List<String> topLeafs = new TopLeafSink(/*30*/Integer.MAX_VALUE).consume(template, root, inverseLabels);
+    PrintWriter w = new PrintWriter("/home/florian/tmp/_1");
+    topLeafs.forEach(w::println);
+    w.close();
+  }
 
   @Test
   public void clusteringStuff() throws FileNotFoundException {

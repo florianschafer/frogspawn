@@ -27,6 +27,17 @@ public class CompressedSparseGraphBuilderTest {
   }
 
   @Test
+  public void simpleReduce() {
+    CompressedSparseGraphDatastore datastore = builder()
+            .add(0, 0, 2)
+            .add(0, 0, 3)
+            .buildDatastore();
+    assertGraphSizeMatches(datastore, 1);
+    assertEdgeCountMatches(datastore, 1L);
+    assertWeightsMatch(datastore, 5);
+  }
+
+  @Test
   public void entrySorting() {
     CompressedSparseGraphDatastore datastore = builder()
             .add(1, 3, 11)

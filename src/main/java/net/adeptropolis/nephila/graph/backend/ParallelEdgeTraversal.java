@@ -43,7 +43,7 @@ public class ParallelEdgeTraversal {
     int i;
     while ((i = workPtr.getAndAdd(THREAD_BATCH_SIZE)) < graph.size()) {
       for (int j = i; j < Math.min(i + THREAD_BATCH_SIZE, graph.size()); j++) {
-        graph.traverseByLocalId(j, consumer);
+        graph.traverse(j, consumer);
       }
     }
   }

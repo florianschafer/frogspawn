@@ -36,14 +36,16 @@ public class CompressedInducedSparseSubgraph implements Graph {
   }
 
   @Override
-  public void traverseByGlobalId(int leftEndpoint, EdgeConsumer consumer) {
+  public void traverse(int leftEndpoint, EdgeConsumer consumer) {
 
     if (size() == 0 || leftEndpoint < 0) {
       return;
     }
 
-    long low = datastore.pointers[leftEndpoint];
-    long high = datastore.pointers[leftEndpoint + 1];
+    int globalId = globalVertexId(leftEndpoint);
+
+    long low = datastore.pointers[globalId];
+    long high = datastore.pointers[globalId + 1];
 
     if (low == high) {
       return;

@@ -1,5 +1,7 @@
 package net.adeptropolis.nephila.graph.backend;
 
+// TODO: Move into subgraph class?
+
 public class SubgraphVertexIterator implements VertexIterator {
 
   private int localId;

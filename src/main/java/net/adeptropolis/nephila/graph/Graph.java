@@ -11,16 +11,18 @@ public interface Graph {
   VertexIterator vertices();
 
   void traverse(EdgeConsumer visitor);
-  void traverseByGlobalId(int leftEndpoint, EdgeConsumer consumer);
+
+  /**
+   *
+   * @param leftEndpoint A (local!) vertex
+   * @param consumer
+   */
+  void traverse(int leftEndpoint, EdgeConsumer consumer);
 
   int localVertexId(int globalVertexId);
   int globalVertexId(int localVertexId);
 
   Graph inducedSubgraph(IntIterator vertices);
-
-  default void traverseByLocalId(int v, EdgeConsumer consumer) {
-    traverseByGlobalId(globalVertexId(v), consumer);
-  }
 
   public interface Builder {
 

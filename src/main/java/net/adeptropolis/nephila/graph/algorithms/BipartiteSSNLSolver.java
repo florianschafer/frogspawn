@@ -58,7 +58,8 @@ public class BipartiteSSNLSolver {
     }
 
     long duration = System.nanoTime() - startTime;
-    System.out.printf("%d entries converged after %d iterations in %dms\n", view.size(), iterations, duration / 1000000);
+    // TODO: Logging (TRACE/DEBUG)
+    //System.out.printf("%d entries converged after %d iterations in %dms\n", view.size(), iterations, duration / 1000000);
     return x;
   }
 
