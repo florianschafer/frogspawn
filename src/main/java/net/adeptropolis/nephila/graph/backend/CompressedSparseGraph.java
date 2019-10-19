@@ -28,7 +28,7 @@ public class CompressedSparseGraph implements Graph {
 
   @Override
   public void traverse(EdgeConsumer consumer) {
-    new ParallelEdgeTraversal().traverse(consumer, this);
+    ParallelEdgeTraversal.traverse(this, consumer);
   }
 
   @Override

@@ -33,7 +33,7 @@ public class FooingOuterEdgeSourceTest {
     CompressedSparseGraphDatastore storage = b.build();
     ClusteringTemplate template = new ClusteringTemplate(storage);
     Cluster root = new RecursiveSpectralClustering(template,
-            0.2, // 0.4 == broad overview, 0.25 gives good drilldown
+            0.25, // 0.4 == broad overview, 0.25 gives good drilldown
             0.9,
             1E-6,
             15,

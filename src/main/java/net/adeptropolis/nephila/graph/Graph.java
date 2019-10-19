@@ -1,7 +1,6 @@
 package net.adeptropolis.nephila.graph;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import net.adeptropolis.nephila.graph.backend.CompressedSparseGraph;
 import net.adeptropolis.nephila.graph.backend.EdgeConsumer;
 import net.adeptropolis.nephila.graph.backend.VertexIterator;
 
@@ -28,7 +27,7 @@ public interface Graph {
 
     Builder add(int u, int v, double weight);
 
-    CompressedSparseGraph build();
+    Graph build();
   }
 
 }
