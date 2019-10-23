@@ -7,28 +7,53 @@ import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class ParallelEdgeTraversalTest {
+public class EdgeOpsTest {
 
-    @Test
-    public void graph() {
-      CompressedSparseGraph graph = createGraph(120000);
+  // TODO: Test for micrographs
+
+  @Test
+  public void graph() {
+    Set<Edge> expected = new HashSet<>();
+    CompressedSparseGraph graph = createGraph(20000, 20, expected);
+    assertThat(graph.size(), is(20000));
+    System.out.println("Built graph");
+    CollectingConsumer consumer = new CollectingConsumer();
+    graph.traverse(consumer);
+
+    assertThat(consumer.edges.size(), is(2 * expected.size()));
+    expected.forEach(edge -> {
+      assertThat(consumer.getEdges().contains(edge), is(true));
+    });
+//    assertThat(consumer.getEdges(), is(equalTo(expected)));
+
+
+  }
+
+  @Test
+    public void graphDeleteLater() {
+    Set<Edge> expected = new HashSet<>();
+      CompressedSparseGraph graph = createGraph(120000, 20, expected);
       System.out.println("Built graph");
       while (true) {
         CollectingConsumer consumer = new CollectingConsumer();
         graph.traverse(consumer);
-        System.out.println(consumer.getEdges().size());
+//        System.out.println(consumer.getEdges().size());
       }
 
     }
 
-    private CompressedSparseGraph createGraph(int n) {
+    private CompressedSparseGraph createGraph(int n, int k, Set<Edge> expected) {
       CompressedSparseGraphBuilder builder = CompressedSparseGraph.builder();
       for (int i = 0; i < n; i++) {
-        for (int j = i+1; j < Math.min(i + 50, n); j++) {
+        for (int j = i + 1; j < Math.min(i + k, n); j++) {
+          expected.add(Edge.of(i, j, 2 * i + 3 * j));
           builder.add(i, j, 2 * i + 3 * j);
         }
       }
@@ -45,7 +70,7 @@ public class ParallelEdgeTraversalTest {
     withLargeDenseMatrix(mat -> {
       FingerprintingConsumer visitor = new FingerprintingConsumer();
       mat.defaultView().traverse(visitor);
-      MatcherAssert.assertThat(visitor.getFingerprint(), is(582167083500d));
+      assertThat(visitor.getFingerprint(), is(582167083500d));
     });
   }
 
@@ -66,7 +91,7 @@ public class ParallelEdgeTraversalTest {
       FingerprintingConsumer visitor = new FingerprintingConsumer();
       View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
-      MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
+      assertThat(visitor.getFingerprint(), is(579840743502d));
     });
   }
 
@@ -82,10 +107,10 @@ public class ParallelEdgeTraversalTest {
       FingerprintingConsumer visitor = new FingerprintingConsumer();
       View view = mat.view(indicesWithSize(999));
       view.traverse(visitor);
-      MatcherAssert.assertThat(visitor.getFingerprint(), is(579840743502d));
+      assertThat(visitor.getFingerprint(), is(579840743502d));
       view = mat.view(indicesWithSize(998));
       view.traverse(visitor);
-      MatcherAssert.assertThat(visitor.getFingerprint(), is(577521382520d));
+      assertThat(visitor.getFingerprint(), is(577521382520d));
     });
   }
 
@@ -124,12 +149,18 @@ public class ParallelEdgeTraversalTest {
     private final Set<Edge> edges;
 
     CollectingConsumer() {
-      edges = new HashSet<>();
+
+      edges = ConcurrentHashMap.newKeySet();
+
+//      Set<String> concurrentHashSet = certificationCosts.newKeySet();
+//
+//      edges = new ConcurrentSe  new HashSet<>();
     }
 
     @Override
     public void accept(int u, int v, double weight) {
       edges.add(Edge.of(u, v, weight));
+      //System.out.println("Adding " + Edge.of(u, v, weight));
     }
 
     @Override

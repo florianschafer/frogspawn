@@ -29,4 +29,9 @@ public class Edge {
     Edge other = (Edge) obj;
     return u == other.u && v == other.v && weight == other.weight;
   }
+
+  @Override
+  public int hashCode() {
+    return (int) ((((long)u << 32 | v) + Math.round(weight * 1000)) % 2147483647);
+  }
 }

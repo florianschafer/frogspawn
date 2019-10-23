@@ -32,7 +32,7 @@ public class CompressedInducedSparseSubgraph implements Graph {
 
   @Override
   public void traverse(EdgeConsumer visitor) {
-    ParallelEdgeTraversal.traverse(this, visitor);
+    EdgeOps.traverse(this, visitor);
   }
 
   @Override

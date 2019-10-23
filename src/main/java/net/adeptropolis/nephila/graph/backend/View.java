@@ -40,7 +40,7 @@ public class View {
   }
 
   public void traverse(EdgeConsumer visitor) {
-    ParallelEdgeTraversal.traverse(this, visitor);
+    EdgeOps.traverse(this, visitor);
   }
 
   public void traverseAdjacent(int idx, EdgeConsumer visitor) {

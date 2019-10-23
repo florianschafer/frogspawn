@@ -143,7 +143,7 @@ public class CompressedSparseGraphBuilderTest {
     assertGraphSizeMatches(datastore, 3);
     assertEdgeCountMatches(datastore, 4L);
     assertThat("Pointer compactness", datastore.pointers.length, is(4));
-    assertThat("Edges compactness", datastore.edges.size(), is(4L));
+    assertThat("EdgeOps compactness", datastore.edges.size(), is(4L));
     assertThat("Weights compactness", datastore.weights.size(), is(4L));
   }
 
@@ -166,7 +166,7 @@ public class CompressedSparseGraphBuilderTest {
   }
 
   private static void assertEdgesMatch(CompressedSparseGraphDatastore datastore, int... expected) {
-    assertEquals("Edges", datastore.edges, expected);
+    assertEquals("EdgeOps", datastore.edges, expected);
   }
 
   private static void assertPointersMatch(CompressedSparseGraphDatastore datastore, long... expected) {
