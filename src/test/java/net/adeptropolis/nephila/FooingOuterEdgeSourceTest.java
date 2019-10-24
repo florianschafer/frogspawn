@@ -1,10 +1,9 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.*;
-import net.adeptropolis.nephila.graph.LabeledEdge;
-import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
-import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphBuilder;
-import net.adeptropolis.nephila.graph.backend.DeprecatedCompressedSparseGraphBuilder;
+import net.adeptropolis.nephila.graphs.LabeledEdge;
+import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
+import net.adeptropolis.nephila.graphs.implementations.DeprecatedCompressedSparseGraphBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 

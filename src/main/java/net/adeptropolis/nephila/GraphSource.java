@@ -1,6 +1,6 @@
 package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.graph.Edge;
+import net.adeptropolis.nephila.graphs.Edge;
 
 import java.util.stream.IntStream;
 import java.util.stream.Stream;

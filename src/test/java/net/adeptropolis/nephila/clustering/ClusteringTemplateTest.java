@@ -1,8 +1,7 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
-import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphBuilder;
-import net.adeptropolis.nephila.graph.backend.DeprecatedCompressedSparseGraphBuilder;
+import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
+import net.adeptropolis.nephila.graphs.implementations.DeprecatedCompressedSparseGraphBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

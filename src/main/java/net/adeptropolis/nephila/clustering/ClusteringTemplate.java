@@ -1,8 +1,8 @@
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.graph.backend.CompressedSparseGraphDatastore;
-import net.adeptropolis.nephila.graph.backend.View;
-import net.adeptropolis.nephila.graph.algorithms.RowWeights;
+import net.adeptropolis.nephila.graphs.algorithms.RowWeights;
+import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
+import net.adeptropolis.nephila.graphs.implementations.View;
 import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
@@ -75,7 +75,8 @@ public class ClusteringTemplate {
             (i, j) -> Double.compare(aggregateWeights[j], aggregateWeights[i]),
             (i, j) -> {
               Arr.swap(aggregateVertices, i, j);
-              Arr.swap(aggregateWeights, i, j); });
+              Arr.swap(aggregateWeights, i, j);
+            });
 
     return new ClusterMetrics(aggregateVertices, aggregateWeights, likelihood);
 

@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.clustering;
 
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.adeptropolis.nephila.graph.backend.View;
+import net.adeptropolis.nephila.graphs.implementations.View;
 
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -39,7 +39,7 @@ public class Cluster {
   }
 
   public void traverseGraphEdges(BiConsumer<Cluster, Cluster> edgeConsumer) {
-    for (Cluster child: children) {
+    for (Cluster child : children) {
       edgeConsumer.accept(this, child);
       child.traverseGraphEdges(edgeConsumer);
     }
@@ -47,7 +47,7 @@ public class Cluster {
 
   public void traverseSubclusters(Consumer<Cluster> consumer) {
     consumer.accept(this);
-    for (Cluster child: children) child.traverseSubclusters(consumer);
+    for (Cluster child : children) child.traverseSubclusters(consumer);
   }
 
   public IntArrayList aggregateVertices() {

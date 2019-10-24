@@ -1,9 +1,9 @@
 package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import net.adeptropolis.nephila.graph.backend.View;
-import net.adeptropolis.nephila.graph.algorithms.ConnectedComponents;
-import net.adeptropolis.nephila.graph.algorithms.SpectralBipartitioner;
+import net.adeptropolis.nephila.graphs.algorithms.ConnectedComponents;
+import net.adeptropolis.nephila.graphs.algorithms.SpectralBipartitioner;
+import net.adeptropolis.nephila.graphs.implementations.View;
 
 import java.util.Arrays;
 import java.util.PriorityQueue;
@@ -108,10 +108,8 @@ public class RecursiveSpectralClustering {
 
   static class Branch implements Comparable<Branch> {
 
-    private Type type;
-
     private final View view;
-
+    private Type type;
     private Cluster cluster;
 
     Branch(Type type, View view, Cluster cluster) {
@@ -123,10 +121,6 @@ public class RecursiveSpectralClustering {
     @Override
     public int compareTo(Branch other) {
       return Integer.compare(view.size(), other.view.size());
-    }
-
-    private enum Type {
-      ROOT, COMPONENT, SPECTRAL
     }
 
     public View getView() {
@@ -141,8 +135,11 @@ public class RecursiveSpectralClustering {
       this.cluster = cluster;
     }
 
-  }
+    private enum Type {
+      ROOT, COMPONENT, SPECTRAL
+    }
 
+  }
 
 
 }
