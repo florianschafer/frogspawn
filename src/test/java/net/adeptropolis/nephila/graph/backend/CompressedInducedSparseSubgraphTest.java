@@ -53,13 +53,13 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
     Graph graph = defaultSubgraph();
     assertThat(graph.size(), is(0));
     graph.traverse(consumer);
-    assertThat(consumer.edges.size(), is(0));
+    assertThat(consumer.getEdges().size(), is(0));
   }
 
   @Test
   public void fullTraversal() {
     defaultSubgraph(1, 2, 4, 9, 10).traverse(consumer);
-    assertThat(consumer.edges, containsInAnyOrder(
+    assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(0, 1, 3),
             Edge.of(1, 0, 3),
             Edge.of(2, 3, 5),
@@ -72,7 +72,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   public void traverseBAdjacent() {
     Graph graph = defaultSubgraph(1, 2, 4, 9, 11);
     graph.traverse(graph.localVertexId(4), consumer);
-    assertThat(consumer.edges, containsInAnyOrder(
+    assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(graph.localVertexId(4), graph.localVertexId(9), 5),
             Edge.of(graph.localVertexId(4), graph.localVertexId(11), 11)
     ));
@@ -89,7 +89,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
             .build();
     Graph sub = subgraph(graph, 1, 2, 5);
     sub.traverse(sub.localVertexId(1), consumer);
-    assertThat(consumer.edges, containsInAnyOrder(
+    assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(sub.localVertexId(1), sub.localVertexId(2), 3),
             Edge.of(sub.localVertexId(1), sub.localVertexId(5), 7)
     ));
@@ -98,14 +98,14 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   @Test
   public void traverseUndef() {
     defaultSubgraph(0, 1).traverse(-1, consumer);
-    assertThat(consumer.edges.size(), is(0));
+    assertThat(consumer.getEdges().size(), is(0));
   }
 
   @Test
   public void traverseEmpty() {
     Graph graph = defaultSubgraph(0, 1, 2, 3);
     graph.traverse(3, consumer);
-    assertThat(consumer.edges.size(), is(0));
+    assertThat(consumer.getEdges().size(), is(0));
   }
 
   @Test
@@ -113,7 +113,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
     Graph subgraph = defaultSubgraph(4, 10, 11).inducedSubgraph(IntIterators.wrap(new int[]{4, 10}));
     assertThat("Subgraph size", subgraph.size(), is(2));
     subgraph.traverse(consumer);
-    assertThat("Subgraph edges", consumer.edges, containsInAnyOrder(
+    assertThat("Subgraph edges", consumer.getEdges(), containsInAnyOrder(
             Edge.of(subgraph.localVertexId(4), subgraph.localVertexId(10), 7),
             Edge.of(subgraph.localVertexId(10), subgraph.localVertexId(4), 7)));
 

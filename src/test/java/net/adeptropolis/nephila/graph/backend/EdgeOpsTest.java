@@ -1,176 +1,81 @@
 package net.adeptropolis.nephila.graph.backend;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import net.adeptropolis.nephila.graph.Edge;
-import org.hamcrest.MatcherAssert;
+import net.adeptropolis.nephila.graph.Graph;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
-public class EdgeOpsTest {
-
-  // TODO: Test for micrographs
+public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExceptionHandler {
 
   @Test
-  public void graph() {
+  @Ignore("Intended for performance debugging only!")
+  public void perfTest() {
     Set<Edge> expected = new HashSet<>();
-    CompressedSparseGraph graph = createGraph(20000, 20, expected);
-    assertThat(graph.size(), is(20000));
-    System.out.println("Built graph");
-    CollectingConsumer consumer = new CollectingConsumer();
-    graph.traverse(consumer);
-
-    assertThat(consumer.edges.size(), is(2 * expected.size()));
-    expected.forEach(edge -> {
-      assertThat(consumer.getEdges().contains(edge), is(true));
-    });
-//    assertThat(consumer.getEdges(), is(equalTo(expected)));
-
-
+    Graph graph = bandedGraph(120000, 20);
+    while (true) {
+      traverseFingerprint(graph);
+    }
   }
 
   @Test
-    public void graphDeleteLater() {
-    Set<Edge> expected = new HashSet<>();
-      CompressedSparseGraph graph = createGraph(120000, 20, expected);
-      System.out.println("Built graph");
-      while (true) {
-        CollectingConsumer consumer = new CollectingConsumer();
-        graph.traverse(consumer);
-//        System.out.println(consumer.getEdges().size());
+  public void emptyGraph() {
+    CompressedSparseGraph graph = CompressedSparseGraph.builder().build();
+    EdgeOps.traverse(graph, consumer);
+    assertThat(consumer.getEdges(), is(empty()));
+  }
+
+  @Test
+  public void singleEdgeGraph() {
+    CompressedSparseGraph graph = CompressedSparseGraph.builder()
+            .add(2, 3, 3.14)
+            .build();
+    EdgeOps.traverse(graph, consumer);
+    assertThat(consumer.getEdges(), hasSize(2));
+    assertThat(consumer.getEdges(), contains(
+            Edge.of(2, 3, 3.14),
+            Edge.of(3, 2, 3.14)));
+  }
+
+  @Test
+  public void largeBandedGraph() {
+    Graph graph = bandedGraph(20000, 100);
+    assertThat("Fingerprint mismatch", traverseFingerprint(graph), is(bandedGraphFingerprint(20000, 100)));
+  }
+
+  @Test
+  public void parallelTraversal() {
+    List<Thread> threads = IntStream.range(0, 50).mapToObj(i -> {
+      Thread thread = new Thread(() -> {
+        Graph graph = bandedGraph(10000, 50);
+        FingerprintingEdgeConsumer fp = new FingerprintingEdgeConsumer();
+        EdgeOps.traverse(graph, fp);
+        assertThat("Fingerprint mismatch", fp.getFingerprint(), is(bandedGraphFingerprint(10000, 50)));
+      });
+      thread.setUncaughtExceptionHandler(this);
+      thread.start();
+      return thread;
+    }).collect(Collectors.toList());
+    threads.forEach(t -> {
+      try {
+        t.join();
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
       }
-
-    }
-
-    private CompressedSparseGraph createGraph(int n, int k, Set<Edge> expected) {
-      CompressedSparseGraphBuilder builder = CompressedSparseGraph.builder();
-      for (int i = 0; i < n; i++) {
-        for (int j = i + 1; j < Math.min(i + k, n); j++) {
-          expected.add(Edge.of(i, j, 2 * i + 3 * j));
-          builder.add(i, j, 2 * i + 3 * j);
-        }
-      }
-      return builder.build();
-    }
-
-
-  /********************************************************************************************************
-   * S. below for the original tests
-   */
-
-  @Test
-  public void traversalVisitsAllEntries() {
-    withLargeDenseMatrix(mat -> {
-      FingerprintingConsumer visitor = new FingerprintingConsumer();
-      mat.defaultView().traverse(visitor);
-      assertThat(visitor.getFingerprint(), is(582167083500d));
     });
   }
 
-  private void withLargeDenseMatrix(Consumer<CompressedSparseGraphDatastore> storageConsumer) {
-    DeprecatedCompressedSparseGraphBuilder builder = new DeprecatedCompressedSparseGraphBuilder();
-    for (int i = 0; i < 1000; i++) {
-      for (int j = i + 1; j < 1000; j++) {
-        builder.add(i, j, i + j);
-      }
-    }
-    CompressedSparseGraphDatastore storage = builder.build();
-    storageConsumer.accept(storage);
+  @Override
+  public void uncaughtException(Thread thread, Throwable throwable) {
+    throw new RuntimeException(thread.getName(), throwable);
   }
-
-  @Test
-  public void traversalIgnoresNonSelectedEntries() {
-    withLargeDenseMatrix(mat -> {
-      FingerprintingConsumer visitor = new FingerprintingConsumer();
-      View view = mat.view(indicesWithSize(999));
-      view.traverse(visitor);
-      assertThat(visitor.getFingerprint(), is(579840743502d));
-    });
-  }
-
-  private int[] indicesWithSize(int size) {
-    int[] indices = new int[size];
-    for (int i = 0; i < size; i++) indices[i] = i;
-    return indices;
-  }
-
-  @Test
-  public void traversalAllowsReuse() {
-    withLargeDenseMatrix(mat -> {
-      FingerprintingConsumer visitor = new FingerprintingConsumer();
-      View view = mat.view(indicesWithSize(999));
-      view.traverse(visitor);
-      assertThat(visitor.getFingerprint(), is(579840743502d));
-      view = mat.view(indicesWithSize(998));
-      view.traverse(visitor);
-      assertThat(visitor.getFingerprint(), is(577521382520d));
-    });
-  }
-
-  class FingerprintingConsumer implements EdgeConsumer {
-
-    private final AtomicDouble fingerprint;
-
-    FingerprintingConsumer() {
-      fingerprint = new AtomicDouble();
-    }
-
-    double getFingerprint() {
-      return fingerprint.get();
-    }
-
-    @Override
-    public void accept(int u, int v, double weight) {
-      burnCycles();
-      fingerprint.addAndGet(u * weight + v);
-    }
-
-    private void burnCycles() {
-      double sum = 0;
-      for (int i = 0; i < 5000; i++) sum += Math.sqrt(i);
-      if (Math.round(sum) % 12345 == 0) System.out.println("Ignore this");
-    }
-
-    @Override
-    public void reset() {
-      fingerprint.set(0);
-    }
-  }
-
-  class CollectingConsumer implements EdgeConsumer {
-
-    private final Set<Edge> edges;
-
-    CollectingConsumer() {
-
-      edges = ConcurrentHashMap.newKeySet();
-
-//      Set<String> concurrentHashSet = certificationCosts.newKeySet();
-//
-//      edges = new ConcurrentSe  new HashSet<>();
-    }
-
-    @Override
-    public void accept(int u, int v, double weight) {
-      edges.add(Edge.of(u, v, weight));
-      //System.out.println("Adding " + Edge.of(u, v, weight));
-    }
-
-    @Override
-    public void reset() {
-      edges.clear();
-    }
-
-    public Set<Edge> getEdges() {
-      return edges;
-    }
-  }
-
 }
+

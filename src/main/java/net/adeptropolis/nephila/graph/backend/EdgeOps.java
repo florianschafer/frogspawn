@@ -2,13 +2,11 @@ package net.adeptropolis.nephila.graph.backend;
 
 import net.adeptropolis.nephila.graph.Graph;
 
-import java.nio.file.Path;
 import java.util.concurrent.*;
-import java.util.stream.IntStream;
 
 public final class EdgeOps implements Runnable {
 
-  private static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
+  private static final int THREAD_POOL_SIZE = 2 * Runtime.getRuntime().availableProcessors();
   private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
           THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
