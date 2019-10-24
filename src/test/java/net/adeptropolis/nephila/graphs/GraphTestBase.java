@@ -1,9 +1,11 @@
-package net.adeptropolis.nephila.graphs.implementations;
+package net.adeptropolis.nephila.graphs;
 
 import net.adeptropolis.nephila.graphs.Edge;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.EdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
+import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class GraphTestBase {
 
-  CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
+  protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
   private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
   @Before

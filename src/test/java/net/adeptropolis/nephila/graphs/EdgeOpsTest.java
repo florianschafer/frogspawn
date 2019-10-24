@@ -1,8 +1,6 @@
-package net.adeptropolis.nephila.graphs.implementations;
+package net.adeptropolis.nephila.graphs;
 
-import net.adeptropolis.nephila.graphs.Edge;
-import net.adeptropolis.nephila.graphs.EdgeOps;
-import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import org.junit.Ignore;
 import org.junit.Test;
 
