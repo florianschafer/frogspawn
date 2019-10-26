@@ -3,8 +3,6 @@ package net.adeptropolis.nephila.graphs.algorithms;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.implementations.View;
 
-import java.util.Arrays;
-
 public class CSRVectorProduct implements EdgeConsumer {
 
   private final View view;
@@ -26,11 +24,6 @@ public class CSRVectorProduct implements EdgeConsumer {
   public void accept(int u, int v, double weight) {
     // TODO: Do something against range checks on the LHS (extend visitor interface to rows)
     result[u] += weight * argument[v];
-  }
-
-  @Override
-  public void reset() {
-    Arrays.fill(result, 0, view.size(), 0);
   }
 
 }

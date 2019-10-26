@@ -78,7 +78,8 @@ public class InterpolationSearchTest {
     Random rand = new Random(1337);
     for (int i = 0; i < BASE_SIZE; i++) ints.set(i, rand.nextInt(1000));
     ints.sort();
-    for (int i = 0; i < 1000; i++) assertThat(String.format("index=%d", i), InterpolationSearch.search(ints, i, 0, ints.size()-1), greaterThanOrEqualTo(0L));
+    for (int i = 0; i < 1000; i++)
+      assertThat(String.format("index=%d", i), InterpolationSearch.search(ints, i, 0, ints.size() - 1), greaterThanOrEqualTo(0L));
   }
 
   @Test

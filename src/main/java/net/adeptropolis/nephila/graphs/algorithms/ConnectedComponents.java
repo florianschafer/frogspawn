@@ -66,7 +66,7 @@ public class ConnectedComponents {
       if (!ccQueue.contains(v) && !currentCC.contains(v)) ccQueue.add(v);
     }
 
-    @Override
+    //    @Override
     public void reset() {
       currentCC.clear();
       ccQueue.clear();

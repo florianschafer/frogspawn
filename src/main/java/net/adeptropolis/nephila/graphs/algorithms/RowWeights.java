@@ -3,8 +3,7 @@ package net.adeptropolis.nephila.graphs.algorithms;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.implementations.View;
 
-import java.util.Arrays;
-
+@Deprecated
 public class RowWeights implements EdgeConsumer {
 
   private final View view;
@@ -23,11 +22,6 @@ public class RowWeights implements EdgeConsumer {
   @Override
   public void accept(final int u, final int v, final double weight) {
     weights[u] += weight;
-  }
-
-  @Override
-  public void reset() {
-    Arrays.fill(weights, 0, view.size(), 0);
   }
 
 }

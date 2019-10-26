@@ -13,8 +13,7 @@ import java.util.Arrays;
 import static net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.contains;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 
 public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
@@ -26,6 +25,15 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
           .add(4, 10, 7)
           .add(4, 11, 11)
           .build();
+
+  private static Graph subgraph(Graph graph, int... vertices) {
+    Arrays.sort(vertices);
+    return graph.inducedSubgraph(IntIterators.wrap(vertices));
+  }
+
+  private static Graph defaultSubgraph(int... vertices) {
+    return subgraph(defaultGraph, vertices);
+  }
 
   @Test
   public void isDefaultSubgraph() {
@@ -128,15 +136,6 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
     assertThat(it.localId(), equalTo(1));
     assertThat(it.globalId(), equalTo(10));
 
-  }
-
-  private static Graph subgraph(Graph graph, int... vertices) {
-    Arrays.sort(vertices);
-    return graph.inducedSubgraph(IntIterators.wrap(vertices));
-  }
-
-  private static Graph defaultSubgraph(int... vertices) {
-    return subgraph(defaultGraph, vertices);
   }
 
 }

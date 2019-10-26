@@ -10,6 +10,26 @@ import static org.junit.Assert.assertThat;
 
 public class CompressedSparseGraphBuilderTest {
 
+  private static void assertGraphSizeMatches(CompressedSparseGraphDatastore datastore, int expected) {
+    assertThat("Graph size", datastore.size(), is(expected));
+  }
+
+  private static void assertEdgeCountMatches(CompressedSparseGraphDatastore datastore, long expected) {
+    assertThat("Number of edges", datastore.edgeCount(), is(expected));
+  }
+
+  private static void assertEdgesMatch(CompressedSparseGraphDatastore datastore, int... expected) {
+    assertEquals("EdgeOps", datastore.edges, expected);
+  }
+
+  private static void assertPointersMatch(CompressedSparseGraphDatastore datastore, long... expected) {
+    assertEquals("Vertex pointers", datastore.pointers, expected);
+  }
+
+  private static void assertWeightsMatch(CompressedSparseGraphDatastore datastore, double... expected) {
+    assertEquals("Weights", datastore.weights, expected);
+  }
+
   @Test
   public void emptyGraph() {
     CompressedSparseGraphDatastore datastore = builder().buildDatastore();
@@ -53,7 +73,6 @@ public class CompressedSparseGraphBuilderTest {
     assertWeightsMatch(datastore, 5, 3, 2, 7, 11, 7, 11, 5, 3, 2);
   }
 
-
   @Test
   public void trivialReduce() {
     CompressedSparseGraphDatastore datastore = builder()
@@ -69,7 +88,6 @@ public class CompressedSparseGraphBuilderTest {
     assertEdgesMatch(datastore, 0);
     assertWeightsMatch(datastore, 27);
   }
-
 
   @Test
   public void reduceHead() {
@@ -155,26 +173,6 @@ public class CompressedSparseGraphBuilderTest {
             .build();
     assertThat(graph, instanceOf(CompressedSparseGraph.class));
     assertThat(graph.size(), is(3));
-  }
-
-  private static void assertGraphSizeMatches(CompressedSparseGraphDatastore datastore, int expected) {
-    assertThat("Graph size", datastore.size(), is(expected));
-  }
-
-  private static void assertEdgeCountMatches(CompressedSparseGraphDatastore datastore, long expected) {
-    assertThat("Number of edges", datastore.edgeCount(), is(expected));
-  }
-
-  private static void assertEdgesMatch(CompressedSparseGraphDatastore datastore, int... expected) {
-    assertEquals("EdgeOps", datastore.edges, expected);
-  }
-
-  private static void assertPointersMatch(CompressedSparseGraphDatastore datastore, long... expected) {
-    assertEquals("Vertex pointers", datastore.pointers, expected);
-  }
-
-  private static void assertWeightsMatch(CompressedSparseGraphDatastore datastore, double... expected) {
-    assertEquals("Weights", datastore.weights, expected);
   }
 
 }

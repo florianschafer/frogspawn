@@ -39,13 +39,13 @@ public class CompressedInducedSparseSubgraph implements Graph {
   }
 
   @Override
-  public void traverse(int leftEndpoint, EdgeConsumer consumer) {
+  public void traverse(int v, EdgeConsumer consumer) {
 
-    if (size() == 0 || leftEndpoint < 0) {
+    if (size() == 0 || v < 0) {
       return;
     }
 
-    int globalId = globalVertexId(leftEndpoint);
+    int globalId = globalVertexId(v);
 
     long low = datastore.pointers[globalId];
     long high = datastore.pointers[globalId + 1];
@@ -55,9 +55,9 @@ public class CompressedInducedSparseSubgraph implements Graph {
     }
 
     if (size() > high - low) {
-      traverseByAdjacent(leftEndpoint, consumer, low, high);
+      traverseByAdjacent(v, consumer, low, high);
     } else {
-      traverseByVertices(leftEndpoint, consumer, low, high);
+      traverseByVertices(v, consumer, low, high);
     }
   }
 

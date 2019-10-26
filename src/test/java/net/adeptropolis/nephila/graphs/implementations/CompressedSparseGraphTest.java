@@ -36,8 +36,8 @@ public class CompressedSparseGraphTest extends GraphTestBase {
       localIds.add(it.localId());
       globalIds.add(it.globalId());
     }
-    assertThat(localIds, contains(0, 1, 2, 3, 4 ,5, 6, 7, 8, 9, 10, 11));
-    assertThat(globalIds, contains(0, 1, 2, 3, 4 ,5, 6, 7, 8, 9, 10, 11));
+    assertThat(localIds, contains(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11));
+    assertThat(globalIds, contains(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11));
   }
 
   @Test
@@ -76,7 +76,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseById() {
-    defaultGraph.traverse (defaultGraph.localVertexId(4), consumer);
+    defaultGraph.traverse(defaultGraph.localVertexId(4), consumer);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(4, 9, 5),
             Edge.of(4, 10, 7),

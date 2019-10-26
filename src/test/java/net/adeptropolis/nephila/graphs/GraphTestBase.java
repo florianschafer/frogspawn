@@ -1,9 +1,5 @@
 package net.adeptropolis.nephila.graphs;
 
-import net.adeptropolis.nephila.graphs.Edge;
-import net.adeptropolis.nephila.graphs.EdgeConsumer;
-import net.adeptropolis.nephila.graphs.EdgeOps;
-import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
@@ -61,7 +57,6 @@ public class GraphTestBase {
       }
     }
 
-    @Override
     public void reset() {
       edges.clear();
     }
@@ -85,7 +80,6 @@ public class GraphTestBase {
       fingerprint.addAndGet((long) ((u * weight) % (v + 10)));
     }
 
-    @Override
     public void reset() {
       fingerprint.set(0);
     }

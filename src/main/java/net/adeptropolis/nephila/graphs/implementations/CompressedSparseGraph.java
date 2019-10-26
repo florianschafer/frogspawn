@@ -35,14 +35,14 @@ public class CompressedSparseGraph implements Graph {
   }
 
   @Override
-  public void traverse(int leftEndpoint, EdgeConsumer consumer) {
+  public void traverse(int v, EdgeConsumer consumer) {
 
-    if (size() == 0 || leftEndpoint < 0) {
+    if (size() == 0 || v < 0) {
       return;
     }
 
-    long low = datastore.pointers[leftEndpoint];
-    long high = datastore.pointers[leftEndpoint + 1];
+    long low = datastore.pointers[v];
+    long high = datastore.pointers[v + 1];
     if (low == high) {
       return;
     }
@@ -50,7 +50,7 @@ public class CompressedSparseGraph implements Graph {
     int rightEndpoint;
     for (long ptr = low; ptr < high; ptr++) {
       rightEndpoint = datastore.edges.get(ptr);
-      consumer.accept(leftEndpoint, rightEndpoint, datastore.weights.get(ptr));
+      consumer.accept(v, rightEndpoint, datastore.weights.get(ptr));
       if (rightEndpoint + 1 >= size()) {
         break;
       }

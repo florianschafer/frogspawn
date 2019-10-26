@@ -1,6 +1,7 @@
 package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import net.adeptropolis.nephila.graphs.implementations.VertexWeights;
 
 public interface Graph {
 
@@ -9,10 +10,10 @@ public interface Graph {
   VertexIterator vertices();
 
   /**
-   * @param leftEndpoint A (local!) vertex
+   * @param v        A (local!) vertex
    * @param consumer
    */
-  void traverse(int leftEndpoint, EdgeConsumer consumer);
+  void traverse(int v, EdgeConsumer consumer);
 
   default void traverse(EdgeConsumer consumer) {
     EdgeOps.traverse(this, consumer);
@@ -23,6 +24,10 @@ public interface Graph {
   int globalVertexId(int localVertexId);
 
   Graph inducedSubgraph(IntIterator vertices);
+
+  default double[] computeWeights() {
+    return VertexWeights.compute(this);
+  }
 
   interface Builder {
 

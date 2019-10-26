@@ -39,7 +39,7 @@ public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExcepti
             .build();
     EdgeOps.traverse(graph, consumer);
     assertThat(consumer.getEdges(), hasSize(2));
-    assertThat(consumer.getEdges(), contains(
+    assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(2, 3, 3.14),
             Edge.of(3, 2, 3.14)));
   }
