@@ -1,6 +1,7 @@
 package net.adeptropolis.nephila.graphs.implementations;
 
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.VertexWeights;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.closeTo;

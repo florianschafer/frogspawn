@@ -1,7 +1,6 @@
 package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import net.adeptropolis.nephila.graphs.implementations.VertexWeights;
 
 public interface Graph {
 

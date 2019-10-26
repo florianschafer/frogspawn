@@ -1,8 +1,4 @@
-package net.adeptropolis.nephila.graphs.implementations;
-
-import net.adeptropolis.nephila.graphs.EdgeConsumer;
-import net.adeptropolis.nephila.graphs.EdgeOps;
-import net.adeptropolis.nephila.graphs.Graph;
+package net.adeptropolis.nephila.graphs;
 
 public class VertexWeights implements EdgeConsumer {
 
