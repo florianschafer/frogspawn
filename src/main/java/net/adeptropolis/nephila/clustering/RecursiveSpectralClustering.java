@@ -1,7 +1,7 @@
 package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
-import net.adeptropolis.nephila.graphs.algorithms.ConnectedComponents;
+import net.adeptropolis.nephila.graphs.algorithms.DeprecatedConnectedComponents;
 import net.adeptropolis.nephila.graphs.algorithms.SpectralBipartitioner;
 import net.adeptropolis.nephila.graphs.implementations.View;
 
@@ -93,7 +93,7 @@ public class RecursiveSpectralClustering {
   }
 
   private void partitionComponents(Branch branch) {
-    new ConnectedComponents(branch.view).find(component -> {
+    new DeprecatedConnectedComponents(branch.view).find(component -> {
       if (component.size() == branch.view.size()) {
         // Special case: We only have a single CC => Label cluster as COMPONENT and re-add to queue
         branch.type = Branch.Type.COMPONENT;

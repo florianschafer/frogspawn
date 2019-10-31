@@ -6,9 +6,8 @@ import net.adeptropolis.nephila.graphs.EdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
-public class CompressedSparseGraph implements Graph {
+public class CompressedSparseGraph extends Graph {
 
-  private final ThreadLocal<DefaultVertexIterator> vertexIterators = ThreadLocal.withInitial(DefaultVertexIterator::new);
   private final CompressedSparseGraphDatastore datastore;
 
   public CompressedSparseGraph(CompressedSparseGraphDatastore datastore) {
@@ -26,7 +25,7 @@ public class CompressedSparseGraph implements Graph {
 
   @Override
   public VertexIterator vertices() {
-    return vertexIterators.get().reset();
+    return new DefaultVertexIterator();
   }
 
   @Override
@@ -75,12 +74,7 @@ public class CompressedSparseGraph implements Graph {
 
   public class DefaultVertexIterator implements VertexIterator {
 
-    int idx;
-
-    DefaultVertexIterator reset() {
-      idx = 0;
-      return this;
-    }
+    int idx = 0;
 
     @Override
     public boolean proceed() {

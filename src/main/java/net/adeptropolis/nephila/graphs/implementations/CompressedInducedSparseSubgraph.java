@@ -10,7 +10,7 @@ import net.adeptropolis.nephila.graphs.implementations.arrays.InterpolationSearc
 
 import java.util.Arrays;
 
-public class CompressedInducedSparseSubgraph implements Graph {
+public class CompressedInducedSparseSubgraph extends Graph {
 
   // TODO: Think about reusing vertex iterators again
 
@@ -20,7 +20,7 @@ public class CompressedInducedSparseSubgraph implements Graph {
   public CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
     this.datastore = datastore;
     this.vertices = IntIterators.unwrap(vertices);
-    Arrays.parallelSort(this.vertices, 0, size()); // TODO: Might be sorted already
+    Arrays.parallelSort(this.vertices, 0, size());
   }
 
   @Override

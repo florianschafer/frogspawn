@@ -1,76 +1,55 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
-import net.adeptropolis.nephila.graphs.implementations.View;
+import net.adeptropolis.nephila.graphs.Graph;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
-// TODO: This one might need some more optimization
-// TODO: Prealloc sets to some sensible size
-// TODO: IntRBTreeSets are only chosen because of faster clear(). Check.
+public class ConnectedComponents implements EdgeConsumer {
 
-public class ConnectedComponents {
+  private final Graph graph;
+  private IntLinkedOpenHashSet remaining;
+  private IntLinkedOpenHashSet componentQueue;
+  private IntLinkedOpenHashSet component;
 
-  private final View view;
-  private final CCConsumer visitor;
-  private IntLinkedOpenHashSet globalQueue;
-  private IntRBTreeSet ccQueue;
-  private IntRBTreeSet currentCC;
-
-  public ConnectedComponents(View view) {
-    this.view = view;
-    this.visitor = new CCConsumer();
-    this.globalQueue = new IntLinkedOpenHashSet();
-    this.ccQueue = new IntRBTreeSet();
-    this.currentCC = new IntRBTreeSet();
+  public ConnectedComponents(Graph graph) {
+    this.graph = graph;
+    this.remaining = new IntLinkedOpenHashSet();
+    this.componentQueue = new IntLinkedOpenHashSet();
+    this.component = new IntLinkedOpenHashSet();
   }
 
-  public void find(Consumer<View> componentConsumer) {
-
-    globalQueue.clear();
-    for (int i = 0; i < view.size(); i++) globalQueue.add(i);
-
-    while (!globalQueue.isEmpty()) {
-      visitor.reset();
-      int i = globalQueue.removeFirstInt();
-      ccQueue.add(i);
-      while (!ccQueue.isEmpty()) {
-        int j = ccQueue.firstInt();
-        ccQueue.remove(j);
-        currentCC.add(j);
-        view.traverseAdjacent(j, visitor);
-      }
-
-      finalizeComponent(componentConsumer);
-
-      globalQueue.removeAll(currentCC);
-    }
-
+  public static void find(Graph graph, Consumer<Graph> consumer) {
+    new ConnectedComponents(graph).find(consumer);
   }
 
-  private void finalizeComponent(Consumer<View> componentConsumer) {
-    int[] componentIndices = currentCC.toIntArray();
-    for (int j = 0; j < componentIndices.length; j++)
-      componentIndices[j] = view.getVertex(componentIndices[j]); // Map view indices to actual matrix indices
-    Arrays.parallelSort(componentIndices);
-    componentConsumer.accept(view.subview(componentIndices));
+  public void find(Consumer<Graph> consumer) {
+    remaining.clear();
+    for (int i = 0; i < graph.size(); i++) remaining.add(i);
+    while (!remaining.isEmpty()) {
+      int i = remaining.removeFirstInt();
+      processComponent(i);
+      Graph subgraph = graph.locallyInducedSubgraph(component.iterator());
+      consumer.accept(subgraph);
+      remaining.removeAll(component);
+    }
   }
 
-  private class CCConsumer implements EdgeConsumer {
-
-    @Override
-    public void accept(int u, int v, double weight) {
-      if (!ccQueue.contains(v) && !currentCC.contains(v)) ccQueue.add(v);
+  private void processComponent(int i) {
+    component.clear();
+    componentQueue.clear();
+    componentQueue.add(i);
+    while (!componentQueue.isEmpty()) {
+      int j = componentQueue.removeFirstInt();
+      component.add(j);
+      graph.traverse(j, this);
     }
+  }
 
-    //    @Override
-    public void reset() {
-      currentCC.clear();
-      ccQueue.clear();
-    }
+  @Override
+  public void accept(int u, int v, double weight) {
+    if (!componentQueue.contains(v) && !component.contains(v)) componentQueue.add(v);
   }
 
 }

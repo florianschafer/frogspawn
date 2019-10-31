@@ -29,6 +29,19 @@ public class GraphTestBase {
     return builder.build();
   }
 
+  protected Graph butterflyGraph() {
+    return new CompressedSparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(0, 2, 1)
+            .add(1, 2, 1)
+            .add(2, 3, 1)
+            .add(0, 4, 1)
+            .add(0, 5, 1)
+            .add(4, 5, 1)
+            .add(5, 6, 1)
+            .build();
+  }
+
   long bandedGraphFingerprint(int n, int k) {
     long fp = 0;
     for (long i = 0; i < n; i++) {
