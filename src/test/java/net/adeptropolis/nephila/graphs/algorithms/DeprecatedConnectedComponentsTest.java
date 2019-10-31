@@ -12,6 +12,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+@Deprecated
 public class DeprecatedConnectedComponentsTest {
 
   @Test

@@ -1,6 +1,7 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
 
@@ -11,13 +12,13 @@ public class ConnectedComponents implements EdgeConsumer {
   private final Graph graph;
   private IntLinkedOpenHashSet remaining;
   private IntLinkedOpenHashSet componentQueue;
-  private IntLinkedOpenHashSet component;
+  private IntOpenHashSet component;
 
   public ConnectedComponents(Graph graph) {
     this.graph = graph;
     this.remaining = new IntLinkedOpenHashSet();
     this.componentQueue = new IntLinkedOpenHashSet();
-    this.component = new IntLinkedOpenHashSet();
+    this.component = new IntOpenHashSet();
   }
 
   public static void find(Graph graph, Consumer<Graph> consumer) {
@@ -30,7 +31,7 @@ public class ConnectedComponents implements EdgeConsumer {
     while (!remaining.isEmpty()) {
       int i = remaining.removeFirstInt();
       processComponent(i);
-      Graph subgraph = graph.locallyInducedSubgraph(component.iterator());
+      Graph subgraph = graph.localInducedSubgraph(component.iterator());
       consumer.accept(subgraph);
       remaining.removeAll(component);
     }

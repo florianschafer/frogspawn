@@ -36,7 +36,7 @@ public abstract class Graph {
    * @return
    */
 
-  public Graph locallyInducedSubgraph(IntIterator vertices) {
+  public Graph localInducedSubgraph(IntIterator vertices) {
     return inducedSubgraph(new VertexMappingIterator(vertices));
   }
 

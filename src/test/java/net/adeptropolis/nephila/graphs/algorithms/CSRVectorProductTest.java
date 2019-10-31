@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
+@Deprecated
 public class CSRVectorProductTest {
 
   @Test
