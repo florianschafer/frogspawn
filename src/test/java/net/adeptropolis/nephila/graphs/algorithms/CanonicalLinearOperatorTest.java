@@ -8,11 +8,11 @@ import org.junit.Test;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class LinearOperatorTest {
+public class CanonicalLinearOperatorTest {
 
   @Test
   public void simple() {
-    double[] y = new LinearOperator(defaultGraph()).apply(new double[]{17, 19, 23});
+    double[] y = new CanonicalLinearOperator(defaultGraph()).apply(new double[]{17, 19, 23});
     assertThat(y[0], is(206.0));
     assertThat(y[1], is(437.0));
     assertThat(y[2], is(593.0));
@@ -20,7 +20,7 @@ public class LinearOperatorTest {
 
   @Test
   public void subset() {
-    double[] y = new LinearOperator(defaultGraph().inducedSubgraph(IntIterators.wrap(new int[]{0, 2})))
+    double[] y = new CanonicalLinearOperator(defaultGraph().inducedSubgraph(IntIterators.wrap(new int[]{0, 2})))
             .apply(new double[]{29, 31});
     assertThat(y[0], is(213.0));
     assertThat(y[1], is(548.0));

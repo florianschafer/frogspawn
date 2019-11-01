@@ -21,13 +21,13 @@ import java.util.function.Function;
 public class BipartiteSSNLSolver {
 
   private final View view;
-  private final NormalizedLaplacian normalizedLaplacian;
+  private final DeprecatedNormalizedLaplacian normalizedLaplacian;
   private final double[] x;
   private final double[] prevY;
 
   public BipartiteSSNLSolver(View view) {
     this.view = view;
-    this.normalizedLaplacian = new NormalizedLaplacian(view);
+    this.normalizedLaplacian = new DeprecatedNormalizedLaplacian(view);
     this.x = new double[view.size()];
     this.prevY = new double[view.size()];
   }
@@ -63,7 +63,6 @@ public class BipartiteSSNLSolver {
     return x;
   }
 
-  // !!!! ATTENTION! ||x|| is expected to have length 1 !!!!
   synchronized double[] multiply(double[] x) {
     double mu = 0;
     for (int i = 0; i < view.size(); i++) mu += normalizedLaplacian.getV0()[i] * x[i];

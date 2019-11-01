@@ -2,7 +2,8 @@ package net.adeptropolis.nephila.graphs.algorithms;
 
 import net.adeptropolis.nephila.graphs.implementations.View;
 
-public class NormalizedLaplacian {
+@Deprecated
+public class DeprecatedNormalizedLaplacian {
 
   private final View view;
   private final RowWeights rowWeights;
@@ -12,7 +13,7 @@ public class NormalizedLaplacian {
   private final double[] v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0)
   private final double[] invDegSqrts; // Inverse square roots of row weights
 
-  public NormalizedLaplacian(View view) {
+  public DeprecatedNormalizedLaplacian(View view) {
     this.view = view;
     this.rowWeights = new RowWeights(view);
     this.multArgument = new double[view.size()]; // Preallocate a single, reusable instance

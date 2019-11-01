@@ -8,7 +8,8 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 
-public class NormalizedLaplacianTest {
+@Deprecated
+public class DeprecatedNormalizedLaplacianTest {
 
   @Test
   public void simpleNormalizedLaplacian() {
@@ -32,7 +33,7 @@ public class NormalizedLaplacianTest {
             .build();
 
     View view = storage.defaultView();
-    NormalizedLaplacian laplacian = new NormalizedLaplacian(view);
+    DeprecatedNormalizedLaplacian laplacian = new DeprecatedNormalizedLaplacian(view);
     double invSqrt8 = -1.0 / Math.sqrt(8);
     double quarter = -1.0 / 4;
     double half = -1.0 / 2;
@@ -45,7 +46,7 @@ public class NormalizedLaplacianTest {
     verifyV0(laplacian, view.size(), 3.5355e-01, 5.0000e-01, 3.5355e-01, 3.5355e-01, 5.0000e-01, 3.5355e-01);
   }
 
-  private void verifyNormLaplacianCol(NormalizedLaplacian laplacian, int size, int col, double... expected) {
+  private void verifyNormLaplacianCol(DeprecatedNormalizedLaplacian laplacian, int size, int col, double... expected) {
     double[] v = new double[size];
     for (int i = 0; i < size; i++) v[i] = i == col ? 1 : 0;
     double[] result = laplacian.multiply(v);
@@ -54,7 +55,7 @@ public class NormalizedLaplacianTest {
               result[i], closeTo(expected[i], 1E-5));
   }
 
-  private void verifyV0(NormalizedLaplacian laplacian, int indicesSize, double... expected) {
+  private void verifyV0(DeprecatedNormalizedLaplacian laplacian, int indicesSize, double... expected) {
     for (int i = 0; i < indicesSize; i++)
       assertThat("v0 entry at " + i + " should match", laplacian.getV0()[i], closeTo(expected[i], 1E-5));
   }
@@ -75,7 +76,7 @@ public class NormalizedLaplacianTest {
             .build();
 
     View view = storage.view(new int[]{0, 2, 3, 4, 5});
-    NormalizedLaplacian laplacian = new NormalizedLaplacian(view);
+    DeprecatedNormalizedLaplacian laplacian = new DeprecatedNormalizedLaplacian(view);
     double inv2Sqrt8 = -2.0 / Math.sqrt(8);
     double inv1Sqrt8 = -1.0 / Math.sqrt(8);
     double inv1Sqrt2 = -1.0 / Math.sqrt(2);

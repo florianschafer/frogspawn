@@ -1,0 +1,123 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[10pt, a4paper, twocolumn]{article} % 10pt font size (11 and 12 also possible), A4 paper (letterpaper for US letter) and two column layout (remove for one column)
+
+\input{structure.tex} % Specifies the document structure and loads requires packages
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE INFORMATION
+%----------------------------------------------------------------------------------------
+
+\title{Nephilia: A new approach to recursive spectral clustering of bipartite graphs} % The article title
+
+\author{
+	\authorstyle{Florian Schaefer}
+}
+
+% Example of a one line author/institution relationship
+%\author{\newauthor{John Marston} \newinstitution{Universidad Nacional Autónoma de México, Mexico City, Mexico}}
+
+\date{\today} % Add a date here if you would like one to appear underneath the title block, use \today for the current date, leave empty for no date
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle % Print the title
+
+\thispagestyle{firstpage} % Apply the page style for the first page (no headers and footers)
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\lettrineabstract{There goes the abstract. Please fill it with some live!}
+
+%----------------------------------------------------------------------------------------
+%	ARTICLE CONTENTS
+%----------------------------------------------------------------------------------------
+
+\section{Spectral shifting}
+\paragraph
+As pointed out earlier, we're only interested in the second-smallest eigenvalue of the normalized laplacian.
+While there exist many libraries (ARPack, Eigen, SLEPc, just to name a few) to perform this task, due to their
+generality, they lack the ability to exploit certain properties of the problem at hand. More precisely, both the extremal
+eigenvalues as well as the eigenvector associated with the smallest eigenvalue are known a priori.
+\\
+It shows that those properties can easily exploited to transform the matrix at hand such that the new matrix
+associates the desired eigenvector with its largest eigenvalue. This is performed using a well-known technique called spectral shifting.
+
+% TODO: Check matrix conditions for both theorems (symmetric? positive-definite? .... v != 0, ...)
+\subsection{Spectral transformations}
+
+% https://math.stackexchange.com/questions/2214641/shifting-eigenvalues-of-a-matrix
+\newtheorem{Brauer}[]{Theorem (Brauer)}[section]
+\begin{Brauer}
+	Let $A \in \mathbb{R}^{n \times n}$ a matrix with $Av=\lambda v$ for some eigenvalue $\lambda \in \mathbb{R}$ and $0 \neq v \in \mathbb{R}^n$.
+	Furthermore, let $r \in \mathbb{R}^n$ with $r^{T}v=1$. Then, $\forall \mu \in \mathbb{R}:$ the eigenvalues of
+	\begin{align}
+		\hat{A} := A + (\lambda - \mu)vr^T
+	\end{align}
+	are exactly those of $A$, except for $\lambda$, which has been replaced by $\mu$. Furthermore, the eigenvector $v$ remains
+	completely unchanged, i.e. $\hat{A}v = \mu v$
+\end{Brauer}
+This theorem will allow us later to swap specific eigenvalues.
+
+\newtheorem{Brauer Param Note}[]{Note}[section]
+\begin{Brauer Param Note}
+Chosing $r:=v$ in the above theorem is explicitly allowed if $v$ is normalized.
+\end{Brauer Param Note}
+
+\newtheorem{Spectral Shifting}[]{Theorem (Spectral Shifting)}[section]
+\begin{Spectral Shifting}
+	Let $A \in \mathbb{R}^{n \times n}$ a symmetric, positive-definite matrix with $Av=\lambda v$ for some eigenvalue $\lambda \in \mathbb{R}$.
+	Furthermore, let $\mu \in \mathbb{R}$. Then
+	\begin{align}
+		(A - \sigma I)v = (\lambda - \mu)v
+	\end{align}
+That is, $(\lambda - \mu)v$ is an eigenvalue of the Matrix $(A - \sigma I)v$. Just like before, this does not affect the
+eigenvector $v$.
+\end{Spectral Shifting}
+
+\newtheorem{Reversal}[]{Corollary (Reverse Spectra)}[section]
+\begin{Reversal}
+	Obviously the reversed statement $(\sigma I - A)v = (\mu - \lambda)v$ also holds true.
+	Let $A \in \mathbb{R}^{n \times n}$, $v$ like above. Let $\lambda_n$ the largest eigenvalue.
+	It immediately follows that the transformation
+	\begin{align}
+		\hat{A} := \lambda_n I - A
+	\end{align}
+	will mirror the eigenvalue at $\lambda_n$. That is, the order of the spectrum is reversed without affecting any eigenvectors of $A$.
+\end{Reversal}
+With those tools at hand, we can now formulate the transformation that will assign the eigenvector of the
+second-smallest eigenvalue to the largest eigenvalue of the transformed matrix.
+\\
+Remember that there a few known properties of the normalized laplacian spectrum. In particular:
+\begin{itemize}
+	\item We know that the smallest eigenvalue is $0$ with eigenvector $\frac{D^\frac{1}{2}}{\lVert D^\frac{1}{2} \rVert}$ % TODO: Wrong! There is no D here
+	\item If the graph is bipartite, the largest eigenvalue is known to be $2$.
+\end{itemize}
+\\
+Now we can first reverse the spectrum along the largest eigenvalue $2$ and then (the order matters) send the
+now-largest eigenvalue $2$ (that used to be $0$) to $0$, so that this eigenvalue ends up with multiplicity 2.
+But most importantly, the largest eigenvalue and its eigenvector of this new matrix are just what we were seeking for.
+\\
+Asuming that $\lVert v_0 \lVert = 1$
+\begin{equation}
+		\hat{\mathcal{L}} := \underbrace{2I - \mathcal{L}}_{\text{reverse spectrum}} - \underbrace{2 v_0 v_0^T}_{\text{eigenvalue $2 \rightarrow 0$}}
+\end{equation}
+
+
+\section{The case against other eigensolvers}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+
+\printbibliography[title={Bibliography}] % Print the bibliography, section title in curly brackets
+
+%----------------------------------------------------------------------------------------
+
+\end{document}

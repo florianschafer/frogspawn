@@ -1,0 +1,2 @@
+ - Write some proper math documentation
+ - Check graph for biparity upon creation

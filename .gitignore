@@ -2,3 +2,12 @@
 build
 .idea
 out
+src/main/latex/*.aux
+src/main/latex/*.bbl
+src/main/latex/*.bcf
+src/main/latex/*.blg
+src/main/latex/*.log
+src/main/latex/*.pdf
+src/main/latex/*.gz
+src/main/latex/*.xml
+src/main/latex/*-blx.bib

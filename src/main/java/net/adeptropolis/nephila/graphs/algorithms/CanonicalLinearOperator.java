@@ -4,13 +4,13 @@ import com.google.common.base.Preconditions;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
 
-public class LinearOperator implements EdgeConsumer {
+public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsumer {
 
   private final Graph graph;
   private final double[] result;
   private double[] argument;
 
-  public LinearOperator(Graph graph) {
+  public CanonicalLinearOperator(Graph graph) {
     this.graph = graph;
     this.result = new double[graph.size()];
   }
