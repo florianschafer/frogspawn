@@ -5,6 +5,7 @@ import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -24,6 +25,19 @@ public class CanonicalLinearOperatorTest {
             .apply(new double[]{29, 31});
     assertThat(y[0], is(213.0));
     assertThat(y[1], is(548.0));
+  }
+
+  @Test
+  public void reusability() {
+    CanonicalLinearOperator op = new CanonicalLinearOperator(defaultGraph());
+    double[] r1 = op.apply(new double[]{ 13, 19, 27 });
+    assertThat(r1[0], closeTo(218, 1E-6));
+    assertThat(r1[1], closeTo(469, 1E-6));
+    assertThat(r1[2], closeTo(625, 1E-6));
+    double[] r2 = op.apply(new double[]{ 61, 67, 71 });
+    assertThat(r2[0], closeTo(678, 1E-6));
+    assertThat(r2[1], closeTo(1433, 1E-6));
+    assertThat(r2[2], closeTo(1965, 1E-6));
   }
 
   private Graph defaultGraph() {

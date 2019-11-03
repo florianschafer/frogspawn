@@ -4,6 +4,8 @@ import com.google.common.annotations.VisibleForTesting;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.helpers.Vectors;
 
+import java.util.Arrays;
+
 /**
  * <p>A spectrally shifted normalized laplacian operator</p>
  *
@@ -38,7 +40,6 @@ public class SSNLOperator implements LinearGraphOperator {
     this.linOp = new CanonicalLinearOperator(graph);
   }
 
-  // NOTE: The argument vector needs ||x|| == 1 !!!
   public double[] apply(double[] x) {
     double mu = 2 * Vectors.scalarProduct(v0, x);
     for (int i = 0; i < graph.size(); i++) argument[i] = x[i] / Math.sqrt(weights[i]);

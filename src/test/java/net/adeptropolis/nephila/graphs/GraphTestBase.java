@@ -49,6 +49,11 @@ public class GraphTestBase {
           .add(5, 6, 83)
           .build();
 
+  protected final Graph K12 = new CompressedSparseGraphBuilder()
+          .add(0, 1, 2)
+          .add(0, 2, 3)
+          .build();
+
   @Before
   public void init() {
     consumer.reset();
