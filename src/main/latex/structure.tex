@@ -41,6 +41,8 @@
 \usepackage{sectsty} % Enables custom section titles
 \allsectionsfont{\usefont{OT1}{phv}{b}{n}} % Change the font of all section commands (Helvetica)
 
+\definecolor{arsenic}{rgb}{0.23, 0.27, 0.29}
+
 %----------------------------------------------------------------------------------------
 %	MARGINS AND SPACING
 %----------------------------------------------------------------------------------------
@@ -101,7 +103,7 @@
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
-\newcommand{\authorstyle}[1]{{\large\usefont{OT1}{phv}{b}{n}\color{DarkRed}#1}} % Authors style (Helvetica)
+\newcommand{\authorstyle}[1]{{\large\usefont{OT1}{phv}{b}{n}\color{arsenic}#1}} % Authors style (Helvetica)
 
 \newcommand{\institution}[1]{{\footnotesize\usefont{OT1}{phv}{m}{sl}\color{Black}#1}} % Institutions style (Helvetica)
 
@@ -113,7 +115,9 @@
 	\vspace{-30pt} % Move the entire title section up
 	\HorRule\vspace{10pt} % Horizontal rule before the title
 	\fontsize{32}{36}\usefont{OT1}{phv}{b}{n}\selectfont % Helvetica
-	\color{DarkRed} % Text colour for the title and author(s)
+	\color{arsenic} % Text colour for the title and author(s)
+%	\color{Dark cerulean} % Text colour for the title and author(s)
+%	\color{Arsenic} % Text colour for the title and author(s)
 }
 
 \posttitle{\par\vskip 15pt} % Whitespace under the title

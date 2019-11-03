@@ -13,6 +13,42 @@ public class GraphTestBase {
   protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
   private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
+  protected final Graph EIGEN_REF_GRAPH = new CompressedSparseGraphBuilder()
+          .add(0, 1, 1)
+          .add(0, 4, 1)
+          .add(1, 2, 1)
+          .add(1, 3, 1)
+          .add(1, 4, 1)
+          .add(2, 5, 1)
+          .add(3, 4, 1)
+          .add(4, 5, 1)
+          .build();
+
+
+  protected final Graph SOME_BIPARTITE_GRAPH = new CompressedSparseGraphBuilder()
+          .add(0, 1, 2)
+          .add(0, 3, 3)
+          .add(0, 4, 11)
+          .add(1, 2, 5)
+          .add(2, 3, 7)
+          .add(2, 5, 13)
+          .build();
+
+  protected final Graph K43 = new CompressedSparseGraphBuilder()
+          .add(0, 1, 5)
+          .add(0, 3, 11)
+          .add(0, 5, 17)
+          .add(1, 2, 23)
+          .add(1, 4, 31)
+          .add(1, 6, 41)
+          .add(2, 3, 43)
+          .add(2, 5, 53)
+          .add(3, 4, 61)
+          .add(3, 6, 71)
+          .add(4, 5, 73)
+          .add(5, 6, 83)
+          .build();
+
   @Before
   public void init() {
     consumer.reset();

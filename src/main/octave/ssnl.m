@@ -1,21 +1,8 @@
-# Computes the spectrally shifted normalized laplacian
-# Note: The normalized laplacian is required to have 0s on the diagonal!
-
-function v = ssnl(A, x)
-
+function v = ssnl(A)
     n = size(A)(1);
-
-    # Compute v0
-    [u,v,w] = eigs(normalized_laplacian(A));
-    v0 = u(:,n) / norm(u(:,n));
-    if v0(1) < 0
-        v0 = -v0;
-    end
-
-    # Our slightly modified normalized laplacian
-    L = normalized_laplacian(A) - eye(n,n)
-
-TODO: Continue here one the math docs are fleshed out!
-
-
+    L = normalized_laplacian(A);
+    [u,v] = eigs(L, n);
+    v0 = u(:,n);
+    n = size(A)(1);
+    v = 2 * (eye(n,n) - v0 * v0') - L;
 endfunction

@@ -10,6 +10,16 @@ import net.adeptropolis.nephila.helpers.Vectors;
  * <p>Provides a spectrally shifted version for the normalized laplacian of a connected component of an undirected, bipartite graph</p>
  * <p>The shifting is performed in such a way that the eigenvector originally belonging to the second-smallest eigenvalue of the
  * normalized laplacian is now assigned to the largest eigenvalue of this new operator</p>
+ *
+ * <p><b>Important:</b> This operator has two strict requirements:
+ * <ul>
+ *   <li>The underlying graph is required to be strictly bipartite, undirected and have non-negative edge weights</li>
+ *   <li>Any argument passed to this operator must be L2-normalized, i.e. ||x||<sub>2</sub> == 1</li>
+ * </ul>
+ * </p>
+ * <p>This implementation does not validate any of those requirements. Any result stemming from ignoring one of the above
+ * is simply undefined.</p>
+ * </p>
  */
 
 public class SSNLOperator implements LinearGraphOperator {
@@ -30,15 +40,13 @@ public class SSNLOperator implements LinearGraphOperator {
 
   // NOTE: The argument vector needs ||x|| == 1 !!!
   public double[] apply(double[] x) {
-    double mu = Vectors.scalarProduct(v0, x);
-    for (int i = 0; i < graph.size(); i++) argument[i] = -invWeightRoot(i) * x[i];
+    double mu = 2 * Vectors.scalarProduct(v0, x);
+    for (int i = 0; i < graph.size(); i++) argument[i] = x[i] / Math.sqrt(weights[i]);
     double[] result = linOp.apply(argument);
-    for (int i = 0; i < graph.size(); i++) result[i] = invWeightRoot(i) * result[i] + 2 * (mu * v0[i]) /* + x[i] - x[i]*/; // Latter comment is most likely due to the fact that the norm laplacian doesn't include diagonals. Investigate!
+    for (int i = 0; i < graph.size(); i++){
+      result[i] = x[i] + result[i] / Math.sqrt(weights[i]) - mu * v0[i];
+    }
     return result;
-  }
-
-  private double invWeightRoot(int i) {
-    return 1.0 / Math.sqrt(weights[i]);
   }
 
   @VisibleForTesting

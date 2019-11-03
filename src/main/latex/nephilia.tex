@@ -39,7 +39,16 @@
 %	ARTICLE CONTENTS
 %----------------------------------------------------------------------------------------
 
+\paragraph{Introduction}
+Spectral clustering exhibits a few particular beauties that other clustering methods do not.
+For example, in terms of the outcome, spectral clustering is very well defined and completely deterministic.
+There is no need to guess the right amount of clusters as there are no magic initial values. But most
+importantly, spectral clustering works on relationships between things instead of metric spaces.
+This not only better reflects the nature of the input, but also allows for a fine-grained control of what the
+result should look like.
+
 \section{Spectral shifting}
+
 \paragraph
 As pointed out earlier, we're only interested in the second-smallest eigenvalue of the normalized laplacian.
 While there exist many libraries (ARPack, Eigen, SLEPc, just to name a few) to perform this task, due to their
@@ -99,15 +108,39 @@ Remember that there a few known properties of the normalized laplacian spectrum.
 	\item We know that the smallest eigenvalue is $0$ with eigenvector $\frac{D^\frac{1}{2}}{\lVert D^\frac{1}{2} \rVert}$ % TODO: Wrong! There is no D here
 	\item If the graph is bipartite, the largest eigenvalue is known to be $2$.
 \end{itemize}
-\\
+
 Now we can first reverse the spectrum along the largest eigenvalue $2$ and then (the order matters) send the
 now-largest eigenvalue $2$ (that used to be $0$) to $0$, so that this eigenvalue ends up with multiplicity 2.
 But most importantly, the largest eigenvalue and its eigenvector of this new matrix are just what we were seeking for.
 \\
-Asuming that $\lVert v_0 \lVert = 1$
-\begin{equation}
-		\hat{\mathcal{L}} := \underbrace{2I - \mathcal{L}}_{\text{reverse spectrum}} - \underbrace{2 v_0 v_0^T}_{\text{eigenvalue $2 \rightarrow 0$}}
+Assuming that $\lVert v_0 \lVert = 1$
+\begin{equation}\label{shiftedlaplacian}
+	\begin{split}
+		\hat{\mathcal{L}} & := \underbrace{2I - \mathcal{L}}_{\text{reverse spectrum}} - \underbrace{2 v_0 v_0^T}_{\text{eigenvalue $2 \rightarrow 0$}}\\
+		& = 2 ( I - v_0 v_0^T ) - \mathcal{L}
+	\end{split}
 \end{equation}
+
+\section{Bringing it all together}
+In \eqref{shiftedlaplacian}, we were presented with a simple analytic solution for any spectrally shifted normalized laplacian.
+Combining those results with those from (REF MISSING) to fill in the rest:
+\begin{equation}
+	\begin{split}
+		\hat{\mathcal{L}} & = 2 ( I - v_0 v_0^T ) - \mathcal{L}\\
+		& = I + D^{-\frac{1}{2}} A D^{-\frac{1}{2}} - 2 v_0 v_0^T
+	\end{split}
+\end{equation}
+New let's see how this operates on some vector $v \in \mathbb{R}^n$. This immediately yields some major optimizations
+\begin{equation}
+	\begin{split}
+		\hat{\mathcal{L}}v & = \left( I + D^{-\frac{1}{2}} A D^{-\frac{1}{2}} - 2 v_0 v_0^T\right) v\\
+		& = v + D^{-\frac{1}{2}} A \underbrace{D^{-\frac{1}{2}} v}_{=:\hat{v}} - 2 v_0 \underbrace{v_0^T v}_{=:\frac{\mu}{2}}\\
+		& = v + D^{-\frac{1}{2}} A \hat{v} - \mu v_0
+	\end{split}
+\end{equation}
+Thus, the shifted laplacian operator can be realized as a standard matrix multiplication on the original matrix with both the
+argument and result vectors being slightly transformed. It it also worth noting that since $D$ is strictly diagonal, the multiplications with $D^{-\frac{1}{2}}$
+are actually linear operations in the number of rows. Also: The operator is sparsity-invariant with respect to $A$
 
 
 \section{The case against other eigensolvers}

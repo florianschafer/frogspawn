@@ -14,12 +14,23 @@ public class Vectors {
   }
 
   public static double scalarProduct(double[] v, double[] w) {
-    Preconditions.checkArgument(v.length == w.length, "Argument dimension mismatch");
+    Preconditions.checkArgument(v.length == w.length, String.format("Argument dimension mismatch: %d != %d", v.length, w.length));
     double prod = 0;
     for (int i = 0; i < v.length; i++) {
       prod += v[i] * w[i];
     }
     return prod;
   }
+
+  // Normalize vector <x> into <multResult>
+  // Also normalizes the signum of <x>, s.t. the first entry is always positive
+  public static void normalize2(double[] vec) {
+    double sig = Math.signum(vec[0]);
+    double sum = 0;
+    for (int i = 0; i < vec.length; i++) sum += vec[i] * vec[i];
+    double norm = Math.sqrt(sum);
+    for (int i = 0; i < vec.length; i++) vec[i] = sig * vec[i] / norm;
+  }
+
 
 }
