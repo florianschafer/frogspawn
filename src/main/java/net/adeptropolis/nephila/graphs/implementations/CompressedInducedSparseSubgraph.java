@@ -12,10 +12,8 @@ import java.util.Arrays;
 
 public class CompressedInducedSparseSubgraph extends Graph {
 
-  // TODO: Think about reusing vertex iterators again
-
   private final CompressedSparseGraphDatastore datastore;
-  private int[] vertices; // TODO: Think about reusable arrays
+  private int[] vertices;
 
   public CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
     this.datastore = datastore;

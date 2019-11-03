@@ -7,12 +7,21 @@ import net.adeptropolis.nephila.graphs.Graph;
 
 import java.util.function.Consumer;
 
+/**
+ * <p>Compute the connected components of a graph using DFS</p>
+ */
+
 public class ConnectedComponents implements EdgeConsumer {
 
   private final Graph graph;
   private IntLinkedOpenHashSet remaining;
   private IntLinkedOpenHashSet componentQueue;
   private IntOpenHashSet component;
+
+  /**
+   * Create a new ConnectedComponents instance
+   * @param graph The input graph
+   */
 
   public ConnectedComponents(Graph graph) {
     this.graph = graph;
@@ -21,9 +30,21 @@ public class ConnectedComponents implements EdgeConsumer {
     this.component = new IntOpenHashSet();
   }
 
+  /**
+   * <p>Convenience access for find(..) below</p>
+   * <p>Find the connected components of a graph</p>
+   * @param graph The input graph
+   * @param consumer A consumer for the connected subgraphs
+   */
+
   public static void find(Graph graph, Consumer<Graph> consumer) {
     new ConnectedComponents(graph).find(consumer);
   }
+
+  /**
+   * <p>Find all connected components of the graph</p>
+   * @param consumer A consumer for the connected subgraphs
+   */
 
   public void find(Consumer<Graph> consumer) {
     remaining.clear();
@@ -37,6 +58,11 @@ public class ConnectedComponents implements EdgeConsumer {
     }
   }
 
+  /**
+   * Process the current connected component
+   * @param i First member vertex of the component
+   */
+
   private void processComponent(int i) {
     component.clear();
     componentQueue.clear();
@@ -47,6 +73,13 @@ public class ConnectedComponents implements EdgeConsumer {
       graph.traverse(j, this);
     }
   }
+
+  /**
+   * Internal: Callback for graph traversal
+   * @param u Left vertex
+   * @param v Right vertex
+   * @param weight Edge weight
+   */
 
   @Override
   public void accept(int u, int v, double weight) {
