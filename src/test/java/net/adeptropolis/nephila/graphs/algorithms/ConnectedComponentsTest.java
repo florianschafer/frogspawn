@@ -62,6 +62,12 @@ public class ConnectedComponentsTest extends GraphTestBase {
 
   static class SubgraphCollectingConsumer implements Consumer<Graph> {
 
+    private final List<Graph> graphs;
+
+    SubgraphCollectingConsumer() {
+      graphs = Lists.newArrayList();
+    }
+
     public List<List<Integer>> subgraphVertices() {
       return graphs.stream().sorted(Comparator.comparingInt(Graph::size).thenComparingInt(x -> {
         VertexIterator vertices = x.vertices();
@@ -75,12 +81,6 @@ public class ConnectedComponentsTest extends GraphTestBase {
         }
         return vertices;
       }).collect(Collectors.toList());
-    }
-
-    private final List<Graph> graphs;
-
-    SubgraphCollectingConsumer() {
-      graphs = Lists.newArrayList();
     }
 
     @Override

@@ -18,7 +18,6 @@ public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExcepti
   @Test
   @Ignore("Intended for performance debugging")
   public void perfTest() {
-    Set<Edge> expected = new HashSet<>();
     Graph graph = bandedGraph(120000, 20);
     while (true) {
       traverseFingerprint(graph);

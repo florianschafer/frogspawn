@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graphs.algorithms;
+package net.adeptropolis.nephila.graphs.operators;
 
 import com.google.common.base.Preconditions;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;

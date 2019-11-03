@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graphs.algorithms;
+package net.adeptropolis.nephila.graphs.operators;
 
 @FunctionalInterface
 public interface LinearGraphOperator {

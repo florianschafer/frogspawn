@@ -10,9 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class GraphTestBase {
 
-  protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
-  private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
-
   protected final Graph EIGEN_REF_GRAPH = new CompressedSparseGraphBuilder()
           .add(0, 1, 1)
           .add(0, 4, 1)
@@ -23,8 +20,6 @@ public class GraphTestBase {
           .add(3, 4, 1)
           .add(4, 5, 1)
           .build();
-
-
   protected final Graph SOME_BIPARTITE_GRAPH = new CompressedSparseGraphBuilder()
           .add(0, 1, 2)
           .add(0, 3, 3)
@@ -33,7 +28,6 @@ public class GraphTestBase {
           .add(2, 3, 7)
           .add(2, 5, 13)
           .build();
-
   protected final Graph K43 = new CompressedSparseGraphBuilder()
           .add(0, 1, 5)
           .add(0, 3, 11)
@@ -48,11 +42,12 @@ public class GraphTestBase {
           .add(4, 5, 73)
           .add(5, 6, 83)
           .build();
-
   protected final Graph K12 = new CompressedSparseGraphBuilder()
           .add(0, 1, 2)
           .add(0, 2, 3)
           .build();
+  protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
+  private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
   @Before
   public void init() {

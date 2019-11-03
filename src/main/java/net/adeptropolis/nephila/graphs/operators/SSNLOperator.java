@@ -1,10 +1,8 @@
-package net.adeptropolis.nephila.graphs.algorithms;
+package net.adeptropolis.nephila.graphs.operators;
 
 import com.google.common.annotations.VisibleForTesting;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.helpers.Vectors;
-
-import java.util.Arrays;
 
 /**
  * <p>A spectrally shifted normalized laplacian operator</p>

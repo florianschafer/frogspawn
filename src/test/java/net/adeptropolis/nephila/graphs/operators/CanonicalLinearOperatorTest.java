@@ -1,4 +1,4 @@
-package net.adeptropolis.nephila.graphs.algorithms;
+package net.adeptropolis.nephila.graphs.operators;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.nephila.graphs.Graph;
@@ -30,11 +30,11 @@ public class CanonicalLinearOperatorTest {
   @Test
   public void reusability() {
     CanonicalLinearOperator op = new CanonicalLinearOperator(defaultGraph());
-    double[] r1 = op.apply(new double[]{ 13, 19, 27 });
+    double[] r1 = op.apply(new double[]{13, 19, 27});
     assertThat(r1[0], closeTo(218, 1E-6));
     assertThat(r1[1], closeTo(469, 1E-6));
     assertThat(r1[2], closeTo(625, 1E-6));
-    double[] r2 = op.apply(new double[]{ 61, 67, 71 });
+    double[] r2 = op.apply(new double[]{61, 67, 71});
     assertThat(r2[0], closeTo(678, 1E-6));
     assertThat(r2[1], closeTo(1433, 1E-6));
     assertThat(r2[2], closeTo(1965, 1E-6));
