@@ -59,6 +59,12 @@ public class SSNLOperator implements LinearGraphOperator {
     return result;
   }
 
+  @Override
+  public int size() {
+    return graph.size();
+
+  }
+
   /**
    * Compute the eigenvector associated with the smallest eigenvalue of the regular normalized laplacian of the graph.
    * @param weights Array of vertex weights of the graph

@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.is;
 // 1) Signum test should use a bigger matrix
 // 2) Subset selection and re-use should also be tested
 
+@Deprecated
 public class BipartiteSSNLSolverTest {
 
   @Test

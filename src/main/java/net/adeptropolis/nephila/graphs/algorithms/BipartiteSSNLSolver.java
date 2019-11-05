@@ -18,6 +18,7 @@ import net.adeptropolis.nephila.graphs.implementations.View;
 
 import java.util.function.Function;
 
+@Deprecated
 public class BipartiteSSNLSolver {
 
   private final View view;

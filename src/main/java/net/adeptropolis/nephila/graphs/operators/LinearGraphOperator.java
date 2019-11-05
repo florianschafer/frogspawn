@@ -5,7 +5,6 @@ package net.adeptropolis.nephila.graphs.operators;
  * <p>A linear graph operator</p>
  */
 
-@FunctionalInterface
 public interface LinearGraphOperator {
 
   /**
@@ -16,4 +15,5 @@ public interface LinearGraphOperator {
 
   double[] apply(double[] argument);
 
+  int size();
 }

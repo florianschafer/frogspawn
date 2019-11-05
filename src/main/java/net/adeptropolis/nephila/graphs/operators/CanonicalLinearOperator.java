@@ -41,6 +41,11 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
     return result;
   }
 
+  @Override
+  public int size() {
+    return graph.size();
+  }
+
   /**
    * Internal: Callback for graph traversal
    * @param u Left vertex
