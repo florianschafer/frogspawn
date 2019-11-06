@@ -11,7 +11,7 @@ public class ConstantInitialVectorsTest {
   public void basic() {
     double[] iv = ConstantInitialVectors.generate(4);
     for (int i = 0; i < 3; i++){
-      assertThat(iv[i], closeTo(0.25, 1E-9));
+      assertThat(iv[i], closeTo(0.5, 1E-9));
     }
   }
 

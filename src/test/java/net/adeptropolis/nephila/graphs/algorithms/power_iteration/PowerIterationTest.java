@@ -5,12 +5,8 @@ import net.adeptropolis.nephila.graphs.operators.CanonicalLinearOperator;
 import net.adeptropolis.nephila.graphs.operators.SSNLOperator;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class PowerIterationTest extends GraphTestBase {
 
@@ -20,7 +16,8 @@ public class PowerIterationTest extends GraphTestBase {
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     IterationTerminator terminator = new DeltaNormTerminator(1E-6);
     double[] iv = ConstantInitialVectors.generate(10);
-    double[] r = new PowerIteration(op, terminator, iv, 10000).powerIteration();
+    double[] r = PowerIteration.apply(op, terminator, iv, 10000);
+    assertNotNull(r);
     for (int i = 0; i < op.size(); i++) {
       assertThat(r[i], closeTo(expected[i], 1E-5));
     }
@@ -31,7 +28,7 @@ public class PowerIterationTest extends GraphTestBase {
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     IterationTerminator terminator = new DeltaNormTerminator(1E-18);
     double[] iv = ConstantInitialVectors.generate(10);
-    double[] r = new PowerIteration(op, terminator, iv, 5).powerIteration();
+    double[] r = PowerIteration.apply(op, terminator, iv, 5);
     assertNull(r);
   }
 
@@ -40,12 +37,14 @@ public class PowerIterationTest extends GraphTestBase {
     SSNLOperator op = new SSNLOperator(EIGEN_REF_GRAPH);
     IterationTerminator terminator = new DeltaNormTerminator(1E-9);
     double[] iv = ConstantInitialVectors.generate(op.size());
-    double[] r = new PowerIteration(op, terminator, iv, 1000000).powerIteration();
-    String x = Arrays.stream(r).mapToObj(String::valueOf).collect(Collectors.joining(", "));
-    TODO: Find out why this bastard won't converge
-    System.out.println(x);
-//    assertThat(r[0], closeTo(1, 1E-8));
-
+    double[] r = PowerIteration.apply(op, terminator, iv, 1000);
+    assertNotNull(r);
+    assertThat(r[0], closeTo(0.33423, 1E-5));
+    assertThat(r[1], closeTo(0.18452, 1E-5));
+    assertThat(r[2], closeTo(-0.59518, 1E-5));
+    assertThat(r[3], closeTo(0.33423, 1E-5));
+    assertThat(r[4], closeTo(0.18452, 1E-5));
+    assertThat(r[5], closeTo(-0.59518, 1E-5));
   }
 
 }

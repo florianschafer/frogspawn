@@ -33,7 +33,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
    * @return The product Av, with A being the adjacency matrix of the graph and V the argument v
    */
 
-  public synchronized double[] apply(double[] argument) {
+  public double[] apply(double[] argument) {
     Arrays.fill(result, 0);
     Preconditions.checkArgument(argument.length == graph.size(), "Argument length mismatch");
     this.argument = argument;

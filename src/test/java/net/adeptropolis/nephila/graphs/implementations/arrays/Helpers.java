@@ -1,7 +1,5 @@
 package net.adeptropolis.nephila.graphs.implementations.arrays;
 
-import java.util.Arrays;
-
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
@@ -10,7 +8,9 @@ public class Helpers {
 
   public static void assertEquals(String name, long[] array, long... expected) {
     assertThat(String.format("%s length mismatch", name), array.length, is(expected.length));
-    assertThat("Content mismatch", Arrays.compare(array, expected), is(0));
+    for (int i = 0; i < expected.length; i++) {
+      assertThat("Content mismatch", array[i], is(expected[i]));
+    }
   }
 
   public static void assertEquals(String name, BigInts array, int... expected) {

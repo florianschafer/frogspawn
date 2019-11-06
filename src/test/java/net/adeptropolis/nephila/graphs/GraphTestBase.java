@@ -53,6 +53,7 @@ public class GraphTestBase {
           .add(3, 4, 1)
           .add(4, 5, 1)
           .build();
+
   protected final Graph SOME_BIPARTITE_GRAPH = new CompressedSparseGraphBuilder()
           .add(0, 1, 2)
           .add(0, 3, 3)

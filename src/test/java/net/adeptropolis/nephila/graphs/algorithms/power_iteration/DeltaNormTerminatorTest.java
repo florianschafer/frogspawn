@@ -32,4 +32,5 @@ public class DeltaNormTerminatorTest {
     boolean terminate = new DeltaNormTerminator().terminate(prev, current);
     assertFalse(terminate);
   }
+
 }

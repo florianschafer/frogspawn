@@ -5,7 +5,7 @@ import com.google.common.base.Preconditions;
 public class Vectors {
 
   public static double L1Norm(double[] v) {
-    // This is NOT the official L1 norm. Assuming ∀i ∈ [0, vec.length): vec[i] >= 0
+    // This is NOT exactly the official L1 norm. Assuming ∀i ∈ [0, vec.length): vec[i] >= 0
     double norm = 0;
     for (int i = 0; i < v.length; i++) {
       norm += v[i];
@@ -24,12 +24,12 @@ public class Vectors {
 
   // Normalize vector <x> into <multResult>
   // Also normalizes the signum of <x>, s.t. the first entry is always positive
-  public static void normalize2(double[] vec) {
-    double sig = Math.signum(vec[0]);
+  public static void normalize2(double[] v) {
+    double sig = v[0] != 0 ? Math.signum(v[0]) : 1;
     double sum = 0;
-    for (int i = 0; i < vec.length; i++) sum += vec[i] * vec[i];
+    for (double value : v) sum += value * value;
     double norm = Math.sqrt(sum);
-    for (int i = 0; i < vec.length; i++) vec[i] = sig * vec[i] / norm;
+    for (int i = 0; i < v.length; i++) v[i] = sig * v[i] / norm;
   }
 
 
