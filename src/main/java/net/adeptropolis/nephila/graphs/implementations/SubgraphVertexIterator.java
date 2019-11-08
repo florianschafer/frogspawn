@@ -10,14 +10,12 @@ public class SubgraphVertexIterator implements VertexIterator {
   private int globalId;
 
   private int[] vertexBuf;
-  private int size;
 
   public SubgraphVertexIterator() {
   }
 
-  public SubgraphVertexIterator reset(int[] vertexBuf, int size) {
+  public SubgraphVertexIterator reset(int[] vertexBuf) {
     this.vertexBuf = vertexBuf;
-    this.size = size;
     this.localId = 0;
     this.globalId = -1;
     return this;
@@ -31,7 +29,7 @@ public class SubgraphVertexIterator implements VertexIterator {
 
   @Override
   public boolean proceed() {
-    if (localId == size) {
+    if (vertexBuf == null || localId == vertexBuf.length) {
       return false;
     }
     globalId = vertexBuf[localId++];

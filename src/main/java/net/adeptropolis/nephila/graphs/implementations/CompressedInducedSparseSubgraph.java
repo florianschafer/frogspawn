@@ -28,7 +28,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
 
   @Override
   public VertexIterator vertices() {
-    return new SubgraphVertexIterator().reset(vertices, size());
+    return new SubgraphVertexIterator().reset(vertices);
   }
 
   @Override

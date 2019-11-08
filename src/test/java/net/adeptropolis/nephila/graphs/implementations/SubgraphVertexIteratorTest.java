@@ -25,21 +25,14 @@ public class SubgraphVertexIteratorTest {
   @Test
   public void singletonIterator() {
     int[] buf = new int[]{42};
-    SubgraphVertexIterator iterator = new SubgraphVertexIterator().reset(buf, buf.length);
+    SubgraphVertexIterator iterator = new SubgraphVertexIterator().reset(buf);
     verifyIterator(iterator, 42);
   }
 
   @Test
-  public void sizeIsObeyed() {
-    int[] buf = new int[]{271, 314, 581};
-    SubgraphVertexIterator iterator = new SubgraphVertexIterator().reset(buf, 2);
-    verifyIterator(iterator, 271, 314);
-  }
-
-  @Test
-  public void fullSize() {
+  public void verify() {
     int[] buf = new int[]{2, 3, 5, 7, 11, 13, 17, 19};
-    SubgraphVertexIterator iterator = new SubgraphVertexIterator().reset(buf, buf.length);
+    SubgraphVertexIterator iterator = new SubgraphVertexIterator().reset(buf);
     verifyIterator(iterator, buf);
   }
 
@@ -47,9 +40,9 @@ public class SubgraphVertexIteratorTest {
   public void resetWorks() {
     int[] buf = new int[]{23, 29, 31, 37, 41};
     SubgraphVertexIterator iterator = new SubgraphVertexIterator();
-    verifyIterator(iterator.reset(buf, buf.length), buf);
+    verifyIterator(iterator.reset(buf), buf);
     int[] anotherBuf = new int[]{43, 47, 53, 59, 61, 67};
-    verifyIterator(iterator.reset(anotherBuf, anotherBuf.length), anotherBuf);
+    verifyIterator(iterator.reset(anotherBuf), anotherBuf);
   }
 
 }
