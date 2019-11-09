@@ -7,12 +7,18 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 public class SignConvergence implements ConvergenceCriterion {
 
+  private static final int DEFAULT_MIN_ITERATIONS = 12;
+
   private final int minIterations;
   private final double maxUnstable;
 
-  public SignConvergence(int minIterations, double maxUnstable) {
-    this.minIterations = minIterations;
+  public SignConvergence(double maxUnstable, int minIterations) {
     this.maxUnstable = maxUnstable;
+    this.minIterations = minIterations;
+  }
+
+  public SignConvergence(double maxUnstable) {
+    this(maxUnstable, DEFAULT_MIN_ITERATIONS);
   }
 
   @Override
