@@ -23,7 +23,7 @@ public class Vectors {
   }
 
   // Normalize vector <x> into <multResult>
-  // Also normalizes the signum of <x>, s.t. the first entry is always positive
+  // Also normalizes the sign of <x>, s.t. the first entry is always positive
   public static void normalize2(double[] v) {
     double sig = v[0] != 0 ? Math.signum(v[0]) : 1;
     double sum = 0;

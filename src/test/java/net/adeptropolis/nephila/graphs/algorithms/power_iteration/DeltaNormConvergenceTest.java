@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DeltaNormTerminatorTest {
+public class DeltaNormConvergenceTest {
 
   private double[] prev;
   private double[] current;
@@ -13,7 +13,7 @@ public class DeltaNormTerminatorTest {
   public void fullyConverged() {
     prev = new double[]{1, 2};
     current = new double[]{1, 2};
-    boolean terminate = new DeltaNormTerminator(1E-9).terminate(prev, current);
+    boolean terminate = new DeltaNormConvergence(1E-9).satisfied(prev, current, 0);
     assertTrue(terminate);
   }
 
@@ -21,7 +21,7 @@ public class DeltaNormTerminatorTest {
   public void notConverged() {
     prev = new double[]{1, 2};
     current = new double[]{1, 2.01};
-    boolean terminate = new DeltaNormTerminator(1E-3).terminate(prev, current);
+    boolean terminate = new DeltaNormConvergence(1E-3).satisfied(prev, current, 0);
     assertFalse(terminate);
   }
 
@@ -29,7 +29,7 @@ public class DeltaNormTerminatorTest {
   public void defaultInstance() {
     prev = new double[]{1, 2};
     current = new double[]{1, 2 + 1E-8};
-    boolean terminate = new DeltaNormTerminator().terminate(prev, current);
+    boolean terminate = new DeltaNormConvergence().satisfied(prev, current, 0);
     assertFalse(terminate);
   }
 
