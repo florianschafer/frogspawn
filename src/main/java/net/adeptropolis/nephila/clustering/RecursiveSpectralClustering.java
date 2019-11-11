@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graphs.algorithms.DeprecatedConnectedComponents;
-import net.adeptropolis.nephila.graphs.algorithms.SpectralBipartitioner;
+import net.adeptropolis.nephila.graphs.algorithms.DeprecatedSpectralBipartitioner;
 import net.adeptropolis.nephila.graphs.implementations.View;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class RecursiveSpectralClustering {
   }
 
   private void spectralPartition(Branch branch) {
-    new SpectralBipartitioner(branch.view, maxAlternations).partition(partition -> {
+    new DeprecatedSpectralBipartitioner(branch.view, maxAlternations).partition(partition -> {
       if (partition.size() < minPartitionSize || partition.size() == branch.view.size()) {
         // 1st Condition: trivial
         // 2nd: Could not cluster further. This should only happen in rare instances where we don't fully converge. Stop right here

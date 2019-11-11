@@ -28,25 +28,11 @@ public class SignConvergence implements ConvergenceCriterion {
     }
     int unstable = 0;
     for (int i = 0; i < current.length; i++) {
-      if (sig(current[i]) != sig(previous[i])) {
+      if (Math.signum(current[i]) != Math.signum(previous[i])) {
         unstable += 1;
       }
     }
     return unstable / (double) current.length <= maxUnstable;
-  }
-
-  /**
-   * <p>A slightly modified signum function. That is, <code>sig(x) = {1 if x = 0, Math.signum(x) otherwise}</code> </p>
-   * @param x Any real number
-   * @return -1 if x < 0, 1 otherwise
-   */
-
-  private byte sig(double x) {
-    if (x >= 0) {
-      return 1;
-    } else {
-      return -1;
-    }
   }
 
 }

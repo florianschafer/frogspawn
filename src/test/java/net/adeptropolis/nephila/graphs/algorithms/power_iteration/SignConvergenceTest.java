@@ -31,8 +31,8 @@ public class SignConvergenceTest {
     double[] v = new double[]{0, 0};
     assertFalse(conv.satisfied(v, new double[]{-1, -1}, 100));
     assertFalse(conv.satisfied(v, new double[]{-1, 0}, 100));
-    assertTrue(conv.satisfied(v, new double[]{0, 1}, 100));
-    assertTrue(conv.satisfied(v, new double[]{1, 1}, 100));
+    assertFalse(conv.satisfied(v, new double[]{0, 1}, 100));
+    assertTrue(conv.satisfied(v, new double[]{0, 0}, 100));
   }
 
   @Test

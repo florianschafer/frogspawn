@@ -7,7 +7,8 @@ import java.util.function.Consumer;
 
 // TODO: Might need some optimizations / love
 
-public class SpectralBipartitioner {
+@Deprecated
+public class DeprecatedSpectralBipartitioner {
 
   private static final int MIN_ITERATIONS = 15;
   private static final int MAX_ITERATIONS = 10000;
@@ -15,7 +16,7 @@ public class SpectralBipartitioner {
   private final View view;
   private final double maxAlternations;
 
-  public SpectralBipartitioner(View view, double maxAlternations) {
+  public DeprecatedSpectralBipartitioner(View view, double maxAlternations) {
     this.view = view;
     this.maxAlternations = maxAlternations;
   }

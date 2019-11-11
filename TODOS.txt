@@ -1,2 +1,5 @@
  - Write some proper math documentation
  - Check graph for biparity upon creation
+ - Remove synchronized everywhere
+ - CUDA
+ - Parallel cluster tree traversal

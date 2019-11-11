@@ -12,7 +12,8 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class SpectralBipartitionerTest {
+@Deprecated
+public class DeprecatedSpectralBipartitionerTest {
 
   @Test
   public void standardCase() {
@@ -35,7 +36,7 @@ public class SpectralBipartitionerTest {
             .add(7, 8, 1)
             .build();
     List<View> partitions = Lists.newArrayList();
-    new SpectralBipartitioner(graph.view(viewIndices), 1E-9).partition(partitions::add);
+    new DeprecatedSpectralBipartitioner(graph.view(viewIndices), 1E-9).partition(partitions::add);
     assertThat("Number of partitions should agree", partitions.size(), is(expected.length));
     partitions.sort(Comparator.comparingInt(comp -> comp.getVertex(0)));
     for (int i = 0; i < partitions.size(); i++) {
