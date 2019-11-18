@@ -32,6 +32,7 @@ public class SSNLOperator implements LinearGraphOperator {
 
   /**
    * <p>Creates a new SSNLOperator instance.</p>
+   *
    * @param graph The underlying graph. Must be strictly bipartite, connected, undirected and have non-negative edge weights
    */
 
@@ -44,29 +45,8 @@ public class SSNLOperator implements LinearGraphOperator {
   }
 
   /**
-   * Apply the spectrally shifted normalized laplacian
-   * @param x A normalized vertex-indexed vector
-   * @return The result of applying the spectrally shifted normalized laplacian to the given argument x.
-   */
-
-  public double[] apply(double[] x) {
-    double mu = 2 * Vectors.scalarProduct(v0, x);
-    for (int i = 0; i < graph.size(); i++) argument[i] = x[i] / Math.sqrt(weights[i]);
-    double[] result = linOp.apply(argument);
-    for (int i = 0; i < graph.size(); i++){
-      result[i] = x[i] + result[i] / Math.sqrt(weights[i]) - mu * v0[i];
-    }
-    return result;
-  }
-
-  @Override
-  public int size() {
-    return graph.size();
-
-  }
-
-  /**
    * Compute the eigenvector associated with the smallest eigenvalue of the regular normalized laplacian of the graph.
+   *
    * @param weights Array of vertex weights of the graph
    * @return The desired eigenvector
    */
@@ -77,6 +57,29 @@ public class SSNLOperator implements LinearGraphOperator {
     double norm = Math.sqrt(Vectors.L1Norm(weights));
     for (int i = 0; i < weights.length; i++) v0[i] = Math.sqrt(weights[i]) / norm;
     return v0;
+  }
+
+  /**
+   * Apply the spectrally shifted normalized laplacian
+   *
+   * @param x A normalized vertex-indexed vector
+   * @return The result of applying the spectrally shifted normalized laplacian to the given argument x.
+   */
+
+  public double[] apply(double[] x) {
+    double mu = 2 * Vectors.scalarProduct(v0, x);
+    for (int i = 0; i < graph.size(); i++) argument[i] = x[i] / Math.sqrt(weights[i]);
+    double[] result = linOp.apply(argument);
+    for (int i = 0; i < graph.size(); i++) {
+      result[i] = x[i] + result[i] / Math.sqrt(weights[i]) - mu * v0[i];
+    }
+    return result;
+  }
+
+  @Override
+  public int size() {
+    return graph.size();
+
   }
 
 }

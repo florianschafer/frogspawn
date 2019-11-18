@@ -19,6 +19,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
 
   /**
    * Constructor for a new operator instance
+   *
    * @param graph The underlying graph
    */
 
@@ -28,7 +29,6 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
   }
 
   /**
-   *
    * @param argument A vertex-indexed vector
    * @return The product Av, with A being the adjacency matrix of the graph and V the argument v
    */
@@ -48,8 +48,9 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
 
   /**
    * Internal: Callback for graph traversal
-   * @param u Left vertex
-   * @param v Right vertex
+   *
+   * @param u      Left vertex
+   * @param v      Right vertex
    * @param weight Edge weight
    */
 

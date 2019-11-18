@@ -12,10 +12,11 @@ public class PowerIteration {
   /**
    * <p>Apply the power iteration method to any Operator to find the eigenvector associated with its' largest eigenvalue</p>
    * <p>The initial vector needs to satisfy ||x|| = 1</p>
-   * @param op The operator operator
+   *
+   * @param op                   The operator operator
    * @param convergenceCriterion A given convergence criterion for the iteration
-   * @param initialVector Initial vector for the iteration
-   * @param maxIterations Maximum number of iterations.
+   * @param initialVector        Initial vector for the iteration
+   * @param maxIterations        Maximum number of iterations.
    * @return Either the converged eigenvector or <code>null</code> if the number of allowed iterations has been exhausted.
    */
 

@@ -12,7 +12,7 @@ public class PowerIterationTest extends GraphTestBase {
 
   @Test
   public void matrix() {
-    double[] expected = new double[]{ 0.35596, 0.33434, 0.34380, 0.30277, 0.27799, 0.29129, 0.32165, 0.27372, 0.29246, 0.35439 };
+    double[] expected = new double[]{0.35596, 0.33434, 0.34380, 0.30277, 0.27799, 0.29129, 0.32165, 0.27372, 0.29246, 0.35439};
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-6);
     double[] iv = ConstantInitialVectors.generate(10);

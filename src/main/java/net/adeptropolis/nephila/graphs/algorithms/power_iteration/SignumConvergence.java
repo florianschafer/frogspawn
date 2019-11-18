@@ -5,19 +5,19 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
  * <p>It only requires convergence of the vector entry signs instead of their values</p>
  */
 
-public class SignConvergence implements ConvergenceCriterion {
+public class SignumConvergence implements ConvergenceCriterion {
 
-  private static final int DEFAULT_MIN_ITERATIONS = 12;
+  static final int DEFAULT_MIN_ITERATIONS = 20;
 
   private final int minIterations;
   private final double maxUnstable;
 
-  public SignConvergence(double maxUnstable, int minIterations) {
+  public SignumConvergence(double maxUnstable, int minIterations) {
     this.maxUnstable = maxUnstable;
     this.minIterations = minIterations;
   }
 
-  public SignConvergence(double maxUnstable) {
+  public SignumConvergence(double maxUnstable) {
     this(maxUnstable, DEFAULT_MIN_ITERATIONS);
   }
 

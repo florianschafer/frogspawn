@@ -2,13 +2,15 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static net.adeptropolis.nephila.graphs.algorithms.power_iteration.SignumConvergence.DEFAULT_MIN_ITERATIONS;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-public class SignConvergenceTest {
+public class SignumConvergenceTest {
 
   @Test
   public void minIterations() {
-    SignConvergence conv = new SignConvergence(0, 10);
+    SignumConvergence conv = new SignumConvergence(0, 10);
     double[] v = new double[]{2, 3};
     assertFalse(conv.satisfied(v, v, 9));
     assertTrue(conv.satisfied(v, v, 10));
@@ -16,7 +18,7 @@ public class SignConvergenceTest {
 
   @Test
   public void maxUnstable() {
-    SignConvergence conv = new SignConvergence(0.25, 0);
+    SignumConvergence conv = new SignumConvergence(0.25, 0);
     double[] v = new double[]{2, 3, 5, 7};
     assertFalse(conv.satisfied(v, new double[]{-11, -13, -17, -19}, 100));
     assertFalse(conv.satisfied(v, new double[]{-11, -13, -17, 19}, 100));
@@ -27,7 +29,7 @@ public class SignConvergenceTest {
 
   @Test
   public void zeroEntries() {
-    SignConvergence conv = new SignConvergence(0, 0);
+    SignumConvergence conv = new SignumConvergence(0, 0);
     double[] v = new double[]{0, 0};
     assertFalse(conv.satisfied(v, new double[]{-1, -1}, 100));
     assertFalse(conv.satisfied(v, new double[]{-1, 0}, 100));
@@ -37,10 +39,10 @@ public class SignConvergenceTest {
 
   @Test
   public void defaultMinIterations() {
-    SignConvergence conv = new SignConvergence(0);
+    SignumConvergence conv = new SignumConvergence(0);
     double[] v = new double[]{2, 3};
-    assertFalse(conv.satisfied(v, v, 11));
-    assertTrue(conv.satisfied(v, v, 12));
+    assertFalse(conv.satisfied(v, v, DEFAULT_MIN_ITERATIONS - 1));
+    assertTrue(conv.satisfied(v, v, DEFAULT_MIN_ITERATIONS));
 
   }
 

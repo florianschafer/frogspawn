@@ -3,7 +3,7 @@ package net.adeptropolis.nephila.helpers;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class VectorsTest {
 
@@ -17,7 +17,7 @@ public class VectorsTest {
   public void scalarProduct() {
     double[] v = new double[]{2, 3, 5};
     double[] w = new double[]{7, 11, 13};
-    assertThat(Vectors.scalarProduct(v,w), closeTo(112, 1E-9));
+    assertThat(Vectors.scalarProduct(v, w), closeTo(112, 1E-9));
   }
 
   @Test

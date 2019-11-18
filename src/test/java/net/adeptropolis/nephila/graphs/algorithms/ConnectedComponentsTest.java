@@ -1,16 +1,11 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
-import net.adeptropolis.nephila.graphs.VertexIterator;
 import org.junit.Test;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -56,38 +51,7 @@ public class ConnectedComponentsTest extends GraphTestBase {
   private List<List<Integer>> getSubgraphs(Graph graph) {
     SubgraphCollectingConsumer consumer = new SubgraphCollectingConsumer();
     ConnectedComponents.find(graph, consumer);
-    return consumer.subgraphVertices();
+    return consumer.vertices();
   }
-
-
-  static class SubgraphCollectingConsumer implements Consumer<Graph> {
-
-    private final List<Graph> graphs;
-
-    SubgraphCollectingConsumer() {
-      graphs = Lists.newArrayList();
-    }
-
-    public List<List<Integer>> subgraphVertices() {
-      return graphs.stream().sorted(Comparator.comparingInt(Graph::size).thenComparingInt(x -> {
-        VertexIterator vertices = x.vertices();
-        vertices.proceed();
-        return vertices.globalId();
-      })).map(graph -> {
-        List<Integer> vertices = Lists.newArrayList();
-        VertexIterator iterator = graph.vertices();
-        while (iterator.proceed()) {
-          vertices.add(iterator.globalId());
-        }
-        return vertices;
-      }).collect(Collectors.toList());
-    }
-
-    @Override
-    public void accept(Graph graph) {
-      graphs.add(graph);
-    }
-  }
-
 
 }

@@ -20,6 +20,7 @@ public class ConnectedComponents implements EdgeConsumer {
 
   /**
    * Create a new ConnectedComponents instance
+   *
    * @param graph The input graph
    */
 
@@ -33,7 +34,8 @@ public class ConnectedComponents implements EdgeConsumer {
   /**
    * <p>Convenience access for find(..) below</p>
    * <p>Find the connected components of a graph</p>
-   * @param graph The input graph
+   *
+   * @param graph    The input graph
    * @param consumer A consumer for the connected subgraphs
    */
 
@@ -43,6 +45,7 @@ public class ConnectedComponents implements EdgeConsumer {
 
   /**
    * <p>Find all connected components of the graph</p>
+   *
    * @param consumer A consumer for the connected subgraphs
    */
 
@@ -60,6 +63,7 @@ public class ConnectedComponents implements EdgeConsumer {
 
   /**
    * Process the current connected component
+   *
    * @param i First member vertex of the component
    */
 
@@ -76,8 +80,9 @@ public class ConnectedComponents implements EdgeConsumer {
 
   /**
    * Internal: Callback for graph traversal
-   * @param u Left vertex
-   * @param v Right vertex
+   *
+   * @param u      Left vertex
+   * @param v      Right vertex
    * @param weight Edge weight
    */
 

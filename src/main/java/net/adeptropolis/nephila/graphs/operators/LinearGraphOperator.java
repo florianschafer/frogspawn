@@ -8,7 +8,6 @@ package net.adeptropolis.nephila.graphs.operators;
 public interface LinearGraphOperator {
 
   /**
-   *
    * @param argument A vertex-indexed vector
    * @return Apply the given operator to the argument vector and return the result.
    */

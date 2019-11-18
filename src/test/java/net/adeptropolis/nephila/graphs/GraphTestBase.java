@@ -1,27 +1,31 @@
 package net.adeptropolis.nephila.graphs;
 
+import com.google.common.collect.Lists;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class GraphTestBase {
 
-    /*
-    17866   13573   14616   14119   11685   11997   11950   11850   12138   15711
-    13573   15921   13928   10683   10537   13017   13103   11201   12481   13251
-    14616   13928   15355   11810   11343   12353   14209   10488   12119   14730
-    14119   10683   11810   15171   12122    8889    9614   10414    9832   13177
-    11685   10537   11343   12122   11751    8678   10064    9407    9538   11418
-    11997   13017   12353    8889    8678   12179   12038    9032   10501   12332
-    11950   13103   14209    9614   10064   12038   15627   10313   11600   14138
-    11850   11201   10488   10414    9407    9032   10313   11011    9946   11200
-    12138   12481   12119    9832    9538   10501   11600    9946   11297   12258
-    15711   13251   14730   13177   11418   12332   14138   11200   12258   16689
-  */
+  /*
+  17866   13573   14616   14119   11685   11997   11950   11850   12138   15711
+  13573   15921   13928   10683   10537   13017   13103   11201   12481   13251
+  14616   13928   15355   11810   11343   12353   14209   10488   12119   14730
+  14119   10683   11810   15171   12122    8889    9614   10414    9832   13177
+  11685   10537   11343   12122   11751    8678   10064    9407    9538   11418
+  11997   13017   12353    8889    8678   12179   12038    9032   10501   12332
+  11950   13103   14209    9614   10064   12038   15627   10313   11600   14138
+  11850   11201   10488   10414    9407    9032   10313   11011    9946   11200
+  12138   12481   12119    9832    9538   10501   11600    9946   11297   12258
+  15711   13251   14730   13177   11418   12332   14138   11200   12258   16689
+*/
   protected static final CompressedSparseGraph SOME_10_GRAPH = new CompressedSparseGraphBuilder()
           .add(0, 0, 17866).add(0, 1, 13573).add(0, 2, 14616).add(0, 3, 14119)
           .add(0, 4, 11685).add(0, 5, 11997).add(0, 6, 11950).add(0, 7, 11850)
@@ -112,6 +116,47 @@ public class GraphTestBase {
             .build();
   }
 
+  protected Graph completeBipartiteWithWeakLink() {
+    return new CompressedSparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(0, 2, 1)
+            .add(0, 3, 1)
+            .add(4, 1, 1)
+            .add(4, 2, 1)
+            .add(4, 3, 1)
+            .add(5, 3, 0.5)
+            .add(5, 6, 1)
+            .add(5, 8, 1)
+            .add(7, 6, 1)
+            .add(7, 8, 1)
+            .build();
+  }
+
+  protected Graph pathWithWeakLink() {
+    return new CompressedSparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(1, 2, 1)
+            .add(2, 3, 1)
+            .add(3, 4, 1E-1)
+            .add(4, 5, 1)
+            .add(5, 6, 1)
+            .add(6, 7, 1)
+            .add(7, 8, 1)
+            .add(8, 9, 1)
+            .add(9, 10, 1)
+            .add(10, 11, 1)
+            .build();
+  }
+
+  protected Graph largeCircle() {
+    CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
+    for (int i = 0; i < 100000; i++) {
+      b.add(i, i + 1, 1);
+    }
+    b.add(99999, 100000, 1);
+    return b.build();
+  }
+
   long bandedGraphFingerprint(int n, int k) {
     long fp = 0;
     for (long i = 0; i < n; i++) {
@@ -127,6 +172,36 @@ public class GraphTestBase {
   long traverseFingerprint(Graph graph) {
     EdgeOps.traverse(graph, fingerprintingConsumer);
     return fingerprintingConsumer.getFingerprint();
+  }
+
+  protected static class SubgraphCollectingConsumer implements Consumer<Graph> {
+
+    private final List<Graph> graphs;
+
+    public SubgraphCollectingConsumer() {
+      graphs = Lists.newArrayList();
+    }
+
+    public List<List<Integer>> vertices() {
+      return graphs.stream().sorted(Comparator.comparingInt(Graph::size).thenComparingInt(x -> {
+        VertexIterator vertices = x.vertices();
+        vertices.proceed();
+        return vertices.globalId();
+      })).map(graph -> {
+        List<Integer> vertices = Lists.newArrayList();
+        VertexIterator iterator = graph.vertices();
+        while (iterator.proceed()) {
+          vertices.add(iterator.globalId());
+        }
+        vertices.sort(Comparator.comparingInt(x -> x));
+        return vertices;
+      }).sorted(Comparator.comparingInt(p -> p.get(0))).collect(Collectors.toList());
+    }
+
+    @Override
+    public void accept(Graph graph) {
+      graphs.add(graph);
+    }
   }
 
   protected class CollectingEdgeConsumer implements EdgeConsumer {
@@ -172,6 +247,5 @@ public class GraphTestBase {
     }
 
   }
-
 
 }

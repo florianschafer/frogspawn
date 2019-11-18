@@ -50,13 +50,13 @@
 \usepackage{geometry} % Required for adjusting page dimensions
 
 \geometry{
-	top=1cm, % Top margin
-	bottom=1.5cm, % Bottom margin
-	left=2cm, % Left margin
-	right=2cm, % Right margin
-	includehead, % Include space for a header
-	includefoot, % Include space for a footer
-	%showframe, % Uncomment to show how the type block is set on the page
+top=1cm, % Top margin
+bottom=1.5cm, % Bottom margin
+left=2cm, % Left margin
+right=2cm, % Right margin
+includehead, % Include space for a header
+includefoot, % Include space for a footer
+%showframe, % Uncomment to show how the type block is set on the page
 }
 
 \setlength{\columnsep}{7mm} % Column separation width
@@ -95,8 +95,8 @@
 \rfoot{\footnotesize Page \thepage\ of \pageref{LastPage}} % Right footer, "Page 1 of 2"
 
 \fancypagestyle{firstpage}{ % Page style for the first page with the title
-	\fancyhf{}
-	\renewcommand{\footrulewidth}{0pt} % Suppress footer rule
+\fancyhf{}
+\renewcommand{\footrulewidth}{0pt} % Suppress footer rule
 }
 
 %----------------------------------------------------------------------------------------
@@ -112,10 +112,10 @@
 \newcommand{\HorRule}{\color{DarkGoldenrod}\rule{\linewidth}{1pt}} % Defines the gold horizontal rule around the title
 
 \pretitle{
-	\vspace{-30pt} % Move the entire title section up
-	\HorRule\vspace{10pt} % Horizontal rule before the title
-	\fontsize{32}{36}\usefont{OT1}{phv}{b}{n}\selectfont % Helvetica
-	\color{arsenic} % Text colour for the title and author(s)
+\vspace{-30pt} % Move the entire title section up
+\HorRule\vspace{10pt} % Horizontal rule before the title
+\fontsize{32}{36}\usefont{OT1}{phv}{b}{n}\selectfont % Helvetica
+\color{arsenic} % Text colour for the title and author(s)
 %	\color{Dark cerulean} % Text colour for the title and author(s)
 %	\color{Arsenic} % Text colour for the title and author(s)
 }
@@ -125,9 +125,9 @@
 \preauthor{} % Anything that will appear before \author is printed
 
 \postauthor{ % Anything that will appear after \author is printed
-	\vspace{10pt} % Space before the rule
-	\par\HorRule % Horizontal rule after the title
-	\vspace{20pt} % Space after the title section
+\vspace{10pt} % Space before the rule
+\par\HorRule % Horizontal rule after the title
+\vspace{20pt} % Space after the title section
 }
 
 %----------------------------------------------------------------------------------------
@@ -135,20 +135,20 @@
 %----------------------------------------------------------------------------------------
 
 \usepackage{lettrine} % Package to accentuate the first letter of the text (lettrine)
-\usepackage{fix-cm}	% Fixes the height of the lettrine
+\usepackage{fix-cm}    % Fixes the height of the lettrine
 
 \newcommand{\initial}[1]{ % Defines the command and style for the lettrine
-	\lettrine[lines=3,findent=4pt,nindent=0pt]{% Lettrine takes up 3 lines, the text to the right of it is indented 4pt and further indenting of lines 2+ is stopped
-		\color{DarkGoldenrod}% Lettrine colour
-		{#1}% The letter
-	}{}%
+\lettrine[lines=3,findent=4pt,nindent=0pt]{% Lettrine takes up 3 lines, the text to the right of it is indented 4pt and further indenting of lines 2+ is stopped
+\color{DarkGoldenrod}% Lettrine colour
+{#1}% The letter
+}{}%
 }
 
 \usepackage{xstring} % Required for string manipulation
 
 \newcommand{\lettrineabstract}[1]{
-	\StrLeft{#1}{1}[\firstletter] % Capture the first letter of the abstract for the lettrine
-	\initial{\firstletter}\textbf{\StrGobbleLeft{#1}{1}} % Print the abstract with the first letter as a lettrine and the rest in bold
+\StrLeft{#1}{1}[\firstletter] % Capture the first letter of the abstract for the lettrine
+\initial{\firstletter}\textbf{\StrGobbleLeft{#1}{1}} % Print the abstract with the first letter as a lettrine and the rest in bold
 }
 
 %----------------------------------------------------------------------------------------

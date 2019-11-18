@@ -65,7 +65,7 @@ public class FooingOuterEdgeSourceTest {
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
 //    Cluster root = new RecursiveSpectralClustering(template, 0.3, 0.85,1E-6, 150, true).compute();
-    Cluster root = new RecursiveSpectralClustering(template, 0.05, 0.0,1E-6, 100, false).compute();
+    Cluster root = new RecursiveSpectralClustering(template, 0.05, 0.0, 1E-6, 100, false).compute();
 
 //    Alternative approach ,in pre-recursion: Use a maxSimilarity and join in when appropriate
 //    also todo: If we don't need consistency measure in score, don't compute it

@@ -27,7 +27,7 @@ public class ClusteringTemplateTest {
 
   @Test
   public void singleEdgePartitionScores() {
-    verifyK3_3SubsetScores(new int[]{1, 5}, new double[]{ 17.0 / (2 + 7 + 17), 17.0 / (17 + 19 + 23)});
+    verifyK3_3SubsetScores(new int[]{1, 5}, new double[]{17.0 / (2 + 7 + 17), 17.0 / (17 + 19 + 23)});
   }
 
   private void verifyK3_3SubsetScores(int[] childIndices, double[] expectedScores) {

@@ -16,7 +16,7 @@ public class DeltaNormConvergence implements ConvergenceCriterion {
   }
 
   public DeltaNormConvergence() {
-    this (DEFAULT_PRECISION);
+    this(DEFAULT_PRECISION);
   }
 
   @Override

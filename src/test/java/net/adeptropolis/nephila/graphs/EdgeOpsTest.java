@@ -4,9 +4,7 @@ import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
