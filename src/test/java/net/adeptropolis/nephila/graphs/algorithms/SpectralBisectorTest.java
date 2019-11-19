@@ -49,14 +49,12 @@ public class SpectralBisectorTest extends GraphTestBase {
     bisector.bisect(largeCircle(), c, 10);
   }
 
-  TODO: This test is weirdly broken. It should actually yield the same results as
-  completeBipartiteGraphs() above. Also look into the second graph for multiplicities (s. debugger)
   @Test
   public void subgraphs() throws PowerIteration.MaxIterationsExceededException {
     SpectralBisector bisector = new SpectralBisector(conv);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
     Graph graph = pathWithWeakLinkEmbeddedIntoLargerGraph()
-            .inducedSubgraph(IntIterators.wrap(new int[]{0, 10, 20, 30, 40, 50, 60, 60, 80, 90, 100, 110}));
+            .inducedSubgraph(IntIterators.wrap(new int[]{0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110}));
     bisector.bisect(graph, c, 100000);
     List<List<Integer>> partitions = c.vertices();
     assertThat(partitions.get(0), containsInAnyOrder(0, 10, 20, 30));

@@ -163,7 +163,7 @@ public class GraphTestBase {
     builder.add(100, 110, 1);
     for (int i = 0; i < 110; i++) {
       if (i % 10 != 0) {
-        builder.add(i, i + 1, i);
+        builder.add(i, i + 1, i + 1);
       }
     }
     return builder.build();

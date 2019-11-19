@@ -1,12 +1,15 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
+import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConstantInitialVectors;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
 import net.adeptropolis.nephila.graphs.operators.SSNLOperator;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class SpectralBisector {
 
@@ -51,8 +54,8 @@ public class SpectralBisector {
    */
 
   private static void yieldSubgraph(Graph graph, double[] v2, Consumer<Graph> consumer, int selectSignum) {
-    SignumSelectingIndexIterator posVertices = new SignumSelectingIndexIterator(v2, selectSignum);
-    consumer.accept(graph.localInducedSubgraph(posVertices));
+    SignumSelectingIndexIterator vertices = new SignumSelectingIndexIterator(v2, selectSignum);
+    consumer.accept(graph.localInducedSubgraph(vertices));
   }
 
 }
