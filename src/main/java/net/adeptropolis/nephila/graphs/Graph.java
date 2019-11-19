@@ -2,6 +2,8 @@ package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
+
+
 public abstract class Graph {
 
   public abstract int size();
@@ -9,9 +11,10 @@ public abstract class Graph {
   public abstract VertexIterator vertices();
 
   /**
-   * @param v        A (local!) vertex
+   * @param v A (local!) vertex
    * @param consumer
    */
+  
   public abstract void traverse(int v, EdgeConsumer consumer);
 
   public void traverse(EdgeConsumer consumer) {

@@ -3,12 +3,14 @@ package net.adeptropolis.nephila.graphs.algorithms;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
 import net.adeptropolis.nephila.graphs.implementations.DeprecatedCompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.implementations.View;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 
 @Deprecated
+@Ignore
 public class DeprecatedNormalizedLaplacianTest {
 
   @Test

@@ -3,15 +3,20 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.operators.CanonicalLinearOperator;
 import net.adeptropolis.nephila.graphs.operators.SSNLOperator;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.junit.Assert.*;
 
 public class PowerIterationTest extends GraphTestBase {
 
+  @Rule
+  public final ExpectedException exception = ExpectedException.none();
+
   @Test
-  public void matrix() {
+  public void matrix() throws PowerIteration.MaxIterationsExceededException {
     double[] expected = new double[]{0.35596, 0.33434, 0.34380, 0.30277, 0.27799, 0.29129, 0.32165, 0.27372, 0.29246, 0.35439};
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-6);
@@ -24,16 +29,16 @@ public class PowerIterationTest extends GraphTestBase {
   }
 
   @Test
-  public void iterationsExcess() {
+  public void iterationsExcess() throws PowerIteration.MaxIterationsExceededException {
+    exception.expect(PowerIteration.MaxIterationsExceededException.class);
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-18);
     double[] iv = ConstantInitialVectors.generate(10);
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 5);
-    assertNull(r);
   }
 
   @Test
-  public void normalizedLaplacian() {
+  public void normalizedLaplacian() throws PowerIteration.MaxIterationsExceededException {
     SSNLOperator op = new SSNLOperator(EIGEN_REF_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-9);
     double[] iv = ConstantInitialVectors.generate(op.size());

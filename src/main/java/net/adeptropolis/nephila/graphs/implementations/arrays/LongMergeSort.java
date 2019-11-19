@@ -22,6 +22,10 @@ package net.adeptropolis.nephila.graphs.implementations.arrays;
  * limitations under the License.
  */
 
+/**
+ * Perform an indirect merge sort on big (i.e. long-indexed) arrays
+ */
+
 public class LongMergeSort {
 
   private static final long MERGESORT_NO_REC = 16;

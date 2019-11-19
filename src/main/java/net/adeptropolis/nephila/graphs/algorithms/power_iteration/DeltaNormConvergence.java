@@ -11,13 +11,31 @@ public class DeltaNormConvergence implements ConvergenceCriterion {
 
   private final double precision;
 
+  /**
+   * Constructor
+   *
+   * @param precision The targeted precision
+   */
+
   public DeltaNormConvergence(double precision) {
     this.precision = precision;
   }
 
+  /**
+   * Constructor with default precision 1E-9
+   */
+
   public DeltaNormConvergence() {
     this(DEFAULT_PRECISION);
   }
+
+  /**
+   * <p>Assess whether the power iteration has converged</p>
+   * @param previous Result of the previous iteration
+   * @param current Result of the current iteration
+   * @param iterations Number of iterations
+   * @return True if and only if the convergence criterion is satisfied.
+   */
 
   @Override
   public boolean satisfied(double[] previous, double[] current, int iterations) {

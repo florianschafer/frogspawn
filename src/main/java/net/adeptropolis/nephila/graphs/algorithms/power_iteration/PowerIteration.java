@@ -20,14 +20,14 @@ public class PowerIteration {
    * @return Either the converged eigenvector or <code>null</code> if the number of allowed iterations has been exhausted.
    */
 
-  public static double[] apply(LinearGraphOperator op, ConvergenceCriterion convergenceCriterion, double[] initialVector, int maxIterations) {
+  public static double[] apply(LinearGraphOperator op, ConvergenceCriterion convergenceCriterion, double[] initialVector, int maxIterations) throws MaxIterationsExceededException {
     double[] x = new double[op.size()];
     double[] y = initialVector;
     for (int i = 0; ; i++) {
       System.arraycopy(y, 0, x, 0, op.size());
       if (i >= maxIterations) {
         LOG.warn("Exceeded maximum number of iterations ({})", maxIterations);
-        return null;
+        throw new MaxIterationsExceededException();
       }
       y = op.apply(x);
       Vectors.normalize2(y);
@@ -35,6 +35,16 @@ public class PowerIteration {
         LOG.debug("Power iteration for operator size {} finished after {} rounds.", op.size(), i + 1);
         return y;
       }
+    }
+  }
+
+  /**
+   * Exception for handling an excess in the number of allowed iterations
+   */
+
+  public static class MaxIterationsExceededException extends Exception {
+    public MaxIterationsExceededException() {
+      super();
     }
   }
 

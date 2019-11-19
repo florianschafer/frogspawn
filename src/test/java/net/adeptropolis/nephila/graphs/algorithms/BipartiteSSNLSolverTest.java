@@ -3,6 +3,7 @@ package net.adeptropolis.nephila.graphs.algorithms;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
 import net.adeptropolis.nephila.graphs.implementations.DeprecatedCompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.implementations.View;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 // 2) Subset selection and re-use should also be tested
 
 @Deprecated
+@Ignore
 public class BipartiteSSNLSolverTest {
 
   @Test

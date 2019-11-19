@@ -1,7 +1,5 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConstantInitialVectors;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
@@ -12,44 +10,49 @@ import java.util.function.Consumer;
 
 public class SpectralBisector {
 
-  private static final double AMBIGUOUS_THRESHOLD = 1E-8;
+  /**
+   * <p>Spectral bisector for biparite graphs</p>
+   * <p>The original graph will be split into two partitions such that the normalized cut is minimized</p>
+   */
 
-  private final Graph graph;
   private final ConvergenceCriterion convergenceCriterion;
 
-  public SpectralBisector(Graph graph, ConvergenceCriterion convergenceCriterion) {
-    this.graph = graph;
+  /**
+   *
+   * @param convergenceCriterion The convergence criterion. Usually, this is an instance of <code>SignumConvergence</code>.
+   */
+
+  public SpectralBisector(ConvergenceCriterion convergenceCriterion) {
     this.convergenceCriterion = convergenceCriterion;
   }
 
+  /**
+   * Bisects the given graph into two partitons
+   * @param graph The input graph
+   * @param consumer A consumer for the resulting partitions
+   * @param maxIterations Maximum number of iterations
+   * @throws PowerIteration.MaxIterationsExceededException
+   */
 
-  public IntIterator bisect(Consumer<Graph> consumer, int maxIterations) {
+  public void bisect(Graph graph, Consumer<Graph> consumer, int maxIterations) throws PowerIteration.MaxIterationsExceededException {
     SSNLOperator ssnl = new SSNLOperator(graph);
     double[] iv = ConstantInitialVectors.generate(graph.size());
     double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations);
+    yieldSubgraph(graph, v2, consumer, 1);
+    yieldSubgraph(graph, v2, consumer, -1);
+  }
 
-    if (v2 == null) {
-      return null;
-    }
+  /**
+   *
+   * @param graph The input graph
+   * @param v2 The approximate second-smallest eigenvector of the Normalized Laplacian of the Graph
+   * @param consumer A consumer for the resulting partition
+   * @param selectSignum Select either all non-negative (selectSignum >= 0) or negative (selectSignum < 0) entries from the eigenvector.
+   */
 
-    IntArrayList rejects = new IntArrayList();
-    IntArrayList left = new IntArrayList();
-    IntArrayList right = new IntArrayList();
-
-    for (int i = 0; i < graph.size(); i++) {
-      if (Math.abs(v2[i]) < AMBIGUOUS_THRESHOLD) {
-        rejects.add(i);
-      } else if (v2[i] > 0) {
-        right.add(i);
-      } else if (v2[i] < 0) {
-        left.add(i);
-      }
-    }
-
-    consumer.accept(graph.localInducedSubgraph(left.iterator()));
-    consumer.accept(graph.localInducedSubgraph(right.iterator()));
-
-    return rejects.iterator();
+  private static void yieldSubgraph(Graph graph, double[] v2, Consumer<Graph> consumer, int selectSignum) {
+    SignumSelectingIndexIterator posVertices = new SignumSelectingIndexIterator(v2, selectSignum);
+    consumer.accept(graph.localInducedSubgraph(posVertices));
   }
 
 }

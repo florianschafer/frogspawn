@@ -148,6 +148,27 @@ public class GraphTestBase {
             .build();
   }
 
+  protected Graph pathWithWeakLinkEmbeddedIntoLargerGraph() {
+    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+    builder.add(0, 10, 1);
+    builder.add(10, 20, 1);
+    builder.add(20, 30, 1);
+    builder.add(30, 40, 1E-1);
+    builder.add(40, 50, 1);
+    builder.add(50, 60, 1);
+    builder.add(60, 70, 1);
+    builder.add(70, 80, 1);
+    builder.add(80, 90, 1);
+    builder.add(90, 100, 1);
+    builder.add(100, 110, 1);
+    for (int i = 0; i < 110; i++) {
+      if (i % 10 != 0) {
+        builder.add(i, i + 1, i);
+      }
+    }
+    return builder.build();
+  }
+
   protected Graph largeCircle() {
     CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
     for (int i = 0; i < 100000; i++) {
@@ -204,9 +225,9 @@ public class GraphTestBase {
     }
   }
 
-  protected class CollectingEdgeConsumer implements EdgeConsumer {
+  protected static class CollectingEdgeConsumer implements EdgeConsumer {
 
-    private List<Edge> edges = new ArrayList<>();
+    private final List<Edge> edges = new ArrayList<>();
 
     @Override
     public void accept(int u, int v, double weight) {
@@ -215,7 +236,7 @@ public class GraphTestBase {
       }
     }
 
-    public void reset() {
+    void reset() {
       edges.clear();
     }
 
@@ -225,7 +246,7 @@ public class GraphTestBase {
 
   }
 
-  class FingerprintingEdgeConsumer implements EdgeConsumer {
+  static class FingerprintingEdgeConsumer implements EdgeConsumer {
 
     private final AtomicLong fingerprint;
 
@@ -238,7 +259,7 @@ public class GraphTestBase {
       fingerprint.addAndGet((long) ((u * weight) % (v + 10)));
     }
 
-    public void reset() {
+    void reset() {
       fingerprint.set(0);
     }
 
