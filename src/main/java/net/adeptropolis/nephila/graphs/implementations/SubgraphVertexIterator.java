@@ -4,6 +4,10 @@ package net.adeptropolis.nephila.graphs.implementations;
 
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
+/**
+ * Iterator for a vertex set of a subgraph that carries both local and global ids
+ */
+
 public class SubgraphVertexIterator implements VertexIterator {
 
   private int localId;
@@ -13,6 +17,13 @@ public class SubgraphVertexIterator implements VertexIterator {
 
   public SubgraphVertexIterator() {
   }
+
+  /**
+   * Reset the iterator (initialization and reusability)
+   *
+   * @param vertexBuf List of global vertex ids
+   * @return
+   */
 
   public SubgraphVertexIterator reset(int[] vertexBuf) {
     this.vertexBuf = vertexBuf;
@@ -37,15 +48,21 @@ public class SubgraphVertexIterator implements VertexIterator {
   }
 
   /**
-   * Note: -1 because right after <code>globalId</code> is assigned, <code>localId</code> is being incremented
+   * Return the local id of the current vertex
    *
-   * @return
+   * @return A local vertex id
    */
 
   @Override
   public int localId() {
     return localId - 1;
   }
+
+  /**
+   * Return the global id of the current vertex
+   *
+   * @return A global vertex id
+   */
 
   @Override
   public int globalId() {

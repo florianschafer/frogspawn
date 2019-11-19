@@ -15,5 +15,10 @@ public interface LinearGraphOperator {
   // TODO: Supply the preallocated result vector as second argument, so it may be re-used at a higher level
   double[] apply(double[] argument);
 
+  /**
+   * Return size
+   *
+   * @return Size of the operator
+   */
   int size();
 }

@@ -57,12 +57,12 @@ public class CompressedInducedSparseSubgraph extends Graph {
 
   /**
    * Traverse all edges of the graph
-   * @param visitor Instance of <code>EdgeConsumer</code>
+   * @param consumer Instance of <code>EdgeConsumer</code>
    */
 
   @Override
-  public void traverse(EdgeConsumer visitor) {
-    EdgeOps.traverse(this, visitor);
+  public void traverse(EdgeConsumer consumer) {
+    EdgeOps.traverse(this, consumer);
   }
 
   /**

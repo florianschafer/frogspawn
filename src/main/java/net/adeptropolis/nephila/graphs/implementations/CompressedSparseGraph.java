@@ -6,32 +6,72 @@ import net.adeptropolis.nephila.graphs.EdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
+/**
+ * A compressed sparse graph
+ *
+ */
+
 public class CompressedSparseGraph extends Graph {
 
   private final CompressedSparseGraphDatastore datastore;
+
+  /**
+   * Constructor
+   *
+   * @param datastore Graph datastore
+   */
 
   public CompressedSparseGraph(CompressedSparseGraphDatastore datastore) {
     this.datastore = datastore;
   }
 
+  /**
+   * Create a builder for this type of graphs
+   *
+   * @return A new builder instance
+   */
+
   public static CompressedSparseGraphBuilder builder() {
     return new CompressedSparseGraphBuilder();
   }
+
+  /**
+   *
+   * @return The number of vertices of the graph
+   */
 
   @Override
   public int size() {
     return datastore.size();
   }
 
+  /**
+   * Return the vertex set
+   *
+   * @return An iterator for the vertex set
+   */
+
+
   @Override
   public VertexIterator vertices() {
     return new DefaultVertexIterator();
   }
 
+  /**
+   * Traverse all edges of the graph
+   * @param consumer Instance of <code>EdgeConsumer</code>
+   */
+
   @Override
   public void traverse(EdgeConsumer consumer) {
     EdgeOps.traverse(this, consumer);
   }
+
+  /**
+   * Traverse all neighhours of a given vertex
+   * @param v A (local!) vertex
+   * @param consumer Instance of <code>EdgeConsumer</code>
+   */
 
   @Override
   public void traverse(int v, EdgeConsumer consumer) {
@@ -57,20 +97,45 @@ public class CompressedSparseGraph extends Graph {
 
   }
 
+  /**
+   * Translate between global and local vertex ids
+   *
+   * @param globalVertexId A global vertex id
+   * @return A local vertex id
+   */
+
   @Override
   public int localVertexId(int globalVertexId) {
     return globalVertexId;
   }
+
+  /**
+   * Translate between locao and global vertex ids
+   *
+   * @param localVertexId A global vertex id
+   * @return A global vertex id
+   */
 
   @Override
   public int globalVertexId(int localVertexId) {
     return localVertexId;
   }
 
+  /**
+   * Return a new induces subgraph
+   *
+   * @param vertices The vertex set of the new subgraph
+   * @return A new graph
+   */
+
   @Override
   public Graph inducedSubgraph(IntIterator vertices) {
     return new CompressedInducedSparseSubgraph(datastore, vertices);
   }
+
+  /**
+   * Iterator over the vertex set
+   */
 
   public class DefaultVertexIterator implements VertexIterator {
 

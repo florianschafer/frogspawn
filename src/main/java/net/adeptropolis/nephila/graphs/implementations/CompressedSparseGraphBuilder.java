@@ -188,11 +188,25 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   private class EdgeSortOps implements SortOps {
 
+    /**
+     * Compare two edges by (1) left node (2) right node
+     * @param idx1 Index of the first edge in the buffer
+     * @param idx2 Index of the second edge in the buffer
+     * @return -1 if first edge < second edge, 0 if equal, 1 else
+     */
+
     @Override
     public int compare(long idx1, long idx2) {
       int c = edges[0].compare(idx1, idx2);
       return c != 0 ? c : edges[1].compare(idx1, idx2);
     }
+
+    /**
+     * Swap two edges within the edge buffer
+     *
+     * @param idx1 Index of the first edge
+     * @param idx2 Index of the second edge
+     */
 
     @Override
     public void swap(long idx1, long idx2) {

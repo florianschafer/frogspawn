@@ -76,6 +76,12 @@ public class SSNLOperator implements LinearGraphOperator {
     return result;
   }
 
+  /**
+   * Return size
+   *
+   * @return Size of the operator
+   */
+
   @Override
   public int size() {
     return graph.size();
