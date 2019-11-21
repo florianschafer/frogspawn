@@ -25,7 +25,7 @@ public class SpectralBisectorTest extends GraphTestBase {
   public void completeBipartiteGraphs() throws PowerIteration.MaxIterationsExceededException {
     SpectralBisector bisector = new SpectralBisector(conv);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
-    bisector.bisect(completeBipartiteWithWeakLink(), c, 100000);
+    bisector.bisect(completeBipartiteWithWeakLink(), 100000, c);
     List<List<Integer>> partitions = c.vertices();
     assertThat(partitions.get(0), containsInAnyOrder(0, 1, 2, 3, 4));
     assertThat(partitions.get(1), containsInAnyOrder(5, 6, 7, 8));
@@ -35,7 +35,7 @@ public class SpectralBisectorTest extends GraphTestBase {
   public void paths() throws PowerIteration.MaxIterationsExceededException {
     SpectralBisector bisector = new SpectralBisector(conv);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
-    bisector.bisect(pathWithWeakLink(), c, 100000);
+    bisector.bisect(pathWithWeakLink(), 100000, c);
     List<List<Integer>> partitions = c.vertices();
     assertThat(partitions.get(0), containsInAnyOrder(0, 1, 2, 3));
     assertThat(partitions.get(1), containsInAnyOrder(4, 5, 6, 7, 8, 9, 10, 11));
@@ -46,7 +46,7 @@ public class SpectralBisectorTest extends GraphTestBase {
     exception.expect(PowerIteration.MaxIterationsExceededException.class);
     SpectralBisector bisector = new SpectralBisector(new SignumConvergence(0));
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
-    bisector.bisect(largeCircle(), c, 10);
+    bisector.bisect(largeCircle(), 10, c);
   }
 
   @Test
@@ -55,7 +55,7 @@ public class SpectralBisectorTest extends GraphTestBase {
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
     Graph graph = pathWithWeakLinkEmbeddedIntoLargerGraph()
             .inducedSubgraph(IntIterators.wrap(new int[]{0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110}));
-    bisector.bisect(graph, c, 100000);
+    bisector.bisect(graph, 100000, c);
     List<List<Integer>> partitions = c.vertices();
     assertThat(partitions.get(0), containsInAnyOrder(0, 10, 20, 30));
     assertThat(partitions.get(1), containsInAnyOrder(40, 50, 60, 70, 80, 90, 100, 110));

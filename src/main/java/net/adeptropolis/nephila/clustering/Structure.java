@@ -6,6 +6,7 @@ import net.adeptropolis.nephila.graphs.implementations.View;
 
 import java.util.Arrays;
 
+@Deprecated
 public class Structure {
 
   // TODO: Used here once again. Move all this logic into Cluster
@@ -22,8 +23,8 @@ public class Structure {
   // NOTE: Modifies branch in-place
   public Branch applyPreRecursion(Branch branch) {
     if (collapseSingletons) {
-      Cluster cluster = branch.getCluster();
-      Cluster parent = cluster.getParent();
+      DeprecatedCluster cluster = branch.getCluster();
+      DeprecatedCluster parent = cluster.getParent();
       if (parent != null && cluster.getParent().getChildren().size() == 1) {
         parent.addToRemainder(cluster.getRemainder());
         parent.getChildren().remove(cluster);
@@ -36,8 +37,8 @@ public class Structure {
   // NOTE: Modifies branch in-place
   public Branch applyPostRecursion(Branch branch) {
 
-    Cluster cluster = branch.getCluster();
-    Cluster ancestor = cluster.getParent();
+    DeprecatedCluster cluster = branch.getCluster();
+    DeprecatedCluster ancestor = cluster.getParent();
     if (ancestor == null) return branch;
 
     while (ancestorOverlap(branch, ancestor) < minParentOverlap) {
@@ -54,13 +55,13 @@ public class Structure {
   }
 
   // NOTE: This REALLY only works for ancestors!
-  private double ancestorOverlap(Branch branch, Cluster parent) {
+  private double ancestorOverlap(Branch branch, DeprecatedCluster parent) {
     View view = finalizedView(branch.getCluster(), branch.getView());
     View parentView = finalizedView(branch.getCluster().getParent(), branch.getView());
     return template.overlapScore(view, parentView);
   }
 
-  private View finalizedView(Cluster cluster, View clusterView) {
+  private View finalizedView(DeprecatedCluster cluster, View clusterView) {
     // TODO: This is super-inefficient
     IntArrayList vertices = cluster.aggregateVertices();
     for (int v : clusterView.getVertices()) vertices.add(v);

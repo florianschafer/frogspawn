@@ -1,5 +1,6 @@
 package net.adeptropolis.nephila.clustering;
 
+@Deprecated
 public class ClusterMetrics {
 
   private final int[] sortedVertices;

@@ -1,90 +1,47 @@
 package net.adeptropolis.nephila.clustering;
 
-import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import net.adeptropolis.nephila.graphs.implementations.View;
+import it.unimi.dsi.fastutil.ints.IntIterator;
+import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.VertexIterator;
 
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
-
-// TODO: Implement proper equals, hash!
+import java.util.ArrayList;
+import java.util.List;
 
 public class Cluster {
 
+  private final Cluster parent;
+  private final List<Cluster> children;
+
   private final IntArrayList remainder;
-
-  private Cluster parent;
-
-  private Set<Cluster> children;
 
   public Cluster(Cluster parent) {
     this.parent = parent;
+    this.children = new ArrayList<>();
     this.remainder = new IntArrayList();
-    this.children = Sets.newHashSet();
     if (parent != null) parent.children.add(this);
-  }
-
-  void addToRemainder(View view) {
-    for (int v : view.getVertices()) addToRemainder(v);
-  }
-
-  void addToRemainder(int v) {
-    remainder.add(v);
-  }
-
-  public void addToRemainder(IntArrayList vertices) {
-    remainder.addAll(vertices);
-  }
-
-  public void traverseGraphEdges(BiConsumer<Cluster, Cluster> edgeConsumer) {
-    for (Cluster child : children) {
-      edgeConsumer.accept(this, child);
-      child.traverseGraphEdges(edgeConsumer);
-    }
-  }
-
-  public void traverseSubclusters(Consumer<Cluster> consumer) {
-    consumer.accept(this);
-    for (Cluster child : children) child.traverseSubclusters(consumer);
-  }
-
-  public IntArrayList aggregateVertices() {
-    IntArrayList vertices = new IntArrayList();
-    traverseSubclusters(cluster -> vertices.addAll(cluster.remainder));
-    return vertices;
-  }
-
-  public String id() {
-    // TODO: Find a more sensible id (e.g. cluster coordinates)
-    return String.valueOf(Math.abs(this.hashCode()));
-  }
-
-  public Cluster getParent() {
-    return parent;
-  }
-
-  public void setParent(Cluster parent) {
-    this.parent = parent;
-  }
-
-  public Set<Cluster> getChildren() {
-    return children;
   }
 
   public IntArrayList getRemainder() {
     return remainder;
   }
 
-  public int depth() {
-    int depth = 0;
-    Cluster cursor = this;
-    while (cursor.parent != null) {
-      depth += 1;
-      cursor = cursor.parent;
+  public void addToRemainder(int globalId) {
+    remainder.add(globalId);
+  }
+
+  public void addToRemainder(IntIterator it) {
+    while (it.hasNext()) {
+      addToRemainder(it.nextInt());
     }
-    return depth;
+  }
+
+  public void addToRemainder(Graph graph) {
+    remainder.ensureCapacity(remainder.size() + graph.size());
+    VertexIterator vertexIterator = graph.vertexIterator();
+    while (vertexIterator.hasNext()) {
+      remainder.add(vertexIterator.globalId());
+    }
   }
 
 }

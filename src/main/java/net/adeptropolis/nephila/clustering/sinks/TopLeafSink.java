@@ -1,11 +1,14 @@
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila.clustering.sinks;
 
 import com.google.common.collect.Lists;
+import net.adeptropolis.nephila.clustering.ClusteringTemplate;
+import net.adeptropolis.nephila.clustering.DeprecatedCluster;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class TopLeafSink implements HierarchySink<List<String>> {
 
   private final int numLabels;
@@ -15,7 +18,7 @@ public class TopLeafSink implements HierarchySink<List<String>> {
   }
 
   @Override
-  public List<String> consume(ClusteringTemplate template, Cluster root, String[] labelMap) {
+  public List<String> consume(ClusteringTemplate template, DeprecatedCluster root, String[] labelMap) {
     List<String> topRepresentatives = Lists.newArrayList();
     root.traverseSubclusters(cluster -> {
       if (cluster.getChildren().size() == 0) {

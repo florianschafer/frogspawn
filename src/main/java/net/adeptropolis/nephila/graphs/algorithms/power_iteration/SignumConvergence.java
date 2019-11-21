@@ -15,7 +15,7 @@ public class SignumConvergence implements ConvergenceCriterion {
   /**
    * Constructor
    *
-   * @param maxUnstable Maximum fraction of entries whose signum alternates between two successive iterations
+   * @param maxUnstable   Maximum fraction of entries whose signum alternates between two successive iterations
    * @param minIterations Minimum number of iterations. Prevents premature termination for small graphs.
    *                      Mind that for small graphs, <code>maxUnstable</code> will most likely translate
    *                      into the requirement that all signums of both vectors match, but the random chance
@@ -39,8 +39,9 @@ public class SignumConvergence implements ConvergenceCriterion {
 
   /**
    * <p>Assess whether the power iteration has converged</p>
-   * @param previous Result of the previous iteration
-   * @param current Result of the current iteration
+   *
+   * @param previous   Result of the previous iteration
+   * @param current    Result of the current iteration
    * @param iterations Number of iterations
    * @return True if and only if the convergence criterion is satisfied.
    */

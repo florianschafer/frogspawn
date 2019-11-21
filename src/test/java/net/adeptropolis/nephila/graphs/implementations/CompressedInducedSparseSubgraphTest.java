@@ -47,10 +47,10 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
 
   @Test
   public void vertices() {
-    VertexIterator it = defaultSubgraph(4, 9, 10).vertices();
+    VertexIterator it = defaultSubgraph(4, 9, 10).vertexIterator();
     IntArrayList localIds = new IntArrayList();
     IntArrayList globalIds = new IntArrayList();
-    while (it.proceed()) {
+    while (it.hasNext()) {
       localIds.add(it.localId());
       globalIds.add(it.globalId());
     }
@@ -128,11 +128,11 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
             Edge.of(subgraph.localVertexId(10), subgraph.localVertexId(4), 7)));
 
 
-    VertexIterator it = subgraph.vertices();
-    assertTrue("Subgraph vertex 4", it.proceed());
+    VertexIterator it = subgraph.vertexIterator();
+    assertTrue("Subgraph vertex 4", it.hasNext());
     assertThat(it.localId(), equalTo(0));
     assertThat(it.globalId(), equalTo(4));
-    assertTrue("Subgraph vertex 10", it.proceed());
+    assertTrue("Subgraph vertex 10", it.hasNext());
     assertThat(it.localId(), equalTo(1));
     assertThat(it.globalId(), equalTo(10));
 

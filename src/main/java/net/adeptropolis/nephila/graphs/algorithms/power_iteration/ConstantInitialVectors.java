@@ -10,6 +10,7 @@ public class ConstantInitialVectors {
 
   /**
    * Return a new vector <code>v</code> of a given size such that <code>||v|| = 1</code>
+   *
    * @param size
    * @return
    */

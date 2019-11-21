@@ -190,6 +190,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
 
     /**
      * Compare two edges by (1) left node (2) right node
+     *
      * @param idx1 Index of the first edge in the buffer
      * @param idx2 Index of the second edge in the buffer
      * @return -1 if first edge < second edge, 0 if equal, 1 else

@@ -29,10 +29,10 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void vertices() {
-    VertexIterator it = defaultGraph.vertices();
+    VertexIterator it = defaultGraph.vertexIterator();
     IntArrayList localIds = new IntArrayList();
     IntArrayList globalIds = new IntArrayList();
-    while (it.proceed()) {
+    while (it.hasNext()) {
       localIds.add(it.localId());
       globalIds.add(it.globalId());
     }

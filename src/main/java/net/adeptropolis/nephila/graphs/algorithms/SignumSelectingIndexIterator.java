@@ -15,7 +15,8 @@ class SignumSelectingIndexIterator implements IntIterator {
 
   /**
    * Constructor
-   * @param v A vector
+   *
+   * @param v            A vector
    * @param selectSignum Select the indices of either all non-negative entries (selectSignum >= 0) or those of all negative negative ones (selectSignum < 0)
    */
 
@@ -26,7 +27,6 @@ class SignumSelectingIndexIterator implements IntIterator {
   }
 
   /**
-   *
    * @return The next index matching the given signum
    */
 
@@ -36,7 +36,6 @@ class SignumSelectingIndexIterator implements IntIterator {
   }
 
   /**
-   *
    * @return Only true if further indices are available.
    */
 

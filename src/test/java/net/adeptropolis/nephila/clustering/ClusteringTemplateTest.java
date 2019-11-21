@@ -2,12 +2,15 @@ package net.adeptropolis.nephila.clustering;
 
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
 import net.adeptropolis.nephila.graphs.implementations.DeprecatedCompressedSparseGraphBuilder;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
+@Deprecated
+@Ignore
 public class ClusteringTemplateTest {
 
   @Test

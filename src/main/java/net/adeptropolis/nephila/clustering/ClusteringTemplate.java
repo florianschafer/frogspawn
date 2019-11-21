@@ -7,6 +7,7 @@ import net.adeptropolis.nephila.helpers.Arr;
 
 import java.util.Arrays;
 
+@Deprecated
 public class ClusteringTemplate {
 
   private final View rootView;
@@ -52,7 +53,7 @@ public class ClusteringTemplate {
     return cuts;
   }
 
-  public ClusterMetrics aggregateMetrics(Cluster cluster) {
+  public ClusterMetrics aggregateMetrics(DeprecatedCluster cluster) {
 
     int[] aggregateVertices = cluster.aggregateVertices().toIntArray();
     Arrays.parallelSort(aggregateVertices);

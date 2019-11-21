@@ -1,4 +1,8 @@
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila.clustering.sinks;
+
+import net.adeptropolis.nephila.clustering.ClusterMetrics;
+import net.adeptropolis.nephila.clustering.ClusteringTemplate;
+import net.adeptropolis.nephila.clustering.DeprecatedCluster;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -10,6 +14,7 @@ import java.util.stream.IntStream;
 // TODO: Clean up, replace println and hashmaps
 
 // TODO: Iek!
+@Deprecated
 public class DotSink implements HierarchySink<Object> {
 
   private final Path path;
@@ -21,13 +26,13 @@ public class DotSink implements HierarchySink<Object> {
   }
 
   @Override
-  public Object consume(ClusteringTemplate template, Cluster root, String[] labelMap) {
+  public Object consume(ClusteringTemplate template, DeprecatedCluster root, String[] labelMap) {
     HashMap<String, String> allClusters = collectClusters(template, root, labelMap);
     writeDot(root, allClusters);
     return null;
   }
 
-  private HashMap<String, String> collectClusters(ClusteringTemplate template, Cluster root, String[] labelMap) {
+  private HashMap<String, String> collectClusters(ClusteringTemplate template, DeprecatedCluster root, String[] labelMap) {
     HashMap<String, String> allClusters = new HashMap<>();
     root.traverseSubclusters(cluster -> {
       ClusterMetrics metrics = template.aggregateMetrics(cluster);
@@ -40,7 +45,7 @@ public class DotSink implements HierarchySink<Object> {
     return allClusters;
   }
 
-  private void writeDot(Cluster root, HashMap<String, String> allClusters) {
+  private void writeDot(DeprecatedCluster root, HashMap<String, String> allClusters) {
     try {
       final PrintWriter writer = new PrintWriter(path.toFile());
       writer.println("graph g {");

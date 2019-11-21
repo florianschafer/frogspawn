@@ -39,7 +39,7 @@ public class SubgraphVertexIterator implements VertexIterator {
    */
 
   @Override
-  public boolean proceed() {
+  public boolean hasNext() {
     if (vertexBuf == null || localId == vertexBuf.length) {
       return false;
     }

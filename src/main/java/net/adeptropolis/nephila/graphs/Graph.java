@@ -3,18 +3,19 @@ package net.adeptropolis.nephila.graphs;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
 
-
 public abstract class Graph {
+
+  private double[] cachedWeights = null;
 
   public abstract int size();
 
-  public abstract VertexIterator vertices();
+  public abstract VertexIterator vertexIterator();
 
   /**
-   * @param v A (local!) vertex
+   * @param v        A (local!) vertex
    * @param consumer
    */
-  
+
   public abstract void traverse(int v, EdgeConsumer consumer);
 
   public void traverse(EdgeConsumer consumer) {
@@ -45,8 +46,35 @@ public abstract class Graph {
     return inducedSubgraph(new VertexMappingIterator(vertices));
   }
 
-  public double[] computeWeights() {
-    return VertexWeights.compute(this);
+  /**
+   * @return The vertex weights of the graph.
+   */
+
+  public double[] weights() {
+    if (cachedWeights == null) {
+      cachedWeights = VertexWeights.compute(this);
+    }
+    return cachedWeights;
+  }
+
+  /**
+   * Return the fractional weights of a subgraph relative to its supergraph
+   * <p><b>Note: The subgraph must be fully contained within the supergraph!</b></p>
+   *
+   * @param supergraph The supergraph
+   * @return The array of relative weights
+   */
+
+  public double[] relativeWeights(Graph supergraph) {
+    double[] foo = new double[size()];
+    VertexIterator it = vertexIterator();
+    while (it.hasNext()) {
+      int v = supergraph.localVertexId(it.globalId());
+      assert v >= 0;
+      double supergraphWeight = supergraph.weights()[v];
+      foo[it.localId()] = (supergraphWeight != 0) ? weights()[it.localId()] / supergraphWeight : 0;
+    }
+    return foo;
   }
 
   public interface Builder {

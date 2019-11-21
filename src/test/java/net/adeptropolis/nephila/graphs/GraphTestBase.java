@@ -205,13 +205,13 @@ public class GraphTestBase {
 
     public List<List<Integer>> vertices() {
       return graphs.stream().sorted(Comparator.comparingInt(Graph::size).thenComparingInt(x -> {
-        VertexIterator vertices = x.vertices();
-        vertices.proceed();
+        VertexIterator vertices = x.vertexIterator();
+        vertices.hasNext();
         return vertices.globalId();
       })).map(graph -> {
         List<Integer> vertices = Lists.newArrayList();
-        VertexIterator iterator = graph.vertices();
-        while (iterator.proceed()) {
+        VertexIterator iterator = graph.vertexIterator();
+        while (iterator.hasNext()) {
           vertices.add(iterator.globalId());
         }
         vertices.sort(Comparator.comparingInt(x -> x));

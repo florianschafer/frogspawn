@@ -31,8 +31,9 @@ public class DeltaNormConvergence implements ConvergenceCriterion {
 
   /**
    * <p>Assess whether the power iteration has converged</p>
-   * @param previous Result of the previous iteration
-   * @param current Result of the current iteration
+   *
+   * @param previous   Result of the previous iteration
+   * @param current    Result of the current iteration
    * @param iterations Number of iterations
    * @return True if and only if the convergence criterion is satisfied.
    */

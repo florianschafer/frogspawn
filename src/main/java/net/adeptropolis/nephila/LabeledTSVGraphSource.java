@@ -1,7 +1,6 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graphs.Edge;
-import net.adeptropolis.nephila.graphs.LabeledEdge;
 
 import java.io.IOException;
 import java.nio.file.Files;

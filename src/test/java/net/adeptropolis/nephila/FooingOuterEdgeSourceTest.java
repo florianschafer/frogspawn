@@ -1,7 +1,8 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.*;
-import net.adeptropolis.nephila.graphs.LabeledEdge;
+import net.adeptropolis.nephila.clustering.sinks.DotSink;
+import net.adeptropolis.nephila.clustering.sinks.TopLeafSink;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
 import net.adeptropolis.nephila.graphs.implementations.DeprecatedCompressedSparseGraphBuilder;
 import org.junit.Ignore;
@@ -31,7 +32,7 @@ public class FooingOuterEdgeSourceTest {
     g.edges().sequential().forEach(e -> b.add(e.u, e.v, e.weight));
     CompressedSparseGraphDatastore storage = b.build();
     ClusteringTemplate template = new ClusteringTemplate(storage);
-    Cluster root = new RecursiveSpectralClustering(template,
+    DeprecatedCluster root = new RecursiveSpectralClustering(template,
             0.25, // 0.4 == broad overview, 0.25 gives good drilldown
             0.9,
             1E-6,
@@ -65,7 +66,7 @@ public class FooingOuterEdgeSourceTest {
 
     ClusteringTemplate template = new ClusteringTemplate(storage);
 //    Cluster root = new RecursiveSpectralClustering(template, 0.3, 0.85,1E-6, 150, true).compute();
-    Cluster root = new RecursiveSpectralClustering(template, 0.05, 0.0, 1E-6, 100, false).compute();
+    DeprecatedCluster root = new RecursiveSpectralClustering(template, 0.05, 0.0, 1E-6, 100, false).compute();
 
 //    Alternative approach ,in pre-recursion: Use a maxSimilarity and join in when appropriate
 //    also todo: If we don't need consistency measure in score, don't compute it

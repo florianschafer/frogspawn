@@ -25,7 +25,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * Constructor
    *
    * @param datastore The underlying graph datastore
-   * @param vertices An iterator of global vertex ids
+   * @param vertices  An iterator of global vertex ids
    */
 
   public CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
@@ -35,7 +35,6 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   *
    * @return The number of vertices of the graph
    */
 
@@ -51,12 +50,13 @@ public class CompressedInducedSparseSubgraph extends Graph {
    */
 
   @Override
-  public VertexIterator vertices() {
+  public VertexIterator vertexIterator() {
     return new SubgraphVertexIterator().reset(vertices);
   }
 
   /**
    * Traverse all edges of the graph
+   *
    * @param consumer Instance of <code>EdgeConsumer</code>
    */
 
@@ -67,7 +67,8 @@ public class CompressedInducedSparseSubgraph extends Graph {
 
   /**
    * Traverse all neighhours of a given vertex
-   * @param v A (local!) vertex
+   *
+   * @param v        A (local!) vertex
    * @param consumer Instance of <code>EdgeConsumer</code>
    */
 
@@ -122,9 +123,9 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * Internal: Traverse all neighbours of a given local vertex by the non-zero entries of the adjacency matrix
    *
    * @param leftEndpoint A local vertex id
-   * @param consumer An instance of <code>EdgeConsumer</code>
-   * @param low Initial edge pointer
-   * @param high Maximum edge pointer (inclusive!)
+   * @param consumer     An instance of <code>EdgeConsumer</code>
+   * @param low          Initial edge pointer
+   * @param high         Maximum edge pointer (inclusive!)
    */
 
   private void traverseByAdjacent(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {
@@ -144,9 +145,9 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * Internal: Traverse all neighbours of a given local vertex by the vertex set
    *
    * @param leftEndpoint A local vertex id
-   * @param consumer An instance of <code>EdgeConsumer</code>
-   * @param low Initial edge pointer
-   * @param high Maximum edge pointer (inclusive!)
+   * @param consumer     An instance of <code>EdgeConsumer</code>
+   * @param low          Initial edge pointer
+   * @param high         Maximum edge pointer (inclusive!)
    */
 
   private void traverseByVertices(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {

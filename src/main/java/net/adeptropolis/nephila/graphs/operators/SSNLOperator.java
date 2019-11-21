@@ -28,7 +28,7 @@ public class SSNLOperator implements LinearGraphOperator {
   private final double[] weights;
   private final double[] argument;
   private final CanonicalLinearOperator linOp;
-  private final double[] v0; // The first eigenvector of the original Laplacian (i.e. with corr. eigenval 0). It is a priori known to be a function of the vertex weights. BEWARE! As an eigenvector it is supposed to be NORMALIZED!
+  private final double[] v0;
 
   /**
    * <p>Creates a new SSNLOperator instance.</p>
@@ -38,7 +38,7 @@ public class SSNLOperator implements LinearGraphOperator {
 
   public SSNLOperator(Graph graph) {
     this.graph = graph;
-    this.weights = graph.computeWeights();
+    this.weights = graph.weights();
     this.v0 = computeV0(weights);
     this.argument = new double[graph.size()];
     this.linOp = new CanonicalLinearOperator(graph);

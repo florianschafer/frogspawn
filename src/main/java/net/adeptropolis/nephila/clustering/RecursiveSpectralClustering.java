@@ -14,6 +14,7 @@ import java.util.PriorityQueue;
 //  3) Current implementation still allows clusters below min size. Possibly need to add check after post-iteration processing
 //  4) Check whether a binary overlap (or something else) would even make more sense!
 
+@Deprecated
 public class RecursiveSpectralClustering {
 
   private final int minPartitionSize;
@@ -33,9 +34,9 @@ public class RecursiveSpectralClustering {
     this.structure = new Structure(template, minParentOverlap, collapseSingletons);
   }
 
-  public Cluster compute() {
+  public DeprecatedCluster compute() {
     View rootView = template.getRootView();
-    Cluster rootCluster = new Cluster(null);
+    DeprecatedCluster rootCluster = new DeprecatedCluster(null);
     Branch rootBranch = new Branch(Branch.Type.ROOT, rootView, rootCluster);
     queue.add(rootBranch);
     while (!queue.isEmpty()) {
@@ -66,8 +67,8 @@ public class RecursiveSpectralClustering {
     });
   }
 
-  private void enqueueBranch(Branch.Type type, Cluster parent, View consistentSubview) {
-    Cluster childCluster = new Cluster(parent);
+  private void enqueueBranch(Branch.Type type, DeprecatedCluster parent, View consistentSubview) {
+    DeprecatedCluster childCluster = new DeprecatedCluster(parent);
     Branch childBranch = new Branch(type, consistentSubview, childCluster);
     queue.add(structure.applyPostRecursion(childBranch));
   }
@@ -109,9 +110,9 @@ public class RecursiveSpectralClustering {
 
     private final View view;
     private Type type;
-    private Cluster cluster;
+    private DeprecatedCluster cluster;
 
-    Branch(Type type, View view, Cluster cluster) {
+    Branch(Type type, View view, DeprecatedCluster cluster) {
       this.type = type;
       this.view = view;
       this.cluster = cluster;
@@ -126,11 +127,11 @@ public class RecursiveSpectralClustering {
       return view;
     }
 
-    public Cluster getCluster() {
+    public DeprecatedCluster getCluster() {
       return cluster;
     }
 
-    public void setCluster(Cluster cluster) {
+    public void setCluster(DeprecatedCluster cluster) {
       this.cluster = cluster;
     }
 

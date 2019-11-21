@@ -9,17 +9,17 @@ public class SubgraphVertexIteratorTest {
 
   private static void verifyIterator(SubgraphVertexIterator iterator, int... expected) {
     for (int i = 0; i < expected.length; i++) {
-      assertThat("Premature exhaustion", iterator.proceed(), is(true));
+      assertThat("Premature exhaustion", iterator.hasNext(), is(true));
       assertThat("Index mismatch", iterator.localId(), is(i));
       assertThat("id mismatch", iterator.globalId(), is(expected[i]));
     }
-    assertThat("Iterator should have been exhausted", iterator.proceed(), is(false));
+    assertThat("Iterator should have been exhausted", iterator.hasNext(), is(false));
   }
 
   @Test
   public void emptyIterator() {
     SubgraphVertexIterator iterator = new SubgraphVertexIterator();
-    assertThat(iterator.proceed(), is(false));
+    assertThat(iterator.hasNext(), is(false));
   }
 
   @Test

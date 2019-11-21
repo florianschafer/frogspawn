@@ -26,7 +26,6 @@ public class PowerIteration {
     for (int i = 0; ; i++) {
       System.arraycopy(y, 0, x, 0, op.size());
       if (i >= maxIterations) {
-        LOG.warn("Exceeded maximum number of iterations ({})", maxIterations);
         throw new MaxIterationsExceededException();
       }
       y = op.apply(x);

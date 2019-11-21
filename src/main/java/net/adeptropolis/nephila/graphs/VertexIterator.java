@@ -2,7 +2,7 @@ package net.adeptropolis.nephila.graphs;
 
 public interface VertexIterator {
 
-  boolean proceed();
+  boolean hasNext();
 
   int localId();
 

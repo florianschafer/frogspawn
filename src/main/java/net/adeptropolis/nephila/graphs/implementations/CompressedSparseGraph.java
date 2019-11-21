@@ -8,7 +8,6 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 
 /**
  * A compressed sparse graph
- *
  */
 
 public class CompressedSparseGraph extends Graph {
@@ -36,7 +35,6 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   *
    * @return The number of vertices of the graph
    */
 
@@ -53,12 +51,13 @@ public class CompressedSparseGraph extends Graph {
 
 
   @Override
-  public VertexIterator vertices() {
+  public VertexIterator vertexIterator() {
     return new DefaultVertexIterator();
   }
 
   /**
    * Traverse all edges of the graph
+   *
    * @param consumer Instance of <code>EdgeConsumer</code>
    */
 
@@ -69,7 +68,8 @@ public class CompressedSparseGraph extends Graph {
 
   /**
    * Traverse all neighhours of a given vertex
-   * @param v A (local!) vertex
+   *
+   * @param v        A (local!) vertex
    * @param consumer Instance of <code>EdgeConsumer</code>
    */
 
@@ -142,7 +142,7 @@ public class CompressedSparseGraph extends Graph {
     int idx = 0;
 
     @Override
-    public boolean proceed() {
+    public boolean hasNext() {
       return idx++ < size();
     }
 
