@@ -1,6 +1,5 @@
 package net.adeptropolis.nephila.clustering;
 
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
@@ -11,13 +10,19 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
  * all remaining satisfy the required minimum likelihood.
  */
 
-//TODO: Test
-
 public class Consistency {
 
   private final Graph graph;
   private final int minClusterSize;
   private final double minClusterLikelihood;
+
+  /**
+   * Constructor
+   *
+   * @param graph Root graph
+   * @param minClusterSize Minimum cluster (graph) size
+   * @param minClusterLikelihood Minimum cluster (graph) likelihood
+   */
 
   public Consistency(Graph graph, int minClusterSize, double minClusterLikelihood) {
     this.graph = graph;
@@ -26,7 +31,7 @@ public class Consistency {
   }
 
   /**
-   * Produces a subgraph with guaranteed vertex consistencies
+   * Produces a subgraph where all vertices are guaranteed to be self-consistent.
    *
    * @param parentCluster An existing cluster that the new graph should be assigned to as subcluster
    * @param candidate     The subcluster graph candidate
@@ -47,6 +52,14 @@ public class Consistency {
     }
   }
 
+  /**
+   * Move all inconcistent vertices of a subgraph to the parent's remainder
+   *
+   * @param subgraph The subgraph candidate
+   * @param parentCluster Parent cluster
+   * @param survivors Set of vertices that are considered to be part of the subgraph
+   */
+
   private void shiftInconsistentVertices(Graph subgraph, Cluster parentCluster, IntRBTreeSet survivors) {
     double[] likelihoods = subgraph.relativeWeights(graph);
     VertexIterator it = subgraph.vertexIterator();
@@ -57,6 +70,13 @@ public class Consistency {
       }
     }
   }
+
+  /**
+   * Initialize survivors set with all vertices of a subgraph candidate
+   *
+   * @param candidate The subgraph candidate
+   * @return The full set of candidate vertices
+   */
 
   private IntRBTreeSet initSurvivors(Graph candidate) {
     IntRBTreeSet remainingVertices = new IntRBTreeSet();
