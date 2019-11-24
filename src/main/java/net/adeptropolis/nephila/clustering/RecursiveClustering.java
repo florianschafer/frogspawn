@@ -17,19 +17,19 @@ public class RecursiveClustering {
   private final Graph graph;
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
-  private final PriorityQueue<Task> queue;
+  private final PriorityQueue<Protocluster> queue;
 
   public RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings.getConvergenceCriterion());
-    this.queue = new PriorityQueue<>(Comparator.comparingInt(task -> task.getGraph().size()));
+    this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> protocluster.getGraph().size()));
   }
 
   public Cluster run() {
     Cluster root = new Cluster(null);
-    Task initialTask = new Task(graph, Task.GraphType.ROOT, root);
-    queue.add(initialTask);
+    Protocluster initialProtocluster = new Protocluster(graph, Protocluster.GraphType.ROOT, root);
+    queue.add(initialProtocluster);
     processQueue();
     return root;
   }
@@ -37,17 +37,17 @@ public class RecursiveClustering {
   private void processQueue() {
     while (!queue.isEmpty()) {
       // TODO: Account for pre-recursion structure somewhere here
-      Task task = queue.poll();
-      if (task.getGraphType() == Task.GraphType.COMPONENT) {
-        bisect(task);
+      Protocluster protocluster = queue.poll();
+      if (protocluster.getGraphType() == Protocluster.GraphType.COMPONENT) {
+        bisect(protocluster);
       } else {
-        decomposeComponents(task);
+        decomposeComponents(protocluster);
       }
     }
   }
 
   /**
-   * Bisect the task's graph such that the normalized cut is minimized. Possible scenarios for each partition:
+   * Bisect the protocluster's graph such that the normalized cut is minimized. Possible scenarios for each partition:
    * <ol>
    *   <li>The partition is either smaller than the allowed minimum cluster size or comprises the full
    *   input graph (which hits an error) -> Add its vertices to the cluster's remainder and terminate</li>
@@ -57,19 +57,19 @@ public class RecursiveClustering {
    *     <ol>
    *       <li>The remaining consistent subgraph is smaller than the allowed minimum cluster
    *       size -> Add its vertices to the cluster's remainder and terminate</li>
-   *       <li>Else: Create a new task with graph type <code>SPECTRAL</code> and add it to the queue.</li>
+   *       <li>Else: Create a new protocluster with graph type <code>SPECTRAL</code> and add it to the queue.</li>
    *     </ol>
    *   </li>
    * </ol>
    *
-   * @param task A recursion task
+   * @param protocluster A protocluster
    */
 
-  private void bisect(Task task) {
+  private void bisect(Protocluster protocluster) {
     try {
-      bisector.bisect(task.getGraph(), settings.getMaxIterations(), partition -> {
-        if (partition.size() < settings.getMinClusterSize() || partition.size() == task.getGraph().size()) {
-          task.getCluster().addToRemainder(partition);
+      bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), partition -> {
+        if (partition.size() < settings.getMinClusterSize() || partition.size() == protocluster.getGraph().size()) {
+          protocluster.getParent().addToRemainder(partition);
         } else {
 //          View consistentSubgraph = ensureConsistency(branch, partition);
 //          if (consistentSubgraph.size() < minPartitionSize) {
@@ -85,34 +85,34 @@ public class RecursiveClustering {
   }
 
   /**
-   * Decompose the current task's graph into its connected components. There are 3 possible scenarios:
+   * Decompose the current protocluster's graph into its connected components. There are 3 possible scenarios:
    * <ol>
-   *   <li>The input graph was already fully connected -> label the task's graph as connected component and re-add it to the queue</li>
+   *   <li>The input graph was already fully connected -> label the protocluster's graph as connected component and re-add it to the queue</li>
    *   <li>The connected component is smaller than the minimum cluster size -> Add its vertices to the cluster's reminder and terminate</li>
-   *   <li>Else -> Label the component as connected and add a proper new task to the queue</li>
+   *   <li>Else -> Label the component as connected and add a proper new protocluster to the queue</li>
    * </ol>
    *
-   * @param task A recursion task
+   * @param protocluster A protocluster
    */
 
-  private void decomposeComponents(Task task) {
-    ConnectedComponents.find(task.getGraph(), component -> {
-      if (component.size() == task.getGraph().size()) {
-        task.setGraphType(Task.GraphType.COMPONENT);
-        queue.add(task);
+  private void decomposeComponents(Protocluster protocluster) {
+    ConnectedComponents.find(protocluster.getGraph(), component -> {
+      if (component.size() == protocluster.getGraph().size()) {
+        protocluster.setGraphType(Protocluster.GraphType.COMPONENT);
+        queue.add(protocluster);
       } else if (component.size() < settings.getMinClusterSize()) {
-        task.getCluster().addToRemainder(component);
+        protocluster.getParent().addToRemainder(component);
       } else {
-        enqueueTask(Task.GraphType.COMPONENT, task.getCluster(), component);
+        enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getParent(), component);
       }
     });
   }
 
-  private void enqueueTask(Task.GraphType graphType, Cluster parent, Graph subgraph) {
+  private void enqueueProtocluster(Protocluster.GraphType graphType, Cluster parent, Graph subgraph) {
     Cluster childCluster = new Cluster(parent);
-    Task task = new Task(subgraph, graphType, childCluster);
+    Protocluster protocluster = new Protocluster(subgraph, graphType, childCluster);
     // TODO: Add post recursion structure here!
-    queue.add(task);
+    queue.add(protocluster);
   }
 
 }

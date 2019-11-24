@@ -2,16 +2,16 @@ package net.adeptropolis.nephila.clustering;
 
 import net.adeptropolis.nephila.graphs.Graph;
 
-public class Task {
+public class Protocluster {
 
   private final Graph graph;
-  private final Cluster cluster;
+  private final Cluster parent;
   private GraphType graphType;
 
-  public Task(Graph graph, GraphType graphType, Cluster cluster) {
+  public Protocluster(Graph graph, GraphType graphType, Cluster parent) {
     this.graph = graph;
     this.graphType = graphType;
-    this.cluster = cluster;
+    this.parent = parent;
   }
 
   public Graph getGraph() {
@@ -26,8 +26,8 @@ public class Task {
     this.graphType = graphType;
   }
 
-  public Cluster getCluster() {
-    return cluster;
+  public Cluster getParent() {
+    return parent;
   }
 
   enum GraphType {
