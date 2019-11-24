@@ -44,4 +44,32 @@ public class Cluster {
     }
   }
 
+  /**
+   * Equals
+   *
+   * <p>Please note that due to the fact that clusters may be wildly modified in the process and still two clusters should only
+   * be regarded as equal if they refer to the same reference. The call below is just there as a reminder of this fact.</p>
+   * @param obj The reference object with which to compare.
+   * @return True if this object is the same as the obj argument; false otherwise.
+   */
+
+  @Override
+  public boolean equals(Object obj) {
+    return super.equals(obj);
+  }
+
+  /**
+   * Hash Code
+   *
+   * <p>Please note that due to the fact that clusters may be wildly modified in the process and still two clusters should only
+   * yield the same hash code if they refer to the same reference. The call below is just there as a reminder of this fact.</p>
+   *
+   * @return A hash code value for this object.
+   */
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
 }
