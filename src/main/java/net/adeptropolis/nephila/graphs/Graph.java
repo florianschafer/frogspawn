@@ -66,15 +66,15 @@ public abstract class Graph {
    */
 
   public double[] relativeWeights(Graph supergraph) {
-    double[] foo = new double[size()];
+    double[] relWeights = new double[size()];
     VertexIterator it = vertexIterator();
     while (it.hasNext()) {
       int v = supergraph.localVertexId(it.globalId());
       assert v >= 0;
       double supergraphWeight = supergraph.weights()[v];
-      foo[it.localId()] = (supergraphWeight != 0) ? weights()[it.localId()] / supergraphWeight : 0;
+      relWeights[it.localId()] = (supergraphWeight != 0) ? weights()[it.localId()] / supergraphWeight : 0;
     }
-    return foo;
+    return relWeights;
   }
 
   public interface Builder {

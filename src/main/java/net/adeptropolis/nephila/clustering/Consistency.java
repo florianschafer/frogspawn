@@ -1,5 +1,6 @@
 package net.adeptropolis.nephila.clustering;
 
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
@@ -25,7 +26,7 @@ public class Consistency {
   }
 
   /**
-   * Producea graph with guaranteed vertex consistencies
+   * Produces a subgraph with guaranteed vertex consistencies
    *
    * @param parentCluster An existing cluster that the new graph should be assigned to as subcluster
    * @param candidate     The subcluster graph candidate
@@ -52,7 +53,7 @@ public class Consistency {
     while (it.hasNext()) {
       if (likelihoods[it.localId()] < minClusterLikelihood) {
         parentCluster.addToRemainder(it.globalId());
-        survivors.remove(it.localId());
+        survivors.remove(it.globalId());
       }
     }
   }
@@ -61,7 +62,7 @@ public class Consistency {
     IntRBTreeSet remainingVertices = new IntRBTreeSet();
     VertexIterator vertexIt = candidate.vertexIterator();
     while (vertexIt.hasNext()) {
-      remainingVertices.add(vertexIt.localId());
+      remainingVertices.add(vertexIt.globalId());
     }
     return remainingVertices;
   }
