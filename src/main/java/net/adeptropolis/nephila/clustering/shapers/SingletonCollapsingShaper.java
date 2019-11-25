@@ -13,16 +13,16 @@ public class SingletonCollapsingShaper implements Shaper {
   }
 
   @Override
-  public Protocluster imposeStructure(Protocluster protocluster) {
-    if (collapseSingletons) {
-      Cluster cluster = protocluster.getCluster();
-      Cluster parent = cluster.getParent();
-      if (parent != null && parent.getChildren().size() == 1) {
-        parent.addToRemainder(cluster.getRemainder().iterator());
-        parent.getChildren().remove(cluster);
-        protocluster.setCluster(parent);
-      }
+  public boolean imposeStructure(Protocluster protocluster) {
+    Cluster cluster = protocluster.getCluster();
+    Cluster parent = cluster.getParent();
+    if (collapseSingletons && parent != null && parent.getChildren().size() == 1) {
+      parent.addToRemainder(cluster.getRemainder().iterator());
+      parent.getChildren().remove(cluster);
+      protocluster.setCluster(parent);
+      return true;
+    } else {
+      return false;
     }
-    return protocluster;
   }
 }
