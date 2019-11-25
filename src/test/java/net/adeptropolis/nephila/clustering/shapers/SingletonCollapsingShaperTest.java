@@ -1,8 +1,11 @@
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila.clustering.shapers;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntLists;
+import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.ClusteringSettings;
+import net.adeptropolis.nephila.clustering.Protocluster;
 import org.junit.Test;
 
 import static net.adeptropolis.nephila.clustering.Protocluster.GraphType.COMPONENT;

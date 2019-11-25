@@ -1,4 +1,8 @@
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila.clustering.shapers;
+
+import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.ClusteringSettings;
+import net.adeptropolis.nephila.clustering.Protocluster;
 
 public class SingletonCollapsingShaper implements Shaper {
 

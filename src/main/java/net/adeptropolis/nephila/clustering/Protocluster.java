@@ -34,7 +34,7 @@ public class Protocluster {
     this.cluster = cluster;
   }
 
-  enum GraphType {
+  public enum GraphType {
     ROOT, COMPONENT, SPECTRAL
   }
 

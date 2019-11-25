@@ -1,4 +1,6 @@
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila.clustering.shapers;
+
+import net.adeptropolis.nephila.clustering.Protocluster;
 
 @FunctionalInterface
 public interface Shaper {
