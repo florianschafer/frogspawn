@@ -8,12 +8,14 @@ public class ClusteringSettings {
   private final int minClusterSize;
   private final double minClusterLikelihood;
   private final int maxIterations;
+  private boolean collapseSingletons;
   private final ConvergenceCriterion convergenceCriterion;
 
-  public ClusteringSettings(int minClusterSize, double minClusterLikelihood, int maxIterations, double maxUnstable) {
+  public ClusteringSettings(int minClusterSize, double minClusterLikelihood, int maxIterations, boolean collapseSingletons, double maxUnstable) {
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
     this.maxIterations = maxIterations;
+    this.collapseSingletons = collapseSingletons;
     convergenceCriterion = new SignumConvergence(maxUnstable);
   }
 
@@ -29,8 +31,11 @@ public class ClusteringSettings {
     return maxIterations;
   }
 
+  public boolean getCollapseSingletons() {
+    return collapseSingletons;
+  }
+
   public ConvergenceCriterion getConvergenceCriterion() {
     return convergenceCriterion;
   }
-
 }

@@ -69,7 +69,7 @@ public class RecursiveClustering {
     try {
       bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), partition -> {
         if (partition.size() < settings.getMinClusterSize() || partition.size() == protocluster.getGraph().size()) {
-          protocluster.getParent().addToRemainder(partition);
+          protocluster.getCluster().addToRemainder(partition);
         } else {
 //          View consistentSubgraph = ensureConsistency(branch, partition);
 //          if (consistentSubgraph.size() < minPartitionSize) {
@@ -101,9 +101,9 @@ public class RecursiveClustering {
         protocluster.setGraphType(Protocluster.GraphType.COMPONENT);
         queue.add(protocluster);
       } else if (component.size() < settings.getMinClusterSize()) {
-        protocluster.getParent().addToRemainder(component);
+        protocluster.getCluster().addToRemainder(component);
       } else {
-        enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getParent(), component);
+        enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getCluster(), component);
       }
     });
   }

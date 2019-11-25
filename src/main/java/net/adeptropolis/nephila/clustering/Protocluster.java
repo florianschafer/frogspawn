@@ -5,13 +5,13 @@ import net.adeptropolis.nephila.graphs.Graph;
 public class Protocluster {
 
   private final Graph graph;
-  private final Cluster parent;
+  private Cluster cluster;
   private GraphType graphType;
 
-  public Protocluster(Graph graph, GraphType graphType, Cluster parent) {
+  public Protocluster(Graph graph, GraphType graphType, Cluster cluster) {
     this.graph = graph;
     this.graphType = graphType;
-    this.parent = parent;
+    this.cluster = cluster;
   }
 
   public Graph getGraph() {
@@ -26,8 +26,12 @@ public class Protocluster {
     this.graphType = graphType;
   }
 
-  public Cluster getParent() {
-    return parent;
+  public Cluster getCluster() {
+    return cluster;
+  }
+
+  public void setCluster(Cluster cluster) {
+    this.cluster = cluster;
   }
 
   enum GraphType {
