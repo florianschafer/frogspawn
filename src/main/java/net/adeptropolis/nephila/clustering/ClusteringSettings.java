@@ -7,13 +7,15 @@ public class ClusteringSettings {
 
   private final int minClusterSize;
   private final double minClusterLikelihood;
-  private final int maxIterations;
-  private boolean collapseSingletons;
+  private final boolean collapseSingletons;
+  private final double minAncestorOverlap;
   private final ConvergenceCriterion convergenceCriterion;
+  private final int maxIterations;
 
-  public ClusteringSettings(int minClusterSize, double minClusterLikelihood, int maxIterations, boolean collapseSingletons, double maxUnstable) {
+  public ClusteringSettings(int minClusterSize, double minClusterLikelihood, double minAncestorOverlap, double maxUnstable, boolean collapseSingletons, int maxIterations) {
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
+    this.minAncestorOverlap = minAncestorOverlap;
     this.maxIterations = maxIterations;
     this.collapseSingletons = collapseSingletons;
     convergenceCriterion = new SignumConvergence(maxUnstable);
@@ -37,5 +39,9 @@ public class ClusteringSettings {
 
   public ConvergenceCriterion getConvergenceCriterion() {
     return convergenceCriterion;
+  }
+
+  public double getMinAncestorOverlap() {
+    return minAncestorOverlap;
   }
 }

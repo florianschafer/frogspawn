@@ -60,7 +60,7 @@ public class SingletonCollapsingShaperTest {
   }
 
   private ClusteringSettings settings(boolean collapse) {
-    return new ClusteringSettings(0, 0, 0, collapse, 0);
+    return new ClusteringSettings(0, 0, 0, 0, collapse, 0);
   }
 
 

@@ -7,6 +7,7 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class Cluster {
 
@@ -49,6 +50,17 @@ public class Cluster {
     while (vertexIterator.hasNext()) {
       remainder.add(vertexIterator.globalId());
     }
+  }
+
+  public void traverse(Consumer<Cluster> consumer) {
+    consumer.accept(this);
+    for (Cluster child : children) child.traverse(consumer);
+  }
+
+  public IntArrayList aggregateVertices() {
+    IntArrayList vertices = new IntArrayList();
+    traverse(cluster -> vertices.addAll(cluster.remainder));
+    return vertices;
   }
 
   /**
