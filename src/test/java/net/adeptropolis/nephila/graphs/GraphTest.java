@@ -39,8 +39,21 @@ public class GraphTest {
     assertThat(relWeights[0], closeTo(1, 1E-6));
     assertThat(relWeights[1], closeTo(7.0 / 13, 1E-6));
     assertThat(relWeights[2], closeTo(9.0 / 16, 1E-6));
+  }
 
-
+  @Test
+  public void overlap() {
+    Graph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .add(2, 0, 5)
+            .add(1, 3, 6)
+            .add(3, 2, 7)
+            .add(3, 4, 8)
+            .build();
+    Graph subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
+    double overlap = subgraph.overlap(graph);
+    assertThat(overlap, closeTo(24d / 37d, 1E-6));
   }
 
 }

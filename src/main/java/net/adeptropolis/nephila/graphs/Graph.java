@@ -59,7 +59,7 @@ public abstract class Graph {
 
   /**
    * Return the fractional weights of a subgraph relative to its supergraph
-   * <p><b>Note: The subgraph must be fully contained within the supergraph!</b></p>
+   * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
    *
    * @param supergraph The supergraph
    * @return The array of relative weights
@@ -75,6 +75,24 @@ public abstract class Graph {
       relWeights[it.localId()] = (supergraphWeight != 0) ? weights()[it.localId()] / supergraphWeight : 0;
     }
     return relWeights;
+  }
+
+  /**
+   * Return the fractional total weight of a subgraph relative to its supergraph
+   * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
+   *
+   * @param supergraph The supergraph
+   * @return relative overlap
+   */
+
+  public double overlap(Graph supergraph) {
+    double weight = 0;
+    double supergraphWeight = 0;
+    for (int i = 0; i < size(); i++) {
+      weight += weights()[i];
+      supergraphWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
+    }
+    return (supergraphWeight > 0) ? weight / supergraphWeight : 0;
   }
 
   public interface Builder {
