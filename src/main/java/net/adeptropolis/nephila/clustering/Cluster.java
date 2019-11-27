@@ -52,6 +52,10 @@ public class Cluster {
     }
   }
 
+  public void addChild(Cluster child) {
+    children.add(child);
+  }
+
   public void traverse(Consumer<Cluster> consumer) {
     consumer.accept(this);
     for (Cluster child : children) child.traverse(consumer);
@@ -90,4 +94,5 @@ public class Cluster {
   public int hashCode() {
     return super.hashCode();
   }
+
 }

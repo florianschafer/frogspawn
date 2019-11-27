@@ -2,7 +2,6 @@ package net.adeptropolis.nephila.clustering.shapers;
 
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.ClusteringSettings;
-import net.adeptropolis.nephila.clustering.Protocluster;
 
 public class SingletonCollapsingShaper implements Shaper {
 
@@ -13,13 +12,14 @@ public class SingletonCollapsingShaper implements Shaper {
   }
 
   @Override
-  public boolean imposeStructure(Protocluster protocluster) {
-    Cluster cluster = protocluster.getCluster();
+  public boolean imposeStructure(Cluster cluster) {
     Cluster parent = cluster.getParent();
     if (collapseSingletons && parent != null && parent.getChildren().size() == 1) {
       parent.addToRemainder(cluster.getRemainder().iterator());
       parent.getChildren().remove(cluster);
-      protocluster.setCluster(parent);
+      for (Cluster child : cluster.getChildren()) {
+        parent.addChild(child);
+      }
       return true;
     } else {
       return false;
