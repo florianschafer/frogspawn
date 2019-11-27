@@ -8,6 +8,9 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 
 /**
  * A compressed sparse graph
+ * <p><b>Note: </b> The vertex set of this type of graph always consists of
+ * consecutive integers startng at 0. So, even if adding a single vertex n > 0,
+ * the vertex set will be <code>{0...n}</code></p>
  */
 
 public class CompressedSparseGraph extends Graph {
