@@ -17,8 +17,9 @@ public class SingletonCollapsingShaper implements Shaper {
     if (collapseSingletons && parent != null && parent.getChildren().size() == 1) {
       parent.addToRemainder(cluster.getRemainder().iterator());
       parent.getChildren().remove(cluster);
+      parent.addChildren(cluster.getChildren());
       for (Cluster child : cluster.getChildren()) {
-        parent.addChild(child);
+        child.setParent(parent);
       }
       return true;
     } else {

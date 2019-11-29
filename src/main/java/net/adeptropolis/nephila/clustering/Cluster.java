@@ -5,16 +5,17 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class Cluster {
 
-  private final Cluster parent;
+  private Cluster parent;
+
   private final Set<Cluster> children;
   private final IntArrayList remainder;
-
   public Cluster(Cluster parent) {
     this.parent = parent;
     this.children = new HashSet<>();
@@ -32,6 +33,10 @@ public class Cluster {
 
   public Cluster getParent() {
     return parent;
+  }
+
+  public void setParent(Cluster parent) {
+    this.parent = parent;
   }
 
   public void addToRemainder(int globalId) {
@@ -52,8 +57,8 @@ public class Cluster {
     }
   }
 
-  public void addChild(Cluster child) {
-    children.add(child);
+  public void addChildren(Collection<Cluster> newChildren) {
+    children.addAll(newChildren);
   }
 
   public void traverse(Consumer<Cluster> consumer) {
