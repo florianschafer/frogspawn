@@ -178,6 +178,16 @@ public class GraphTestBase {
     return b.build();
   }
 
+  protected Graph completeGraph(int size) {
+    CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
+    for (int i = 0; i < size; i++) {
+      for (int j = i + 1; j < size; j++){
+        b.add(i, j, 1);
+      }
+    }
+    return b.build();
+  }
+
   long bandedGraphFingerprint(int n, int k) {
     long fp = 0;
     for (long i = 0; i < n; i++) {

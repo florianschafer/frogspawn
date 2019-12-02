@@ -1,18 +1,18 @@
-package net.adeptropolis.nephila.clustering.shapers;
+package net.adeptropolis.nephila.clustering.postprocessing;
 
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.ClusteringSettings;
 
-public class SingletonCollapsingShaper implements Shaper {
+public class SingletonCollapsingPostprocessor implements Postprocessor {
 
   private final boolean collapseSingletons;
 
-  public SingletonCollapsingShaper(ClusteringSettings settings) {
+  public SingletonCollapsingPostprocessor(ClusteringSettings settings) {
     this.collapseSingletons = settings.getCollapseSingletons();
   }
 
   @Override
-  public boolean imposeStructure(Cluster cluster) {
+  public boolean apply(Cluster cluster) {
     Cluster parent = cluster.getParent();
     if (collapseSingletons && parent != null && parent.getChildren().size() == 1) {
       parent.addToRemainder(cluster.getRemainder().iterator());
