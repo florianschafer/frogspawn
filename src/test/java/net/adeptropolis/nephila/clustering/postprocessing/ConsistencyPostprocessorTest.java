@@ -24,6 +24,7 @@ public class ConsistencyPostprocessorTest {
   private Cluster c4;
   private Cluster c5;
   private Cluster c678;
+  private Cluster c9;
 
   @Before
   public void setUp() {
@@ -64,21 +65,22 @@ public class ConsistencyPostprocessorTest {
     c5.addToRemainder(IntIterators.wrap(new int[]{5}));
     c678 = new Cluster(c4);
     c678.addToRemainder(IntIterators.wrap(new int[]{6, 7, 8}));
+    c9 = new Cluster(c678);
   }
 
   @Test
   public void ignoreRootCluster() {
     Consistency consistency = new Consistency(graph, 10, 0.5);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, 10, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
     assertFalse(consistencyPostprocessor.apply(c0));
   }
 
   @Test
   public void allVerticesAreInconsistent() {
     Consistency consistency = new Consistency(graph, 10000, 1.0);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, 10000, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
     assertTrue(consistencyPostprocessor.apply(c678));
-    assertThat(c4.getChildren(), is(ImmutableSet.of(c5)));
+    assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c5.getParent(), is(c4));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
   }
@@ -86,7 +88,7 @@ public class ConsistencyPostprocessorTest {
   @Test
   public void allVerticesAreConsistent() {
     Consistency consistency = new Consistency(graph, 1, 0.0);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, 1, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
     assertFalse(consistencyPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4));
@@ -95,7 +97,7 @@ public class ConsistencyPostprocessorTest {
   @Test
   public void someVerticesAreConsistent() {
     Consistency consistency = new Consistency(graph, 1, 0.27);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, 1, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
     assertTrue(consistencyPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6));
@@ -105,9 +107,9 @@ public class ConsistencyPostprocessorTest {
   @Test
   public void numberOfConsistentVerticesBelowMinClusterSize() {
     Consistency consistency = new Consistency(graph, 3, 0.27);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, 1, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
     assertTrue(consistencyPostprocessor.apply(c678));
-    assertThat(c4.getChildren(), is(ImmutableSet.of(c5)));
+    assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
   }
 
