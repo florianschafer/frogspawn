@@ -15,7 +15,9 @@ public class Cluster {
   private Cluster parent;
 
   private final Set<Cluster> children;
-  private final IntArrayList remainder;
+
+  private IntArrayList remainder;
+
   public Cluster(Cluster parent) {
     this.parent = parent;
     this.children = new HashSet<>();
@@ -25,6 +27,10 @@ public class Cluster {
 
   public IntArrayList getRemainder() {
     return remainder;
+  }
+
+  public void setRemainder(IntArrayList remainder) {
+    this.remainder = remainder;
   }
 
   public Set<Cluster> getChildren() {
@@ -70,6 +76,10 @@ public class Cluster {
     IntArrayList vertices = new IntArrayList();
     traverse(cluster -> vertices.addAll(cluster.remainder));
     return vertices;
+  }
+
+  public Graph aggregateGraph(Graph rootGraph) {
+    return rootGraph.inducedSubgraph(aggregateVertices().iterator());
   }
 
   /**

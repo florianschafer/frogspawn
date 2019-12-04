@@ -40,13 +40,9 @@ public class AncestorSimilarityPostprocessor implements Postprocessor {
   }
 
   private double overlap(Cluster cluster, Cluster ancestor) {
-    Graph clusterGraph = aggregateGraph(cluster);
-    Graph ancestorGraph = aggregateGraph(ancestor);
+    Graph clusterGraph = cluster.aggregateGraph(rootGraph);
+    Graph ancestorGraph = ancestor.aggregateGraph(rootGraph);
     return clusterGraph.overlap(ancestorGraph);
-  }
-
-  private Graph aggregateGraph(Cluster cluster) {
-    return rootGraph.inducedSubgraph(cluster.aggregateVertices().iterator());
   }
 
 }
