@@ -1,12 +1,9 @@
 package net.adeptropolis.nephila.clustering.postprocessing;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.Consistency;
 import net.adeptropolis.nephila.graphs.Graph;
-
-import java.util.Comparator;
 
 // TODO: Think about the fact that the removed vertices may not necessarily stem from the specific cluster (s. aggregate)
 
@@ -22,6 +19,8 @@ public class ConsistencyPostprocessor implements Postprocessor {
 
   @Override
   public boolean apply(Cluster cluster) {
+    TODO: Blindly reusing consistency is wrong! Think of the vertices further down below!
+    This might lead to duplicate vertices over multiple clusters!
     Cluster parent = cluster.getParent();
     if (parent == null) {
       return false;
