@@ -3,13 +3,13 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.nephila.clustering.Cluster;
-import net.adeptropolis.nephila.clustering.Consistency;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class ConsistencyPostprocessorTest {
@@ -70,15 +70,13 @@ public class ConsistencyPostprocessorTest {
 
   @Test
   public void ignoreRootCluster() {
-    Consistency consistency = new Consistency(graph, 10, 0.5);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(graph,10, 0.5);
     assertFalse(consistencyPostprocessor.apply(c0));
   }
 
   @Test
   public void allVerticesAreInconsistent() {
-    Consistency consistency = new Consistency(graph, 10000, 1.0);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(graph, 10000, 1.0);
     assertTrue(consistencyPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c5.getParent(), is(c4));
@@ -87,8 +85,7 @@ public class ConsistencyPostprocessorTest {
 
   @Test
   public void allVerticesAreConsistent() {
-    Consistency consistency = new Consistency(graph, 1, 0.0);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(graph, 1, 0.0);
     assertFalse(consistencyPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4));
@@ -96,8 +93,7 @@ public class ConsistencyPostprocessorTest {
 
   @Test
   public void someVerticesAreConsistent() {
-    Consistency consistency = new Consistency(graph, 1, 0.27);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(graph, 1, 0.27);
     assertTrue(consistencyPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6));
@@ -106,17 +102,10 @@ public class ConsistencyPostprocessorTest {
 
   @Test
   public void numberOfConsistentVerticesBelowMinClusterSize() {
-    Consistency consistency = new Consistency(graph, 3, 0.27);
-    consistencyPostprocessor = new ConsistencyPostprocessor(consistency, graph);
+    consistencyPostprocessor = new ConsistencyPostprocessor(graph, 3, 0.27);
     assertTrue(consistencyPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
   }
-
-
-
-
-
-
 
 }

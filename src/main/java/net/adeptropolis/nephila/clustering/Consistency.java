@@ -40,7 +40,7 @@ public class Consistency {
 
   public Graph ensure(Cluster parentCluster, Graph candidate) {
     IntRBTreeSet survivors = initSurvivors(candidate);
-    for (Graph subgraph = candidate; true; subgraph = candidate.inducedSubgraph(survivors.iterator())) {
+    for (Graph subgraph = candidate; true; subgraph = inducedSubgraph(survivors)) {
       int prevSize = survivors.size();
       shiftInconsistentVertices(subgraph, parentCluster, survivors);
       if (survivors.size() < minClusterSize) {
@@ -85,6 +85,10 @@ public class Consistency {
       remainingVertices.add(vertexIt.globalId());
     }
     return remainingVertices;
+  }
+
+  private Graph inducedSubgraph(IntRBTreeSet survivors) {
+    return graph.inducedSubgraph(survivors.iterator());
   }
 
 }
