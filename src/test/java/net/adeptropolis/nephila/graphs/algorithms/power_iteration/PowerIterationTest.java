@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 import net.adeptropolis.nephila.graphs.GraphTestBase;
@@ -8,7 +15,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class PowerIterationTest extends GraphTestBase {
 

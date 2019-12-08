@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -21,8 +28,8 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
             .add(50, 51, 1)
-            .add(51,52, 1)
-            .add(52,53, 1)
+            .add(51, 52, 1)
+            .add(52, 53, 1)
             .build();
     Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 10, 0.0);

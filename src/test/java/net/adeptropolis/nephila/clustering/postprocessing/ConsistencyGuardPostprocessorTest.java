@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.clustering.postprocessing;
 
 import com.google.common.collect.ImmutableSet;
@@ -70,7 +77,7 @@ public class ConsistencyGuardPostprocessorTest {
 
   @Test
   public void ignoreRootCluster() {
-    consistencyPostprocessor = new ConsistencyPostprocessor(graph,10, 0.5);
+    consistencyPostprocessor = new ConsistencyPostprocessor(graph, 10, 0.5);
     assertFalse(consistencyPostprocessor.apply(c0));
   }
 

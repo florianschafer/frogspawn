@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.graphs;
 
 import com.google.common.collect.Lists;
@@ -181,7 +188,7 @@ public class GraphTestBase {
   protected Graph completeGraph(int size) {
     CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
     for (int i = 0; i < size; i++) {
-      for (int j = i + 1; j < size; j++){
+      for (int j = i + 1; j < size; j++) {
         b.add(i, j, 1);
       }
     }

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.clustering.postprocessing;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
@@ -10,8 +17,8 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 /**
  * <p>Ensures the consistency of a cluster during postprocessing</p>
  * <p>
- *   This is very much akin to the in-flight consistency guard, but guarantees that only vertices from the
- *   cluster's remainder are shifted upwards.
+ * This is very much akin to the in-flight consistency guard, but guarantees that only vertices from the
+ * cluster's remainder are shifted upwards.
  * </p>
  * <b>Note: To ensure full consistency, this postprocessor needs to be run in an iterative fashion from bottom to top
  * until there were no further changes</b>
