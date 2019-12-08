@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
@@ -19,8 +26,8 @@ public class ConsistencyGuard {
   /**
    * Constructor
    *
-   * @param graph Root graph
-   * @param minClusterSize Minimum cluster (graph) size
+   * @param graph                Root graph
+   * @param minClusterSize       Minimum cluster (graph) size
    * @param minClusterLikelihood Minimum cluster (graph) likelihood
    */
 
@@ -55,9 +62,9 @@ public class ConsistencyGuard {
   /**
    * Move all inconcistent vertices of a subgraph to the parent's remainder
    *
-   * @param subgraph The subgraph candidate
+   * @param subgraph      The subgraph candidate
    * @param parentCluster Parent cluster
-   * @param survivors Set of vertices that are considered to be part of the subgraph
+   * @param survivors     Set of vertices that are considered to be part of the subgraph
    */
 
   private void shiftInconsistentVertices(Graph subgraph, Cluster parentCluster, IntRBTreeSet survivors) {

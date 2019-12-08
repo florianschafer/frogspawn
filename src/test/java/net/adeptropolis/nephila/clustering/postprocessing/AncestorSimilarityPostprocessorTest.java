@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.clustering.postprocessing;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -66,7 +73,7 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
   public void skipIfRootNode() {
     Graph graph = completeGraph(10);
     Cluster root = new Cluster(null);
-    root.addToRemainder(IntIterators.wrap(new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
+    root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
     Postprocessor pp = new AncestorSimilarityPostprocessor(0.0, graph);
     assertFalse(pp.apply(root));
   }
@@ -75,9 +82,9 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
   public void skipIfParentIsRootNode() {
     Graph graph = completeGraph(10);
     Cluster root = new Cluster(null);
-    root.addToRemainder(IntIterators.wrap(new int[]{ 4, 5, 6, 7, 8, 9 }));
+    root.addToRemainder(IntIterators.wrap(new int[]{4, 5, 6, 7, 8, 9}));
     Cluster child = new Cluster(root);
-    child.addToRemainder(IntIterators.wrap(new int[]{ 0, 1, 2, 3}));
+    child.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
     Postprocessor pp = new AncestorSimilarityPostprocessor(0.0, graph);
     assertFalse(pp.apply(child));
   }

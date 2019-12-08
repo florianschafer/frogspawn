@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -16,10 +23,9 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class SpectralBisectorTest extends GraphTestBase {
 
+  private static final SignumConvergence conv = new SignumConvergence(1E-6);
   @Rule
   public final ExpectedException exception = ExpectedException.none();
-
-  private static final SignumConvergence conv = new SignumConvergence(1E-6);
 
   @Test
   public void completeBipartiteGraphs() throws PowerIteration.MaxIterationsExceededException {

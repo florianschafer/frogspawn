@@ -1,6 +1,15 @@
+/*
+ * Copyright (c) Florian Schaefer 2019.
+ *
+ * This file is subject to the terms and conditions defined in the
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
+
 package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.clustering.*;
+import net.adeptropolis.nephila.clustering.ClusteringTemplate;
+import net.adeptropolis.nephila.clustering.DeprecatedCluster;
+import net.adeptropolis.nephila.clustering.RecursiveSpectralClustering;
 import net.adeptropolis.nephila.clustering.sinks.DotSink;
 import net.adeptropolis.nephila.clustering.sinks.TopLeafSink;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
