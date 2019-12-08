@@ -13,9 +13,9 @@ import net.adeptropolis.nephila.clustering.Cluster;
 public interface Postprocessor {
 
   /**
-   * Impose a particular structure upon the current protocluster
+   * Impose a particular structure upon the current (local) cluster
    *
-   * @param cluster A cluster
+   * @param cluster A cluster. Not necessarily root.
    * @return true of the underlying cluster has been modified, else false
    */
 

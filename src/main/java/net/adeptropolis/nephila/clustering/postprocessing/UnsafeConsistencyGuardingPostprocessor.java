@@ -20,20 +20,21 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
  * This is very much akin to the in-flight consistency guard, but guarantees that only vertices from the
  * cluster's remainder are shifted upwards.
  * </p>
- * <b>Note: To ensure full consistency, this postprocessor needs to be run in an iterative fashion from bottom to top
- * until there were no further changes</b>
+ * <b>Note:</b> This postprocessor is unsafe inasfar as it does not guarantee the consistency of
+ * child clusters once a particular cluster has been modified. Always wrap into a CascadingSafetyPostprocessor.
  *
  * @see ConsistencyGuard
+ * @see CascadingPostprocessorWrapper
  */
 
 
-public class ConsistencyPostprocessor implements Postprocessor {
+class UnsafeConsistencyGuardingPostprocessor implements Postprocessor {
 
   private final Graph graph;
   private final int minClusterSize;
   private final double minClusterLikelihood;
 
-  public ConsistencyPostprocessor(Graph graph, int minClusterSize, double minClusterLikelihood) {
+  public UnsafeConsistencyGuardingPostprocessor(Graph graph, int minClusterSize, double minClusterLikelihood) {
     this.graph = graph;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;

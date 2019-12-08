@@ -15,7 +15,7 @@ import java.util.PriorityQueue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class OrderedBTTraversalTest {
+public class OrderedBTTTest {
 
   @Test
   public void defaultBehaviour() {
@@ -27,7 +27,7 @@ public class OrderedBTTraversalTest {
     Cluster child21 = new Cluster(child2);
     Cluster child22 = new Cluster(child2);
     Cluster child221 = new Cluster(child22);
-    PriorityQueue<Cluster> queue = OrderedBTTraversal.traverse(root);
+    PriorityQueue<Cluster> queue = OrderedBTT.queue(root);
     assertThat(queue.poll().depth(), is(3));
     assertThat(queue.poll().depth(), is(2));
     assertThat(queue.poll().depth(), is(2));

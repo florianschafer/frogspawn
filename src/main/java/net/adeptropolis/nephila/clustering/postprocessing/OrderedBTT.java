@@ -18,9 +18,9 @@ import java.util.PriorityQueue;
  *
  */
 
-public class OrderedBTTraversal {
+public class OrderedBTT {
 
-  static PriorityQueue<Cluster> traverse(Cluster root) {
+  static PriorityQueue<Cluster> queue(Cluster root) {
     PriorityQueue<Cluster> queue = new PriorityQueue<>(Comparator.comparingInt(Cluster::depth).reversed());
     root.traverse(queue::add);
     return queue;
