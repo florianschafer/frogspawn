@@ -83,6 +83,22 @@ public class Cluster {
     return vertices;
   }
 
+  /**
+   * Depth of this cluster within the overall hierarchy
+   * @return depth
+   */
+
+  public int depth() {
+    int depth = 0;
+    Cluster ptr = this;
+    while (ptr.getParent() != null) {
+      depth++;
+      ptr = ptr.getParent();
+    }
+    return depth;
+
+  }
+
   public Graph aggregateGraph(Graph rootGraph) {
     return rootGraph.inducedSubgraph(aggregateVertices().iterator());
   }

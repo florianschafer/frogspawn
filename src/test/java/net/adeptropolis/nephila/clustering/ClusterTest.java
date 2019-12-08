@@ -90,7 +90,26 @@ public class ClusterTest {
     IntArrayList vertices = root.aggregateVertices();
     vertices.sort(Comparator.comparingInt(x -> x));
     assertThat(vertices, is(new IntArrayList(IntIterators.wrap(new int[]{42, 271, 314}))));
+  }
 
+  @Test
+  public void depth() {
+    Cluster root = new Cluster(null);
+    Cluster child1 = new Cluster(root);
+    Cluster child11 = new Cluster(child1);
+    Cluster child12 = new Cluster(child1);
+    Cluster child2 = new Cluster(root);
+    Cluster child21 = new Cluster(child2);
+    Cluster child22 = new Cluster(child2);
+    Cluster child221 = new Cluster(child22);
+    assertThat(root.depth(), is(0));
+    assertThat(child1.depth(), is(1));
+    assertThat(child11.depth(), is(2));
+    assertThat(child12.depth(), is(2));
+    assertThat(child2.depth(), is(1));
+    assertThat(child21.depth(), is(2));
+    assertThat(child22.depth(), is(2));
+    assertThat(child221.depth(), is(3));
   }
 
 
