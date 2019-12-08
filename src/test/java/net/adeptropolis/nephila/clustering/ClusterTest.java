@@ -113,6 +113,15 @@ public class ClusterTest {
   }
 
   @Test
+  public void root() {
+    Cluster root = new Cluster(null);
+    Cluster child2 = new Cluster(root);
+    Cluster child22 = new Cluster(child2);
+    Cluster child221 = new Cluster(child22);
+    assertThat(child221.root(), is(root));
+  }
+
+  @Test
   public void aggregateClusters() {
     Cluster root = new Cluster(null);
     Cluster child1 = new Cluster(root);

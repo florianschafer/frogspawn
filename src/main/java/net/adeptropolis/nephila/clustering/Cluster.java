@@ -97,7 +97,19 @@ public class Cluster {
       ptr = ptr.getParent();
     }
     return depth;
+  }
 
+  /**
+   *
+   * @return The root cluster
+   */
+
+  public Cluster root() {
+    Cluster ptr = this;
+    while (ptr.getParent() != null) {
+      ptr = ptr.getParent();
+    }
+    return ptr;
   }
 
   public Graph aggregateGraph(Graph rootGraph) {

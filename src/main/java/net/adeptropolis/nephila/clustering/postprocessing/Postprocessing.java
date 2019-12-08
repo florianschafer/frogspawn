@@ -13,6 +13,12 @@ import net.adeptropolis.nephila.graphs.Graph;
 
 import java.util.PriorityQueue;
 
+/**
+ * Main postprocessing class
+ * <p>Applies all relevant postprocessors to the cluster tree</p>
+ * <b>Note: All postprocessing might need some love performance-wise</b>
+ */
+
 public class Postprocessing {
 
   private final Cluster rootCluster;
@@ -27,13 +33,13 @@ public class Postprocessing {
     this.singletons = new SingletonCollapsingPostprocessor(settings.getCollapseSingletons());
   }
 
-  public Cluster apply(Cluster root) {
+  public Cluster apply() {
     boolean changed;
     do {
       changed = applyPostprocessor(ancestorSimilarity) || applyPostprocessor(consistency);
     } while (changed);
     applyPostprocessor(singletons);
-    return root;
+    return rootCluster;
   }
 
   private boolean applyPostprocessor(Postprocessor postprocessor) {

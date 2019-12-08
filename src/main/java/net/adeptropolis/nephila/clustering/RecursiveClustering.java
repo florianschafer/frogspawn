@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class RecursiveClustering {
+class RecursiveClustering {
 
   private static final Logger LOG = LoggerFactory.getLogger(RecursiveClustering.class.getSimpleName());
 
@@ -25,12 +25,14 @@ public class RecursiveClustering {
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
   private final PriorityQueue<Protocluster> queue;
+  private final ConsistencyGuard consistencyGuard;
 
   public RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings.getConvergenceCriterion());
     this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> protocluster.getGraph().size()));
+    this.consistencyGuard = new ConsistencyGuard(graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
 
   public Cluster run() {
@@ -78,12 +80,12 @@ public class RecursiveClustering {
         if (partition.size() < settings.getMinClusterSize() || partition.size() == protocluster.getGraph().size()) {
           protocluster.getCluster().addToRemainder(partition);
         } else {
-//          View consistentSubgraph = ensureConsistency(branch, partition);
-//          if (consistentSubgraph.size() < minPartitionSize) {
-//            branch.cluster.addToRemainder(consistentSubgraph);
-//          } else {
-//            enqueueTask(Task.GraphType.SPECTRAL, task.getCluster(), consistentSubgraph);
-//          }
+          Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
+          if (consistentSubgraph.size() < settings.getMinClusterSize()) {
+            protocluster.getCluster().addToRemainder(consistentSubgraph);
+          } else {
+            enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
+          }
         }
       });
     } catch (PowerIteration.MaxIterationsExceededException e) {
