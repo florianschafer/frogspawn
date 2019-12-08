@@ -8,14 +8,13 @@
 package net.adeptropolis.nephila.clustering.postprocessing;
 
 import net.adeptropolis.nephila.clustering.Cluster;
-import net.adeptropolis.nephila.clustering.ClusteringSettings;
 
-public class SingletonCollapsingPostprocessor implements Postprocessor {
+class SingletonCollapsingPostprocessor implements Postprocessor {
 
   private final boolean collapseSingletons;
 
-  public SingletonCollapsingPostprocessor(ClusteringSettings settings) {
-    this.collapseSingletons = settings.getCollapseSingletons();
+  public SingletonCollapsingPostprocessor(boolean collapseSingletons) {
+    this.collapseSingletons = collapseSingletons;
   }
 
   @Override

@@ -112,5 +112,13 @@ public class ClusterTest {
     assertThat(child221.depth(), is(3));
   }
 
+  @Test
+  public void aggregateClusters() {
+    Cluster root = new Cluster(null);
+    Cluster child1 = new Cluster(root);
+    Cluster child2 = new Cluster(root);
+    assertThat(root.aggregateClusters(), is(ImmutableSet.of(root, child1, child2)));
+  }
+
 
 }

@@ -10,13 +10,13 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import net.adeptropolis.nephila.clustering.Cluster;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 
 public class ConsistencyGuardingPostprocessorTest {
 
   @Test
   public void nothingToDo() {
-    ConsistencyGuardingPostprocessor pp = new ConsistencyGuardingPostprocessor(null, 0, 0);
+    ConsistencyGuardingPostprocessor pp = new ConsistencyGuardingPostprocessor(0, 0, null);
     boolean changed = pp.apply(new Cluster(null));
     assertFalse(changed);
   }

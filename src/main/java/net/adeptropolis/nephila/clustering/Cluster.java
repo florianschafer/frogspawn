@@ -85,6 +85,7 @@ public class Cluster {
 
   /**
    * Depth of this cluster within the overall hierarchy
+   *
    * @return depth
    */
 
@@ -101,6 +102,12 @@ public class Cluster {
 
   public Graph aggregateGraph(Graph rootGraph) {
     return rootGraph.inducedSubgraph(aggregateVertices().iterator());
+  }
+
+  public Set<Cluster> aggregateClusters() {
+    Set<Cluster> clusters = new HashSet<>();
+    traverse(clusters::add);
+    return clusters;
   }
 
   /**

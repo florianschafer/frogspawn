@@ -13,7 +13,8 @@ import org.junit.Test;
 import java.util.PriorityQueue;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class OrderedBTTTest {
 

@@ -15,10 +15,9 @@ import java.util.PriorityQueue;
 /**
  * Traverse a cluster hierarchy from bottom to top with a guarantee that all clusters
  * are consumed in the order of their depth
- *
  */
 
-public class OrderedBTT {
+class OrderedBTT {
 
   static PriorityQueue<Cluster> queue(Cluster root) {
     PriorityQueue<Cluster> queue = new PriorityQueue<>(Comparator.comparingInt(Cluster::depth).reversed());

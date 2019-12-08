@@ -10,7 +10,7 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import net.adeptropolis.nephila.clustering.Cluster;
 
 @FunctionalInterface
-public interface Postprocessor {
+interface Postprocessor {
 
   /**
    * Impose a particular structure upon the current (local) cluster

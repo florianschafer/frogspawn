@@ -10,7 +10,7 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.graphs.Graph;
 
-public class AncestorSimilarityPostprocessor implements Postprocessor {
+class AncestorSimilarityPostprocessor implements Postprocessor {
 
   private final double minAncestorOverlap;
   private final Graph rootGraph;

@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import net.adeptropolis.nephila.clustering.Cluster;
-import net.adeptropolis.nephila.clustering.ClusteringSettings;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,7 +23,7 @@ public class SingletonCollapsingPostprocessorTest {
 
   @Test
   public void noCollapsing() {
-    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(settings(false));
+    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(false);
     Cluster rootCluster = new Cluster(null);
     Cluster childCluster = new Cluster(rootCluster);
     childCluster.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
@@ -37,7 +36,7 @@ public class SingletonCollapsingPostprocessorTest {
 
   @Test
   public void notApplicable() {
-    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(settings(true));
+    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(true);
     Cluster rootCluster = new Cluster(null);
     Cluster childCluster1 = new Cluster(rootCluster);
     childCluster1.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
@@ -52,7 +51,7 @@ public class SingletonCollapsingPostprocessorTest {
 
   @Test
   public void doCollapse() {
-    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(settings(true));
+    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(true);
     Cluster root = new Cluster(null);
     Cluster child = new Cluster(root);
     child.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
@@ -66,10 +65,5 @@ public class SingletonCollapsingPostprocessorTest {
     assertThat(grandchild2.getParent(), is(root));
     assertThat(root.getRemainder(), is(new IntArrayList(new int[]{1, 2, 3})));
   }
-
-  private ClusteringSettings settings(boolean collapse) {
-    return new ClusteringSettings(0, 0, 0, 0, collapse, 0);
-  }
-
 
 }

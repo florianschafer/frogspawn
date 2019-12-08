@@ -10,11 +10,11 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.graphs.Graph;
 
-public class ConsistencyGuardingPostprocessor implements Postprocessor {
+class ConsistencyGuardingPostprocessor implements Postprocessor {
 
   private final CascadingPostprocessorWrapper postprocessor;
 
-  public ConsistencyGuardingPostprocessor(Graph graph, int minClusterSize, double minClusterLikelihood) {
+  public ConsistencyGuardingPostprocessor(double minClusterLikelihood, int minClusterSize, Graph graph) {
     UnsafeConsistencyGuardingPostprocessor unsafePostprocessor = new UnsafeConsistencyGuardingPostprocessor(graph, minClusterSize, minClusterLikelihood);
     postprocessor = new CascadingPostprocessorWrapper(unsafePostprocessor);
   }
