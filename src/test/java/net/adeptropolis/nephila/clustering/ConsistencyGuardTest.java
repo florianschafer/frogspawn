@@ -14,7 +14,7 @@ import java.util.Comparator;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class ConsistencyTest extends GraphTestBase {
+public class ConsistencyGuardTest extends GraphTestBase {
 
   @Test
   public void sizeBelowThreshold() {
@@ -25,8 +25,8 @@ public class ConsistencyTest extends GraphTestBase {
             .add(52,53, 1)
             .build();
     Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
-    Consistency consistency = new Consistency(graph, 10, 0.0);
-    Graph consistentSubgraph = consistency.ensure(cluster, candidate);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 10, 0.0);
+    Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNull(consistentSubgraph);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52})));
   }
@@ -36,8 +36,8 @@ public class ConsistencyTest extends GraphTestBase {
     Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
     Graph candidate = defaultCandidate(graph);
-    Consistency consistency = new Consistency(graph, 0, 0.75);
-    Graph consistentSubgraph = consistency.ensure(cluster, candidate);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 0, 0.75);
+    Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNotNull(consistentSubgraph);
     cluster.getRemainder().sort(Comparator.comparingInt(x -> x));
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{52, 53})));
@@ -55,8 +55,8 @@ public class ConsistencyTest extends GraphTestBase {
     Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
     Graph candidate = defaultCandidate(graph);
-    Consistency consistency = new Consistency(graph, 3, 0.75);
-    Graph consistentSubgraph = consistency.ensure(cluster, candidate);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 3, 0.75);
+    Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNull(consistentSubgraph);
     cluster.getRemainder().sort(Comparator.comparingInt(x -> x));
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));

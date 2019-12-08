@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
-public class ConsistencyPostprocessorTest {
+public class ConsistencyGuardPostprocessorTest {
 
   private Graph graph;
   private ConsistencyPostprocessor consistencyPostprocessor;

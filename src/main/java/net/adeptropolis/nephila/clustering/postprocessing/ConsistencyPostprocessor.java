@@ -3,10 +3,22 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.ConsistencyGuard;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
-// TODO: Think about the fact that the removed vertices may not necessarily stem from the specific cluster (s. aggregate)
+/**
+ * <p>Ensures the consistency of a cluster during postprocessing</p>
+ * <p>
+ *   This is very much akin to the in-flight consistency guard, but guarantees that only vertices from the
+ *   cluster's remainder are shifted upwards.
+ * </p>
+ * <b>Note: To ensure full consistency, this postprocessor needs to be run in an iterative fashion from bottom to top
+ * until there were no further changes</b>
+ *
+ * @see ConsistencyGuard
+ */
+
 
 public class ConsistencyPostprocessor implements Postprocessor {
 
@@ -31,17 +43,7 @@ public class ConsistencyPostprocessor implements Postprocessor {
     IntRBTreeSet survivors = initSurvivors(clusterGraph);
     for (Graph subgraph = clusterGraph; true; subgraph = inducedSubgraph(survivors)) {
       int prevSize = clusterVertices.size();
-      double[] likelihoods = subgraph.relativeWeights(graph);
-      VertexIterator it = subgraph.vertexIterator();
-      while (it.hasNext()) {
-        if (likelihoods[it.localId()] < minClusterLikelihood) {
-          if (clusterVertices.contains(it.globalId())) {
-            parent.addToRemainder(it.globalId());
-            clusterVertices.remove(it.globalId());
-          }
-          survivors.remove(it.globalId());
-        }
-      }
+      shiftInconsistentVertices(clusterVertices, parent, survivors, subgraph);
       if (clusterVertices.size() < minClusterSize) {
         parent.addToRemainder(clusterVertices.iterator());
         assignChildrenToParent(cluster, parent);
@@ -55,6 +57,20 @@ public class ConsistencyPostprocessor implements Postprocessor {
     } else {
       cluster.setRemainder(new IntArrayList(clusterVertices));
       return true;
+    }
+  }
+
+  private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
+    double[] likelihoods = subgraph.relativeWeights(graph);
+    VertexIterator it = subgraph.vertexIterator();
+    while (it.hasNext()) {
+      if (likelihoods[it.localId()] < minClusterLikelihood) {
+        if (clusterVertices.contains(it.globalId())) {
+          parent.addToRemainder(it.globalId());
+          clusterVertices.remove(it.globalId());
+        }
+        survivors.remove(it.globalId());
+      }
     }
   }
 

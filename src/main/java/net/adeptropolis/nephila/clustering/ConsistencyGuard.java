@@ -10,7 +10,7 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
  * all remaining satisfy the required minimum likelihood.
  */
 
-public class Consistency {
+public class ConsistencyGuard {
 
   private final Graph graph;
   private final int minClusterSize;
@@ -24,7 +24,7 @@ public class Consistency {
    * @param minClusterLikelihood Minimum cluster (graph) likelihood
    */
 
-  public Consistency(Graph graph, int minClusterSize, double minClusterLikelihood) {
+  public ConsistencyGuard(Graph graph, int minClusterSize, double minClusterLikelihood) {
     this.graph = graph;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
