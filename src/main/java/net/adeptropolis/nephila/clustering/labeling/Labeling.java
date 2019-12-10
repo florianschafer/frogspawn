@@ -7,7 +7,10 @@
 
 package net.adeptropolis.nephila.clustering.labeling;
 
+import net.adeptropolis.nephila.clustering.Cluster;
+
 public interface Labeling {
-  
+
+  Labels label(Cluster cluster);
 
 }

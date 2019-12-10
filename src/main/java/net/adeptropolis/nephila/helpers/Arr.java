@@ -21,4 +21,22 @@ public class Arr {
     arr[j] = tmp;
   }
 
+  public static int[] shrink(int[] arr, int size) {
+    if (arr.length <= size) {
+      return arr;
+    }
+    int[] shrunk = new int[size];
+    System.arraycopy(arr, 0, shrunk, 0, size);
+    return shrunk;
+  }
+
+  public static double[] shrink(double[] arr, int size) {
+    if (arr.length <= size) {
+      return arr;
+    }
+    double[] shrunk = new double[size];
+    System.arraycopy(arr, 0, shrunk, 0, size);
+    return shrunk;
+  }
+
 }
