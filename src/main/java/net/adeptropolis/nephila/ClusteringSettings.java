@@ -5,7 +5,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.SignumConvergence;
@@ -36,7 +36,7 @@ public class ClusteringSettings {
     return minClusterLikelihood;
   }
 
-  int getMaxIterations() {
+  public int getMaxIterations() {
     return maxIterations;
   }
 
@@ -44,7 +44,7 @@ public class ClusteringSettings {
     return collapseSingletons;
   }
 
-  ConvergenceCriterion getConvergenceCriterion() {
+  public ConvergenceCriterion getConvergenceCriterion() {
     return convergenceCriterion;
   }
 

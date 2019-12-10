@@ -21,9 +21,9 @@ import java.util.function.Consumer;
 public class ConnectedComponents implements EdgeConsumer {
 
   private final Graph graph;
-  private IntLinkedOpenHashSet remaining;
-  private IntLinkedOpenHashSet componentQueue;
-  private IntOpenHashSet component;
+  private final IntLinkedOpenHashSet remaining;
+  private final IntLinkedOpenHashSet componentQueue;
+  private final IntOpenHashSet component;
 
   /**
    * Create a new ConnectedComponents instance

@@ -7,6 +7,7 @@
 
 package net.adeptropolis.nephila.clustering;
 
+import net.adeptropolis.nephila.ClusteringSettings;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.nephila.graphs.algorithms.SpectralBisector;
@@ -17,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-class RecursiveClustering {
+public class RecursiveClustering {
 
   private static final Logger LOG = LoggerFactory.getLogger(RecursiveClustering.class.getSimpleName());
 
@@ -27,7 +28,7 @@ class RecursiveClustering {
   private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
 
-  RecursiveClustering(Graph graph, ClusteringSettings settings) {
+  public RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings.getConvergenceCriterion());
@@ -35,7 +36,7 @@ class RecursiveClustering {
     this.consistencyGuard = new ConsistencyGuard(graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
 
-  Cluster run() {
+  public Cluster run() {
     Cluster root = new Cluster(null);
     Protocluster initialProtocluster = new Protocluster(graph, Protocluster.GraphType.ROOT, root);
     queue.add(initialProtocluster);

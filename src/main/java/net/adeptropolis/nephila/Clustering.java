@@ -5,9 +5,10 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.Cluster;
+import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.RecursiveClustering;
 import net.adeptropolis.nephila.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.nephila.graphs.Graph;
 

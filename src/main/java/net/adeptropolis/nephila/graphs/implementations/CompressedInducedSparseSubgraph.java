@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class CompressedInducedSparseSubgraph extends Graph {
 
   private final CompressedSparseGraphDatastore datastore;
-  private int[] vertices;
+  private final int[] vertices;
 
   /**
    * Constructor

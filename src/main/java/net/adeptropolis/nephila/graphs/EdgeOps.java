@@ -15,9 +15,9 @@ public final class EdgeOps implements Runnable {
   private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
           THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
-  private Graph graph;
-  private EdgeConsumer consumer;
-  private int slice;
+  private final Graph graph;
+  private final EdgeConsumer consumer;
+  private final int slice;
 
   private EdgeOps(Graph graph, EdgeConsumer consumer, int slice) {
     this.graph = graph;

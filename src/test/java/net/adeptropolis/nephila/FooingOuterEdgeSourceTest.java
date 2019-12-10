@@ -7,23 +7,20 @@
 
 package net.adeptropolis.nephila;
 
-import net.adeptropolis.nephila.clustering.*;
+import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsAggregateLabeling;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
-import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
