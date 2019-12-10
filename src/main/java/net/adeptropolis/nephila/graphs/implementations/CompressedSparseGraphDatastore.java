@@ -46,20 +46,6 @@ public class CompressedSparseGraphDatastore {
     this.weights = weights;
   }
 
-  @Deprecated
-  public View defaultView() {
-    int[] indices = new int[size];
-    for (int i = 0; i < size; i++) {
-      indices[i] = i;
-    }
-    return view(indices);
-  }
-
-  @Deprecated
-  public View view(int[] indices) {
-    return new View(this, indices);
-  }
-
   public int size() {
     return size;
   }
