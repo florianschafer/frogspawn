@@ -40,7 +40,8 @@ public class TopWeightsAggregateLabeling implements Labeling {
     return new Labels(
       Arr.shrink(vertices, maxLabels),
       Arr.shrink(weights, maxLabels),
-      Arr.shrink(likelihoods, maxLabels)
+      Arr.shrink(likelihoods, maxLabels),
+      graph.size()
     );
   }
 

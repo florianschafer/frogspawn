@@ -81,10 +81,12 @@ class RecursiveClustering {
           protocluster.getCluster().addToRemainder(partition);
         } else {
           Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
-          if (consistentSubgraph.size() < settings.getMinClusterSize()) {
-            protocluster.getCluster().addToRemainder(consistentSubgraph);
-          } else {
-            enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
+          if (consistentSubgraph != null) {
+            if (consistentSubgraph.size() < settings.getMinClusterSize()) {
+              protocluster.getCluster().addToRemainder(consistentSubgraph);
+            } else if (consistentSubgraph.size() > settings.getMinClusterSize()) {
+              enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
+            }
           }
         }
       });
@@ -111,7 +113,7 @@ class RecursiveClustering {
         queue.add(protocluster);
       } else if (component.size() < settings.getMinClusterSize()) {
         protocluster.getCluster().addToRemainder(component);
-      } else {
+      } else if (component.size() > settings.getMinClusterSize()) {
         enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getCluster(), component);
       }
     });

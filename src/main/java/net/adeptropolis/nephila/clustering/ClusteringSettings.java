@@ -25,7 +25,7 @@ public class ClusteringSettings {
     this.minAncestorOverlap = minAncestorOverlap;
     this.maxIterations = maxIterations;
     this.collapseSingletons = collapseSingletons;
-    convergenceCriterion = new SignumConvergence(maxUnstable);
+    this.convergenceCriterion = new SignumConvergence(maxUnstable);
   }
 
   public int getMinClusterSize() {

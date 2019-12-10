@@ -29,7 +29,7 @@ public class Postprocessing {
   public Postprocessing(Cluster rootCluster, Graph rootGraph, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
     this.ancestorSimilarity = new AncestorSimilarityPostprocessor(settings.getMinAncestorOverlap(), rootGraph);
-    this.consistency = new ConsistencyGuardingPostprocessor(settings.getMinClusterLikelihood(), settings.getMinClusterSize(), rootGraph);
+    this.consistency = new ConsistencyGuardingPostprocessor(rootGraph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
     this.singletons = new SingletonCollapsingPostprocessor(settings.getCollapseSingletons());
   }
 

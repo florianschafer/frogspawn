@@ -74,7 +74,9 @@ public class Cluster {
 
   public void traverse(Consumer<Cluster> consumer) {
     consumer.accept(this);
-    for (Cluster child : children) child.traverse(consumer);
+    for (Cluster child : children) {
+      child.traverse(consumer);
+    }
   }
 
   public IntArrayList aggregateVertices() {
