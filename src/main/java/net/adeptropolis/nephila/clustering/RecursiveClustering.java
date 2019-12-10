@@ -27,7 +27,7 @@ class RecursiveClustering {
   private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
 
-  public RecursiveClustering(Graph graph, ClusteringSettings settings) {
+  RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings.getConvergenceCriterion());
@@ -35,7 +35,7 @@ class RecursiveClustering {
     this.consistencyGuard = new ConsistencyGuard(graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
 
-  public Cluster run() {
+  Cluster run() {
     Cluster root = new Cluster(null);
     Protocluster initialProtocluster = new Protocluster(graph, Protocluster.GraphType.ROOT, root);
     queue.add(initialProtocluster);
@@ -45,7 +45,6 @@ class RecursiveClustering {
 
   private void processQueue() {
     while (!queue.isEmpty()) {
-      // TODO: Account for pre-recursion structure somewhere here
       Protocluster protocluster = queue.poll();
       if (protocluster.getGraphType() == Protocluster.GraphType.COMPONENT) {
         bisect(protocluster);
@@ -122,7 +121,6 @@ class RecursiveClustering {
   private void enqueueProtocluster(Protocluster.GraphType graphType, Cluster parent, Graph subgraph) {
     Cluster childCluster = new Cluster(parent);
     Protocluster protocluster = new Protocluster(subgraph, graphType, childCluster);
-    // TODO: Add post recursion structure here!
     queue.add(protocluster);
   }
 

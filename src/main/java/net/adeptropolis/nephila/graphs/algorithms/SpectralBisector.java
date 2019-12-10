@@ -52,7 +52,7 @@ public class SpectralBisector {
    * @param graph         The input graph
    * @param maxIterations Maximum number of iterations
    * @param consumer      A consumer for the resulting partitions
-   * @throws PowerIteration.MaxIterationsExceededException
+   * @throws PowerIteration.MaxIterationsExceededException if the number of iterations has been exceeded
    */
 
   public void bisect(Graph graph, int maxIterations, Consumer<Graph> consumer) throws PowerIteration.MaxIterationsExceededException {

@@ -14,6 +14,9 @@ package net.adeptropolis.nephila.graphs.implementations.arrays;
 
 public class InterpolationSearch {
 
+  private InterpolationSearch() {
+  }
+
   /**
    * Search in BigInts
    *

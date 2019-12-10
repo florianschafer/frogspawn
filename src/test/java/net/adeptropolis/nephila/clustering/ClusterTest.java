@@ -5,11 +5,12 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-package net.adeptropolis.nephila.clustering;
+package net.adeptropolis.nephila;
 
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.nephila.Cluster;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;

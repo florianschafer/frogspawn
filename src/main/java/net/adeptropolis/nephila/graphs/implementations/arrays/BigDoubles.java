@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 /**
- * A big (i.e. long-indexed) primiti array of doubles.
+ * A big (i.e. long-indexed) array of doubles.
  *
  * @author Florian Schaefer
  * @author florian@adeptropolis.net

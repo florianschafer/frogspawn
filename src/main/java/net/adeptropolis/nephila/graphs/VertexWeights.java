@@ -9,12 +9,9 @@ package net.adeptropolis.nephila.graphs;
 
 public class VertexWeights implements EdgeConsumer {
 
-  private final Graph graph;
-
   private final double[] weights;
 
   private VertexWeights(Graph graph) {
-    this.graph = graph;
     this.weights = new double[graph.size()];
   }
 

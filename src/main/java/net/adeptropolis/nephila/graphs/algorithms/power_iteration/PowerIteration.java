@@ -16,6 +16,9 @@ public class PowerIteration {
 
   private static final Logger LOG = LoggerFactory.getLogger(PowerIteration.class.getSimpleName());
 
+  private PowerIteration() {
+  }
+
   /**
    * <p>Apply the power iteration method to any Operator to find the eigenvector associated with its' largest eigenvalue</p>
    * <p>The initial vector needs to satisfy ||x|| = 1</p>
@@ -49,7 +52,7 @@ public class PowerIteration {
    */
 
   public static class MaxIterationsExceededException extends Exception {
-    public MaxIterationsExceededException() {
+    MaxIterationsExceededException() {
       super();
     }
   }

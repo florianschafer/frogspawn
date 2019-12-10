@@ -26,7 +26,7 @@ class AncestorSimilarityPostprocessor implements Postprocessor {
       return false;
     }
     Cluster ancestor = nearestAncestorSatisfyingOverlap(cluster);
-    if (ancestor == cluster.getParent()) {
+    if (ancestor == null || ancestor == cluster.getParent()) {
       return false;
     }
     cluster.getParent().getChildren().remove(cluster);

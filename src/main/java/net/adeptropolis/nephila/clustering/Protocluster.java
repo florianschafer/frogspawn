@@ -15,7 +15,7 @@ public class Protocluster {
   private Cluster cluster;
   private GraphType graphType;
 
-  public Protocluster(Graph graph, GraphType graphType, Cluster cluster) {
+  Protocluster(Graph graph, GraphType graphType, Cluster cluster) {
     this.graph = graph;
     this.graphType = graphType;
     this.cluster = cluster;
@@ -25,11 +25,11 @@ public class Protocluster {
     return graph;
   }
 
-  public GraphType getGraphType() {
+  GraphType getGraphType() {
     return graphType;
   }
 
-  public void setGraphType(GraphType graphType) {
+  void setGraphType(GraphType graphType) {
     this.graphType = graphType;
   }
 

@@ -44,6 +44,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    */
 
   @Override
+  @SuppressWarnings("squid:S2234")
   public CompressedSparseGraphBuilder add(int u, int v, double weight) {
     set(ptr++, u, v, weight);
     if (u != v) set(ptr++, v, u, weight);

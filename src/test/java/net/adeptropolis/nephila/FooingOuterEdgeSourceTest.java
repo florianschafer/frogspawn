@@ -45,7 +45,7 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.500k.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
-    ClusteringSettings settings = new ClusteringSettings(50, 0.2, 0.7, 1E-6, true, 10000);
+    ClusteringSettings settings = new ClusteringSettings(50, 0.2, 0.4, 1E-6, true, 10000);
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();

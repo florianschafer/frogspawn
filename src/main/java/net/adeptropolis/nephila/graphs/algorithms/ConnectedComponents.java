@@ -31,7 +31,7 @@ public class ConnectedComponents implements EdgeConsumer {
    * @param graph The input graph
    */
 
-  public ConnectedComponents(Graph graph) {
+  private ConnectedComponents(Graph graph) {
     this.graph = graph;
     this.remaining = new IntLinkedOpenHashSet();
     this.componentQueue = new IntLinkedOpenHashSet();
@@ -56,7 +56,7 @@ public class ConnectedComponents implements EdgeConsumer {
    * @param consumer A consumer for the connected subgraphs
    */
 
-  public void find(Consumer<Graph> consumer) {
+  private void find(Consumer<Graph> consumer) {
     remaining.clear();
     for (int i = 0; i < graph.size(); i++) remaining.add(i);
     while (!remaining.isEmpty()) {

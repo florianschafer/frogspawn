@@ -36,7 +36,7 @@ public class ClusteringSettings {
     return minClusterLikelihood;
   }
 
-  public int getMaxIterations() {
+  int getMaxIterations() {
     return maxIterations;
   }
 
@@ -44,7 +44,7 @@ public class ClusteringSettings {
     return collapseSingletons;
   }
 
-  public ConvergenceCriterion getConvergenceCriterion() {
+  ConvergenceCriterion getConvergenceCriterion() {
     return convergenceCriterion;
   }
 

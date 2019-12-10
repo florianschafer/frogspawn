@@ -38,10 +38,10 @@ public class TopWeightsAggregateLabeling implements Labeling {
     CandidateSortOps candidateSortOps = new CandidateSortOps(vertices, weights, likelihoods);
     Arrays.mergeSort(0, graph.size(), candidateSortOps, candidateSortOps);
     return new Labels(
-      Arr.shrink(vertices, maxLabels),
-      Arr.shrink(weights, maxLabels),
-      Arr.shrink(likelihoods, maxLabels),
-      graph.size()
+            Arr.shrink(vertices, maxLabels),
+            Arr.shrink(weights, maxLabels),
+            Arr.shrink(likelihoods, maxLabels),
+            graph.size()
     );
   }
 

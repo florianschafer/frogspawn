@@ -35,11 +35,12 @@ public final class EdgeOps implements Runnable {
     }
   }
 
-  private static void awaitFuture(Future<?> x) {
+  @SuppressWarnings("squid:S2142")
+  private static void awaitFuture(Future<?> future) {
     try {
-      x.get();
+      future.get();
     } catch (InterruptedException | ExecutionException e) {
-      throw new RuntimeException(e);
+      throw new EdgeOpsException(e);
     }
   }
 

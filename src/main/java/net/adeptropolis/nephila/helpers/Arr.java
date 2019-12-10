@@ -9,6 +9,9 @@ package net.adeptropolis.nephila.helpers;
 
 public class Arr {
 
+  private Arr() {
+  }
+
   public static void swap(int[] arr, int i, int j) {
     int tmp = arr[i];
     arr[i] = arr[j];

@@ -121,7 +121,6 @@ public class LongMergeSort {
    * {@code comp.compare(j, pos)} is {@code true}.
    */
   private static long lowerBound(long from, final long to, final long pos, final SortOps ops) {
-    // if (comp==null) throw new NullPointerException();
     long len = to - from;
     while (len > 0) {
       long half = len / 2;

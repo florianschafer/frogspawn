@@ -14,7 +14,7 @@ public class Labels {
   private final double[] likelihoods;
   private final int aggregateSize;
 
-  public Labels(int[] vertices, double[] weights, double[] likelihoods, int aggregateSize) {
+  Labels(int[] vertices, double[] weights, double[] likelihoods, int aggregateSize) {
     this.vertices = vertices;
     this.weights = weights;
     this.likelihoods = likelihoods;

@@ -7,6 +7,7 @@
 
 package net.adeptropolis.nephila.graphs;
 
+@SuppressWarnings("squid:ClassVariableVisibilityCheck")
 public class Edge {
 
   public int u;

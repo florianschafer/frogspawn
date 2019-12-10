@@ -11,7 +11,6 @@ import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
 import net.adeptropolis.nephila.clustering.labeling.Labels;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 

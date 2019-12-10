@@ -11,11 +11,14 @@ import com.google.common.base.Preconditions;
 
 public class Vectors {
 
+  private Vectors() {
+  }
+
   public static double L1Norm(double[] v) {
     // This is NOT exactly the official L1 norm. Assuming ∀i ∈ [0, vec.length): vec[i] >= 0
     double norm = 0;
-    for (int i = 0; i < v.length; i++) {
-      norm += v[i];
+    for (double value : v) {
+      norm += value;
     }
     return norm;
   }

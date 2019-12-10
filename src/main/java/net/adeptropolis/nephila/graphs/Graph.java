@@ -20,7 +20,7 @@ public abstract class Graph {
 
   /**
    * @param v        A (local!) vertex
-   * @param consumer
+   * @param consumer an instance of EdgeConsumer
    */
 
   public abstract void traverse(int v, EdgeConsumer consumer);
@@ -37,16 +37,16 @@ public abstract class Graph {
    * <p></p>Compute the induced subgraph from the given global vertices</p>
    *
    * @param vertices The vertex set of the new subgraph
-   * @return
+   * @return a new subgraph
    */
 
-  public abstract Graph inducedSubgraph(IntIterator vertices); // TODO: Think about just passing int[]
+  public abstract Graph inducedSubgraph(IntIterator vertices);
 
   /**
    * <p></p>Compute the induced subgraph from the given local vertices</p>
    *
    * @param vertices The vertex set (as local vertex ids) of the new subgraph
-   * @return
+   * @return a new subgraph
    */
 
   public Graph localInducedSubgraph(IntIterator vertices) {
@@ -117,7 +117,7 @@ public abstract class Graph {
 
     private final IntIterator localIds;
 
-    public VertexMappingIterator(IntIterator localIds) {
+    VertexMappingIterator(IntIterator localIds) {
       this.localIds = localIds;
     }
 

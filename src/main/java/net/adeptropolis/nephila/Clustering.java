@@ -7,15 +7,19 @@
 
 package net.adeptropolis.nephila.clustering;
 
+import net.adeptropolis.nephila.Cluster;
 import net.adeptropolis.nephila.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.nephila.graphs.Graph;
 
 public class Clustering {
 
+  private Clustering() {
+
+  }
+
   public static Cluster run(Graph graph, ClusteringSettings settings) {
     RecursiveClustering recursiveClustering = new RecursiveClustering(graph, settings);
     Cluster root = recursiveClustering.run();
-    Cluster postprocessed = new Postprocessing(root, graph, settings).apply();
-    return postprocessed;
+    return new Postprocessing(root, graph, settings).apply();
   }
 }

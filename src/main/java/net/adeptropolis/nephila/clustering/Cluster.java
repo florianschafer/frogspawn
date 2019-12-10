@@ -102,7 +102,6 @@ public class Cluster {
   }
 
   /**
-   *
    * @return The root cluster
    */
 

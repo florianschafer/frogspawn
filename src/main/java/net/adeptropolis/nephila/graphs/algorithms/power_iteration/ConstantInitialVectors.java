@@ -15,11 +15,14 @@ import java.util.Arrays;
 
 public class ConstantInitialVectors {
 
+  private ConstantInitialVectors() {
+  }
+
   /**
    * Return a new vector <code>v</code> of a given size such that <code>||v|| = 1</code>
    *
-   * @param size
-   * @return
+   * @param size size of the new vector
+   * @return the desired vector
    */
 
   public static double[] generate(int size) {

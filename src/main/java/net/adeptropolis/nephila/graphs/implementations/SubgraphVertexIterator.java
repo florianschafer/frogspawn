@@ -7,8 +7,6 @@
 
 package net.adeptropolis.nephila.graphs.implementations;
 
-// TODO: Move into subgraph class?
-
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
 /**
@@ -22,14 +20,11 @@ public class SubgraphVertexIterator implements VertexIterator {
 
   private int[] vertexBuf;
 
-  public SubgraphVertexIterator() {
-  }
-
   /**
    * Reset the iterator (initialization and reusability)
    *
    * @param vertexBuf List of global vertex ids
-   * @return
+   * @return this
    */
 
   public SubgraphVertexIterator reset(int[] vertexBuf) {
@@ -42,7 +37,7 @@ public class SubgraphVertexIterator implements VertexIterator {
   /**
    * Note: Must proceed before first use => while(...)
    *
-   * @return
+   * @return whether there is another element available
    */
 
   @Override

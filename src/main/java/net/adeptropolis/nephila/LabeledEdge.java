@@ -7,6 +7,7 @@
 
 package net.adeptropolis.nephila;
 
+@SuppressWarnings("squid:ClassVariableVisibilityCheck")
 public class LabeledEdge<T> {
 
   public T u;
