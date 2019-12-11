@@ -8,6 +8,7 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.RelativeWeightConsistencyMetric;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsAggregateLabeling;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
@@ -38,14 +39,15 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/fb_names.5M.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.1M"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.250k"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.2.5M"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.2.5M"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
     ClusteringSettings settings = new ClusteringSettings(10, 0.2, 0.75, 1E-5, true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
-    Cluster root = Clustering.run(graph, settings);
+    RelativeWeightConsistencyMetric metric = new RelativeWeightConsistencyMetric();
+    Cluster root = Clustering.run(graph, metric, settings);
     Labeling labeling = new TopWeightsAggregateLabeling(100, graph);
 //    Labeling labeling = new TopWeightsRemainderLabeling(10, graph);
     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());

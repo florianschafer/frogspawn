@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 
 public class ConsistencyGuardTest extends GraphTestBase {
 
+  private static final ConsistencyMetric METRIC = new RelativeWeightConsistencyMetric();
+
   @Test
   public void sizeBelowThreshold() {
     Cluster cluster = new Cluster(null);
@@ -32,7 +34,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
             .add(52, 53, 1)
             .build();
     Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 10, 0.0);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 10, 0.0);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNull(consistentSubgraph);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52})));
@@ -43,7 +45,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
     Graph candidate = defaultCandidate(graph);
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 0, 0.75);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 0, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNotNull(consistentSubgraph);
     cluster.getRemainder().sort(Comparator.comparingInt(x -> x));
@@ -62,7 +64,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
     Graph candidate = defaultCandidate(graph);
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(graph, 3, 0.75);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 3, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNull(consistentSubgraph);
     cluster.getRemainder().sort(Comparator.comparingInt(x -> x));

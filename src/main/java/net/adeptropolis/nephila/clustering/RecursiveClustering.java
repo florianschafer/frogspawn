@@ -29,12 +29,12 @@ public class RecursiveClustering {
   private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
 
-  public RecursiveClustering(Graph graph, ClusteringSettings settings) {
+  public RecursiveClustering(Graph graph, ConsistencyMetric metric, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings.getConvergenceCriterion());
-    this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> protocluster.getGraph().size()));
-    this.consistencyGuard = new ConsistencyGuard(graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
+    this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> -protocluster.getCluster().depth()));
+    this.consistencyGuard = new ConsistencyGuard(metric, graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
 
   public Cluster run() {

@@ -19,6 +19,7 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 
 public class ConsistencyGuard {
 
+  private final ConsistencyMetric metric;
   private final Graph graph;
   private final int minClusterSize;
   private final double minClusterLikelihood;
@@ -26,12 +27,14 @@ public class ConsistencyGuard {
   /**
    * Constructor
    *
+   * @param metric               Instance of ConsistencyMetric
    * @param graph                Root graph
    * @param minClusterSize       Minimum cluster (graph) size
    * @param minClusterLikelihood Minimum cluster (graph) likelihood
    */
 
-  public ConsistencyGuard(Graph graph, int minClusterSize, double minClusterLikelihood) {
+  public ConsistencyGuard(ConsistencyMetric metric, Graph graph, int minClusterSize, double minClusterLikelihood) {
+    this.metric = metric;
     this.graph = graph;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
@@ -68,10 +71,10 @@ public class ConsistencyGuard {
    */
 
   private void shiftInconsistentVertices(Graph subgraph, Cluster parentCluster, IntRBTreeSet survivors) {
-    double[] likelihoods = subgraph.relativeWeights(graph);
+    double[] metrics = metric.compute(graph, subgraph);
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
-      if (likelihoods[it.localId()] < minClusterLikelihood) {
+      if (metrics[it.localId()] < minClusterLikelihood) {
         parentCluster.addToRemainder(it.globalId());
         survivors.remove(it.globalId());
       }
