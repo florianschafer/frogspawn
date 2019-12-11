@@ -13,6 +13,9 @@ import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.ConsistencyGuard;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Ensures the consistency of a cluster during postprocessing</p>
@@ -27,6 +30,8 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 
 class ConsistencyGuardingPostprocessor implements Postprocessor {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ConsistencyGuardingPostprocessor.class.getSimpleName());
+
   private final Graph graph;
   private final int minClusterSize;
   private final double minClusterLikelihood;
@@ -39,8 +44,11 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
 
   @Override
   public boolean apply(Cluster cluster) {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
     Cluster parent = cluster.getParent();
     if (parent == null) {
+      LOG.debug("Skipping");
       return false;
     }
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
@@ -52,15 +60,21 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
       if (clusterVertices.size() < minClusterSize) {
         parent.addToRemainder(clusterVertices.iterator());
         assignChildrenToParent(cluster, parent);
+        stopWatch.stop();
+        LOG.debug("Finished after {}. There were changes to the cluster structure", stopWatch);
         return true;
       } else if (clusterVertices.size() == prevSize) {
         break;
       }
     }
     if (clusterVertices.size() == cluster.getRemainder().size()) {
+      stopWatch.stop();
+      LOG.debug("Finished after {}. There were no changes to the cluster structure", stopWatch);
       return false;
     } else {
       cluster.setRemainder(new IntArrayList(clusterVertices));
+      stopWatch.stop();
+      LOG.debug("Finished after {}. There were changes to the cluster structure", stopWatch);
       return true;
     }
   }

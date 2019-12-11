@@ -12,6 +12,7 @@ import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.nephila.graphs.algorithms.SpectralBisector;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,10 +38,14 @@ public class RecursiveClustering {
   }
 
   public Cluster run() {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
     Cluster root = new Cluster(null);
     Protocluster initialProtocluster = new Protocluster(graph, Protocluster.GraphType.ROOT, root);
     queue.add(initialProtocluster);
     processQueue();
+    stopWatch.stop();
+    LOG.debug("Finished clustering {} vertices after {}", graph.size(), stopWatch);
     return root;
   }
 

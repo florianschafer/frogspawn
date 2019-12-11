@@ -10,6 +10,9 @@ package net.adeptropolis.nephila.clustering.postprocessing;
 import net.adeptropolis.nephila.ClusteringSettings;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.graphs.Graph;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.PriorityQueue;
 
@@ -20,6 +23,8 @@ import java.util.PriorityQueue;
  */
 
 public class Postprocessing {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Postprocessing.class.getSimpleName());
 
   private final Cluster rootCluster;
   private final AncestorSimilarityPostprocessor ancestorSimilarity;
@@ -34,11 +39,15 @@ public class Postprocessing {
   }
 
   public Cluster apply() {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
     boolean changed;
     do {
       changed = applyPostprocessor(ancestorSimilarity) || applyPostprocessor(consistency);
     } while (changed);
     applyPostprocessor(singletons);
+    stopWatch.stop();
+    LOG.debug("Postprocessing finished after {}", stopWatch);
     return rootCluster;
   }
 
