@@ -11,11 +11,15 @@ import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.RelativeWeightConsistencyMetric;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsAggregateLabeling;
+import net.adeptropolis.nephila.clustering.sinks.LeafTextSink;
+import net.adeptropolis.nephila.clustering.sinks.Sink;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,6 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -32,6 +37,8 @@ public class FooingOuterEdgeSourceTest {
 
   // Found bug: freq must not be float
 
+  Logger LOG = LoggerFactory.getLogger(FooingOuterEdgeSourceTest.class);
+
   @Test
   public void newShit() throws FileNotFoundException {
 
@@ -39,18 +46,29 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/fb_names.5M.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.1M"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.250k"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.2.5M"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs.2.5M"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
-    ClusteringSettings settings = new ClusteringSettings(10, 0.2, 0.75, 1E-5, true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+    ClusteringSettings settings = new ClusteringSettings(50, 0.2, 0.75, 1E-5, true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     RelativeWeightConsistencyMetric metric = new RelativeWeightConsistencyMetric();
     Cluster root = Clustering.run(graph, metric, settings);
+
+    AtomicInteger lost = new AtomicInteger();
+    root.traverse(c -> {
+      if (!c.getChildren().isEmpty()) {
+        lost.addAndGet(c.getRemainder().size());
+      }
+    });
+    LOG.debug("Lost: {} / {}", lost.get(), graph.size());
+
+
     Labeling labeling = new TopWeightsAggregateLabeling(100, graph);
 //    Labeling labeling = new TopWeightsRemainderLabeling(10, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
+//    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
+    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
   }
 
