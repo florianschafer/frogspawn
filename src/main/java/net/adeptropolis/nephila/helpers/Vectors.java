@@ -23,6 +23,14 @@ public class Vectors {
     return norm;
   }
 
+  public static double L2Norm(double[] v) {
+    double norm = 0;
+    for (double value : v) {
+      norm += value * value;
+    }
+    return Math.sqrt(norm);
+  }
+
   public static double scalarProduct(double[] v, double[] w) {
     Preconditions.checkArgument(v.length == w.length, String.format("Argument dimension mismatch: %d != %d", v.length, w.length));
     double prod = 0;

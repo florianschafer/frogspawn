@@ -16,6 +16,7 @@ import net.adeptropolis.nephila.clustering.sinks.Sink;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
+import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;

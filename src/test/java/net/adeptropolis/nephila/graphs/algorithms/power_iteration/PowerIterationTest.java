@@ -28,7 +28,7 @@ public class PowerIterationTest extends GraphTestBase {
     double[] expected = new double[]{0.35596, 0.33434, 0.34380, 0.30277, 0.27799, 0.29129, 0.32165, 0.27372, 0.29246, 0.35439};
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-6);
-    double[] iv = ConstantInitialVectors.generate(10);
+    double[] iv = RandomInitialVectors.generate(10);
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000);
     assertNotNull(r);
     for (int i = 0; i < op.size(); i++) {
@@ -41,7 +41,7 @@ public class PowerIterationTest extends GraphTestBase {
     exception.expect(PowerIteration.MaxIterationsExceededException.class);
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-18);
-    double[] iv = ConstantInitialVectors.generate(10);
+    double[] iv = RandomInitialVectors.generate(10);
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 5);
   }
 
@@ -49,7 +49,7 @@ public class PowerIterationTest extends GraphTestBase {
   public void normalizedLaplacian() throws PowerIteration.MaxIterationsExceededException {
     SSNLOperator op = new SSNLOperator(EIGEN_REF_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-9);
-    double[] iv = ConstantInitialVectors.generate(op.size());
+    double[] iv = RandomInitialVectors.generate(op.size());
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 1000);
     assertNotNull(r);
     assertThat(r[0], closeTo(0.33423, 1E-5));

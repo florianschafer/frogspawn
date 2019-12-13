@@ -8,9 +8,9 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConstantInitialVectors;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
+import net.adeptropolis.nephila.graphs.algorithms.power_iteration.RandomInitialVectors;
 import net.adeptropolis.nephila.graphs.operators.SSNLOperator;
 
 import java.util.function.Consumer;
@@ -57,7 +57,7 @@ public class SpectralBisector {
 
   public void bisect(Graph graph, int maxIterations, Consumer<Graph> consumer) throws PowerIteration.MaxIterationsExceededException {
     SSNLOperator ssnl = new SSNLOperator(graph);
-    double[] iv = ConstantInitialVectors.generate(graph.size());
+    double[] iv = RandomInitialVectors.generate(graph.size());
     double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations);
     yieldSubgraph(graph, v2, consumer, 1);
     yieldSubgraph(graph, v2, consumer, -1);

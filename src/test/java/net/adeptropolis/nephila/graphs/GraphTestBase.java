@@ -139,43 +139,6 @@ public class GraphTestBase {
             .build();
   }
 
-  protected Graph pathWithWeakLink() {
-    return new CompressedSparseGraphBuilder()
-            .add(0, 1, 1)
-            .add(1, 2, 1)
-            .add(2, 3, 1)
-            .add(3, 4, 1E-1)
-            .add(4, 5, 1)
-            .add(5, 6, 1)
-            .add(6, 7, 1)
-            .add(7, 8, 1)
-            .add(8, 9, 1)
-            .add(9, 10, 1)
-            .add(10, 11, 1)
-            .build();
-  }
-
-  protected Graph pathWithWeakLinkEmbeddedIntoLargerGraph() {
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-    builder.add(0, 10, 1);
-    builder.add(10, 20, 1);
-    builder.add(20, 30, 1);
-    builder.add(30, 40, 1E-1);
-    builder.add(40, 50, 1);
-    builder.add(50, 60, 1);
-    builder.add(60, 70, 1);
-    builder.add(70, 80, 1);
-    builder.add(80, 90, 1);
-    builder.add(90, 100, 1);
-    builder.add(100, 110, 1);
-    for (int i = 0; i < 110; i++) {
-      if (i % 10 != 0) {
-        builder.add(i, i + 1, i + 1);
-      }
-    }
-    return builder.build();
-  }
-
   protected Graph largeCircle() {
     CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
     for (int i = 0; i < 100000; i++) {

@@ -7,15 +7,15 @@
 
 package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
-import java.util.Arrays;
+import net.adeptropolis.nephila.helpers.Vectors;
 
 /**
- * <p>Helper class that provides constant-value initial vectors for the power iterations</p>
+ * <p>Helper class that provides random initial vectors for the power iterations</p>
  */
 
-public class ConstantInitialVectors {
+public class RandomInitialVectors {
 
-  private ConstantInitialVectors() {
+  private RandomInitialVectors() {
   }
 
   /**
@@ -27,7 +27,10 @@ public class ConstantInitialVectors {
 
   public static double[] generate(int size) {
     double[] iv = new double[size];
-    Arrays.fill(iv, 1.0 / Math.sqrt(size));
+    for (int i = 0; i < size; i++) {
+      iv[i] = Math.random();
+    }
+    Vectors.normalize2(iv);
     return iv;
   }
 
