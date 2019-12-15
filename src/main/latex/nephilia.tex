@@ -87,25 +87,33 @@
     \subsection{Spectral transformations}
 
     % https://math.stackexchange.com/questions/2214641/shifting-eigenvalues-of-a-matrix
-    \newtheorem{Brauer}[]{Theorem (Brauer)}[section]
-    \begin{Brauer}
-        Let $A \in \mathbb{R}^{n \times n}$ a matrix with $Av=\lambda v$ for some eigenvalue $\lambda \in \mathbb{R}$ and $0 \neq v \in \mathbb{R}^n$.
-        Furthermore, let $r \in \mathbb{R}^n$ with $r^{T}v=1$. Then, $\forall \mu \in \mathbb{R}:$ the eigenvalues of
+    \newtheorem{eigenvalueReplacement}[]{Theorem: Eigenvalue Replacement}[section]
+    \begin{eigenvalueReplacement}
+        Let $A \in \mathbb{R}^{n \times n}$ be a real symmetric matrix, $n \geq i \in \mathbb{N}$ and $\lambda_i, v_i$
+        the $i-th$ eigenvalue and its respective eigenvector of $A$. Then, for any $\mu \in \mathbb{R}$, the matrix
         \begin{align}
-            \hat{A} := A + (\lambda - \mu)vr^T
+            \tilde{A} := A + \left(\mu - \lambda_i \right) v_i {v_i}^T
         \end{align}
-        are exactly those of $A$, except for $\lambda$, which has been replaced by $\mu$. Furthermore, the eigenvector $v$ remains
-        completely unchanged, i.e. $\hat{A}v = \mu v$
-    \end{Brauer}
-    This theorem will allow us later to swap specific eigenvalues.
-
-    \newtheorem{Brauer Param Note}[]{Note}[section]
-    \begin{Brauer Param Note}
-        Chosing $r:=v$ in the above theorem is explicitly allowed if $v$ is normalized.
-    \end{Brauer Param Note}
+        holds the exact same set of eigenvalues and eigenvectors as $A$, except for $\lambda_i$, which has been replaced by $\mu$.
+        In particular, the eigenvector assigned with $\mu$ is the same as $v_i$.
+        \begin{proof}[Proof]
+            Since $A$ is real and symmetric, we know that there exists a decomposition $A=VDV^T$, where $V$ holds the orthonormal
+            set of eigenvectors and $D$ being a diagonal matrix with the eigenvalues. With this in mind, we can write
+            \begin{align}
+                \begin{split}
+                    \tilde{A} & = A + \left( \mu - \lambda_i \right) v_i {v_i}^T \\
+                    & = A + \left( \mu - \lambda_i \right) v_i {e_i}^T V^T \\
+                    & = A + \left( \mu - \lambda_i \right) \left( V e_i \right) {e_i}^T V^T \\
+                    & = VDV^T + \left( \mu - \lambda_i \right) V \left( e_i {e_i}^T \right) V^T \\
+                    & = V\left( D + \left( \mu - \lambda_i \right) e_i {e_i}^T \right) V^T
+                \end{split}
+            \end{align}
+        \end{proof}
+    \end{eigenvalueReplacement}
 
     \newtheorem{Spectral Shifting}[]{Theorem (Spectral Shifting)}[section]
     \begin{Spectral Shifting}
+        TODO: Proof
         Let $A \in \mathbb{R}^{n \times n}$ a symmetric, positive-definite matrix with $Av=\lambda v$ for some eigenvalue $\lambda \in \mathbb{R}$.
         Furthermore, let $\mu \in \mathbb{R}$. Then
         \begin{align}
@@ -131,13 +139,13 @@
     Remember that there a few known properties of the normalized laplacian spectrum. In particular:
     \begin{itemize}
         \item We know that the smallest eigenvalue is $0$ with eigenvector $\frac{D^\frac{1}{2}}{\lVert D^\frac{1}{2} \rVert}$ % TODO: Wrong! There is no D here
-        \item If the graph is bipartite, the largest eigenvalue is known to be $2$.
+        \item The largest eigenvalue is known to be $2$.
     \end{itemize}
 
-    Now we can first reverse the spectrum along the largest eigenvalue $2$ and then (the order matters) send the
-    now-largest eigenvalue $2$ (that used to be $0$) to $0$, so that this eigenvalue ends up with multiplicity 2.
-    But most importantly, the largest eigenvalue and its eigenvector of this new matrix are just what we were seeking for.
+    Now we can first exchange the eigenvalue $0 \rightarrow 2$ and then reverse the spectrum along $2$.
+    The vector associated with the largest eigenvalue of this matrix is just the one we have been seeking.
     \\
+    TODO: Update documentation from here. See paragraph above!
     Assuming that $\lVert v_0 \lVert = 1$
     \begin{equation}
         \label{shiftedlaplacian}
