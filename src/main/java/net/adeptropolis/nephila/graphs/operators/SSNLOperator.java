@@ -14,13 +14,13 @@ import net.adeptropolis.nephila.helpers.Vectors;
 /**
  * <p>A spectrally shifted normalized laplacian operator</p>
  *
- * <p>Provides a spectrally shifted version of the normalized laplacian of an undirected, connected, bipartite graph</p>
+ * <p>Provides a spectrally shifted version of the normalized laplacian of an undirected, connected graph</p>
  * <p>The shifting is performed in such a way that the eigenvector originally belonging to the second-smallest eigenvalue of the
  * normalized laplacian is now assigned to the largest eigenvalue of this new operator</p>
  *
  * <p><b>Important:</b> This operator has two strict requirements:
  * <ul>
- *   <li>The underlying graph is required to be strictly bipartite, connected, undirected and have non-negative edge weights</li>
+ *   <li>The underlying graph is required to be connected, undirected and have non-negative edge weights</li>
  *   <li>Any argument passed to this operator must be L2-normalized, i.e. ||x||<sub>2</sub> == 1</li>
  * </ul>
  * </p>
@@ -40,7 +40,7 @@ public class SSNLOperator implements LinearGraphOperator {
   /**
    * <p>Creates a new SSNLOperator instance.</p>
    *
-   * @param graph The underlying graph. Must be strictly bipartite, connected, undirected and have non-negative edge weights
+   * @param graph The underlying graph. Must be connected, undirected and have non-negative edge weights
    */
 
   public SSNLOperator(Graph graph) {
