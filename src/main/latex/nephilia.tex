@@ -34,7 +34,7 @@
     %----------------------------------------------------------------------------------------
 
     \lettrineabstract{
-    Put something here please
+        Put something here
     }
 
     %----------------------------------------------------------------------------------------
@@ -111,49 +111,55 @@
         \end{proof}
     \end{eigenvalueReplacement}
 
-    \newtheorem{Spectral Shifting}[]{Theorem (Spectral Shifting)}[section]
-    \begin{Spectral Shifting}
-        TODO: Proof
-        Let $A \in \mathbb{R}^{n \times n}$ a symmetric, positive-definite matrix with $Av=\lambda v$ for some eigenvalue $\lambda \in \mathbb{R}$.
-        Furthermore, let $\mu \in \mathbb{R}$. Then
+    \newtheorem{shifting}[]{Theorem: Spectral shifting (Mirroring special case)}[section]
+    \begin{shifting}
+        Let $A \in \mathbb{R}^{n \times n}$ be a real symmetric matrix and $\sigma \in \mathbb{R}$.
+        Then, the matrix
         \begin{align}
-            (A - \sigma I)v = (\lambda - \mu)v
+            \hat{A} := \sigma I - A
         \end{align}
-        That is, $(\lambda - \mu)v$ is an eigenvalue of the Matrix $(A - \sigma I)v$. Just like before, this does not affect the
-        eigenvector $v$.
-    \end{Spectral Shifting}
+        Will be mirrored along $\sigma$. More precisely, for any eigenvalue $\lambda$ of $A$ and Eigenvector
+        $v \in \mathbb{R}^n$, the following identity holds:
+        \begin{align}
+            \left( \sigma I -A \right) v = \left( \sigma - \lambda \right) v
+        \end{align}
+        Furthermore neither the eigenvectors of $\hat{A}$ are precisely those of $A$.
+        \begin{proof}[Proof]
+            Let $V \in \mathbb{R}^{n \times n}$ be the orthonormal matrix consisting of all eigenvectors of $A$
+            and $D \in \mathbb{R}^{n \times n}$ the diagonal matrix from its eigenvalues. Then:
+            \begin{align}
+                \begin{split}
+                    V \left( \sigma I - D \right) V^T & = V \left( \sigma I V^T - D V ^T \right) \\
+                    & = V \sigma I V^T - VDV^T \\
+                    & = \sigma V V^T - A \\
+                    & = \sigma I -A
+                \end{split}
+            \end{align}
+        \end{proof}
+    \end{shifting}
 
-    \newtheorem{Reversal}[]{Corollary (Reverse Spectra)}[section]
-    \begin{Reversal}
-        Obviously the reversed statement $(\sigma I - A)v = (\mu - \lambda)v$ also holds true.
-        Let $A \in \mathbb{R}^{n \times n}$, $v$ like above. Let $\lambda_n$ the largest eigenvalue.
-        It immediately follows that the transformation
-        \begin{align}
-            \hat{A} := \lambda_n I - A
-        \end{align}
-        will mirror the eigenvalue at $\lambda_n$. That is, the order of the spectrum is reversed without affecting any eigenvectors of $A$.
-    \end{Reversal}
     With those tools at hand, we can now formulate the transformation that will assign the eigenvector of the
     second-smallest eigenvalue to the largest eigenvalue of the transformed matrix.
     \\
     Remember that there a few known properties of the normalized laplacian spectrum. In particular:
     \begin{itemize}
         \item We know that the smallest eigenvalue is $0$ with eigenvector $\frac{D^\frac{1}{2}}{\lVert D^\frac{1}{2} \rVert}$ % TODO: Wrong! There is no D here
-        \item The largest eigenvalue is known to be $2$.
+        \item The largest eigenvalue is known to be $ \leq 2$.
     \end{itemize}
 
-    Now we can first exchange the eigenvalue $0 \rightarrow 2$ and then reverse the spectrum along $2$.
-    The vector associated with the largest eigenvalue of this matrix is just the one we have been seeking.
-    \\
-    TODO: Update documentation from here. See paragraph above!
-    Assuming that $\lVert v_0 \lVert = 1$
-    \begin{equation}
-        \label{shiftedlaplacian}
-        \begin{split}
-            \hat{\mathcal{L}} & := \underbrace{2I - \mathcal{L}}_{\text{reverse spectrum}} - \underbrace{2 v_0 v_0^T}_{\text{eigenvalue $2 \rightarrow 0$}}\\
-            & = 2 ( I - v_0 v_0^T ) - \mathcal{L}
-        \end{split}
-    \end{equation}
+    \newtheorem{combined}[]{Corollary: Making the $v_2$ accessible }[section]
+    \begin{shifting}
+        Let $\mathcal{L} \in \mathbb{R}^{n \times n}$ be the normalized laplacian of any graph and $v_0$ the known
+        smallest eigenvector belonging to the eigenvalue $0$. Then, the eigenvector associated with the largest
+        eigenvalue of the following matrix is exactly that of the second-smalles eigenvalue of the regular
+        normalized Laplacian
+        \begin{align}
+            \begin{split}
+                \tilde{\mathcal{L}} & = \underbrace{2I -}_{mirror\ spectrum\ along\ 2} \underbrace{\left( \mathcal{L} + 2 v_0 {v_0}^T \right)}_{send\ \lambda_0 \rightarrow 2} \\
+                & = 2 \left( I - v_0 {v_0}^T \right) - \mathcal{L}
+            \end{split}
+        \end{align}
+    \end{shifting}
 
     \section{Bringing it all together}
     In \eqref{shiftedlaplacian}, we were presented with a simple analytic solution for any spectrally shifted normalized laplacian.
