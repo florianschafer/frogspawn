@@ -1,7 +1,5 @@
  - Make maxIterations depend on the graph size (mind those nasty alternating beasts!)
  - Sample initial vector by pre-solving a smaller matrix
  - Write some proper math documentation
- - Check graph for biparity upon creation
- - Remove synchronized everywhere
  - CUDA
  - Parallel cluster tree traversal
