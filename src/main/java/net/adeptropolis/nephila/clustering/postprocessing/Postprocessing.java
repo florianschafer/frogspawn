@@ -41,10 +41,10 @@ public class Postprocessing {
   public Cluster apply() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    boolean changed;
-    do {
-      changed = applyPostprocessor(ancestorSimilarity) || applyPostprocessor(consistency);
-    } while (changed);
+//    boolean changed;
+//    do {
+//      changed = applyPostprocessor(ancestorSimilarity) || applyPostprocessor(consistency);
+//    } while (changed);
     applyPostprocessor(singletons);
     stopWatch.stop();
     LOG.debug("Postprocessing finished after {}", stopWatch);

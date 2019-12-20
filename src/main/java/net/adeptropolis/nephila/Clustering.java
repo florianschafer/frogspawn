@@ -21,7 +21,7 @@ public class Clustering {
 
   public static Cluster run(Graph graph, ConsistencyMetric metric, ClusteringSettings settings) {
     RecursiveClustering recursiveClustering = new RecursiveClustering(graph, metric, settings);
-    return recursiveClustering.run();
-//    return new Postprocessing(root, graph, settings).apply();
+    Cluster root = recursiveClustering.run();
+    return new Postprocessing(root, graph, settings).apply();
   }
 }
