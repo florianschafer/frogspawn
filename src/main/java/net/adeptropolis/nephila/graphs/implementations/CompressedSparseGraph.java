@@ -54,6 +54,17 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
+   * <b>Note:</b>The edges are accounted for in a directed fashion!
+   * That is, an undirected graph has 2x the expected number of edges
+   * @return number of edges
+   */
+
+  @Override
+  public long numEdges() {
+    return datastore.edges.size();
+  }
+
+  /**
    * Return the vertex set
    *
    * @return An iterator for the vertex set

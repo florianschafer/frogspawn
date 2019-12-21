@@ -35,6 +35,11 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   }
 
   @Test
+  public void NumEdges() {
+    assertThat(defaultGraph.numEdges(), is(10L));
+  }
+
+  @Test
   public void vertices() {
     VertexIterator it = defaultGraph.vertexIterator();
     IntArrayList localIds = new IntArrayList();

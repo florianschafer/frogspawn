@@ -16,6 +16,8 @@ public abstract class Graph {
 
   public abstract int size();
 
+  public abstract long numEdges();
+
   public abstract VertexIterator vertexIterator();
 
   /**

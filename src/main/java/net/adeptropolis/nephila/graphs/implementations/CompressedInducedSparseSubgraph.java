@@ -27,6 +27,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
 
   private final CompressedSparseGraphDatastore datastore;
   private final int[] vertices;
+  private long cachedNumEdges = -1L;
 
   /**
    * Constructor
@@ -48,6 +49,24 @@ public class CompressedInducedSparseSubgraph extends Graph {
   @Override
   public int size() {
     return vertices.length;
+  }
+
+  /**
+   * <b>Note:</b>The edges are accounted for in a directed fashion!
+   * That is, an undirected graph has 2x the expected number of edges
+   * @return number of edges
+   */
+
+  @Override
+  public long numEdges() {
+    if (cachedNumEdges >= 0) {
+      return cachedNumEdges;
+    } else {
+      EdgeCountingConsumer edgeCountingConsumer = new EdgeCountingConsumer(this);
+      traverse(edgeCountingConsumer);
+      cachedNumEdges = edgeCountingConsumer.getCount();
+      return cachedNumEdges;
+    }
   }
 
   /**
@@ -182,4 +201,21 @@ public class CompressedInducedSparseSubgraph extends Graph {
     return new CompressedInducedSparseSubgraph(datastore, vertices);
   }
 
+  private class EdgeCountingConsumer implements EdgeConsumer {
+    private long cnt = 0L;
+
+    public EdgeCountingConsumer(CompressedInducedSparseSubgraph subgraph) {
+      cnt = 0;
+    }
+
+    @Override
+    public void accept(int u, int v, double weight) {
+      cnt++;
+    }
+
+    public long getCount() {
+      return cnt;
+    }
+
+ }
 }

@@ -69,7 +69,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     }
     if (clusterVertices.size() == cluster.getRemainder().size()) {
       stopWatch.stop();
-      LOG.debug("Finished after {}. There were no changes to the cluster structure", stopWatch);
+//      LOG.debug("Finished after {}. There were no changes to the cluster structure", stopWatch);
       return false;
     } else {
       cluster.setRemainder(new IntArrayList(clusterVertices));

@@ -53,6 +53,19 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   }
 
   @Test
+  public void numOrderedEdges() {
+    Graph graph = builder()
+            .add(0, 1, 2)
+            .add(1, 2, 3)
+            .add(1, 4, 5)
+            .add(1, 5, 7)
+            .add(1, 11, 11)
+            .build();
+    Graph sub = subgraph(graph, 1, 2, 5);
+    assertThat(sub.numEdges(), is(4L));
+  }
+
+  @Test
   public void vertices() {
     VertexIterator it = defaultSubgraph(4, 9, 10).vertexIterator();
     IntArrayList localIds = new IntArrayList();

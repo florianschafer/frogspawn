@@ -50,11 +50,14 @@ public class FooingOuterEdgeSourceTest {
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_en.listjson.lemmas.pairs.2.5M"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.50.tsv"));
+
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
+
+    //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Essentials/Workbench/wiki_en.listjson.lemmas.pairs"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.getVertex("/home/florian/Datasets/Essentials/Workbench/fb_names.30M.tsv"));
 
-    ClusteringSettings settings = new ClusteringSettings(50, 0.4, 0.75, 1E-5, true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+    ClusteringSettings settings = new ClusteringSettings(50, 0.4, 0.95, 1E-5, true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     RelativeWeightConsistencyMetric metric = new RelativeWeightConsistencyMetric();
@@ -71,7 +74,7 @@ public class FooingOuterEdgeSourceTest {
 
     Labeling labeling = new TopWeightsAggregateLabeling(100, graph);
 //    Labeling labeling = new TopWeightsRemainderLabeling(10, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters2.txt"), labeling, g.inverseLabels());
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters3.txt"), labeling, g.inverseLabels());
 //    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
   }
