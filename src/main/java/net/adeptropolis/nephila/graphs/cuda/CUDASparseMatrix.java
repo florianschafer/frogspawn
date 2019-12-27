@@ -8,45 +8,65 @@
 package net.adeptropolis.nephila.graphs.cuda;
 
 import jcuda.Pointer;
-import jcuda.Sizeof;
 import jcuda.jcusparse.cusparseHandle;
 import jcuda.jcusparse.cusparseMatDescr;
-import net.adeptropolis.nephila.graphs.Graph;
-
-import static jcuda.jcusparse.JCusparse.*;
-import static jcuda.jcusparse.cusparseIndexBase.CUSPARSE_INDEX_BASE_ZERO;
-import static jcuda.jcusparse.cusparseMatrixType.CUSPARSE_MATRIX_TYPE_GENERAL;
+import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAException;
+import net.adeptropolis.nephila.graphs.cuda.exceptions.CUSparseException;
 
 public class CUDASparseMatrix {
 
   private final cusparseHandle sparseHandle;
   private final cusparseMatDescr matrixDescriptor;
 
-  public CUDASparseMatrix(Graph graph, cusparseHandle sparseHandle) throws CUSparseException {
+  private final int size;
+  private final long numEdges;
+
+  private final Pointer rowPtrs;
+  private final Pointer colIndices;
+  private final Pointer values;
+
+  public CUDASparseMatrix(cusparseHandle sparseHandle, int size, long numEdges, Pointer rowPtrs, Pointer colIndices, Pointer values) {
     this.sparseHandle = sparseHandle;
-    this.matrixDescriptor = CUSparse.createMatrixDescriptor();
-//    this.rowPtrs = CUDA.malloc(graph.size() * Sizeof.INT); // Check! (+1?)
-//    this.colIndices = CUDA.malloc()
-  }
-
-  public void destroy() throws CUDAException, CUSparseException {
-    CUSparse.destroyMatDescr(matrixDescriptor);
-//    CUDA.free(values);
-//    CUDA.free(colIndices);
-//    CUDA.free(rowPtrs);
-  }
-
-  public static class Builder {
-
-    private Pointer rowPtrs;
-    private Pointer colIndices;
-    private Pointer values;
-
-    public Builder(Graph graph) throws CUDAException {
-       this.rowPtrs = CUDA.malloc(Sizeof.INT * graph.size());
-//       this.colIndices = CUDA.malloc(Sizeof.INT * graph.)
+    this.size = size;
+    this.numEdges = numEdges;
+    this.rowPtrs = rowPtrs;
+    this.colIndices = colIndices;
+    this.values = values;
+    try {
+      this.matrixDescriptor = CUSparse.createMatrixDescriptor();
+    } catch (CUSparseException e) {
+      throw new RuntimeException(e);
     }
-
   }
 
+  public void destroy() {
+    try {
+      CUDA.free(rowPtrs);
+      CUDA.free(colIndices);
+      CUDA.free(values);
+      CUSparse.destroyMatDescr(matrixDescriptor);
+    } catch (CUDAException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public Pointer getRowPtrs() {
+    return rowPtrs;
+  }
+
+  public Pointer getColIndices() {
+    return colIndices;
+  }
+
+  public Pointer getValues() {
+    return values;
+  }
+
+  public int getSize() {
+    return size;
+  }
+
+  public long getNumEdges() {
+    return numEdges;
+  }
 }

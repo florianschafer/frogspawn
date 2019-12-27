@@ -5,7 +5,7 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-package net.adeptropolis.nephila.graphs.cuda;
+package net.adeptropolis.nephila.graphs.cuda.exceptions;
 
 public class CUDAException extends Exception {
 

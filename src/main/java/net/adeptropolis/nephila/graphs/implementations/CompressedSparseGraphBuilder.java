@@ -51,6 +51,12 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
     return this;
   }
 
+  @Override
+  public Graph.Builder addDirected(int u, int v, double weight) {
+    set(ptr++, u, v, weight);
+    return this;
+  }
+
   /**
    * Set an edge buffer element
    *

@@ -168,4 +168,13 @@ public class BigInts implements SortOps {
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
+
+  public int[] toArray() {
+    int[] arr = new int[Math.toIntExact(size())];
+    for (int i = 0; i < size(); i++) {
+      arr[i] = get(i);
+    }
+    return arr;
+  }
+
 }

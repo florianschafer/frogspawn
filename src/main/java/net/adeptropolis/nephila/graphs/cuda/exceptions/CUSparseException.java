@@ -5,9 +5,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-package net.adeptropolis.nephila.graphs.cuda;
+package net.adeptropolis.nephila.graphs.cuda.exceptions;
 
-public class CUSparseException extends Exception {
+public class CUSparseException extends CUDAException {
 
   public CUSparseException() {
   }
@@ -27,4 +27,5 @@ public class CUSparseException extends Exception {
   public CUSparseException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }
+
 }

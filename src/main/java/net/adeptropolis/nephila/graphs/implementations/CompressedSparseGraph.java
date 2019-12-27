@@ -155,6 +155,15 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
+   *
+   * @return The compressed datastore
+   */
+
+  public CompressedSparseGraphDatastore getDatastore() {
+    return datastore;
+  }
+
+  /**
    * Iterator over the vertex set
    */
 

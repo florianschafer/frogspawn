@@ -42,4 +42,13 @@ public class Arr {
     return shrunk;
   }
 
+  public static float[] asFloats(double[] doubles) {
+    float[] floats = new float[doubles.length];
+    for (int i = 0; i < doubles.length; i++) {
+      floats[i] = (float) doubles[i];
+    }
+    return floats;
+  }
+
+
 }

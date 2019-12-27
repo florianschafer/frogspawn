@@ -168,4 +168,13 @@ public class BigLongs implements SortOps {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
 
+  public long[] toArray() {
+    long[] arr = new long[Math.toIntExact(size())];
+    for (int i = 0; i < size(); i++) {
+      arr[i] = get(i);
+    }
+    return arr;
+  }
+
+
 }

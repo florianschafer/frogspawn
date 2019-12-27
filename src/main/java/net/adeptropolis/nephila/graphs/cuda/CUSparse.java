@@ -10,6 +10,7 @@ package net.adeptropolis.nephila.graphs.cuda;
 import jcuda.jcusparse.JCusparse;
 import jcuda.jcusparse.cusparseMatDescr;
 import jcuda.jcusparse.cusparseStatus;
+import net.adeptropolis.nephila.graphs.cuda.exceptions.CUSparseException;
 
 import static jcuda.jcusparse.JCusparse.*;
 import static jcuda.jcusparse.cusparseIndexBase.CUSPARSE_INDEX_BASE_ZERO;

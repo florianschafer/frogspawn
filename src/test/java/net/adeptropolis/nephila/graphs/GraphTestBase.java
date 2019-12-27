@@ -293,7 +293,7 @@ public class GraphTestBase {
     fingerprintingConsumer.reset();
   }
 
-  Graph bandedGraph(int n, int k) {
+  protected Graph bandedGraph(int n, int k) {
     CompressedSparseGraphBuilder builder = CompressedSparseGraph.builder();
     for (int i = 0; i < n; i++) {
       for (int j = i + 1; j < Math.min(i + k, n); j++) {
@@ -329,6 +329,14 @@ public class GraphTestBase {
             .add(5, 8, 1)
             .add(7, 6, 1)
             .add(7, 8, 1)
+            .build();
+  }
+
+  protected Graph triangle() {
+    return new CompressedSparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(1, 2, 1)
+            .add(2, 0, 1)
             .build();
   }
 

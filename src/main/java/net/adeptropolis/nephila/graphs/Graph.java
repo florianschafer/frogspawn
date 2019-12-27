@@ -31,6 +31,17 @@ public abstract class Graph {
     EdgeOps.traverse(this, consumer);
   }
 
+  /**
+   * Traverse in a sequential manner (i.e. no multithreading)
+   * @param consumer
+   */
+
+  public void traverseSequential(EdgeConsumer consumer) {
+    for (int u = 0; u < size(); u++) {
+      traverse(u, consumer);
+    }
+  }
+
   public abstract int localVertexId(int globalVertexId);
 
   public abstract int globalVertexId(int localVertexId);
@@ -107,6 +118,8 @@ public abstract class Graph {
   public interface Builder {
 
     Builder add(int u, int v, double weight);
+
+    Builder addDirected(int u, int v, double weight);
 
     Graph build();
   }
