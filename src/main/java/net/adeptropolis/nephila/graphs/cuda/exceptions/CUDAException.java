@@ -7,7 +7,7 @@
 
 package net.adeptropolis.nephila.graphs.cuda.exceptions;
 
-public class CUDAException extends Exception {
+public class CUDAException extends RuntimeException {
 
   public CUDAException() {
   }

@@ -34,45 +34,45 @@ public class CUDA {
     return ptr;
   }
 
-  static void free(Pointer ptr) throws CUDAException {
+  static void free(Pointer ptr) {
     verifyOp(cudaFree(ptr), "Free memory");
   }
 
-  public static void copyToDevice(int[] src, Pointer dst, long dstOffset, long count) throws CUDAException {
+  public static void copyToDevice(int[] src, Pointer dst, long dstOffset, long count) {
     copyToDevice(Pointer.to(src), dst, dstOffset, count, Sizeof.INT);
   }
 
-  public static void copyToDevice(float[] src, Pointer dst, long dstOffset, long count) throws CUDAException {
+  public static void copyToDevice(float[] src, Pointer dst, long dstOffset, long count) {
     copyToDevice(Pointer.to(src), dst, dstOffset, count, Sizeof.FLOAT);
   }
 
-  public static void copyToDevice(long[] src, Pointer dst, long dstOffset, long count) throws CUDAException {
+  public static void copyToDevice(long[] src, Pointer dst, long dstOffset, long count) {
     copyToDevice(Pointer.to(src), dst, dstOffset, count, Sizeof.LONG);
   }
 
-  private static void copyToDevice(Pointer src, Pointer dst, long dstOffset, long count, int elementSize) throws CUDAException {
+  private static void copyToDevice(Pointer src, Pointer dst, long dstOffset, long count, int elementSize) {
     int status = cudaMemcpy(dst.withByteOffset(dstOffset * elementSize), src, count * elementSize, cudaMemcpyHostToDevice);
     verifyOp(status, "Copy to device");
   }
 
-  public static void copyToHost(Pointer src, int[] dst, long count) throws CUDAException {
+  public static void copyToHost(Pointer src, int[] dst, long count) {
     copyToHost(src, Pointer.to(dst),count, Sizeof.INT);
   }
 
-  public static void copyToHost(Pointer src, float[] dst, long count) throws CUDAException {
+  public static void copyToHost(Pointer src, float[] dst, long count) {
     copyToHost(src, Pointer.to(dst),count, Sizeof.FLOAT);
   }
 
-  public static void copyToHost(Pointer src, long[] dst, long count) throws CUDAException {
+  public static void copyToHost(Pointer src, long[] dst, long count) {
     copyToHost(src, Pointer.to(dst),count, Sizeof.LONG);
   }
 
-  private static void copyToHost(Pointer src, Pointer dst, long count, int elementSize) throws CUDAException {
+  private static void copyToHost(Pointer src, Pointer dst, long count, int elementSize) {
     int status = cudaMemcpy(dst, src, count * elementSize, cudaMemcpyDeviceToHost);
     verifyOp(status, "Copy to host");
   }
 
-  static void verifyOp(int status, String prefix) throws CUDAException {
+  static void verifyOp(int status, String prefix) {
     if (status != cudaSuccess) {
       throw new CUDAException(String.format("%s: %s", prefix, cudaError.stringFor(status)));
     }

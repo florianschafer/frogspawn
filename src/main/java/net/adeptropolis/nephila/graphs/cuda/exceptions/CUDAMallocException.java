@@ -7,7 +7,7 @@
 
 package net.adeptropolis.nephila.graphs.cuda.exceptions;
 
-public class CUDAMallocException extends CUDAException {
+public class CUDAMallocException extends Exception {
 
   public CUDAMallocException() {
   }

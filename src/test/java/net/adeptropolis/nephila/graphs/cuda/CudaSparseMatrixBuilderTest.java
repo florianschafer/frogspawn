@@ -11,6 +11,7 @@ import jcuda.jcusparse.cusparseHandle;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAException;
+import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAMallocException;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
@@ -27,21 +28,21 @@ public class CudaSparseMatrixBuilderTest extends GraphTestBase {
   private static cusparseHandle sparseHandle = new cusparseHandle();
 
   @Test
-  public void simpleTriangle() throws CUDAException {
+  public void simpleTriangle() throws CUDAMallocException {
     verify(triangle());
   }
 
   @Test
-  public void someBandedGraph() throws CUDAException {
+  public void someBandedGraph() throws CUDAMallocException {
     verify(bandedGraph(10000, 5));
   }
 
   @Test
-  public void exceedBufferSize() throws CUDAException {
+  public void exceedBufferSize() throws CUDAMallocException {
     verify(completeGraph(1000), 1 << 10);
   }
 
-  private void verify(Graph graph, int bufSize) throws CUDAException {
+  private void verify(Graph graph, int bufSize) throws CUDAMallocException {
     CompressedSparseGraphDatastore refDatastore = refDatastore(graph);
     CUDASparseMatrix matrix = new CudaSparseMatrixBuilder(graph, sparseHandle).build();
     assertThat(Arrays.compare(getRowPtrs(matrix), refDatastore.pointers), is(0));
@@ -50,7 +51,7 @@ public class CudaSparseMatrixBuilderTest extends GraphTestBase {
     matrix.destroy();
   }
 
-  private void verify(Graph graph) throws CUDAException {
+  private void verify(Graph graph) throws CUDAMallocException {
     verify(graph, CudaSparseMatrixBuilder.BUF_SIZE);
   }
 

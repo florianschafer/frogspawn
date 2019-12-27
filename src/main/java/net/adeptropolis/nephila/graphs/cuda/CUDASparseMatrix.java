@@ -10,7 +10,6 @@ package net.adeptropolis.nephila.graphs.cuda;
 import jcuda.Pointer;
 import jcuda.jcusparse.cusparseHandle;
 import jcuda.jcusparse.cusparseMatDescr;
-import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAException;
 import net.adeptropolis.nephila.graphs.cuda.exceptions.CUSparseException;
 
 public class CUDASparseMatrix {
@@ -40,14 +39,10 @@ public class CUDASparseMatrix {
   }
 
   public void destroy() {
-    try {
-      CUDA.free(rowPtrs);
-      CUDA.free(colIndices);
-      CUDA.free(values);
-      CUSparse.destroyMatDescr(matrixDescriptor);
-    } catch (CUDAException e) {
-      throw new RuntimeException(e);
-    }
+    CUDA.free(rowPtrs);
+    CUDA.free(colIndices);
+    CUDA.free(values);
+    CUSparse.destroyMatDescr(matrixDescriptor);
   }
 
   public Pointer getRowPtrs() {

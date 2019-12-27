@@ -22,7 +22,7 @@ public class CUSparse {
     JCusparse.setExceptionsEnabled(false);
   }
 
-  static cusparseMatDescr createMatrixDescriptor() throws CUSparseException {
+  static cusparseMatDescr createMatrixDescriptor() {
     cusparseMatDescr matDescr = new cusparseMatDescr();
     verifyOp(cusparseCreateMatDescr(matDescr), "Create matrix descriptor");
     verifyOp(cusparseSetMatType(matDescr, CUSPARSE_MATRIX_TYPE_GENERAL), "Set matrix type");
@@ -30,11 +30,11 @@ public class CUSparse {
     return matDescr;
   }
 
-  static void destroyMatDescr(cusparseMatDescr matDescr) throws CUSparseException {
+  static void destroyMatDescr(cusparseMatDescr matDescr) {
     verifyOp(cusparseDestroyMatDescr(matDescr), "Destroy matrix descriptor");
   }
 
-  static void verifyOp(int status, String prefix) throws CUSparseException {
+  static void verifyOp(int status, String prefix) {
     if (status != cusparseStatus.CUSPARSE_STATUS_SUCCESS) {
       throw new CUSparseException(String.format("%s: %s", prefix, cusparseStatus.stringFor(status)));
     }

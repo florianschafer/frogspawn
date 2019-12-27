@@ -12,10 +12,7 @@ import jcuda.Pointer;
 import jcuda.Sizeof;
 import jcuda.jcusparse.cusparseHandle;
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAException;
 import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAMallocException;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class CudaSparseMatrixBuilder {
 
@@ -107,12 +104,8 @@ public class CudaSparseMatrixBuilder {
       if (bufPtr == 0) {
         return;
       }
-      try {
-        CUDA.copyToDevice(bufColIndices, colIndices, ptr, bufPtr);
-        CUDA.copyToDevice(bufValues, values, ptr, bufPtr);
-      } catch (CUDAException e) {
-        throw new RuntimeException(e);
-      }
+      CUDA.copyToDevice(bufColIndices, colIndices, ptr, bufPtr);
+      CUDA.copyToDevice(bufValues, values, ptr, bufPtr);
       ptr += bufPtr;
       bufPtr = 0;
     }
@@ -121,11 +114,7 @@ public class CudaSparseMatrixBuilder {
       if (bufRowPtr == 0) {
         return;
       }
-      try {
-        CUDA.copyToDevice(bufRowPtrs, rowPtrs, rowPtr, bufRowPtr);
-      } catch (CUDAException e) {
-        throw new RuntimeException(e);
-      }
+      CUDA.copyToDevice(bufRowPtrs, rowPtrs, rowPtr, bufRowPtr);
       rowPtr += bufRowPtr;
       bufRowPtr = 0;
     }
