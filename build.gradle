@@ -87,9 +87,11 @@ dependencies {
     compile (group: 'org.jcuda', name: 'jcuda', version: jCudaVersion,) { transitive=false }
     compile (group: 'org.jcuda', name: 'jcublas', version: jCudaVersion) { transitive=false }
     compile (group: 'org.jcuda', name: 'jcusparse', version: jCudaVersion){ transitive=false }
+    compile (group: 'org.jcuda', name: 'jcurand', version: jCudaVersion){ transitive=false }
     compile group: 'org.jcuda', name: 'jcuda-natives', classifier: classifier, version: jCudaVersion
     compile group: 'org.jcuda', name: 'jcublas-natives', classifier: classifier, version: jCudaVersion
     compile group: 'org.jcuda', name: 'jcusparse-natives', classifier: classifier, version: jCudaVersion
+    compile group: 'org.jcuda', name: 'jcurand-natives', classifier: classifier, version: jCudaVersion
 //
 //    compile group: 'org.jcuda', name: 'jcuda-natives', classifier: classifier, version: jCudaVersion
 //    compile group: 'org.jcuda', name: 'jcusparse-natives', classifier: classifier, version: jCudaVersion

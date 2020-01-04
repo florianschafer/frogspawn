@@ -34,13 +34,14 @@ public class CudaSparseMatrixBuilder {
   public CudaSparseMatrixBuilder(Graph graph, cusparseHandle sparseHandle, int bufSize) throws CUDAMallocException {
     this.graph = graph;
     this.sparseHandle = sparseHandle;
-    this.rowPtrs = CUDA.malloc(Sizeof.LONG * (graph.size() + 1));
+    this.rowPtrs = CUDA.malloc(Sizeof.INT * (graph.size() + 1));
     this.colIndices = CUDA.malloc(Sizeof.INT * graph.numEdges());
     this.values = CUDA.malloc(Sizeof.FLOAT * graph.numEdges());
     this.buffer = new Buffer(rowPtrs, colIndices, values, bufSize);
   }
 
   public CUDASparseMatrix build() throws CUDAMallocException {
+    // TODO: Use maxIndex-1 instead of graph.size()
     for (int i = 0; i < graph.size(); i++) {
       buffer.addRow();
       graph.traverse(i, (u, v, w) ->  {
@@ -63,7 +64,7 @@ public class CudaSparseMatrixBuilder {
     private long ptr;
     private long rowPtr;
 
-    private final long[] bufRowPtrs;
+    private final int[] bufRowPtrs;
     private final int[] bufColIndices;
     private final float[] bufValues;
     private int bufPtr;
@@ -76,11 +77,11 @@ public class CudaSparseMatrixBuilder {
       this.bufSize = bufSize;
       this.bufValues = new float[bufSize];
       this.bufColIndices = new int[bufSize];
-      this.bufRowPtrs = new long[bufSize + 1];
+      this.bufRowPtrs = new int[bufSize + 1];
     }
 
     void addRow() {
-      bufRowPtrs[bufRowPtr] = ptr + bufPtr;
+      bufRowPtrs[bufRowPtr] = Math.toIntExact(ptr + bufPtr);
       if (bufRowPtr++ == bufRowPtrs.length) {
         flushRowPointers();
       }

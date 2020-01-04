@@ -31,11 +31,11 @@ public class CUDASparseMatrix {
     this.rowPtrs = rowPtrs;
     this.colIndices = colIndices;
     this.values = values;
-    try {
-      this.matrixDescriptor = CUSparse.createMatrixDescriptor();
-    } catch (CUSparseException e) {
-      throw new RuntimeException(e);
-    }
+    this.matrixDescriptor = CUSparse.createMatrixDescriptor();
+  }
+
+  public cusparseMatDescr getMatrixDescriptor() {
+    return matrixDescriptor;
   }
 
   public void destroy() {
