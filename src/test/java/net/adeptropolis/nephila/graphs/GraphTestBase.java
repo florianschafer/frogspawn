@@ -349,7 +349,7 @@ public class GraphTestBase {
     return b.build();
   }
 
-  protected Graph completeGraph(int size) {
+  protected static Graph completeGraph(int size) {
     CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
     for (int i = 0; i < size; i++) {
       for (int j = i + 1; j < size; j++) {

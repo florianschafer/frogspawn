@@ -32,6 +32,16 @@ public class GraphTest {
   }
 
   @Test
+  public void totalWeight() {
+    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .add(2, 0, 5)
+            .build();
+    assertThat(graph.totalWeight(), closeTo(24, 1E-6));
+  }
+
+  @Test
   public void relativeWeights() {
     Graph graph = new CompressedSparseGraphBuilder()
             .add(0, 1, 3)

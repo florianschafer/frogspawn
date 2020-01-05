@@ -8,12 +8,14 @@
 package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.ConsistencyMetric;
 import net.adeptropolis.nephila.clustering.RelativeWeightConsistencyMetric;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsAggregateLabeling;
 import net.adeptropolis.nephila.clustering.sinks.LeafTextSink;
 import net.adeptropolis.nephila.clustering.sinks.Sink;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
+import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.apache.commons.lang3.time.StopWatch;
@@ -59,8 +61,8 @@ public class FooingOuterEdgeSourceTest {
 
     ClusteringSettings settings = new ClusteringSettings(50, 0.4, 0.95, 1E-5, true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
-    CompressedSparseGraph graph = builder.build();
-    RelativeWeightConsistencyMetric metric = new RelativeWeightConsistencyMetric();
+    Graph graph = builder.build();
+    ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
     Cluster root = Clustering.run(graph, metric, settings);
 
     AtomicInteger lost = new AtomicInteger();

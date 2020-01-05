@@ -13,6 +13,7 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 public abstract class Graph {
 
   private double[] cachedWeights = null;
+  private double cachedTotalWeight = -1;
 
   public abstract int size();
 
@@ -75,6 +76,25 @@ public abstract class Graph {
       cachedWeights = VertexWeights.compute(this);
     }
     return cachedWeights;
+  }
+
+  /**
+   * The total weight of the graph. <b>Note:</b> For undirected graphs, weights are counted twice!
+   *
+   * @return The total weight of the graph
+   */
+
+  public double totalWeight() {
+    if (cachedTotalWeight >= 0) {
+      return cachedTotalWeight;
+    }
+    double[] weights = weights();
+    double total = 0;
+    for (int i = 0; i < size(); i++) {
+      total += weights[i];
+    }
+    cachedTotalWeight = total;
+    return total;
   }
 
   /**

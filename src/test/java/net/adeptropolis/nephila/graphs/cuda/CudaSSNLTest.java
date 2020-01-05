@@ -10,8 +10,10 @@ package net.adeptropolis.nephila.graphs.cuda;
 import jcuda.jcusparse.cusparseHandle;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.cuda.exceptions.CUDAMallocException;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class CudaSSNLTest extends GraphTestBase {
 
   private static cusparseHandle sparseHandle = new cusparseHandle();

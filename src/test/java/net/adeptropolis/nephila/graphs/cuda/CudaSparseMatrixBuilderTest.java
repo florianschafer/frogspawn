@@ -16,6 +16,7 @@ import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
 import net.adeptropolis.nephila.helpers.Arr;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
+@Ignore
 public class CudaSparseMatrixBuilderTest extends GraphTestBase {
 
   private static cusparseHandle sparseHandle = new cusparseHandle();

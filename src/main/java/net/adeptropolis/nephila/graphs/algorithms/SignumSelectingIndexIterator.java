@@ -9,14 +9,17 @@ package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
+import java.util.function.IntPredicate;
+
 /**
  * <p>An iterator for the indices of either the non-negative or negative entries of a given vector</p>
  */
 
-class SignumSelectingIndexIterator implements IntIterator {
+public class SignumSelectingIndexIterator implements IntIterator {
 
   private final double[] v;
   private final int selectSignum;
+  private final IntPredicate customPredicate;
   private int idx;
   private int next;
 
@@ -25,11 +28,13 @@ class SignumSelectingIndexIterator implements IntIterator {
    *
    * @param v            A vector
    * @param selectSignum Select the indices of either all non-negative entries (selectSignum >= 0) or those of all negative negative ones (selectSignum < 0)
+   * @param customPredicate Optional: Provide an additional predicate for which entries to select. The logic is <code>customPredicate || ...<code/>. May be <code>null</code>.
    */
 
-  SignumSelectingIndexIterator(double[] v, int selectSignum) {
+  public SignumSelectingIndexIterator(double[] v, int selectSignum, IntPredicate customPredicate) {
     this.v = v;
     this.selectSignum = selectSignum;
+    this.customPredicate = customPredicate;
     this.idx = 0;
   }
 
@@ -49,7 +54,7 @@ class SignumSelectingIndexIterator implements IntIterator {
   @Override
   public boolean hasNext() {
     for (int i = idx; i < v.length; i++) {
-      if ((selectSignum >= 0 && v[i] >= 0) || (selectSignum < 0 && v[i] < 0)) {
+      if ((customPredicate != null && customPredicate.test(i)) || (selectSignum >= 0 && v[i] >= 0) || (selectSignum < 0 && v[i] < 0)) {
         next = i;
         idx = i + 1;
         return true;
@@ -57,4 +62,5 @@ class SignumSelectingIndexIterator implements IntIterator {
     }
     return false;
   }
+
 }

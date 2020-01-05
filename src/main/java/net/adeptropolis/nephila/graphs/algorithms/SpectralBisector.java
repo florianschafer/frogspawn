@@ -42,7 +42,7 @@ public class SpectralBisector {
    */
 
   private static void yieldSubgraph(Graph graph, double[] v2, Consumer<Graph> consumer, int selectSignum) {
-    SignumSelectingIndexIterator vertices = new SignumSelectingIndexIterator(v2, selectSignum);
+    SignumSelectingIndexIterator vertices = new SignumSelectingIndexIterator(v2, selectSignum, null);
     consumer.accept(graph.localInducedSubgraph(vertices));
   }
 
