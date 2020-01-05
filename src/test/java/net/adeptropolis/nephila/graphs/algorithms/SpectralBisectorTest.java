@@ -8,6 +8,7 @@
 package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.nephila.ClusteringSettings;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
@@ -23,13 +24,15 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class SpectralBisectorTest extends GraphTestBase {
 
+  private static final ClusteringSettings settings = new ClusteringSettings(0, 0, 0, 100, 0.999, true, 10000);
+
   private static final SignumConvergence conv = new SignumConvergence(1E-6);
   @Rule
   public final ExpectedException exception = ExpectedException.none();
 
   @Test
   public void completeBipartiteGraphs() throws PowerIteration.MaxIterationsExceededException {
-    SpectralBisector bisector = new SpectralBisector(conv);
+    SpectralBisector bisector = new SpectralBisector(settings);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
     bisector.bisect(completeBipartiteWithWeakLink(), 100000, c);
     List<List<Integer>> partitions = c.vertices();
@@ -40,7 +43,7 @@ public class SpectralBisectorTest extends GraphTestBase {
   @Test
   public void iterationExcessYieldsException() throws PowerIteration.MaxIterationsExceededException {
     exception.expect(PowerIteration.MaxIterationsExceededException.class);
-    SpectralBisector bisector = new SpectralBisector(new SignumConvergence(0));
+    SpectralBisector bisector = new SpectralBisector(settings);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
     bisector.bisect(largeCircle(), 10, c);
   }

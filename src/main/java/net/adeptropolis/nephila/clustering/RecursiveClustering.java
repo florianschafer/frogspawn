@@ -32,7 +32,7 @@ public class RecursiveClustering {
   public RecursiveClustering(Graph graph, ConsistencyMetric metric, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
-    this.bisector = new SpectralBisector(settings.getConvergenceCriterion());
+    this.bisector = new SpectralBisector(settings);
     this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> -protocluster.getCluster().depth()));
     this.consistencyGuard = new ConsistencyGuard(metric, graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }

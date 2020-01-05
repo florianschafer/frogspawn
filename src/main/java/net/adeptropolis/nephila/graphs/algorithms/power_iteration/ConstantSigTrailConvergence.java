@@ -14,7 +14,7 @@ import net.adeptropolis.nephila.graphs.algorithms.SignumSelectingIndexIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ConstantSigTrailConvergence implements IncompleteConvergenceCriterion {
+public class ConstantSigTrailConvergence implements PartialConvergenceCriterion {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConstantSigTrailConvergence.class.getSimpleName());
 

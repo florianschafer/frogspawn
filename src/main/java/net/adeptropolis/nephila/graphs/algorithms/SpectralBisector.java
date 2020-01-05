@@ -7,8 +7,10 @@
 
 package net.adeptropolis.nephila.graphs.algorithms;
 
+import net.adeptropolis.nephila.ClusteringSettings;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
+import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.RandomInitialVectors;
 import net.adeptropolis.nephila.graphs.operators.SSNLOperator;
@@ -22,14 +24,10 @@ public class SpectralBisector {
    * <p>The original graph will be split into two partitions such that the normalized cut is minimized</p>
    */
 
-  private final ConvergenceCriterion convergenceCriterion;
+  private final ClusteringSettings settings;
 
-  /**
-   * @param convergenceCriterion The convergence criterion. Usually, this is an instance of <code>SignumConvergence</code>.
-   */
-
-  public SpectralBisector(ConvergenceCriterion convergenceCriterion) {
-    this.convergenceCriterion = convergenceCriterion;
+  public SpectralBisector(ClusteringSettings settings) {
+    this.settings = settings;
   }
 
   /**
@@ -56,9 +54,11 @@ public class SpectralBisector {
    */
 
   public void bisect(Graph graph, int maxIterations, Consumer<Graph> consumer) throws PowerIteration.MaxIterationsExceededException {
+    PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
     SSNLOperator ssnl = new SSNLOperator(graph);
     double[] iv = RandomInitialVectors.generate(graph.size());
     double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations);
+    convergenceCriterion.postprocess(v2);
     yieldSubgraph(graph, v2, consumer, 1);
     yieldSubgraph(graph, v2, consumer, -1);
   }

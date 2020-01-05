@@ -11,7 +11,7 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
  * A relaxed convergence criterion for the power iteration
  */
 
-public interface IncompleteConvergenceCriterion extends ConvergenceCriterion {
+public interface PartialConvergenceCriterion extends ConvergenceCriterion {
 
   /**
    * Postprocess a partially converged vector
