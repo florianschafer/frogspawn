@@ -9,6 +9,7 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 import net.adeptropolis.nephila.graphs.operators.LinearGraphOperator;
 import net.adeptropolis.nephila.helpers.Vectors;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,6 +34,8 @@ public class PowerIteration {
   public static double[] apply(LinearGraphOperator op, ConvergenceCriterion convergenceCriterion, double[] initialVector, int maxIterations) throws MaxIterationsExceededException {
     double[] x = new double[op.size()];
     double[] y = initialVector;
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
 //    VectorDumper dumper = new VectorDumper(Math.abs(op.hashCode()));
     for (int i = 0; ; i++) {
       System.arraycopy(y, 0, x, 0, op.size());
@@ -44,7 +47,8 @@ public class PowerIteration {
       Vectors.normalize2(y);
 //      dumper.dump(y);
       if (convergenceCriterion.satisfied(x, y, i)) {
-        LOG.debug("Power iteration for operator size {} finished after {} rounds.", op.size(), i + 1);
+        stopWatch.stop();
+        LOG.debug("Power iteration for operator size {} finished after {} rounds in {}", op.size(), i + 1, stopWatch);
 //        dumper.close();
         return y;
       }
