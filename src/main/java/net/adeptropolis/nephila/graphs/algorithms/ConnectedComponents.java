@@ -9,8 +9,12 @@ package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
+import org.apache.commons.lang3.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 
@@ -20,10 +24,12 @@ import java.util.function.Consumer;
 
 public class ConnectedComponents implements EdgeConsumer {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ConnectedComponents.class.getSimpleName());
+
   private final Graph graph;
   private final IntLinkedOpenHashSet remaining;
   private final IntLinkedOpenHashSet componentQueue;
-  private final IntOpenHashSet component;
+  private IntOpenHashSet component;
 
   /**
    * Create a new ConnectedComponents instance
@@ -57,15 +63,21 @@ public class ConnectedComponents implements EdgeConsumer {
    */
 
   private void find(Consumer<Graph> consumer) {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
     remaining.clear();
     for (int i = 0; i < graph.size(); i++) remaining.add(i);
+    int comps = 0;
     while (!remaining.isEmpty()) {
       int i = remaining.removeFirstInt();
       processComponent(i);
       Graph subgraph = graph.localInducedSubgraph(component.iterator());
       consumer.accept(subgraph);
+      comps++;
       remaining.removeAll(component);
     }
+    stopWatch.stop();
+    LOG.debug("Found {} connected components in {}", comps, stopWatch);
   }
 
   /**
@@ -75,7 +87,11 @@ public class ConnectedComponents implements EdgeConsumer {
    */
 
   private void processComponent(int i) {
+    /*
     component.clear();
+    Unfortunately the line below is way faster than any clear() on a suitable data structure. Let the GC have fun with it.
+     */
+    component = new IntOpenHashSet();
     componentQueue.clear();
     componentQueue.add(i);
     while (!componentQueue.isEmpty()) {

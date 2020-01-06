@@ -13,6 +13,8 @@ import net.adeptropolis.nephila.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.nephila.graphs.implementations.arrays.BigInts;
 import net.adeptropolis.nephila.graphs.implementations.arrays.LongMergeSort;
 import net.adeptropolis.nephila.graphs.implementations.arrays.LongMergeSort.SortOps;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <p>Build new Graph instances</p>
@@ -27,6 +29,7 @@ import net.adeptropolis.nephila.graphs.implementations.arrays.LongMergeSort.Sort
 
 public class CompressedSparseGraphBuilder implements Graph.Builder {
 
+  private static final Logger LOG = LoggerFactory.getLogger(CompressedSparseGraphBuilder.class.getSimpleName());
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
   private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
@@ -104,8 +107,11 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
       return new CompressedSparseGraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
 
+    LOG.debug("Sort edges");
     sort();
+    LOG.debug("Reduce edges");
     reduce();
+    LOG.debug("Compact storage");
     compact();
 
     int graphSize = edges[0].get(ptr - 1) + 1;
