@@ -48,7 +48,7 @@ public class PowerIteration {
 //      dumper.dump(y);
       if (convergenceCriterion.satisfied(x, y, i)) {
         stopWatch.stop();
-        LOG.debug("Power iteration for operator size {} finished after {} rounds in {}", op.size(), i + 1, stopWatch);
+        LOG.trace("Power iteration for operator size {} finished after {} rounds in {}", op.size(), i + 1, stopWatch);
 //        dumper.close();
         return y;
       }

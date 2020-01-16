@@ -106,16 +106,12 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
     if (ptr == 0L) {
       return new CompressedSparseGraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
-
-    LOG.debug("Sort edges");
     sort();
-    LOG.debug("Reduce edges");
     reduce();
-    LOG.debug("Compact storage");
     compact();
-
     int graphSize = edges[0].get(ptr - 1) + 1;
     long[] pointers = computePointers(graphSize);
+    LOG.debug("Finished building graph with {} vertices and {} edges", graphSize, ptr);
     return new CompressedSparseGraphDatastore(graphSize, ptr, pointers, edges[1], weights);
   }
 

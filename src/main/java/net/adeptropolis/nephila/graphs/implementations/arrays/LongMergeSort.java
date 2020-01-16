@@ -5,6 +5,8 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
+// TODO: Look for / restore original license!
+
 package net.adeptropolis.nephila.graphs.implementations.arrays;
 
 /**

@@ -79,6 +79,14 @@ public class Cluster {
     }
   }
 
+  public void traverseLeafs(Consumer<Cluster> consumer) {
+    traverse(cluster -> {
+      if (cluster.getChildren().isEmpty()) {
+        consumer.accept(cluster);
+      }
+    });
+  }
+
   public IntArrayList aggregateVertices() {
     IntArrayList vertices = new IntArrayList();
     traverse(cluster -> vertices.addAll(cluster.remainder));

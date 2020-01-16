@@ -77,7 +77,7 @@ public class ConnectedComponents implements EdgeConsumer {
       remaining.removeAll(component);
     }
     stopWatch.stop();
-    LOG.debug("Found {} connected components in {}", comps, stopWatch);
+    LOG.trace("Isolated {} connected components in {}", comps, stopWatch);
   }
 
   /**
