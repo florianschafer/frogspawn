@@ -22,21 +22,8 @@ import static org.junit.Assert.assertTrue;
 public class SingletonCollapsingPostprocessorTest {
 
   @Test
-  public void noCollapsing() {
-    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(false);
-    Cluster rootCluster = new Cluster(null);
-    Cluster childCluster = new Cluster(rootCluster);
-    childCluster.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
-    boolean modified = shaper.apply(childCluster);
-    assertFalse(modified);
-    assertThat(rootCluster.getChildren().size(), is(1));
-    assertThat(rootCluster.getRemainder(), is(IntLists.EMPTY_LIST));
-    assertThat(childCluster.getRemainder(), is(new IntArrayList(new int[]{1, 2, 3})));
-  }
-
-  @Test
   public void notApplicable() {
-    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(true);
+    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor();
     Cluster rootCluster = new Cluster(null);
     Cluster childCluster1 = new Cluster(rootCluster);
     childCluster1.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
@@ -51,7 +38,7 @@ public class SingletonCollapsingPostprocessorTest {
 
   @Test
   public void doCollapse() {
-    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor(true);
+    SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor();
     Cluster root = new Cluster(null);
     Cluster child = new Cluster(root);
     child.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));

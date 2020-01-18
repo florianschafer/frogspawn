@@ -30,6 +30,24 @@ public class Cluster {
     if (parent != null) parent.children.add(this);
   }
 
+  public void assimilate(Cluster child, boolean assimilateRemainder) {
+    if (children.remove(child)) {
+      for (Cluster grandchild : child.children) {
+        grandchild.parent = this;
+      }
+      addChildren(child.getChildren());
+      if (assimilateRemainder) {
+        remainder.addAll(child.getRemainder());
+      }
+    } else {
+      throw new RuntimeException("WTF?!");
+    }
+  }
+
+  public void assimilate(Cluster child) {
+    assimilate(child, true);
+  }
+
   public IntArrayList getRemainder() {
     return remainder;
   }
@@ -46,10 +64,6 @@ public class Cluster {
     return parent;
   }
 
-  public void setParent(Cluster parent) {
-    this.parent = parent;
-  }
-
   public void addToRemainder(int globalId) {
     remainder.add(globalId);
   }
@@ -60,7 +74,7 @@ public class Cluster {
     }
   }
 
-  public void addToRemainder(Graph graph) {
+  void addToRemainder(Graph graph) {
     remainder.ensureCapacity(remainder.size() + graph.size());
     VertexIterator vertexIterator = graph.vertexIterator();
     while (vertexIterator.hasNext()) {

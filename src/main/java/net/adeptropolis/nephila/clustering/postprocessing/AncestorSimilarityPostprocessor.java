@@ -38,9 +38,10 @@ class AncestorSimilarityPostprocessor implements Postprocessor {
       LOG.debug("Skipping postprocessing");
       return false;
     }
-    cluster.getParent().getChildren().remove(cluster);
-    ancestor.getChildren().add(cluster);
-    cluster.setParent(ancestor);
+// TODO: FIX
+    //    cluster.getParent().getChildren().remove(cluster);
+//    ancestor.getChildren().add(cluster);
+//    cluster.setParent(ancestor);
     stopWatch.stop();
     LOG.debug("Finished after {}", stopWatch);
     return true;

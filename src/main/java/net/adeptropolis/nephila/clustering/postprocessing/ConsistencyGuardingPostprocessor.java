@@ -59,7 +59,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
       shiftInconsistentVertices(clusterVertices, parent, survivors, subgraph);
       if (clusterVertices.size() < minClusterSize) {
         parent.addToRemainder(clusterVertices.iterator());
-        assignChildrenToParent(cluster, parent);
+        parent.assimilate(cluster, false);
         stopWatch.stop();
         LOG.debug("Finished after {}. There were changes to the cluster structure", stopWatch);
         return true;
@@ -104,14 +104,6 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
       remainingVertices.add(vertexIt.globalId());
     }
     return remainingVertices;
-  }
-
-  private void assignChildrenToParent(Cluster cluster, Cluster parent) {
-    parent.getChildren().remove(cluster);
-    parent.addChildren(cluster.getChildren());
-    for (Cluster child : cluster.getChildren()) {
-      child.setParent(parent);
-    }
   }
 
 }

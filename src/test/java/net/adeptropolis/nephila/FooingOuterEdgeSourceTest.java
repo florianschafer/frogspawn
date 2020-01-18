@@ -15,6 +15,7 @@ import net.adeptropolis.nephila.clustering.labeling.TopWeightsAggregateLabeling;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsRemainderLabeling;
 import net.adeptropolis.nephila.clustering.sinks.LeafTextSink;
 import net.adeptropolis.nephila.clustering.sinks.Sink;
+import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Ignore;
@@ -68,8 +69,8 @@ public class FooingOuterEdgeSourceTest {
 
 
     Labeling labeling = new TopWeightsRemainderLabeling(25, graph);
-//    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters3.txt"), labeling, g.inverseLabels());
-    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters3.txt"), labeling, g.inverseLabels());
+//    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
   }
 

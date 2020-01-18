@@ -11,22 +11,11 @@ import net.adeptropolis.nephila.clustering.Cluster;
 
 class SingletonCollapsingPostprocessor implements Postprocessor {
 
-  private final boolean collapseSingletons;
-
-  public SingletonCollapsingPostprocessor(boolean collapseSingletons) {
-    this.collapseSingletons = collapseSingletons;
-  }
-
   @Override
   public boolean apply(Cluster cluster) {
     Cluster parent = cluster.getParent();
-    if (collapseSingletons && parent != null && parent.getChildren().size() == 1) {
-      parent.addToRemainder(cluster.getRemainder().iterator());
-      parent.getChildren().remove(cluster);
-      parent.addChildren(cluster.getChildren());
-      for (Cluster child : cluster.getChildren()) {
-        child.setParent(parent);
-      }
+    if (parent != null && parent.getChildren().size() == 1) {
+      parent.assimilate(cluster);
       return true;
     } else {
       return false;
