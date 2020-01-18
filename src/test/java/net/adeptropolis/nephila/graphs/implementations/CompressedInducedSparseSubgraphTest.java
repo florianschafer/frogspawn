@@ -79,6 +79,15 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   }
 
   @Test
+  public void collectVertices() {
+    int[] vertices = defaultSubgraph(4, 9, 10).collectVertices();
+    assertThat(vertices.length, is(3));
+    assertThat(vertices[0], is(4));
+    assertThat(vertices[1], is(9));
+    assertThat(vertices[2], is(10));
+  }
+
+  @Test
   public void emptyGraph() {
     Graph graph = defaultSubgraph();
     assertThat(graph.size(), is(0));

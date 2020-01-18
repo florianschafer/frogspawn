@@ -21,6 +21,8 @@ public abstract class Graph {
 
   public abstract VertexIterator vertexIterator();
 
+  public abstract int[] collectVertices();
+
   /**
    * @param v        A (local!) vertex
    * @param consumer an instance of EdgeConsumer

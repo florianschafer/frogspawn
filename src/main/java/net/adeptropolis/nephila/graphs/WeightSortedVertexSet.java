@@ -5,11 +5,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  */
 
-package net.adeptropolis.nephila.clustering.structuring;
+package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.Arrays;
-import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.helpers.Arr;
 
 public class WeightSortedVertexSet {

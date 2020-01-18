@@ -76,6 +76,15 @@ public class CompressedSparseGraph extends Graph {
     return new DefaultVertexIterator();
   }
 
+  @Override
+  public int[] collectVertices() {
+    int[] vertices = new int[size()];
+    for (int i = 0; i < size(); i++) {
+      vertices[i] = i;
+    }
+    return vertices;
+  }
+
   /**
    * Traverse all edges of the graph
    *

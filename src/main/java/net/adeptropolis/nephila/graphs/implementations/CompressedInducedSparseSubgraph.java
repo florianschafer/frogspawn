@@ -80,6 +80,11 @@ public class CompressedInducedSparseSubgraph extends Graph {
     return new SubgraphVertexIterator().reset(vertices);
   }
 
+  @Override
+  public int[] collectVertices() {
+    return vertices.clone();
+  }
+
   /**
    * Traverse all edges of the graph
    *

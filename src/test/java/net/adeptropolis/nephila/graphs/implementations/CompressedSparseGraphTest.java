@@ -53,6 +53,15 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   }
 
   @Test
+  public void collectVertices() {
+    int[] vertices = defaultGraph.collectVertices();
+    assertThat(vertices.length, is(12));
+    for (int i = 0; i < 12; i++) {
+      assertThat(vertices[i], is(i));
+    }
+  }
+
+  @Test
   public void emptyGraph() {
     CompressedSparseGraph graph = builder().build();
     assertThat(graph.size(), is(0));
