@@ -17,7 +17,8 @@ import net.adeptropolis.nephila.clustering.sinks.Sink;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.clustering.structuring.MetaCluster;
 import net.adeptropolis.nephila.clustering.structuring.MetaClustering;
-import net.adeptropolis.nephila.clustering.structuring.MetaGraph;
+import net.adeptropolis.nephila.clustering.structuring.MetaGraphBuilder;
+import net.adeptropolis.nephila.clustering.structuring.MetaNode;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Ignore;
@@ -27,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,57 +93,33 @@ public class FooingOuterEdgeSourceTest {
   @Test
   public void metaShit() throws FileNotFoundException {
 
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
-    ClusteringSettings settings = new ClusteringSettings(50, 0.4, 0.95, 25, 0.95,true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.large.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
+    ClusteringSettings settings = new ClusteringSettings(50, 0.1, 0.95, 25, 0.95,true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
+    String[] inverseLabels = g.inverseLabels();
     Graph graph = builder.build();
     ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
     Cluster root = Clustering.run(graph, metric, settings);
-    Labeling labeling = new TopWeightsAggregateLabeling(5, graph);
+    Labeling labeling = new TopWeightsAggregateLabeling(10, graph);
+    Sink leafTextSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
+    leafTextSink.consume(root);
+    Sink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters_r.txt"), labeling, g.inverseLabels());
+    textSink.consume(root);
 
     System.out.println("==================");
 
-    MetaGraph meta = MetaGraphBuilder.build(root, graph);
-    ClusteringSettings metaSettings = new ClusteringSettings(5, 0.05, 0.95, 25, 0.95,true, 10000);
-
+    ClusteringSettings metaSettings = new ClusteringSettings(20, 0.1, 0.95, 25, 0.95,true, 10000);
     MetaClustering metaClustering = new MetaClustering(root, graph, metric, metaSettings);
-    List<MetaCluster> results = metaClustering.run();
+    PrintWriter w = new PrintWriter("/home/florian/tmp/clusters_h.txt");
+    metaClustering.run(m -> {
+      String label = m.stringify(5, inverseLabels);
+      w.println(label);
+    });
+    w.close();
 
-//    Cluster metaRoot = Clustering.run(meta.getGraph(), metric, shmettings);
-//
-//    String[] inverseLabels = g.inverseLabels();
-//    metaRoot.traverse(cluster -> {
-//      if (cluster.getChildren().isEmpty()) {
-//
-//
-//        List<String> labels = Lists.newArrayList();
-//        DoubleArrayList labelScores = new DoubleArrayList();
-//        for (IntListIterator vertexIt = cluster.getRemainder().iterator(); vertexIt.hasNext();) {
-//          int metaGlobalId = vertexIt.nextInt();
-//          int rootGlobalId = meta.getInverseMap().get(metaGlobalId);
-//
-//          if (metaGlobalId < meta.getLeafClusters().size()) {
-//            Graph subgraph = graph.inducedSubgraph(meta.getLeafClusters().get(metaGlobalId).iterator());
-//            double[] weights = subgraph.weights();
-//            String leafLabel = IntStream.range(0, weights.length).boxed()
-//                    .sorted(Comparator.comparingDouble(x -> -weights[x]))
-//                    .limit(3)
-//                    .map(vertex -> inverseLabels[subgraph.globalVertexId(vertex)])
-//                    .collect(Collectors.joining(", "));
-//            labels.add(String.format("{%s}", leafLabel));
-//            subgraph.weights()[metaGlobalId]
-//            labelScores.add()
-//          } else {
-//            labels.add(inverseLabels[rootGlobalId]);
-//            labelScores.add()
-//          }
-//        }
-//        System.out.println(String.join(", ", labels));
-//
-//
-//      }
-//    });
 
   }
 

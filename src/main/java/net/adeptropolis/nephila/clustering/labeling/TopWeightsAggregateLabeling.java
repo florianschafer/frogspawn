@@ -45,6 +45,26 @@ public class TopWeightsAggregateLabeling implements Labeling {
     );
   }
 
+  TODO: Create another implementation with below remainder-only version and kill the recent meta stuff
+  Also: Think about if the ancestor postfilter could be applied as an in-place criterion
+  Same for singleton postfilter. Make threadsafe while at it.
+
+//  @Override
+//  public Labels label(Cluster cluster) {
+//    Graph graph = rootGraph.inducedSubgraph(cluster.getRemainder().iterator());
+//    int[] vertices = collectVertices(graph);
+//    double[] weights = graph.weights();
+//    double[] likelihoods = graph.relativeWeights(rootGraph);
+//    CandidateSortOps altCandidateSortOps = new CandidateSortOps(vertices, weights, likelihoods);
+//    Arrays.mergeSort(0, graph.size(), altCandidateSortOps, altCandidateSortOps);
+//    return new Labels(
+//            Arr.shrink(vertices, maxLabels),
+//            Arr.shrink(weights, maxLabels),
+//            Arr.shrink(likelihoods, maxLabels),
+//            graph.size()
+//    );
+//  }
+
   private int[] collectVertices(Graph graph) {
     int[] vertices = new int[graph.size()];
     VertexIterator it = graph.vertexIterator();

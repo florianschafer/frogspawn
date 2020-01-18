@@ -12,34 +12,21 @@ import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.helpers.Arr;
 
-import java.util.function.IntUnaryOperator;
-
 public class WeightSortedVertexSet {
 
   private final int[] vertices;
   private final double[] weights;
-  private final IntUnaryOperator mappingOp;
-
-  public WeightSortedVertexSet(Graph graph, IntUnaryOperator mappingOp) {
-    this.weights = new double[graph.size()];
-    this.vertices = new int[graph.size()];
-    this.mappingOp = mappingOp;
-    sortVertices(graph);
-  }
 
   public WeightSortedVertexSet(Graph graph) {
-    this.weights = new double[graph.size()];
+    this.weights = java.util.Arrays.copyOf(graph.weights(), graph.size());
     this.vertices = new int[graph.size()];
-    this.mappingOp = x -> x;
     sortVertices(graph);
   }
 
   private void sortVertices(Graph graph) {
-    int[] vertices = new int[graph.size()];
-    double[] weights = new double[graph.size()];
-    for (VertexIterator it = graph.vertexIterator(); it.hasNext();) {
-      vertices[it.localId()] = mappingOp.applyAsInt(it.globalId());
-      weights[it.localId()] = graph.weights()[it.localId()];
+    VertexIterator it = graph.vertexIterator();
+    while (it.hasNext()) {
+      vertices[it.localId()] = it.globalId();
     }
     Arrays.mergeSort(0, graph.size(), (a,b) -> Double.compare(this.weights[b], this.weights[a]), (a, b) -> {
       Arr.swap(vertices, a, b);

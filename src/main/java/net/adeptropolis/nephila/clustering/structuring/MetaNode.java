@@ -8,15 +8,14 @@
 package net.adeptropolis.nephila.clustering.structuring;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import net.adeptropolis.nephila.graphs.Graph;
 
-public class MetaGraph {
+public class MetaNode {
 
   private final Graph graph;
   private final Int2ObjectOpenHashMap<MetaCluster> childClusters;
 
-  public MetaGraph(Graph graph, Int2ObjectOpenHashMap<MetaCluster> childClusters) {
+  public MetaNode(Graph graph, Int2ObjectOpenHashMap<MetaCluster> childClusters) {
     this.graph = graph;
     this.childClusters = childClusters;
   }
@@ -25,12 +24,12 @@ public class MetaGraph {
     return graph;
   }
 
-  public ObjectCollection<MetaCluster> getChildClusters() {
-    return childClusters.values();
+  public boolean isCluster(int v) {
+    return childClusters.containsKey(v);
   }
 
-  public Int2ObjectOpenHashMap<MetaCluster> getChildClustersMap() {
-    return childClusters;
+  public MetaCluster getCluster(int v) {
+    return childClusters.get(v);
   }
 
 }
