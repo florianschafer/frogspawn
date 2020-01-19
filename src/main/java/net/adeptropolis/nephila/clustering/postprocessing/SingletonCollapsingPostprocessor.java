@@ -15,7 +15,7 @@ class SingletonCollapsingPostprocessor implements Postprocessor {
   public boolean apply(Cluster cluster) {
     Cluster parent = cluster.getParent();
     if (parent != null && parent.getChildren().size() == 1) {
-      parent.assimilate(cluster);
+      parent.assimilateChild(cluster);
       return true;
     } else {
       return false;

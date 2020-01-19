@@ -8,6 +8,7 @@
 package net.adeptropolis.nephila.clustering.postprocessing;
 
 import net.adeptropolis.nephila.clustering.Cluster;
+import net.adeptropolis.nephila.clustering.ConsistencyGuard;
 import net.adeptropolis.nephila.graphs.Graph;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -30,20 +31,22 @@ class AncestorSimilarityPostprocessor implements Postprocessor {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     if (cluster.getParent() == null || cluster.getParent().getParent() == null) {
-      LOG.debug("Skipping postprocessing");
+      LOG.trace("Skipping postprocessing");
       return false;
     }
     Cluster ancestor = nearestAncestorSatisfyingOverlap(cluster);
     if (ancestor == null || ancestor == cluster.getParent()) {
-      LOG.debug("Skipping postprocessing");
+      LOG.trace("Skipping postprocessing");
       return false;
     }
-// TODO: FIX
-    //    cluster.getParent().getChildren().remove(cluster);
-//    ancestor.getChildren().add(cluster);
-//    cluster.setParent(ancestor);
+    ancestor.annex(cluster);
+
+    // !IMPORTANT TODO!!!!!!
+    //    for (Cluster c = cluster; c != ancestor; c = c.getParent()) {
+//      consistencyGuard.
+//    }
     stopWatch.stop();
-    LOG.debug("Finished after {}", stopWatch);
+    LOG.trace("Finished after {}", stopWatch);
     return true;
   }
 

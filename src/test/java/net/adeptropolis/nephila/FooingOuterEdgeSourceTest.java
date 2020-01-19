@@ -53,7 +53,7 @@ public class FooingOuterEdgeSourceTest {
 
 
 //    ClusteringSettings settings = new ClusteringSettings(30, 0.2, 0.95, 25, 0.95,true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-    ClusteringSettings settings = new ClusteringSettings(50, 0.1, 0.95, 25, 0.95,true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+    ClusteringSettings settings = new ClusteringSettings(50, 0.1, 0.7, 25, 0.95,true, 10000);    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     Graph graph = builder.build();
     ConsistencyMetric metric = new RelativeWeightConsistencyMetric();

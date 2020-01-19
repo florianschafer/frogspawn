@@ -30,7 +30,7 @@ public class Cluster {
     if (parent != null) parent.children.add(this);
   }
 
-  public void assimilate(Cluster child, boolean assimilateRemainder) {
+  public void assimilateChild(Cluster child, boolean assimilateRemainder) {
     if (children.remove(child)) {
       for (Cluster grandchild : child.children) {
         grandchild.parent = this;
@@ -44,8 +44,15 @@ public class Cluster {
     }
   }
 
-  public void assimilate(Cluster child) {
-    assimilate(child, true);
+  public void annex(Cluster cluster) {
+    if (cluster.parent.children.remove(cluster)) {
+      cluster.parent = this;
+      children.add(cluster);
+    }
+  }
+
+  public void assimilateChild(Cluster child) {
+    assimilateChild(child, true);
   }
 
   public IntArrayList getRemainder() {

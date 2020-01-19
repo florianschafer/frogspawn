@@ -43,13 +43,23 @@ public class Postprocessing {
   public Cluster apply() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
+
+
+    LOG.debug("Collapse singletons");
+    applyPostprocessor(singletons);
+    LOG.debug("Shift upwards");
+    applyPostprocessor(ancestorSimilarity);
+    LOG.debug("Collapse singletons");
+    applyPostprocessor(singletons);
+
+
 //    boolean changed;
 //    do {
 //      changed = applyPostprocessor(ancestorSimilarity) || applyPostprocessor(consistency);
 //    } while (changed);
-    if (settings.getCollapseSingletons()) {
-      applyPostprocessor(singletons);
-    }
+//    if (settings.getCollapseSingletons()) {
+//      applyPostprocessor(singletons);
+//    }
     stopWatch.stop();
     LOG.debug("Postprocessing finished after {}", stopWatch);
     return rootCluster;
