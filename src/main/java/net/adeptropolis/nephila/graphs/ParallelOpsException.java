@@ -7,9 +7,9 @@
 
 package net.adeptropolis.nephila.graphs;
 
-class EdgeOpsException extends RuntimeException {
+class ParallelOpsException extends RuntimeException {
 
-  EdgeOpsException(Throwable cause) {
+  ParallelOpsException(Throwable cause) {
     super(cause);
   }
 

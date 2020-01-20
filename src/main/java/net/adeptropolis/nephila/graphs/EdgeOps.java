@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 public final class EdgeOps implements Runnable {
 
-  public static final int PARALLELIZATION_THRESHOLD = 2000;
+  private static final int PARALLELIZATION_THRESHOLD = 1000;
   private static final int THREAD_POOL_SIZE = 2 * Runtime.getRuntime().availableProcessors();
   private static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
           THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
@@ -19,11 +19,13 @@ public final class EdgeOps implements Runnable {
   private final Graph graph;
   private final EdgeConsumer consumer;
   private final int slice;
+  private final CountDownLatch latch;
 
-  private EdgeOps(Graph graph, EdgeConsumer consumer, int slice) {
+  private EdgeOps(Graph graph, EdgeConsumer consumer, int slice, CountDownLatch latch) {
     this.graph = graph;
     this.consumer = consumer;
     this.slice = slice;
+    this.latch = latch;
   }
 
   public static void traverse(Graph graph, EdgeConsumer consumer) {
@@ -37,21 +39,14 @@ public final class EdgeOps implements Runnable {
   }
 
   private static void traverseParallel(Graph graph, EdgeConsumer consumer) {
-    Future[] futures = new Future[THREAD_POOL_SIZE];
+    CountDownLatch latch = new CountDownLatch(THREAD_POOL_SIZE);
     for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-      futures[i] = EXECUTOR.submit(new EdgeOps(graph, consumer, i));
+      EXECUTOR.submit(new EdgeOps(graph, consumer, i, latch));
     }
-    for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-      awaitFuture(futures[i]);
-    }
-  }
-
-  @SuppressWarnings("squid:S2142")
-  private static void awaitFuture(Future<?> future) {
     try {
-      future.get();
-    } catch (InterruptedException | ExecutionException e) {
-      throw new EdgeOpsException(e);
+      latch.await();
+    } catch (InterruptedException e) {
+      throw new ParallelOpsException(e);
     }
   }
 
@@ -61,6 +56,7 @@ public final class EdgeOps implements Runnable {
     for (int i = 0; (v = i * THREAD_POOL_SIZE + slice) < graph.size(); i++) {
       graph.traverse(v, consumer);
     }
+    latch.countDown();
   }
 
 }
