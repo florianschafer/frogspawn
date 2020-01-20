@@ -8,11 +8,16 @@
 package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.ParallelOps;
+import net.adeptropolis.nephila.graphs.ParallelVertexOps;
 import net.adeptropolis.nephila.graphs.algorithms.SignumSelectingIndexIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConstantSigTrailConvergence implements PartialConvergenceCriterion {
 
@@ -103,13 +108,13 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
   }
 
   private double convergenceRate() {
-    double converged = 0;
-    for (int v = 0; v < graph.size(); v++) {
+    AtomicDouble converged = new AtomicDouble();
+    graph.traverseVerticesParallel(v -> {
       if (hasConstantTrail(v)) {
-        converged++;
+        converged.addAndGet(1d);
       }
-    }
-    return converged / graph.size();
+    });
+    return converged.get() / graph.size();
   }
 
   private boolean hasConstantTrail(int v) {

@@ -65,7 +65,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   public void emptyGraph() {
     CompressedSparseGraph graph = builder().build();
     assertThat(graph.size(), is(0));
-    graph.traverse(consumer);
+    graph.traverseParallel(consumer);
     assertThat(consumer.getEdges().size(), is(0));
   }
 
@@ -76,7 +76,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
             .add(1, 3, 3)
             .add(6, 4, 5)
             .build();
-    graph.traverse(consumer);
+    graph.traverseParallel(consumer);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(0, 1, 2),
             Edge.of(1, 0, 2),
@@ -97,7 +97,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseById() {
-    defaultGraph.traverse(defaultGraph.localVertexId(4), consumer);
+    defaultGraph.traverseParallel(defaultGraph.localVertexId(4), consumer);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(4, 9, 5),
             Edge.of(4, 10, 7),
@@ -106,7 +106,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseNonExistentId() {
-    defaultGraph.traverse(-1, consumer);
+    defaultGraph.traverseParallel(-1, consumer);
     assertThat(consumer.getEdges().size(), is(0));
   }
 

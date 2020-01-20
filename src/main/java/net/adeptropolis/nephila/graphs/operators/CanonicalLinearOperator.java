@@ -44,7 +44,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
     Arrays.fill(result, 0);
     Preconditions.checkArgument(argument.length == graph.size(), "Argument length mismatch");
     this.argument = argument;
-    graph.traverse(this);
+    graph.traverseParallel(this);
     return result;
   }
 

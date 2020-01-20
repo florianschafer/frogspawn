@@ -341,11 +341,15 @@ public class GraphTestBase {
   }
 
   protected Graph largeCircle() {
+    return largeCircle(100000);
+  }
+
+  protected Graph largeCircle(int size) {
     CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder();
-    for (int i = 0; i < 100000; i++) {
+    for (int i = 0; i < size; i++) {
       b.add(i, i + 1, 1);
     }
-    b.add(99999, 100000, 1);
+    b.add(size - 1, size, 1);
     return b.build();
   }
 
@@ -372,7 +376,7 @@ public class GraphTestBase {
   }
 
   long traverseFingerprint(Graph graph) {
-    EdgeOps.traverse(graph, fingerprintingConsumer);
+    ParallelEdgeOps.traverse(graph, fingerprintingConsumer);
     return fingerprintingConsumer.getFingerprint();
   }
 

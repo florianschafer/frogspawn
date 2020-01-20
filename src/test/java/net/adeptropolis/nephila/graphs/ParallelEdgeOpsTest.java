@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExceptionHandler {
+public class ParallelEdgeOpsTest extends GraphTestBase implements Thread.UncaughtExceptionHandler {
 
   @Test
   @Ignore("Intended for performance debugging")
@@ -32,7 +32,7 @@ public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExcepti
   @Test
   public void emptyGraph() {
     CompressedSparseGraph graph = CompressedSparseGraph.builder().build();
-    EdgeOps.traverse(graph, consumer);
+    ParallelEdgeOps.traverse(graph, consumer);
     assertThat(consumer.getEdges(), is(empty()));
   }
 
@@ -41,7 +41,7 @@ public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExcepti
     CompressedSparseGraph graph = CompressedSparseGraph.builder()
             .add(2, 3, 3.14)
             .build();
-    EdgeOps.traverse(graph, consumer);
+    ParallelEdgeOps.traverse(graph, consumer);
     assertThat(consumer.getEdges(), hasSize(2));
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(2, 3, 3.14),
@@ -60,7 +60,7 @@ public class EdgeOpsTest extends GraphTestBase implements Thread.UncaughtExcepti
       Thread thread = new Thread(() -> {
         Graph graph = bandedGraph(10000, 30);
         FingerprintingEdgeConsumer fp = new FingerprintingEdgeConsumer();
-        EdgeOps.traverse(graph, fp);
+        ParallelEdgeOps.traverse(graph, fp);
         assertThat("Fingerprint mismatch", fp.getFingerprint(), is(bandedGraphFingerprint(10000, 30)));
       });
       thread.setUncaughtExceptionHandler(this);

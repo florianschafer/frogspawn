@@ -9,7 +9,6 @@ package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
 import org.apache.commons.lang3.time.StopWatch;
@@ -97,7 +96,7 @@ public class ConnectedComponents implements EdgeConsumer {
     while (!componentQueue.isEmpty()) {
       int j = componentQueue.removeFirstInt();
       component.add(j);
-      graph.traverse(j, this);
+      graph.traverseParallel(j, this);
     }
   }
 

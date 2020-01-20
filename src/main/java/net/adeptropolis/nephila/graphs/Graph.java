@@ -28,10 +28,10 @@ public abstract class Graph {
    * @param consumer an instance of EdgeConsumer
    */
 
-  public abstract void traverse(int v, EdgeConsumer consumer);
+  public abstract void traverseParallel(int v, EdgeConsumer consumer);
 
-  public void traverse(EdgeConsumer consumer) {
-    EdgeOps.traverse(this, consumer);
+  public void traverseParallel(EdgeConsumer consumer) {
+    ParallelEdgeOps.traverse(this, consumer);
   }
 
   /**
@@ -39,10 +39,14 @@ public abstract class Graph {
    * @param consumer
    */
 
-  public void traverseSequential(EdgeConsumer consumer) {
+  public void traverseEdgesSequential(EdgeConsumer consumer) {
     for (int u = 0; u < size(); u++) {
-      traverse(u, consumer);
+      traverseParallel(u, consumer);
     }
+  }
+
+  public void traverseVerticesParallel(VertexConsumer consumer) {
+    ParallelVertexOps.traverse(this, consumer);
   }
 
   public abstract int localVertexId(int globalVertexId);

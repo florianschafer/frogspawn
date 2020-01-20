@@ -9,7 +9,7 @@ package net.adeptropolis.nephila.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
-import net.adeptropolis.nephila.graphs.EdgeOps;
+import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
@@ -92,8 +92,8 @@ public class CompressedSparseGraph extends Graph {
    */
 
   @Override
-  public void traverse(EdgeConsumer consumer) {
-    EdgeOps.traverse(this, consumer);
+  public void traverseParallel(EdgeConsumer consumer) {
+    ParallelEdgeOps.traverse(this, consumer);
   }
 
   /**
@@ -104,7 +104,7 @@ public class CompressedSparseGraph extends Graph {
    */
 
   @Override
-  public void traverse(int v, EdgeConsumer consumer) {
+  public void traverseParallel(int v, EdgeConsumer consumer) {
 
     if (size() == 0 || v < 0) {
       return;

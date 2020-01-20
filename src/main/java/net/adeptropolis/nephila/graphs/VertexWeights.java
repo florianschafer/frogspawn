@@ -17,7 +17,7 @@ public class VertexWeights implements EdgeConsumer {
 
   public static double[] compute(Graph graph) {
     VertexWeights weights = new VertexWeights(graph);
-    EdgeOps.traverse(graph, weights);
+    ParallelEdgeOps.traverse(graph, weights);
     return weights.weights;
   }
 
