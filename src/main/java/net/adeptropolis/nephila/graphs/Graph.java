@@ -9,6 +9,8 @@ package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
+import java.io.PrintWriter;
+
 
 public abstract class Graph {
 

@@ -10,6 +10,8 @@ package net.adeptropolis.nephila.graphs.implementations;
 import net.adeptropolis.nephila.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.nephila.graphs.implementations.arrays.BigInts;
 
+import java.io.PrintWriter;
+
 /**
  * <p>Storage backend for large, sparse graphs</p>
  * <p>More precisely, this class provides a CSR storage representation for adjacency matrices of large sparse graphs.
@@ -38,7 +40,7 @@ public class CompressedSparseGraphDatastore {
   private final int size;
   private final long edgeCount;
 
-  CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
+  public CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
     this.size = size;
     this.edgeCount = edgeCount;
     this.pointers = pointers;
@@ -52,6 +54,17 @@ public class CompressedSparseGraphDatastore {
 
   long edgeCount() {
     return edgeCount;
+  }
+
+  void export(PrintWriter writer) {
+    writer.printf("%d\t%d\n", size(), edgeCount());
+    for (int i = 0; i < pointers.length; i++) {
+      writer.printf("%d\t%d\n", i, pointers[i]);
+    }
+    for (long i = 0; i < edges.size(); i++) {
+      writer.printf("%d\t%d\t%f\n", i, edges.get(i), weights.get(i));
+    }
+
   }
 
 }

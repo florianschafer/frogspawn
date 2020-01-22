@@ -20,7 +20,6 @@ import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.*;
 
-@Ignore
 public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
 
   private Graph defaultGraph;
@@ -68,7 +67,7 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
     c5 = new Cluster(c4);
     c5.addToRemainder(IntIterators.wrap(new int[]{5}));
     c67 = new Cluster(c4);
-    c67.addToRemainder(IntIterators.wrap(new int[]{6, 7}));
+    c67.addToRemainder(IntIterators.wrap(new int[]{2, 6, 7}));
   }
 
   @Test
@@ -93,7 +92,7 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void thresholdAboveMinOverlap() {
-    Postprocessor pp = new AncestorSimilarityPostprocessor(0.99, defaultGraph);
+    Postprocessor pp = new AncestorSimilarityPostprocessor(0.5, defaultGraph);
     boolean modified = pp.apply(c67);
     assertFalse(modified);
     assertThat(c67.getParent(), is(c4));
@@ -102,7 +101,7 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void thresholdAllowsPullingUpC67OneLevel() {
-    Postprocessor pp = new AncestorSimilarityPostprocessor(0.5, defaultGraph);
+    Postprocessor pp = new AncestorSimilarityPostprocessor(0.51, defaultGraph);
     boolean modified = pp.apply(c67);
     assertTrue(modified);
     assertThat(c67.getParent(), is(c2));
@@ -111,7 +110,7 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void thresholdAllowsPullingUpC67TwoLevels() {
-    Postprocessor pp = new AncestorSimilarityPostprocessor(0.3, defaultGraph);
+    Postprocessor pp = new AncestorSimilarityPostprocessor(0.7, defaultGraph);
     boolean modified = pp.apply(c67);
     assertTrue(modified);
     assertThat(c67.getParent(), is(c0));
@@ -120,7 +119,7 @@ public class AncestorSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void pullIngUpStopsAtRootNode() {
-    Postprocessor pp = new AncestorSimilarityPostprocessor(0.0, defaultGraph);
+    Postprocessor pp = new AncestorSimilarityPostprocessor(1.0, defaultGraph);
     boolean modified = pp.apply(c67);
     assertTrue(modified);
     assertThat(c67.getParent(), is(c0));

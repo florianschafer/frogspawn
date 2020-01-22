@@ -44,13 +44,15 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
 
   @Override
   public boolean apply(Cluster cluster) {
+
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
+
     Cluster parent = cluster.getParent();
     if (parent == null) {
-      LOG.debug("Skipping");
       return false;
     }
+
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
     Graph clusterGraph = cluster.aggregateGraph(graph);
     IntRBTreeSet survivors = initSurvivors(clusterGraph);
@@ -61,22 +63,23 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
         parent.addToRemainder(clusterVertices.iterator());
         parent.assimilateChild(cluster, false);
         stopWatch.stop();
-        LOG.debug("Finished after {}. There were changes to the cluster structure", stopWatch);
+        LOG.trace("Finished after {}. There were changes to the cluster structure", stopWatch);
         return true;
       } else if (clusterVertices.size() == prevSize) {
         break;
       }
     }
+
     if (clusterVertices.size() == cluster.getRemainder().size()) {
       stopWatch.stop();
-//      LOG.debug("Finished after {}. There were no changes to the cluster structure", stopWatch);
       return false;
     } else {
       cluster.setRemainder(new IntArrayList(clusterVertices));
       stopWatch.stop();
-      LOG.debug("Finished after {}. There were changes to the cluster structure", stopWatch);
+      LOG.trace("Finished after {}. There were changes to the cluster structure", stopWatch);
       return true;
     }
+
   }
 
   private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {

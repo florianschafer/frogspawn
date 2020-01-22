@@ -14,6 +14,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// NOTE: Requires consistency guarding pp to run afterwards
 class AncestorSimilarityPostprocessor implements Postprocessor {
 
   private static final Logger LOG = LoggerFactory.getLogger(AncestorSimilarityPostprocessor.class.getSimpleName());
@@ -31,20 +32,13 @@ class AncestorSimilarityPostprocessor implements Postprocessor {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     if (cluster.getParent() == null || cluster.getParent().getParent() == null) {
-      LOG.trace("Skipping postprocessing");
       return false;
     }
     Cluster ancestor = nearestAncestorSatisfyingOverlap(cluster);
     if (ancestor == null || ancestor == cluster.getParent()) {
-      LOG.trace("Skipping postprocessing");
       return false;
     }
     ancestor.annex(cluster);
-
-    // !IMPORTANT TODO!!!!!!
-    //    for (Cluster c = cluster; c != ancestor; c = c.getParent()) {
-//      consistencyGuard.
-//    }
     stopWatch.stop();
     LOG.trace("Finished after {}", stopWatch);
     return true;

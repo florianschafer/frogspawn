@@ -27,14 +27,12 @@ public class Postprocessing {
   private static final Logger LOG = LoggerFactory.getLogger(Postprocessing.class.getSimpleName());
 
   private final Cluster rootCluster;
-  private final ClusteringSettings settings;
   private final AncestorSimilarityPostprocessor ancestorSimilarity;
   private final ConsistencyGuardingPostprocessor consistency;
   private final SingletonCollapsingPostprocessor singletons;
 
   public Postprocessing(Cluster rootCluster, Graph rootGraph, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
-    this.settings = settings;
     this.ancestorSimilarity = new AncestorSimilarityPostprocessor(settings.getMinAncestorOverlap(), rootGraph);
     this.consistency = new ConsistencyGuardingPostprocessor(rootGraph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
     this.singletons = new SingletonCollapsingPostprocessor();
@@ -43,23 +41,16 @@ public class Postprocessing {
   public Cluster apply() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-
-
     LOG.debug("Collapse singletons");
     applyPostprocessor(singletons);
     LOG.debug("Shift upwards");
     applyPostprocessor(ancestorSimilarity);
     LOG.debug("Collapse singletons");
     applyPostprocessor(singletons);
-
-
-//    boolean changed;
-//    do {
-//      changed = applyPostprocessor(ancestorSimilarity) || applyPostprocessor(consistency);
-//    } while (changed);
-//    if (settings.getCollapseSingletons()) {
-//      applyPostprocessor(singletons);
-//    }
+    LOG.debug("Ensure consistency");
+    applyPostprocessor(consistency);
+    LOG.debug("Collapse singletons");
+    applyPostprocessor(singletons);
     stopWatch.stop();
     LOG.debug("Postprocessing finished after {}", stopWatch);
     return rootCluster;

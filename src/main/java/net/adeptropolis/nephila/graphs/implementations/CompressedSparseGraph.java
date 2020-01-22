@@ -13,6 +13,8 @@ import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
+import java.io.PrintWriter;
+
 /**
  * A compressed sparse graph
  * <p><b>Note: </b> The vertex set of this type of graph always consists of
@@ -170,6 +172,10 @@ public class CompressedSparseGraph extends Graph {
 
   public CompressedSparseGraphDatastore getDatastore() {
     return datastore;
+  }
+
+  public void export(PrintWriter writer) {
+    datastore.export(writer);
   }
 
   /**
