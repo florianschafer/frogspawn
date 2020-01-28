@@ -146,6 +146,10 @@ public class Cluster {
     return rootGraph.inducedSubgraph(aggregateVertices().iterator());
   }
 
+  public Graph remainderGraph(Graph rootGraph) {
+    return rootGraph.inducedSubgraph(remainder.iterator());
+  }
+
   public Set<Cluster> aggregateClusters() {
     Set<Cluster> clusters = new HashSet<>();
     traverse(clusters::add);

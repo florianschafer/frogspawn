@@ -135,12 +135,12 @@ public abstract class Graph {
 
   public double overlap(Graph supergraph) {
     double weight = 0;
-    double supergraphWeight = 0;
+    double supergraphEmbeddingWeight = 0;
     for (int i = 0; i < size(); i++) {
       weight += weights()[i];
-      supergraphWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
+      supergraphEmbeddingWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
     }
-    return (supergraphWeight > 0) ? weight / supergraphWeight : 0;
+    return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;
   }
 
   public interface Builder {

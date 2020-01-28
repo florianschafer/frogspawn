@@ -8,15 +8,21 @@
 package net.adeptropolis.nephila;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.clustering.ClusterExporter;
 import net.adeptropolis.nephila.clustering.ConsistencyMetric;
 import net.adeptropolis.nephila.clustering.RelativeWeightConsistencyMetric;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
+import net.adeptropolis.nephila.clustering.labeling.Labels;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsRemainderLabeling;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
@@ -32,10 +38,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Ignore
@@ -48,13 +58,75 @@ public class FooingOuterEdgeSourceTest {
   @Test
   public void playground() throws IOException {
     ClusterTree tree = loadClusters("/home/florian/tmp/clustering.snapshot");
-    Labeling labeling = new TopWeightsRemainderLabeling(25, tree.graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters4.txt"), labeling, tree.inverseLabels);
-//    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
-    textSink.consume(tree.root);
+    Labeling labeling = new TopWeightsRemainderLabeling(5, tree.graph);
+//    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters4.txt"), labeling, tree.inverseLabels);
+//    textSink.consume(tree.root);
+
+    String[] inverseLabels = tree.inverseLabels;
+    Graph graph = tree.graph;
+    Cluster root = tree.root;
+
+    List<Cluster> clusters = Lists.newArrayList();
+    root.traverse(clusters::add);
 
 
+    Map<Integer, String> clusterLabelMap = IntStream.range(0, clusters.size()).boxed().collect(Collectors.toMap(
+            i -> i,
+            i -> {
+              Labels labels = labeling.label(clusters.get(i));
+              String label = IntStream.range(0, labels.size()).mapToObj(j -> inverseLabels[labels.getVertices()[j]]).collect(Collectors.joining("|"));
+              return String.format("%d|%s", clusters.get(i).getRemainder().size(), label);
+            }
+    ));
+    String[] clusterLabels = new String[clusterLabelMap.size()];
+    for (int i = 0; i < clusterLabelMap.size(); i++) {
+      clusterLabels[i] = clusterLabelMap.get(i);
+    }
 
+    PrintWriter writer = new PrintWriter("/home/florian/tmp/cluster.distances.p.tsv");
+    writer.println(String.join("\t", clusterLabels));
+
+    for (int i = 0; i < clusters.size(); i++) {
+      System.out.println("Current: " + i);
+      Graph iGraph = clusters.get(i).remainderGraph(graph);
+      IntArrayList iRemainder = clusters.get(i).getRemainder();
+      int finalI = i;
+      IntStream.range(i + 1, clusters.size()).parallel().forEach(j -> {
+        Graph jGraph = clusters.get(j).remainderGraph(graph);
+        IntOpenHashSet union = new IntOpenHashSet();
+        union.addAll(iRemainder);
+        union.addAll(clusters.get(j).getRemainder());
+        Graph unionGraph = graph.inducedSubgraph(union.iterator());
+        AtomicDouble cut = new AtomicDouble();
+        unionGraph.traverseParallel((u, v, w) -> {
+          int uP = iGraph.localVertexId(unionGraph.globalVertexId(u));
+          int vP = iGraph.localVertexId(unionGraph.globalVertexId(v));
+          if (uP < 0 ^ vP < 0) {
+            cut.addAndGet(w);
+          }
+        });
+        double ncut = cut.get() / totalEmbeddingWeight(iGraph, unionGraph) + cut.get() / totalEmbeddingWeight(jGraph, unionGraph);
+        if (ncut > 0) {
+          writer.println(String.format("%d\t%d\t%f", finalI, j, ncut));
+        }
+
+      });
+//      for (int j = i + 1; j < clusters.size(); j++) {
+//      }
+    }
+
+
+    writer.close();
+
+  }
+
+  private double totalEmbeddingWeight(Graph graph, Graph supergraph) {
+    VertexIterator it = graph.vertexIterator();
+    double totalWeight = 0;
+    while (it.hasNext()) {
+      totalWeight += supergraph.weights()[supergraph.localVertexId(it.globalId())];
+    }
+    return totalWeight;
   }
 
   @Test
