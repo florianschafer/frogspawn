@@ -7,7 +7,7 @@
 
 package net.adeptropolis.nephila.graphs;
 
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
 
 public final class ParallelEdgeOps extends ParallelOps implements Runnable {
 

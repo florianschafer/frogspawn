@@ -26,7 +26,7 @@ public class WeightSortedVertexSet {
     while (it.hasNext()) {
       vertices[it.localId()] = it.globalId();
     }
-    Arrays.mergeSort(0, graph.size(), (a,b) -> Double.compare(this.weights[b], this.weights[a]), (a, b) -> {
+    Arrays.mergeSort(0, graph.size(), (a, b) -> Double.compare(this.weights[b], this.weights[a]), (a, b) -> {
       Arr.swap(vertices, a, b);
       Arr.swap(weights, a, b);
     });

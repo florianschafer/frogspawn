@@ -18,7 +18,7 @@ class VertexIndex<T> {
   private final ConcurrentMap<T, Integer> indices;
   private final AtomicInteger currentIdx;
 
-  public VertexIndex(FooingOuterEdgeSourceTest.LabeledEdgeSource<T> edgeSource) {
+  public VertexIndex(Playground.LabeledEdgeSource<T> edgeSource) {
     this.indices = new ConcurrentHashMap<>();
     this.currentIdx = new AtomicInteger(0);
     edgeSource.edges().parallel().forEach(edge -> {
@@ -43,7 +43,7 @@ class VertexIndex<T> {
     return indices.computeIfAbsent(label, (x) -> currentIdx.getAndIncrement());
   }
 
-  private int[] computeDegrees(FooingOuterEdgeSourceTest.LabeledEdgeSource<T> edgeSource) {
+  private int[] computeDegrees(Playground.LabeledEdgeSource<T> edgeSource) {
 
     AtomicIntegerArray deg = new AtomicIntegerArray(size());
     edgeSource.edges()

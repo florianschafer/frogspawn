@@ -9,8 +9,8 @@ package net.adeptropolis.nephila.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
-import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
 import java.io.PrintWriter;
@@ -58,6 +58,7 @@ public class CompressedSparseGraph extends Graph {
   /**
    * <b>Note:</b>The edges are accounted for in a directed fashion!
    * That is, an undirected graph has 2x the expected number of edges
+   *
    * @return number of edges
    */
 
@@ -166,7 +167,6 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   *
    * @return The compressed datastore
    */
 

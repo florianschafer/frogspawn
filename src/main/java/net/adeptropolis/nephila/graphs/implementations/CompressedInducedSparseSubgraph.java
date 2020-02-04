@@ -10,8 +10,8 @@ package net.adeptropolis.nephila.graphs.implementations;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.nephila.graphs.EdgeConsumer;
-import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.graphs.implementations.arrays.InterpolationSearch;
 
@@ -54,6 +54,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
   /**
    * <b>Note:</b>The edges are accounted for in a directed fashion!
    * That is, an undirected graph has 2x the expected number of edges
+   *
    * @return number of edges
    */
 
@@ -222,5 +223,5 @@ public class CompressedInducedSparseSubgraph extends Graph {
       return cnt;
     }
 
- }
+  }
 }

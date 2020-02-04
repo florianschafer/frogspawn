@@ -11,13 +11,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.ParallelOps;
-import net.adeptropolis.nephila.graphs.ParallelVertexOps;
 import net.adeptropolis.nephila.graphs.algorithms.SignumSelectingIndexIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConstantSigTrailConvergence implements PartialConvergenceCriterion {
 
@@ -51,6 +47,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
    * <p>Postprocess a not fully converged eigenvector.</p>
    * <p>More precisely, all non-converged entries will be assigned either -1 or 1 depending on the relative weight within
    * a particular partition</p>
+   *
    * @param vec
    */
 
@@ -97,7 +94,8 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   /**
    * Provide a subgraph where either the selected signum matches or the entry has not converged
-   * @param vec A vector
+   *
+   * @param vec      A vector
    * @param selector Either -1 or 1
    * @return A new subgraph
    */

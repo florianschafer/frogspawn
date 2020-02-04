@@ -9,7 +9,6 @@ package net.adeptropolis.nephila.graphs.algorithms;
 
 import net.adeptropolis.nephila.ClusteringSettings;
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.RandomInitialVectors;

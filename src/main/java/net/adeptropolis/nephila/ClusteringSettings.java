@@ -9,9 +9,7 @@ package net.adeptropolis.nephila;
 
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
-import net.adeptropolis.nephila.graphs.algorithms.power_iteration.ConvergenceCriterion;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
-import net.adeptropolis.nephila.graphs.algorithms.power_iteration.SignumConvergence;
 
 public class ClusteringSettings {
 

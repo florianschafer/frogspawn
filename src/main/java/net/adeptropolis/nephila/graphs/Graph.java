@@ -9,8 +9,6 @@ package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
-import java.io.PrintWriter;
-
 
 public abstract class Graph {
 
@@ -38,6 +36,7 @@ public abstract class Graph {
 
   /**
    * Traverse in a sequential manner (i.e. no multithreading)
+   *
    * @param consumer
    */
 

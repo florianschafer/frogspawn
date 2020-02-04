@@ -13,16 +13,15 @@ import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.adeptropolis.nephila.clustering.Cluster;
-import net.adeptropolis.nephila.clustering.ClusterExporter;
-import net.adeptropolis.nephila.clustering.ConsistencyMetric;
-import net.adeptropolis.nephila.clustering.RelativeWeightConsistencyMetric;
+import net.adeptropolis.nephila.clustering.*;
 import net.adeptropolis.nephila.clustering.labeling.Labeling;
 import net.adeptropolis.nephila.clustering.labeling.Labels;
 import net.adeptropolis.nephila.clustering.labeling.TopWeightsRemainderLabeling;
+import net.adeptropolis.nephila.clustering.sinks.Sink;
 import net.adeptropolis.nephila.clustering.sinks.TextSink;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.VertexIterator;
+import net.adeptropolis.nephila.graphs.WeightSortedVertexSet;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphDatastore;
@@ -49,11 +48,93 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Ignore
-public class FooingOuterEdgeSourceTest {
+public class Playground {
 
-  // Found bug: freq must not be float
+  Logger LOG = LoggerFactory.getLogger(Playground.class);
 
-  Logger LOG = LoggerFactory.getLogger(FooingOuterEdgeSourceTest.class);
+  @Test
+  public void forceGraphs() throws IOException {
+    ClusterTree tree = loadClusters("/home/florian/tmp/clustering.snapshot");
+    ContractedClusterView contractedClusterView = new ContractedClusterView(tree.root, tree.graph);
+    PrintWriter writer = new PrintWriter("/home/florian/tmp/delete.me");
+
+    Graph g = contractedClusterView.getGraph();
+    AtomicDouble minWeight = new AtomicDouble(Double.MAX_VALUE);
+    g.traverseEdgesSequential((u, v, w) -> {
+      double normWeight = w / Math.min(g.weights()[u], g.weights()[v]);
+      if (normWeight < minWeight.get()) {
+        minWeight.set(normWeight);
+      }
+    });
+    g.traverseEdgesSequential((u, v, w) -> {
+      double normWeight = w / Math.min(g.weights()[u], g.weights()[v]);
+      writer.println(String.format("%d,%d,%f", u, v, 1.0 / Math.log(normWeight / minWeight.get())));
+    });
+    writer.close();
+
+
+  }
+
+  @Test
+  public void yetAnotherPlayground() throws IOException {
+    ClusterTree tree = loadClusters("/home/florian/tmp/clustering.snapshot");
+    ContractedClusterView contractedClusterView = new ContractedClusterView(tree.root, tree.graph);
+
+    ClusteringSettings settings = new ClusteringSettings(5, 0.01, 0.1, 25, 0.95,true, 10000);
+    ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
+    Cluster root = Clustering.run(contractedClusterView.getGraph(), metric, settings);
+
+    FooSink fooSink = new FooSink(Paths.get("/home/florian/tmp/meta.txt"), contractedClusterView, tree.inverseLabels, contractedClusterView.getGraph());
+    fooSink.consume(root);
+
+
+  }
+
+  public class FooSink implements Sink {
+
+    private final ContractedClusterView view;
+    private final String[] labelMappings;
+    private final PrintWriter writer;
+    private final Graph rootGraph;
+
+    public FooSink(Path path, ContractedClusterView view, String[] labelMappings, Graph rootGraph) throws FileNotFoundException {
+      this.view = view;
+      this.writer = new PrintWriter(path.toFile());
+      this.labelMappings = labelMappings;
+      this.rootGraph = rootGraph;
+    }
+
+    @Override
+    public void consume(Cluster root) {
+      traverse(root, "");
+      writer.close();
+    }
+
+    private void traverse(Cluster cluster, String prefix) {
+
+      WeightSortedVertexSet metaSorted = new WeightSortedVertexSet(cluster.remainderGraph(rootGraph));
+      List<String> metaClusters = Lists.newArrayList();
+      int totalSize = 0;
+
+      for (int i = 0; i < metaSorted.size(); i++) {
+        int v = metaSorted.getVertices()[i];
+        WeightSortedVertexSet weightSortedVertexSet = view.getClusterVertices().get(v);
+        String memberLabels = IntStream.range(0, Math.min(weightSortedVertexSet.size(), 3))
+                .mapToObj(j -> labelMappings[weightSortedVertexSet.getVertices()[j]])
+                .collect(Collectors.joining(", "));
+        metaClusters.add(String.format("[%d:%s]", weightSortedVertexSet.size(), memberLabels));
+        totalSize +=  weightSortedVertexSet.size();
+      }
+
+
+      String labelStr = String.join(", ", metaClusters);
+      writer.println(String.format("%s %d: %s", prefix, totalSize, labelStr));
+      for (Cluster child : cluster.getChildren()) {
+        traverse(child, prefix + "---");
+      }
+    }
+
+  }
 
   @Test
   public void playground() throws IOException {

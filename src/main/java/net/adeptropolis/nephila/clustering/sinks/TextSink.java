@@ -26,7 +26,7 @@ public class TextSink implements Sink {
   public TextSink(Path path, Labeling labeling, String[] vertexLabels) throws FileNotFoundException {
     this.labeling = labeling;
     this.vertexLabels = vertexLabels;
-    this.writer = new PrintWriter(path.toFile());;
+    this.writer = new PrintWriter(path.toFile());
   }
 
   @Override

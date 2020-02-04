@@ -10,7 +10,6 @@ package net.adeptropolis.nephila.clustering.labeling;
 import it.unimi.dsi.fastutil.Arrays;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.helpers.Arr;
 
 /**
