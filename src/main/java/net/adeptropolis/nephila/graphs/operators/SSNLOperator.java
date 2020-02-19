@@ -92,7 +92,6 @@ public class SSNLOperator implements LinearGraphOperator {
   @Override
   public int size() {
     return graph.size();
-
   }
 
 }

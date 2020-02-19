@@ -42,7 +42,7 @@ public class Protocluster {
   }
 
   public enum GraphType {
-    ROOT, COMPONENT, SPECTRAL
+    ROOT, COMPONENT, SPECTRAL, REMAINDER
   }
 
 }

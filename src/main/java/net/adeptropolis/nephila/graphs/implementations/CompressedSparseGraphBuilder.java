@@ -125,7 +125,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   }
 
   /**
-   * <p>Reduce multiple occurrences of an edge to a single instance with added weights</p>
+   * <p>Reduce multiple occurrences of an edge to a single instance with accumulated weights</p>
    * NOTE: This method assumes that the edge buffer has already been sorted!
    */
 

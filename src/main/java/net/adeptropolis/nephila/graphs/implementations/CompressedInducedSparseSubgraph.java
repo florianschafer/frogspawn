@@ -16,6 +16,7 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.graphs.implementations.arrays.InterpolationSearch;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Induced subgraph.
@@ -63,7 +64,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
     if (cachedNumEdges >= 0) {
       return cachedNumEdges;
     } else {
-      EdgeCountingConsumer edgeCountingConsumer = new EdgeCountingConsumer(this);
+      EdgeCountingConsumer edgeCountingConsumer = new EdgeCountingConsumer();
       traverseParallel(edgeCountingConsumer);
       cachedNumEdges = edgeCountingConsumer.getCount();
       return cachedNumEdges;
@@ -98,7 +99,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   * Traverse all neighhours of a given vertex
+   * Traverse all neighbours of a given vertex
    *
    * @param v        A (local!) vertex
    * @param consumer Instance of <code>EdgeConsumer</code>
@@ -208,19 +209,20 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   private class EdgeCountingConsumer implements EdgeConsumer {
-    private long cnt = 0L;
 
-    public EdgeCountingConsumer(CompressedInducedSparseSubgraph subgraph) {
-      cnt = 0;
+    private final AtomicLong cnt;
+
+    public EdgeCountingConsumer() {
+      cnt = new AtomicLong();
     }
 
     @Override
     public void accept(int u, int v, double weight) {
-      cnt++;
+      cnt.incrementAndGet();
     }
 
     public long getCount() {
-      return cnt;
+      return cnt.get();
     }
 
   }
