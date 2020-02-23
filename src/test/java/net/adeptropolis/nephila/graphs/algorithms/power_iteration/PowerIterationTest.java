@@ -67,7 +67,7 @@ public class PowerIterationTest extends GraphTestBase {
     double[] iv = RandomInitialVectors.generate(op.size());
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000);
     assertNotNull(r);
-    double[] expected = new double[]{ 0.422554, -0.102237, 0.287406, 0.100775, -0.178143, -0.115820, -0.033225, -0.029026, -0.107263, -0.208185, -0.271339, 0.262986, 0.152637, 0.060499, 0.319281, -0.189389, -0.366464, 0.155779, 0.221442, -0.318028 };
+    double[] expected = new double[]{0.422554, -0.102237, 0.287406, 0.100775, -0.178143, -0.115820, -0.033225, -0.029026, -0.107263, -0.208185, -0.271339, 0.262986, 0.152637, 0.060499, 0.319281, -0.189389, -0.366464, 0.155779, 0.221442, -0.318028};
     for (int i = 0; i < expected.length; i++) {
       assertThat(r[i], closeTo(expected[i], 1E-5));
     }

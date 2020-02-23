@@ -35,8 +35,6 @@ public class SubgraphVertexIterator implements VertexIterator {
   }
 
   /**
-   * Note: Must proceed before first use => while(...)
-   *
    * @return whether there is another element available
    */
 

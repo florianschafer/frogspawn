@@ -27,7 +27,7 @@ public class SignumSelectingIndexIterator implements IntIterator {
    * Constructor
    *
    * @param v               A vector
-   * @param selectSignum    Select the indices of either all non-negative entries (selectSignum >= 0) or those of all negative negative ones (selectSignum < 0)
+   * @param selectSignum    Select the indices of either all non-negative entries (selectSignum ≥ 0) or those of all negative negative ones (selectSignum &lt; 0)
    * @param customPredicate Optional: Provide an additional predicate for which entries to select. The logic is <code>customPredicate || ...<code/>. May be <code>null</code>.
    */
 

@@ -39,7 +39,7 @@ public class SSNLOperatorTest extends GraphTestBase {
   @Test
   public void v0() {
     double[] expected = new double[]{INV_SQRT_8, ONE_HALF, INV_SQRT_8, INV_SQRT_8, ONE_HALF, INV_SQRT_8};
-    double[] v0 = SSNLOperator.computeV0(EIGEN_REF_GRAPH.weights());
+    double[] v0 = SSNLOperator.computeV0(EIGEN_REF_GRAPH);
     for (int i = 0; i < expected.length; i++) {
       assertThat(v0[i], closeTo(expected[i], 1E-6));
     }

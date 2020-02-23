@@ -45,7 +45,7 @@ public class ConsistencyGuard {
    *
    * @param parentCluster An existing cluster that the new graph should be assigned to as subcluster
    * @param candidate     The subcluster graph candidate
-   * @return Either a new subgraph with all vertices guaranteed to exhibit >= minClusterLikelihood or null if that graph would be smaller than the allowed min size
+   * @return Either a new subgraph with all vertices guaranteed to exhibit ≥ minClusterLikelihood or null if that graph would be smaller than the allowed min size
    */
 
   public Graph ensure(Cluster parentCluster, Graph candidate) {

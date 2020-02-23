@@ -13,12 +13,10 @@ import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
-import java.io.PrintWriter;
-
 /**
  * A compressed sparse graph
  * <p><b>Note: </b> The vertex set of this type of graph always consists of
- * consecutive integers startng at 0. So, even if adding a single vertex n > 0,
+ * consecutive integers startng at 0. So, even if adding a single vertex n	&gt; 0,
  * the vertex set will be <code>{0...n}</code></p>
  */
 
@@ -172,10 +170,6 @@ public class CompressedSparseGraph extends Graph {
 
   public CompressedSparseGraphDatastore getDatastore() {
     return datastore;
-  }
-
-  public void export(PrintWriter writer) {
-    datastore.export(writer);
   }
 
   /**

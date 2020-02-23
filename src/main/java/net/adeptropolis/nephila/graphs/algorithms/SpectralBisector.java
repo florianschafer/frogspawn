@@ -35,7 +35,7 @@ public class SpectralBisector {
    * @param graph        The input graph
    * @param v2           The approximate second-smallest eigenvector of the Normalized Laplacian of the Graph
    * @param consumer     A consumer for the resulting partition
-   * @param selectSignum Select either all non-negative (selectSignum >= 0) or negative (selectSignum < 0) entries from the eigenvector.
+   * @param selectSignum Select either all non-negative (selectSignum ≥ 0) or negative (selectSignum &lt; 0) entries from the eigenvector.
    */
 
   private static void yieldSubgraph(Graph graph, double[] v2, Consumer<Graph> consumer, int selectSignum) {

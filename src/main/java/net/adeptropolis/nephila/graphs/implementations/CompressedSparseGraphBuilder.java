@@ -209,7 +209,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
      *
      * @param idx1 Index of the first edge in the buffer
      * @param idx2 Index of the second edge in the buffer
-     * @return -1 if first edge < second edge, 0 if equal, 1 else
+     * @return -1 if first edge &lt; second edge, 0 if equal, 1 else
      */
 
     @Override

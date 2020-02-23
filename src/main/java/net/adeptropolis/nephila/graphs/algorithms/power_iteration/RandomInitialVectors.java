@@ -30,7 +30,7 @@ public class RandomInitialVectors {
     for (int i = 0; i < size; i++) {
       iv[i] = Math.random();
     }
-    Vectors.normalize2(iv);
+    Vectors.normalize2Sig(iv);
     return iv;
   }
 

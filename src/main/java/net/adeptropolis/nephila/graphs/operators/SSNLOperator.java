@@ -46,7 +46,7 @@ public class SSNLOperator implements LinearGraphOperator {
   public SSNLOperator(Graph graph) {
     this.graph = graph;
     this.weights = graph.weights();
-    this.v0 = computeV0(weights);
+    this.v0 = computeV0(graph);
     this.argument = new double[graph.size()];
     this.linOp = new CanonicalLinearOperator(graph);
   }
@@ -54,15 +54,15 @@ public class SSNLOperator implements LinearGraphOperator {
   /**
    * Compute the eigenvector associated with the smallest eigenvalue of the regular normalized laplacian of the graph.
    *
-   * @param weights Array of vertex weights of the graph
+   * @param graph A graph
    * @return The desired eigenvector
    */
 
   @VisibleForTesting
-  static double[] computeV0(double[] weights) {
-    double[] v0 = new double[weights.length];
-    double norm = Math.sqrt(Vectors.L1Norm(weights));
-    for (int i = 0; i < weights.length; i++) v0[i] = Math.sqrt(weights[i]) / norm;
+  static double[] computeV0(Graph graph) {
+    double[] v0 = new double[graph.size()];
+    double norm = Math.sqrt(graph.totalWeight());
+    for (int i = 0; i < graph.size(); i++) v0[i] = Math.sqrt(graph.weights()[i]) / norm;
     return v0;
   }
 

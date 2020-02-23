@@ -64,13 +64,13 @@ public class RecursiveClustering {
    * Bisect the protocluster's graph such that the normalized cut is minimized. Possible scenarios for each partition:
    * <ol>
    *   <li>The partition is either smaller than the allowed minimum cluster size or comprises the full
-   *   input graph (which hits an error) -> Add its vertices to the cluster's remainder and terminate</li>
+   *   input graph (which hits an error) -&gt; Add its vertices to the cluster's remainder and terminate</li>
    *   <li>
    *     Ensure consistency of the resulting subgraph vertices and add all non-compliant vertices to the cluster reminder.
    *     For the remaining subgraph, one of two conditions may apply:
    *     <ol>
    *       <li>The remaining consistent subgraph is smaller than the allowed minimum cluster
-   *       size -> Add its vertices to the cluster's remainder and terminate</li>
+   *       size -&gt; Add its vertices to the cluster's remainder and terminate</li>
    *       <li>Else: Create a new protocluster with graph type <code>SPECTRAL</code> and add it to the queue.</li>
    *     </ol>
    *   </li>
@@ -99,9 +99,9 @@ public class RecursiveClustering {
   /**
    * Decompose the current protocluster's graph into its connected components. There are 3 possible scenarios:
    * <ol>
-   *   <li>The input graph was already fully connected -> label the protocluster's graph as connected component and re-add it to the queue</li>
-   *   <li>The connected component is smaller than the minimum cluster size -> Add its vertices to the cluster's reminder and terminate</li>
-   *   <li>Else -> Label the component as connected and add a proper new protocluster to the queue</li>
+   *   <li>The input graph was already fully connected -&gt; label the protocluster's graph as connected component and re-add it to the queue</li>
+   *   <li>The connected component is smaller than the minimum cluster size -&gt; Add its vertices to the cluster's reminder and terminate</li>
+   *   <li>Else label the component as connected and add a proper new protocluster to the queue</li>
    * </ol>
    *
    * @param protocluster A protocluster

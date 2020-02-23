@@ -9,7 +9,7 @@ package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 /**
  * <p>Standard delta norm convergence criterion.</p>
- * <p>Convergence is reached whenever <code>|| v - v<sub>i-1</sub> || <= precision</code></p>
+ * <p>Convergence is reached whenever <code>|| v - v<sub>i-1</sub> || ≤ precision</code></p>
  */
 
 public class DeltaNormConvergence implements ConvergenceCriterion {

@@ -152,7 +152,7 @@ public abstract class Graph {
   }
 
   /**
-   * Iterator providing a mapping between internal -> external vertex ids
+   * Iterator providing a mapping between internal and external vertex ids
    */
 
   class VertexMappingIterator implements IntIterator {

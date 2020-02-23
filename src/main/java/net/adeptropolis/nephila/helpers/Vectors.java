@@ -9,27 +9,37 @@ package net.adeptropolis.nephila.helpers;
 
 import com.google.common.base.Preconditions;
 
+/**
+ * Provides some basic vector operations
+ */
+
 public class Vectors {
 
   private Vectors() {
   }
 
-  public static double L1Norm(double[] v) {
-    // This is NOT exactly the official L1 norm. Assuming ∀i ∈ [0, vec.length): vec[i] >= 0
-    double norm = 0;
-    for (double value : v) {
-      norm += value;
-    }
-    return norm;
-  }
+  /**
+   * Compute the Euclidean norm of a vector
+   *
+   * @param v A vector
+   * @return Norm of <code>v</code>
+   */
 
-  public static double L2Norm(double[] v) {
+  public static double norm2(double[] v) {
     double norm = 0;
     for (double value : v) {
       norm += value * value;
     }
     return Math.sqrt(norm);
   }
+
+  /**
+   * Compute the scalar product of two vectors.
+   *
+   * @param v left argument
+   * @param w right argument
+   * @return <code>v ⋅ w</code>
+   */
 
   public static double scalarProduct(double[] v, double[] w) {
     Preconditions.checkArgument(v.length == w.length, String.format("Argument dimension mismatch: %d != %d", v.length, w.length));
@@ -40,9 +50,14 @@ public class Vectors {
     return prod;
   }
 
-  // Normalize vector <x> into <multResult>
-  // Also normalizes the sign of <x>, s.t. the first entry is always positive
-  public static void normalize2(double[] v) {
+  /**
+   * In-place vector normalization using the regular 2-norm. In addition, this method will modify the sign of the resulting
+   * vector s.t. the sign of the first entry is always positive.
+   *
+   * @param v A vector
+   */
+
+  public static void normalize2Sig(double[] v) {
     double sig = v[0] != 0 ? Math.signum(v[0]) : 1;
     double sum = 0;
     for (double value : v) sum += value * value;

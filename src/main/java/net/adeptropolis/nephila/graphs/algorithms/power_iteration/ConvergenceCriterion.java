@@ -8,14 +8,16 @@
 package net.adeptropolis.nephila.graphs.algorithms.power_iteration;
 
 /**
- * A convergence criterion for the power iteration
+ * <p>A convergence criterion for the power iteration</p>
+ *
+ * @see PowerIteration
  */
 
 @FunctionalInterface
 public interface ConvergenceCriterion {
 
   /**
-   * <p>Assess whether the power iteration has converged</p>
+   * <p>Assess whether a power iteration has converged</p>
    *
    * @param previous   Result of the previous iteration
    * @param current    Result of the current iteration

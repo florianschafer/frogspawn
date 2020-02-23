@@ -15,12 +15,6 @@ import static org.junit.Assert.assertThat;
 public class VectorsTest {
 
   @Test
-  public void L1Norm() {
-    double[] v = new double[]{2, 3, 5};
-    assertThat(Vectors.L1Norm(v), closeTo(10, 1E-9));
-  }
-
-  @Test
   public void scalarProduct() {
     double[] v = new double[]{2, 3, 5};
     double[] w = new double[]{7, 11, 13};
@@ -30,16 +24,16 @@ public class VectorsTest {
   @Test
   public void normalize2() {
     double[] v = new double[]{-2, 3, 5};
-    Vectors.normalize2(v);
+    Vectors.normalize2Sig(v);
     assertThat(v[0], closeTo(0.32444, 1E-5));
     assertThat(v[1], closeTo(-0.48666, 1E-5));
     assertThat(v[2], closeTo(-0.81111, 1E-5));
   }
 
   @Test
-  public void normalize2ZeroHead() {
+  public void normalize2Sig() {
     double[] v = new double[]{0, 3, 5};
-    Vectors.normalize2(v);
+    Vectors.normalize2Sig(v);
     assertThat(v[0], closeTo(0, 1E-5));
     assertThat(v[1], closeTo(0.51450, 1E-5));
     assertThat(v[2], closeTo(0.85749, 1E-5));

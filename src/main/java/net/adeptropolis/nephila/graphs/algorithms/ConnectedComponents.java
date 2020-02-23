@@ -44,7 +44,7 @@ public class ConnectedComponents implements EdgeConsumer {
   }
 
   /**
-   * <p>Convenience access for find(..) below</p>
+   * <p>Convenience access for find(..)</p>
    * <p>Find the connected components of a graph</p>
    *
    * @param graph    The input graph

@@ -15,20 +15,18 @@ public class ClusteringSettings {
 
   private final int minClusterSize;
   private final double minClusterLikelihood;
-  private final boolean collapseSingletons;
   private final double minAncestorOverlap;
   private final int trailSize;
   private final double convergenceThreshold;
   private final int maxIterations;
 
-  public ClusteringSettings(int minClusterSize, double minClusterLikelihood, double minAncestorOverlap, int trailSize, double convergenceThreshold, boolean collapseSingletons, int maxIterations) {
+  public ClusteringSettings(int minClusterSize, double minClusterLikelihood, double minAncestorOverlap, int trailSize, double convergenceThreshold, int maxIterations) {
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
     this.minAncestorOverlap = minAncestorOverlap;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
-    this.collapseSingletons = collapseSingletons;
   }
 
   public int getMinClusterSize() {
@@ -41,10 +39,6 @@ public class ClusteringSettings {
 
   public int getMaxIterations() {
     return maxIterations;
-  }
-
-  public boolean getCollapseSingletons() {
-    return collapseSingletons;
   }
 
   public PartialConvergenceCriterion convergenceCriterionForGraph(Graph graph) {
