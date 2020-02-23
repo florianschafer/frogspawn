@@ -1,6 +1,6 @@
 /*
- * Copyright (c) Florian Schaefer 2019.
- *
+ * Copyright Florian Schaefer 2019.
+ * SPDX-License-Identifier: Apache-2.0
  * This file is a modified version of it.unimi.dsi.fastutil.Arrays that supports long indices.
  * Please see the original license below.
  */
