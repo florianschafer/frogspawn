@@ -9,7 +9,7 @@ package net.adeptropolis.nephila.graphs;
 
 import java.util.concurrent.CountDownLatch;
 
-// TODO: Tie this one ane ParallelEdgeOps together
+// TODO: Tie this one and ParallelEdgeOps together
 public final class ParallelVertexOps extends ParallelOps implements Runnable {
 
   private final VertexConsumer consumer;

@@ -7,6 +7,7 @@
 
 package net.adeptropolis.nephila.graphs.implementations.arrays;
 
+import com.google.common.base.Preconditions;
 import net.adeptropolis.nephila.graphs.implementations.arrays.LongMergeSort.SortOps;
 
 import java.util.stream.Collectors;
@@ -170,6 +171,7 @@ public class BigInts implements SortOps {
   }
 
   public int[] toArray() {
+    Preconditions.checkState(size <= Integer.MAX_VALUE);
     int[] arr = new int[Math.toIntExact(size())];
     for (int i = 0; i < size(); i++) {
       arr[i] = get(i);

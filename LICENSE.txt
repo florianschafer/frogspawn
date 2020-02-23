@@ -1,3 +1,0 @@
-This software is still in development. Upon completion, a proper license will be chosen.
-Until then, any usage, including commercial and non-commercial application as well as the creation of any
-derivative works or distribution is explicitly prohibited.

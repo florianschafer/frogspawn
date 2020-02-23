@@ -208,7 +208,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
     return new CompressedInducedSparseSubgraph(datastore, vertices);
   }
 
-  private class EdgeCountingConsumer implements EdgeConsumer {
+  private static class EdgeCountingConsumer implements EdgeConsumer {
 
     private final AtomicLong cnt;
 
