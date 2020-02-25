@@ -43,7 +43,7 @@ public class RecursiveClustering {
     queue.add(initialProtocluster);
     processQueue();
     stopWatch.stop();
-    LOG.debug("Finished clustering {} vertices after {}", graph.size(), stopWatch);
+    LOG.debug("Finished clustering {} vertices after {}", graph.order(), stopWatch);
     return root;
   }
 
@@ -80,11 +80,11 @@ public class RecursiveClustering {
   private void bisect(Protocluster protocluster) {
     try {
       bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), partition -> {
-        if (partition.size() < settings.getMinClusterSize() || partition.size() == protocluster.getGraph().size()) {
+        if (partition.order() < settings.getMinClusterSize() || partition.order() == protocluster.getGraph().order()) {
           protocluster.getCluster().addToRemainder(partition);
         } else {
           Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
-          if (consistentSubgraph != null && consistentSubgraph.size() > settings.getMinClusterSize()) {
+          if (consistentSubgraph != null && consistentSubgraph.order() > settings.getMinClusterSize()) {
             enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
           }
         }
@@ -107,12 +107,12 @@ public class RecursiveClustering {
 
   private void decomposeComponents(Protocluster protocluster) {
     ConnectedComponents.find(protocluster.getGraph(), component -> {
-      if (component.size() == protocluster.getGraph().size()) {
+      if (component.order() == protocluster.getGraph().order()) {
         protocluster.setGraphType(Protocluster.GraphType.COMPONENT);
         queue.add(protocluster);
-      } else if (component.size() < settings.getMinClusterSize()) {
+      } else if (component.order() < settings.getMinClusterSize()) {
         protocluster.getCluster().addToRemainder(component);
-      } else if (component.size() > settings.getMinClusterSize()) {
+      } else if (component.order() > settings.getMinClusterSize()) {
         enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getCluster(), component);
       }
     });

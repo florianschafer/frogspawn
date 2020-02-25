@@ -14,7 +14,7 @@ import net.adeptropolis.nephila.graphs.implementations.arrays.BigInts;
  * Please note that vertex indices/ids are expected to be zero-offset ascending ints.<br/>
  * <p>
  * Technically, the edges are sorted by (1st) the index of the left and (2nd) the index of the right endpoint.
- * Internally, this is represented by a data structure consisting of 3 arrays:<br/>
+ * This is internally represented by a data structure consisting of 3 arrays:<br/>
  * <ol>
  * <li><code>edges</code> Array containing the right endpoints of all sorted edges</li>
  * <li><code>pointers</code> Array providing a map between vertex ids (taken as left endpoints of an edge) and their
@@ -22,10 +22,6 @@ import net.adeptropolis.nephila.graphs.implementations.arrays.BigInts;
  * <li><code>weights</code> Array containing the edge weights</li>
  * </ol>
  * </p>
- *
- * @author Florian Schaefer
- * @author florian@adeptropolis.net
- * @version 1.0
  */
 
 public class CompressedSparseGraphDatastore {
@@ -36,6 +32,15 @@ public class CompressedSparseGraphDatastore {
   private final int size;
   private final long edgeCount;
 
+  /**
+   * Constructor
+   * @param size Number of vertices
+   * @param edgeCount Number of edges
+   * @param pointers Vertex pointers
+   * @param edges Right endpoints of all edges
+   * @param weights Edge weights
+   */
+
   public CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
     this.size = size;
     this.edgeCount = edgeCount;
@@ -44,9 +49,17 @@ public class CompressedSparseGraphDatastore {
     this.weights = weights;
   }
 
+  /**
+   * @return Number of vertices in the graph
+   */
+
   public int size() {
     return size;
   }
+
+  /**
+   * @return Number of edges in the graph
+   */
 
   long edgeCount() {
     return edgeCount;

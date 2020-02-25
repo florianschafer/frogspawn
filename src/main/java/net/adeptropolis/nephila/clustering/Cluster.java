@@ -80,7 +80,7 @@ public class Cluster {
   }
 
   void addToRemainder(Graph graph) {
-    remainder.ensureCapacity(remainder.size() + graph.size());
+    remainder.ensureCapacity(remainder.size() + graph.order());
     VertexIterator vertexIterator = graph.vertexIterator();
     while (vertexIterator.hasNext()) {
       remainder.add(vertexIterator.globalId());

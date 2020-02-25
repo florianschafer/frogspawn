@@ -18,10 +18,10 @@ public final class ParallelVertexOps extends ParallelOps implements Runnable {
   }
 
   public static void traverse(Graph graph, VertexConsumer consumer) {
-    if (graph.size() >= PARALLELIZATION_THRESHOLD) {
+    if (graph.order() >= PARALLELIZATION_THRESHOLD) {
       traverseParallel(graph, consumer);
     } else {
-      for (int i = 0; i < graph.size(); i++) {
+      for (int i = 0; i < graph.order(); i++) {
         consumer.accept(i);
       }
     }
@@ -42,7 +42,7 @@ public final class ParallelVertexOps extends ParallelOps implements Runnable {
   @Override
   public void run() {
     int v;
-    for (int i = 0; (v = i * THREAD_POOL_SIZE + slice) < graph.size(); i++) {
+    for (int i = 0; (v = i * THREAD_POOL_SIZE + slice) < graph.order(); i++) {
       consumer.accept(v);
     }
     latch.countDown();

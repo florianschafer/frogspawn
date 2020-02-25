@@ -11,6 +11,10 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Classic power method implementation supporting variable convergence criteria
+ */
+
 public class PowerIteration {
 
   private static final Logger LOG = LoggerFactory.getLogger(PowerIteration.class.getSimpleName());

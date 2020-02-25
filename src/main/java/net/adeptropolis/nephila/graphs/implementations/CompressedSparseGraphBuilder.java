@@ -18,11 +18,6 @@ import org.slf4j.LoggerFactory;
  * <p>Build new Graph instances</p>
  * <p>This little gizmo creates a new compressed sparse graph from an arbitrary
  * number of (not necessarily unique or sorted) weighted edge triples.</p>
- *
- * @author Florian Schaefer
- * @author florian@adeptropolis.net
- * @version 1.0
- * @since 1.0
  */
 
 public class CompressedSparseGraphBuilder implements Graph.Builder {
@@ -30,7 +25,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   private static final Logger LOG = LoggerFactory.getLogger(CompressedSparseGraphBuilder.class.getSimpleName());
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
-  private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
+  private final BigInts[] edges = { new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE) };
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
@@ -51,6 +46,15 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
     if (u != v) set(ptr++, v, u, weight);
     return this;
   }
+
+  /**
+   * Add a new directed edge to the graph.
+   *
+   * @param u      left vertex
+   * @param v      right vertex
+   * @param weight edge weight
+   * @return this
+   */
 
   @Override
   public Graph.Builder addDirected(int u, int v, double weight) {
@@ -98,6 +102,12 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
     CompressedSparseGraphDatastore datastore = buildDatastore();
     return new CompressedSparseGraph(datastore);
   }
+
+  /**
+   * Build the main datastore from the edge buffer. This also collapses multiple instances of the same edge into one,
+   * aggregating their weights.
+   * @return a new graph datastore
+   */
 
   @VisibleForTesting
   CompressedSparseGraphDatastore buildDatastore() {

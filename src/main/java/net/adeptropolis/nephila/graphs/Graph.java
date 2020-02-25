@@ -7,53 +7,97 @@ package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 
+/**
+ * <p>A weighted graph supporting all basic operations required in this context, i.e.</p>
+ * <ul>
+ *   <li>Very fast edge traversal over either the full graph or the set of adjacent vertices wrt. a given endpoint</li>
+ *   <li>Efficient creation of induced subgraphs</li>
+ *   <li>Fast computation of various properties and metrics such as vertex weights, relative weights (wrt. a supergraph) or edge overlap</li>
+ * </ul>
+ */
 
 public abstract class Graph {
 
   private double[] cachedWeights = null;
   private double cachedTotalWeight = -1;
 
-  public abstract int size();
+  /**
+   * Graph order
+   * @return The number of vertices in the graph
+   */
 
-  public abstract long numEdges();
+  public abstract int order();
+
+  /**
+   * <p>Size of the Graph</p>
+   * <p><b>Note:</b> The edges of undirected graphs are accounted for in a directed fashion, i.e.
+   * for such graphs, the return value of this method is exactly twice the number of edges.</p>
+   *
+   * @return Total number of edges
+   */
+
+  public abstract long size();
+
+  /**
+   * Iterator over the full vertex set
+   * @return An iterator over the vertex set
+   */
 
   public abstract VertexIterator vertexIterator();
+
+  /**
+   * Retrieve the vertex set
+   * @return Array of all global vertex ids
+   */
 
   public abstract int[] collectVertices();
 
   /**
-   * @param v        A (local!) vertex
-   * @param consumer an instance of EdgeConsumer
+   * Parallel traversal over all edges adjacent to a given endpoint
+   * @param v        (Local!) vertex id of the endpoint
+   * @param consumer Instance of EdgeConsumer
    */
 
   public abstract void traverseParallel(int v, EdgeConsumer consumer);
+
+  /**
+   * Parallel traversal over all edges of the graph
+   * @param consumer Instance of EdgeConsumer
+   */
 
   public void traverseParallel(EdgeConsumer consumer) {
     ParallelEdgeOps.traverse(this, consumer);
   }
 
   /**
-   * Traverse in a sequential manner (i.e. no multithreading)
-   *
-   * @param consumer
+   * Parallel traversal over all vertices of the graph
+   * @param consumer Instance of VertexConsumer
    */
-
-  public void traverseEdgesSequential(EdgeConsumer consumer) {
-    for (int u = 0; u < size(); u++) {
-      traverseParallel(u, consumer);
-    }
-  }
 
   public void traverseVerticesParallel(VertexConsumer consumer) {
     ParallelVertexOps.traverse(this, consumer);
   }
 
+  /**
+   * Translate between global and local vertex ids
+   *
+   * @param globalVertexId A global vertex id
+   * @return Local vertex id
+   */
+
   public abstract int localVertexId(int globalVertexId);
+
+  /**
+   * Translate between local and global vertex ids
+   *
+   * @param localVertexId A local vertex id
+   * @return Global vertex id
+   */
 
   public abstract int globalVertexId(int localVertexId);
 
   /**
-   * <p></p>Compute the induced subgraph from the given global vertices</p>
+   * <p>Compute the induced subgraph from a given set of global vertex ids</p>
    *
    * @param vertices The vertex set of the new subgraph
    * @return a new subgraph
@@ -62,9 +106,9 @@ public abstract class Graph {
   public abstract Graph inducedSubgraph(IntIterator vertices);
 
   /**
-   * <p></p>Compute the induced subgraph from the given local vertices</p>
+   * <p>Compute the induced subgraph from a given set of local vertex ids</p>
    *
-   * @param vertices The vertex set (as local vertex ids) of the new subgraph
+   * @param vertices The (local) vertex set of the new subgraph
    * @return a new subgraph
    */
 
@@ -95,7 +139,7 @@ public abstract class Graph {
     }
     double[] weights = weights();
     double total = 0;
-    for (int i = 0; i < size(); i++) {
+    for (int i = 0; i < order(); i++) {
       total += weights[i];
     }
     cachedTotalWeight = total;
@@ -111,7 +155,7 @@ public abstract class Graph {
    */
 
   public double[] relativeWeights(Graph supergraph) {
-    double[] relWeights = new double[size()];
+    double[] relWeights = new double[order()];
     VertexIterator it = vertexIterator();
     while (it.hasNext()) {
       int v = supergraph.localVertexId(it.globalId());
@@ -133,7 +177,7 @@ public abstract class Graph {
   public double overlap(Graph supergraph) {
     double weight = 0;
     double supergraphEmbeddingWeight = 0;
-    for (int i = 0; i < size(); i++) {
+    for (int i = 0; i < order(); i++) {
       weight += weights()[i];
       supergraphEmbeddingWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
     }
@@ -150,7 +194,7 @@ public abstract class Graph {
   }
 
   /**
-   * Iterator providing a mapping between internal and external vertex ids
+   * Iterator providing a mapping between local and global vertex ids
    */
 
   class VertexMappingIterator implements IntIterator {

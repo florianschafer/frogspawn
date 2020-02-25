@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 /**
  * Induced subgraph.
  * <p>That is, a graph whose vertex set is limited to a subset of another graph.
- * The edge set is restricted to those whose endpoints are members of the given vertex set.</p>
+ * The edge set is restricted to those edges where both endpoints are members of the given vertex set.</p>
  */
 
 public class CompressedInducedSparseSubgraph extends Graph {
@@ -35,30 +35,27 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * @param vertices  An iterator of global vertex ids
    */
 
-  public CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
+  CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
     this.datastore = datastore;
     this.vertices = IntIterators.unwrap(vertices);
-    Arrays.parallelSort(this.vertices, 0, size());
+    Arrays.parallelSort(this.vertices, 0, order());
   }
 
   /**
-   * @return The number of vertices of the graph
+   * {@inheritDoc}
    */
 
   @Override
-  public int size() {
+  public int order() {
     return vertices.length;
   }
 
   /**
-   * <b>Note:</b>The edges are accounted for in a directed fashion!
-   * That is, an undirected graph has 2x the expected number of edges
-   *
-   * @return number of edges
+   * {@inheritDoc}
    */
 
   @Override
-  public long numEdges() {
+  public long size() {
     if (cachedNumEdges >= 0) {
       return cachedNumEdges;
     } else {
@@ -70,9 +67,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   * Return the vertex set
-   *
-   * @return An iterator for the vertex set
+   * {@inheritDoc}
    */
 
   @Override
@@ -80,15 +75,17 @@ public class CompressedInducedSparseSubgraph extends Graph {
     return new SubgraphVertexIterator().reset(vertices);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+
   @Override
   public int[] collectVertices() {
     return vertices.clone();
   }
 
   /**
-   * Traverse all edges of the graph
-   *
-   * @param consumer Instance of <code>EdgeConsumer</code>
+   * {@inheritDoc}
    */
 
   @Override
@@ -97,16 +94,13 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   * Traverse all neighbours of a given vertex
-   *
-   * @param v        A (local!) vertex
-   * @param consumer Instance of <code>EdgeConsumer</code>
+   * {@inheritDoc}
    */
 
   @Override
   public void traverseParallel(int v, EdgeConsumer consumer) {
 
-    if (size() == 0 || v < 0) {
+    if (order() == 0 || v < 0) {
       return;
     }
 
@@ -119,7 +113,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
       return;
     }
 
-    if (size() > high - low) {
+    if (order() > high - low) {
       traverseByAdjacent(v, consumer, low, high);
     } else {
       traverseByVertices(v, consumer, low, high);
@@ -127,22 +121,16 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   * Translate between global and local vertex ids
-   *
-   * @param globalVertexId A global vertex id
-   * @return A local vertex id
+   * {@inheritDoc}
    */
 
   @Override
   public int localVertexId(int globalVertexId) {
-    return InterpolationSearch.search(vertices, globalVertexId, 0, size() - 1);
+    return InterpolationSearch.search(vertices, globalVertexId, 0, order() - 1);
   }
 
   /**
-   * Translate between locao and global vertex ids
-   *
-   * @param localVertexId A global vertex id
-   * @return A global vertex id
+   * {@inheritDoc}
    */
 
   @Override
@@ -163,17 +151,17 @@ public class CompressedInducedSparseSubgraph extends Graph {
     int secPtr = 0;
     int rightEndpoint;
     for (long ptr = low; ptr < high; ptr++) {
-      rightEndpoint = InterpolationSearch.search(vertices, datastore.edges.get(ptr), secPtr, size() - 1);
+      rightEndpoint = InterpolationSearch.search(vertices, datastore.edges.get(ptr), secPtr, order() - 1);
       if (rightEndpoint >= 0) {
         consumer.accept(leftEndpoint, rightEndpoint, datastore.weights.get(ptr));
         secPtr = rightEndpoint + 1;
       }
-      if (secPtr >= size()) break;
+      if (secPtr >= order()) break;
     }
   }
 
   /**
-   * Internal: Traverse all neighbours of a given local vertex by the vertex set
+   * Traverse all neighbours of a given local vertex by the vertex set
    *
    * @param leftEndpoint A local vertex id
    * @param consumer     An instance of <code>EdgeConsumer</code>
@@ -184,7 +172,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
   private void traverseByVertices(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {
     long ptr = low;
     long retrievedIdx;
-    for (int i = 0; i < size(); i++) {
+    for (int i = 0; i < order(); i++) {
       retrievedIdx = InterpolationSearch.search(datastore.edges, vertices[i], ptr, high - 1);
       if (retrievedIdx >= 0 && retrievedIdx < high) {
         consumer.accept(leftEndpoint, i, datastore.weights.get(retrievedIdx));
@@ -195,16 +183,17 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   * Return a new induces subgraph
-   *
-   * @param vertices The vertex set of the new subgraph
-   * @return A new graph
+   * {@inheritDoc}
    */
 
   @Override
   public Graph inducedSubgraph(IntIterator vertices) {
     return new CompressedInducedSparseSubgraph(datastore, vertices);
   }
+
+  /**
+   * Consumer counting the total number of distinct edges of the graph
+   */
 
   private static class EdgeCountingConsumer implements EdgeConsumer {
 

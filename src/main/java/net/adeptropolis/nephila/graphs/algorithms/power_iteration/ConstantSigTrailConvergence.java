@@ -51,7 +51,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
     this.graph = graph;
     this.sigTrail = new byte[trailSize][];
     for (int i = 0; i < trailSize; i++) {
-      this.sigTrail[i] = new byte[graph.size()];
+      this.sigTrail[i] = new byte[graph.order()];
     }
     this.convergenceThreshold = convergenceThreshold;
   }
@@ -67,7 +67,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   @Override
   public boolean satisfied(double[] previous, double[] current, int iterations) {
-    for (int v = 0; v < graph.size(); v++) {
+    for (int v = 0; v < graph.order(); v++) {
       sigTrail[iterations % sigTrail.length][v] = (byte) Math.signum(current[v]);
     }
     if (iterations < sigTrail.length) {
@@ -84,14 +84,14 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   @Override
   public void postprocess(double[] vec) {
-    Preconditions.checkState(vec.length == graph.size(), "Vector length does not match graph size");
+    Preconditions.checkState(vec.length == graph.order(), "Vector length does not match graph size");
     Graph lGraph = extractPostprocessingSubgraph(vec, -1);
     Graph rGraph = extractPostprocessingSubgraph(vec, 1);
-    if (lGraph.size() > 0 && rGraph.size() > 0) {
+    if (lGraph.order() > 0 && rGraph.order() > 0) {
       classifyNonConvergent(vec, lGraph, rGraph);
-    } else if (lGraph.size() > 0) {
+    } else if (lGraph.order() > 0) {
       classifyNonConvergentFallback(vec, -1);
-    } else if (rGraph.size() > 0) {
+    } else if (rGraph.order() > 0) {
       classifyNonConvergentFallback(vec, 1);
     } else {
       LOG.warn("Postprocessing failed. Both graphs are empty.");
@@ -167,7 +167,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
         converged.addAndGet(1d);
       }
     });
-    return converged.get() / graph.size();
+    return converged.get() / graph.order();
   }
 
 

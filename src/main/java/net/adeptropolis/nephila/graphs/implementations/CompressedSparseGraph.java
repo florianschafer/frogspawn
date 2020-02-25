@@ -14,7 +14,7 @@ import net.adeptropolis.nephila.graphs.VertexIterator;
 /**
  * A compressed sparse graph
  * <p><b>Note: </b> The vertex set of this type of graph always consists of
- * consecutive integers startng at 0. So, even if adding a single vertex n	&gt; 0,
+ * consecutive integers starting at 0. So, even if adding a single vertex n	&gt; 0,
  * the vertex set will be <code>{0...n}</code></p>
  */
 
@@ -43,51 +43,47 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   * @return The number of vertices of the graph
+   * {@inheritDoc}
    */
 
   @Override
-  public int size() {
+  public int order() {
     return datastore.size();
   }
 
   /**
-   * <b>Note:</b>The edges are accounted for in a directed fashion!
-   * That is, an undirected graph has 2x the expected number of edges
-   *
-   * @return number of edges
+   * {@inheritDoc}
    */
 
   @Override
-  public long numEdges() {
+  public long size() {
     return datastore.edges.size();
   }
 
   /**
-   * Return the vertex set
-   *
-   * @return An iterator for the vertex set
+   * {@inheritDoc}
    */
-
 
   @Override
   public VertexIterator vertexIterator() {
     return new DefaultVertexIterator();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+
   @Override
   public int[] collectVertices() {
-    int[] vertices = new int[size()];
-    for (int i = 0; i < size(); i++) {
+    int[] vertices = new int[order()];
+    for (int i = 0; i < order(); i++) {
       vertices[i] = i;
     }
     return vertices;
   }
 
   /**
-   * Traverse all edges of the graph
-   *
-   * @param consumer Instance of <code>EdgeConsumer</code>
+   * {@inheritDoc}
    */
 
   @Override
@@ -96,16 +92,13 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   * Traverse all neighhours of a given vertex
-   *
-   * @param v        A (local!) vertex
-   * @param consumer Instance of <code>EdgeConsumer</code>
+   * {@inheritDoc}
    */
 
   @Override
   public void traverseParallel(int v, EdgeConsumer consumer) {
 
-    if (size() == 0 || v < 0) {
+    if (order() == 0 || v < 0) {
       return;
     }
 
@@ -119,7 +112,7 @@ public class CompressedSparseGraph extends Graph {
     for (long ptr = low; ptr < high; ptr++) {
       rightEndpoint = datastore.edges.get(ptr);
       consumer.accept(v, rightEndpoint, datastore.weights.get(ptr));
-      if (rightEndpoint + 1 >= size()) {
+      if (rightEndpoint + 1 >= order()) {
         break;
       }
     }
@@ -127,10 +120,7 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   * Translate between global and local vertex ids
-   *
-   * @param globalVertexId A global vertex id
-   * @return A local vertex id
+   * {@inheritDoc}
    */
 
   @Override
@@ -139,10 +129,7 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   * Translate between locao and global vertex ids
-   *
-   * @param localVertexId A global vertex id
-   * @return A global vertex id
+   * {@inheritDoc}
    */
 
   @Override
@@ -151,23 +138,12 @@ public class CompressedSparseGraph extends Graph {
   }
 
   /**
-   * Return a new induces subgraph
-   *
-   * @param vertices The vertex set of the new subgraph
-   * @return A new graph
+   * {@inheritDoc}
    */
 
   @Override
   public Graph inducedSubgraph(IntIterator vertices) {
     return new CompressedInducedSparseSubgraph(datastore, vertices);
-  }
-
-  /**
-   * @return The compressed datastore
-   */
-
-  public CompressedSparseGraphDatastore getDatastore() {
-    return datastore;
   }
 
   /**
@@ -180,7 +156,7 @@ public class CompressedSparseGraph extends Graph {
 
     @Override
     public boolean hasNext() {
-      return idx++ < size();
+      return idx++ < order();
     }
 
     @Override

@@ -1,8 +1,8 @@
 /*
  * Copyright Florian Schaefer 2019.
  * SPDX-License-Identifier: Apache-2.0
- * This file is a modified version of it.unimi.dsi.fastutil.Arrays that supports long indices.
- * Please see the original license below.
+ * This file is a modified version the indirect merge sort from it.unimi.dsi.fastutil.Arrays supporting long indices.
+ * Please see the original copyright/license below.
  */
 
 /*

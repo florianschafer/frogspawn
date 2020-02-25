@@ -29,12 +29,12 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void size() {
-    assertThat(defaultGraph.size(), is(12));
+    assertThat(defaultGraph.order(), is(12));
   }
 
   @Test
   public void NumEdges() {
-    assertThat(defaultGraph.numEdges(), is(10L));
+    assertThat(defaultGraph.size(), is(10L));
   }
 
   @Test
@@ -62,7 +62,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   @Test
   public void emptyGraph() {
     CompressedSparseGraph graph = builder().build();
-    assertThat(graph.size(), is(0));
+    assertThat(graph.order(), is(0));
     graph.traverseParallel(consumer);
     assertThat(consumer.getEdges().size(), is(0));
   }
@@ -86,7 +86,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void indexMapping() {
-    for (int i = 0; i < defaultGraph.size(); i++) {
+    for (int i = 0; i < defaultGraph.order(); i++) {
       assertThat(defaultGraph.globalVertexId(i), is(i));
       assertThat(defaultGraph.localVertexId(i), is(i));
 
@@ -111,7 +111,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   @Test
   public void subgraph() {
     Graph subgraph = defaultGraph.inducedSubgraph(IntIterators.wrap(new int[]{4, 11}));
-    assertThat(subgraph.size(), is(2));
+    assertThat(subgraph.order(), is(2));
   }
 
 }

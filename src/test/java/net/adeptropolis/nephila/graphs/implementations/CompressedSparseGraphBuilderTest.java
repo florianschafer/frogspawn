@@ -177,7 +177,7 @@ public class CompressedSparseGraphBuilderTest {
             .add(1, 2, 3)
             .build();
     assertThat(graph, instanceOf(CompressedSparseGraph.class));
-    assertThat(graph.size(), is(3));
+    assertThat(graph.order(), is(3));
   }
 
 }

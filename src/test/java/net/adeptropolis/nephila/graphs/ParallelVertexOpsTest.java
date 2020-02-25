@@ -32,7 +32,7 @@ public class ParallelVertexOpsTest extends GraphTestBase {
     Set<Integer> vertices = Collections.synchronizedSet(new HashSet<>());
     ParallelVertexOps.traverse(g, vertices::add);
     int[] collected = vertices.stream().mapToInt(x -> x).sorted().toArray();
-    assertThat(collected.length, is(g.size()));
+    assertThat(collected.length, is(g.order()));
     VertexIterator it = g.vertexIterator();
     while (it.hasNext()) {
       assertThat(collected[it.localId()], is(it.globalId()));

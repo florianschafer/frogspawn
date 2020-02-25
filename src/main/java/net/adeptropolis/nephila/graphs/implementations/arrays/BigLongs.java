@@ -14,10 +14,6 @@ import java.util.stream.LongStream;
 /**
  * A big (i.e. long-indexed) array of longs.
  *
- * @author Florian Schaefer
- * @author florian@adeptropolis.net
- * @version 1.0
- * @since 1.0
  */
 
 public class BigLongs implements SortOps {
@@ -166,6 +162,11 @@ public class BigLongs implements SortOps {
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
+
+  /**
+   * <b>Only for testing</b> (obviously)
+   * @return A primitive array representation of this object
+   */
 
   public long[] toArray() {
     Preconditions.checkState(size <= Integer.MAX_VALUE);

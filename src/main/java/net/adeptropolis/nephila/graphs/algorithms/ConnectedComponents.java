@@ -63,7 +63,7 @@ public class ConnectedComponents implements EdgeConsumer {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     remaining.clear();
-    for (int i = 0; i < graph.size(); i++) remaining.add(i);
+    for (int i = 0; i < graph.order(); i++) remaining.add(i);
     int comps = 0;
     while (!remaining.isEmpty()) {
       int i = remaining.removeFirstInt();

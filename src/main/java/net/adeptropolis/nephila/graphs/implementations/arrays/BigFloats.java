@@ -13,11 +13,6 @@ import java.util.stream.LongStream;
 
 /**
  * A big (i.e. long-indexed) array of floats.
- *
- * @author Florian Schaefer
- * @author florian@adeptropolis.net
- * @version 1.0
- * @since 1.0
  */
 
 public class BigFloats implements SortOps {
@@ -166,6 +161,11 @@ public class BigFloats implements SortOps {
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
   }
+
+  /**
+   * <b>Only for testing</b> (obviously)
+   * @return A primitive array representation of this object
+   */
 
   public float[] toArray() {
     Preconditions.checkState(size <= Integer.MAX_VALUE);

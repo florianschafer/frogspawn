@@ -86,7 +86,7 @@ public class Playground {
         lost.addAndGet(c.getRemainder().size());
       }
     });
-    LOG.debug("Lost: {} / {}", lost.get(), graph.size());
+    LOG.debug("Lost: {} / {}", lost.get(), graph.order());
 
 
     Labeling labeling = new TopWeightsRemainderLabeling(25, graph);

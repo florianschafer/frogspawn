@@ -31,12 +31,12 @@ public class TopWeightsAggregateLabeling implements Labeling {
     double[] weights = graph.weights();
     double[] likelihoods = graph.relativeWeights(rootGraph);
     WeightSortOps weightSortOps = new WeightSortOps(vertices, weights, likelihoods);
-    Arrays.mergeSort(0, graph.size(), weightSortOps, weightSortOps);
+    Arrays.mergeSort(0, graph.order(), weightSortOps, weightSortOps);
     return new Labels(
             Arr.shrink(vertices, maxLabels),
             Arr.shrink(weights, maxLabels),
             Arr.shrink(likelihoods, maxLabels),
-            graph.size()
+            graph.order()
     );
   }
 

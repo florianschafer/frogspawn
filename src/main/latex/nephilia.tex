@@ -1,47 +1,22 @@
-%----------------------------------------------------------------------------------------
-%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
-%----------------------------------------------------------------------------------------
+\documentclass[10pt, a4paper, twocolumn]{article}
 
-\documentclass[10pt, a4paper, twocolumn]{article} % 10pt font size (11 and 12 also possible), A4 paper (letterpaper for US letter) and two column layout (remove for one column)
-
-\input{structure.tex} % Specifies the document structure and loads requires packages
-
-%----------------------------------------------------------------------------------------
-%	ARTICLE INFORMATION
-%----------------------------------------------------------------------------------------
-
-\title{Nephilia: A new approach to recursive spectral clustering of bipartite graphs} % The article title
+\input{structure.tex}
+\title{Nephilia: A new approach to recursive spectral clustering of bipartite graphs}
 
 \author{
 \authorstyle{Florian Schaefer}
 }
 
-% Example of a one line author/institution relationship
-%\author{\newauthor{John Marston} \newinstitution{Universidad Nacional Autónoma de México, Mexico City, Mexico}}
-
-\date{\today} % Add a date here if you would like one to appear underneath the title block, use \today for the current date, leave empty for no date
-
-%----------------------------------------------------------------------------------------
+\date{\today}
 
 \begin{document}
-
-    \maketitle % Print the title
-
-    \thispagestyle{firstpage} % Apply the page style for the first page (no headers and footers)
-
-    %----------------------------------------------------------------------------------------
-    %	ABSTRACT
-    %----------------------------------------------------------------------------------------
-
+    \maketitle
+    \thispagestyle{firstpage}
     \lettrineabstract{
-        NOTE: At this moment, this document is far from complete. It's only purpose right now is to retain
+        NOTE: At this moment, this document is a huge mess and far from complete. It's only purpose right now is to retain
         some information about the use of spectral shifting. Please ignore it for now and come back once
         it has been put in a proper form.
     }
-
-    %----------------------------------------------------------------------------------------
-    %	ARTICLE CONTENTS
-    %----------------------------------------------------------------------------------------
 
     \paragraph{Introduction}
     Data is the new oil they say.
@@ -59,13 +34,16 @@
     Hence, the initial pondering about the potential society-shaping impact that data might have one day is inextricably
     linked to the question of whether we can manage to reliably refine it on large scales.
     \\
-    More precisely (and ambitiously): If we are really serious about data, we need tools that are not only able to isolate
-    homogeneous and self-consistent subsets from arbitrary data, but that also allow modelling whole datasets in terms of
-    relationships between those subsets.
+    To put it more ambitiously: If we admit data the crucial importance we claim it deserves, we require tools that are
+    not only able to isolate homogeneous and self-consistent subsets from arbitrary data, but that also allow modelling
+    whole datasets in terms of relationships between those subsets.
+    Moreover, we need generally intelligible criteria that manage to explain the data instead of forcing the user to
+    accept whatever comes out of impenetrable black boxes.
 
-    However, the current landscape of available and ready-use clustering algorithms only partially contributes to this goal.
+    However, the current landscape of available and ready-to-use clustering algorithms only partially contributes to this goal.
     While some established methods (such as PCA, t-SNE or LDA) stand on very solid theoretical grounds, none of them
-    actually provide a proper explanation of the results that end users and decision makers might find reasonable.
+    actually provides a proper explanation or classification of the results that end users and decision makers might
+    find satisfactory.
 
     Spectral clustering exhibits a few particular advantages that other clustering methods do not.
     For example, in terms of the outcome, spectral clustering is very well defined and completely deterministic.
@@ -187,13 +165,6 @@
 
     \section{The case against other eigensolvers}
 
-    %----------------------------------------------------------------------------------------
-    %	BIBLIOGRAPHY
-    %----------------------------------------------------------------------------------------
-
     \printbibliography[title={Bibliography}]
-    % Print the bibliography, section title in curly brackets
-
-    %----------------------------------------------------------------------------------------
 
 \end{document}

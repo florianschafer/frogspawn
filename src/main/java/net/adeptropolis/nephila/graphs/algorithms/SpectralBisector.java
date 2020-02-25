@@ -53,7 +53,7 @@ public class SpectralBisector {
   public void bisect(Graph graph, int maxIterations, Consumer<Graph> consumer) throws PowerIteration.MaxIterationsExceededException {
     PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
     SSNLOperator ssnl = new SSNLOperator(graph);
-    double[] iv = RandomInitialVectors.generate(graph.size());
+    double[] iv = RandomInitialVectors.generate(graph.order());
     double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations);
     convergenceCriterion.postprocess(v2);
     yieldSubgraph(graph, v2, consumer, 1);

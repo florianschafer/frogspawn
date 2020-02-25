@@ -32,12 +32,12 @@ public class TopWeightsRemainderLabeling implements Labeling {
     double[] weights = graph.weights();
     double[] likelihoods = graph.relativeWeights(rootGraph);
     WeightSortOps altWeightSortOps = new WeightSortOps(vertices, weights, likelihoods);
-    Arrays.mergeSort(0, graph.size(), altWeightSortOps, altWeightSortOps);
+    Arrays.mergeSort(0, graph.order(), altWeightSortOps, altWeightSortOps);
     return new Labels(
             Arr.shrink(vertices, maxLabels),
             Arr.shrink(weights, maxLabels),
             Arr.shrink(likelihoods, maxLabels),
-            graph.size()
+            graph.order()
     );
   }
 

@@ -53,7 +53,7 @@ public class SSNLOperatorTest extends GraphTestBase {
             0.505583, -0.214024, -0.404466, -0.255807, 0.731707, -0.291665,
             -0.351761, -0.232668, 0.281409, -0.278092, -0.291665, 0.682927,
     };
-    int n = SOME_BIPARTITE_GRAPH.size();
+    int n = SOME_BIPARTITE_GRAPH.order();
     double[] m = getAsMatrix(new SSNLOperator(SOME_BIPARTITE_GRAPH), n);
     for (int i = 0; i < n * n; i++) {
       assertThat(m[i], closeTo(expected[i], 1E-6));
@@ -71,7 +71,7 @@ public class SSNLOperatorTest extends GraphTestBase {
             0.02817973, -0.29361907, 0.00288216, -0.40044302, 0.00086983, 0.55859375, -0.01464412,
             -0.15667666, 0.02086804, -0.29752319, 0.00084095, -0.35033967, -0.01464412, 0.61914062,
     };
-    int n = K43.size();
+    int n = K43.order();
     double[] m = getAsMatrix(new SSNLOperator(K43), n);
     for (int i = 0; i < n * n; i++) {
       assertThat(m[i], closeTo(expected[i], 1E-6));
@@ -81,7 +81,7 @@ public class SSNLOperatorTest extends GraphTestBase {
   @Test
   public void someOperatorMatrixMultiplication() {
     double[] expected = new double[]{41.6784, 47.2580, -33.3428, 1.0678, 23.3906, -57.1306};
-    int n = SOME_BIPARTITE_GRAPH.size();
+    int n = SOME_BIPARTITE_GRAPH.order();
     double[] arg = new double[]{353, 359, 367, 373, 379, 383};
     double[] r = new SSNLOperator(SOME_BIPARTITE_GRAPH).apply(arg);
     for (int i = 0; i < n; i++) {
@@ -92,7 +92,7 @@ public class SSNLOperatorTest extends GraphTestBase {
   @Test
   public void K43OperatorMatrixMultiplication() {
     double[] expected = new double[]{782.760, 349.970, 111.494, -57.916, -144.658, -180.255, -276.041};
-    int n = K43.size();
+    int n = K43.order();
     double[] arg = new double[]{1579, 1583, 1597, 1601, 1607, 1609, 1613};
     double[] r = new SSNLOperator(K43).apply(arg);
     for (int i = 0; i < n; i++) {

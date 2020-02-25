@@ -4,3 +4,4 @@
  - Write some proper math documentation
  - CUDA
  - Parallel cluster tree traversal
+ - Fix size <-> order nomenclature issues

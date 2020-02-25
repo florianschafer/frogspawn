@@ -387,7 +387,7 @@ public class GraphTestBase {
     }
 
     public List<List<Integer>> vertices() {
-      return graphs.stream().sorted(Comparator.comparingInt(Graph::size).thenComparingInt(x -> {
+      return graphs.stream().sorted(Comparator.comparingInt(Graph::order).thenComparingInt(x -> {
         VertexIterator vertices = x.vertexIterator();
         vertices.hasNext();
         return vertices.globalId();

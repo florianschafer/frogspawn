@@ -30,7 +30,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
 
   public CanonicalLinearOperator(Graph graph) {
     this.graph = graph;
-    this.result = new double[graph.size()];
+    this.result = new double[graph.order()];
   }
 
   /**
@@ -40,7 +40,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
 
   public double[] apply(double[] argument) {
     Arrays.fill(result, 0);
-    Preconditions.checkArgument(argument.length == graph.size(), "Argument length mismatch");
+    Preconditions.checkArgument(argument.length == graph.order(), "Argument length mismatch");
     this.argument = argument;
     graph.traverseParallel(this);
     return result;
@@ -48,7 +48,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
 
   @Override
   public int size() {
-    return graph.size();
+    return graph.order();
   }
 
   /**

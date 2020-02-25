@@ -10,7 +10,7 @@ public class VertexWeights implements EdgeConsumer {
   private final double[] weights;
 
   private VertexWeights(Graph graph) {
-    this.weights = new double[graph.size()];
+    this.weights = new double[graph.order()];
   }
 
   public static double[] compute(Graph graph) {

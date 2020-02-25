@@ -47,7 +47,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
 
   @Test
   public void size() {
-    assertThat(defaultGraph.size(), is(12));
+    assertThat(defaultGraph.order(), is(12));
   }
 
   @Test
@@ -60,7 +60,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
             .add(1, 11, 11)
             .build();
     Graph sub = subgraph(graph, 1, 2, 5);
-    assertThat(sub.numEdges(), is(4L));
+    assertThat(sub.size(), is(4L));
   }
 
   @Test
@@ -88,7 +88,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   @Test
   public void emptyGraph() {
     Graph graph = defaultSubgraph();
-    assertThat(graph.size(), is(0));
+    assertThat(graph.order(), is(0));
     graph.traverseParallel(consumer);
     assertThat(consumer.getEdges().size(), is(0));
   }
@@ -148,7 +148,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   @Test
   public void subgraph() {
     Graph subgraph = defaultSubgraph(4, 10, 11).inducedSubgraph(IntIterators.wrap(new int[]{4, 10}));
-    assertThat("Subgraph size", subgraph.size(), is(2));
+    assertThat("Subgraph size", subgraph.order(), is(2));
     subgraph.traverseParallel(consumer);
     assertThat("Subgraph edges", consumer.getEdges(), containsInAnyOrder(
             Edge.of(subgraph.localVertexId(4), subgraph.localVertexId(10), 7),
