@@ -5,6 +5,9 @@
 
 package net.adeptropolis.nephila.graphs;
 
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.nephila.graphs.traversal.ParallelEdgeOps;
+
 public class VertexWeights implements EdgeConsumer {
 
   private final double[] weights;

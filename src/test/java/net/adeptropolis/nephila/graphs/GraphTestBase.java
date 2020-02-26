@@ -8,6 +8,8 @@ package net.adeptropolis.nephila.graphs;
 import com.google.common.collect.Lists;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.nephila.graphs.traversal.ParallelEdgeOps;
 import org.junit.Before;
 
 import java.util.ArrayList;
@@ -361,7 +363,7 @@ public class GraphTestBase {
     return b.build();
   }
 
-  long bandedGraphFingerprint(int n, int k) {
+  public long bandedGraphFingerprint(int n, int k) {
     long fp = 0;
     for (long i = 0; i < n; i++) {
       for (long j = i + 1; j < Math.min(i + k, n); j++) {
@@ -373,7 +375,7 @@ public class GraphTestBase {
     return fp;
   }
 
-  long traverseFingerprint(Graph graph) {
+  protected long traverseFingerprint(Graph graph) {
     ParallelEdgeOps.traverse(graph, fingerprintingConsumer);
     return fingerprintingConsumer.getFingerprint();
   }
@@ -429,11 +431,11 @@ public class GraphTestBase {
 
   }
 
-  static class FingerprintingEdgeConsumer implements EdgeConsumer {
+  protected static class FingerprintingEdgeConsumer implements EdgeConsumer {
 
     private final AtomicLong fingerprint;
 
-    FingerprintingEdgeConsumer() {
+    public FingerprintingEdgeConsumer() {
       fingerprint = new AtomicLong();
     }
 
@@ -446,7 +448,7 @@ public class GraphTestBase {
       fingerprint.set(0);
     }
 
-    long getFingerprint() {
+    public long getFingerprint() {
       return fingerprint.get();
     }
 

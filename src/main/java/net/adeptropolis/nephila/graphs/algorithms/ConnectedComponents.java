@@ -7,8 +7,8 @@ package net.adeptropolis.nephila.graphs.algorithms;
 
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

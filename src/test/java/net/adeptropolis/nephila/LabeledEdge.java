@@ -1,11 +1,9 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila;
-
-@SuppressWarnings("squid:ClassVariableVisibilityCheck")
+package net.adeptropolis.nephila;@SuppressWarnings("squid:ClassVariableVisibilityCheck")
 public class LabeledEdge<T> {
 
   public T u;

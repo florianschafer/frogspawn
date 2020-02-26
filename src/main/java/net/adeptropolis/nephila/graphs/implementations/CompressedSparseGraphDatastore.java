@@ -34,11 +34,12 @@ public class CompressedSparseGraphDatastore {
 
   /**
    * Constructor
-   * @param size Number of vertices
+   *
+   * @param size      Number of vertices
    * @param edgeCount Number of edges
-   * @param pointers Vertex pointers
-   * @param edges Right endpoints of all edges
-   * @param weights Edge weights
+   * @param pointers  Vertex pointers
+   * @param edges     Right endpoints of all edges
+   * @param weights   Edge weights
    */
 
   public CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {

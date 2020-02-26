@@ -1,11 +1,16 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila.graphs;
+package net.adeptropolis.nephila.graphs.traversal;
 
+import net.adeptropolis.nephila.graphs.Edge;
+import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -41,7 +46,7 @@ public class ParallelEdgeOpsTest extends GraphTestBase implements Thread.Uncaugh
             .build();
     ParallelEdgeOps.traverse(graph, consumer);
     assertThat(consumer.getEdges(), hasSize(2));
-    assertThat(consumer.getEdges(), containsInAnyOrder(
+    MatcherAssert.assertThat(consumer.getEdges(), Matchers.containsInAnyOrder(
             Edge.of(2, 3, 3.14),
             Edge.of(3, 2, 3.14)));
   }

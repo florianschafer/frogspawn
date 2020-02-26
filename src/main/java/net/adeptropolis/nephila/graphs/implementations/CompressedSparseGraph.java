@@ -6,10 +6,10 @@
 package net.adeptropolis.nephila.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.VertexIterator;
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.nephila.graphs.traversal.ParallelEdgeOps;
 
 /**
  * A compressed sparse graph
@@ -154,15 +154,27 @@ public class CompressedSparseGraph extends Graph {
 
     int idx = 0;
 
+    /**
+     * {@inheritDoc}
+     */
+
     @Override
     public boolean hasNext() {
       return idx++ < order();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+
     @Override
     public int localId() {
       return idx - 1;
     }
+
+    /**
+     * {@inheritDoc}
+     */
 
     @Override
     public int globalId() {

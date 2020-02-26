@@ -13,7 +13,6 @@ import java.util.stream.LongStream;
 
 /**
  * A big (i.e. long-indexed) array of longs.
- *
  */
 
 public class BigLongs implements SortOps {
@@ -165,6 +164,7 @@ public class BigLongs implements SortOps {
 
   /**
    * <b>Only for testing</b> (obviously)
+   *
    * @return A primitive array representation of this object
    */
 

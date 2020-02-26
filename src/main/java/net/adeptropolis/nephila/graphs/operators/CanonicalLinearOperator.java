@@ -6,8 +6,8 @@
 package net.adeptropolis.nephila.graphs.operators;
 
 import com.google.common.base.Preconditions;
-import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
 
 import java.util.Arrays;
 

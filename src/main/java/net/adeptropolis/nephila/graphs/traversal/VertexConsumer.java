@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila.graphs;
+package net.adeptropolis.nephila.graphs.traversal;
 
 @FunctionalInterface
 public interface VertexConsumer {

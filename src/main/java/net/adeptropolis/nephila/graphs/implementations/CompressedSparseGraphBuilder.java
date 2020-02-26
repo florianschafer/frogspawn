@@ -25,7 +25,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   private static final Logger LOG = LoggerFactory.getLogger(CompressedSparseGraphBuilder.class.getSimpleName());
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
-  private final BigInts[] edges = { new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE) };
+  private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
@@ -106,6 +106,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   /**
    * Build the main datastore from the edge buffer. This also collapses multiple instances of the same edge into one,
    * aggregating their weights.
+   *
    * @return a new graph datastore
    */
 

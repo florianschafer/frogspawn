@@ -164,6 +164,7 @@ public class BigFloats implements SortOps {
 
   /**
    * <b>Only for testing</b> (obviously)
+   *
    * @return A primitive array representation of this object
    */
 

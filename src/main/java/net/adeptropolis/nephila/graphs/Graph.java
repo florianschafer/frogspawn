@@ -6,6 +6,10 @@
 package net.adeptropolis.nephila.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.nephila.graphs.traversal.ParallelEdgeOps;
+import net.adeptropolis.nephila.graphs.traversal.ParallelVertexOps;
+import net.adeptropolis.nephila.graphs.traversal.VertexConsumer;
 
 /**
  * <p>A weighted graph supporting all basic operations required in this context, i.e.</p>
@@ -23,6 +27,7 @@ public abstract class Graph {
 
   /**
    * Graph order
+   *
    * @return The number of vertices in the graph
    */
 
@@ -40,6 +45,7 @@ public abstract class Graph {
 
   /**
    * Iterator over the full vertex set
+   *
    * @return An iterator over the vertex set
    */
 
@@ -47,6 +53,7 @@ public abstract class Graph {
 
   /**
    * Retrieve the vertex set
+   *
    * @return Array of all global vertex ids
    */
 
@@ -54,6 +61,7 @@ public abstract class Graph {
 
   /**
    * Parallel traversal over all edges adjacent to a given endpoint
+   *
    * @param v        (Local!) vertex id of the endpoint
    * @param consumer Instance of EdgeConsumer
    */
@@ -62,6 +70,7 @@ public abstract class Graph {
 
   /**
    * Parallel traversal over all edges of the graph
+   *
    * @param consumer Instance of EdgeConsumer
    */
 
@@ -71,6 +80,7 @@ public abstract class Graph {
 
   /**
    * Parallel traversal over all vertices of the graph
+   *
    * @param consumer Instance of VertexConsumer
    */
 

@@ -7,11 +7,11 @@ package net.adeptropolis.nephila.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntIterators;
-import net.adeptropolis.nephila.graphs.EdgeConsumer;
 import net.adeptropolis.nephila.graphs.Graph;
-import net.adeptropolis.nephila.graphs.ParallelEdgeOps;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 import net.adeptropolis.nephila.graphs.implementations.arrays.InterpolationSearch;
+import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.nephila.graphs.traversal.ParallelEdgeOps;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;

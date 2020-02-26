@@ -27,8 +27,8 @@ public class Protocluster {
     return graphType;
   }
 
-  void setGraphType(GraphType graphType) {
-    this.graphType = graphType;
+  void setGraphTypeConnectedComponent() {
+    this.graphType = GraphType.COMPONENT;
   }
 
   public Cluster getCluster() {
@@ -40,7 +40,7 @@ public class Protocluster {
   }
 
   public enum GraphType {
-    ROOT, COMPONENT, SPECTRAL, REMAINDER
+    ROOT, COMPONENT, SPECTRAL
   }
 
 }

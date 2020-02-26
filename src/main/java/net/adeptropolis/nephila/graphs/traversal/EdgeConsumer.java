@@ -1,9 +1,9 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila.graphs;
+package net.adeptropolis.nephila.graphs.traversal;
 
 /**
  * Consumer for edge traversal operations
@@ -14,8 +14,9 @@ public interface EdgeConsumer {
 
   /**
    * Accept a new edge
-   * @param u Left endpoint
-   * @param v Right endpoint
+   *
+   * @param u      Left endpoint
+   * @param v      Right endpoint
    * @param weight Edge weight
    */
 

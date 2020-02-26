@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila.graphs;
+package net.adeptropolis.nephila.graphs.traversal;
 
+import net.adeptropolis.nephila.graphs.Graph;
+import net.adeptropolis.nephila.graphs.GraphTestBase;
+import net.adeptropolis.nephila.graphs.VertexIterator;
 import org.junit.Test;
 
 import java.util.Collections;

@@ -8,7 +8,7 @@ package net.adeptropolis.nephila.graphs.implementations;
 import net.adeptropolis.nephila.graphs.VertexIterator;
 
 /**
- * Iterator for a vertex set of a subgraph that carries both local and global ids
+ * {@inheritDoc}
  */
 
 public class SubgraphVertexIterator implements VertexIterator {
@@ -33,7 +33,7 @@ public class SubgraphVertexIterator implements VertexIterator {
   }
 
   /**
-   * @return whether there is another element available
+   * Iterator over the vertex set
    */
 
   @Override
@@ -46,9 +46,7 @@ public class SubgraphVertexIterator implements VertexIterator {
   }
 
   /**
-   * Return the local id of the current vertex
-   *
-   * @return A local vertex id
+   * {@inheritDoc}
    */
 
   @Override
@@ -57,9 +55,7 @@ public class SubgraphVertexIterator implements VertexIterator {
   }
 
   /**
-   * Return the global id of the current vertex
-   *
-   * @return A global vertex id
+   * {@inheritDoc}
    */
 
   @Override

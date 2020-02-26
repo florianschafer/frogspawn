@@ -1,11 +1,9 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila;
-
-import net.adeptropolis.nephila.graphs.Edge;
+package net.adeptropolis.nephila;import net.adeptropolis.nephila.graphs.Edge;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-// Todo: This class is a mess resource-wise!
+// TODO: This class is a horrible and embarrassing mess
 
 public class LabeledTSVGraphSource implements GraphSource {
 

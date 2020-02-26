@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class RecursiveClustering {
+public class RecursiveClusterSieve {
 
-  private static final Logger LOG = LoggerFactory.getLogger(RecursiveClustering.class.getSimpleName());
+  private static final Logger LOG = LoggerFactory.getLogger(RecursiveClusterSieve.class.getSimpleName());
 
   private final Graph graph;
   private final ClusteringSettings settings;
@@ -27,7 +27,7 @@ public class RecursiveClustering {
   private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
 
-  public RecursiveClustering(Graph graph, ConsistencyMetric metric, ClusteringSettings settings) {
+  public RecursiveClusterSieve(Graph graph, ConsistencyMetric metric, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
@@ -108,7 +108,7 @@ public class RecursiveClustering {
   private void decomposeComponents(Protocluster protocluster) {
     ConnectedComponents.find(protocluster.getGraph(), component -> {
       if (component.order() == protocluster.getGraph().order()) {
-        protocluster.setGraphType(Protocluster.GraphType.COMPONENT);
+        protocluster.setGraphTypeConnectedComponent();
         queue.add(protocluster);
       } else if (component.order() < settings.getMinClusterSize()) {
         protocluster.getCluster().addToRemainder(component);

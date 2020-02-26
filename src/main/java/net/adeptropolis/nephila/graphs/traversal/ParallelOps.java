@@ -3,12 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila.graphs;
+package net.adeptropolis.nephila.graphs.traversal;
+
+import net.adeptropolis.nephila.graphs.Graph;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+/**
+ * Base class for parallel graph traversal operations
+ */
 
 public abstract class ParallelOps {
 
@@ -27,6 +33,7 @@ public abstract class ParallelOps {
 
   /**
    * Constructor
+   *
    * @param graph The graph that whose edge are to be traversed
    * @param slice Graph slice processed by this thread
    * @param latch CountDown latch
