@@ -5,7 +5,7 @@
 
 package net.adeptropolis.nephila.graphs.algorithms;
 
-import net.adeptropolis.nephila.ClusteringSettings;
+import net.adeptropolis.nephila.clustering.ClusteringSettings;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.PowerIteration;
 import net.adeptropolis.nephila.graphs.algorithms.power_iteration.SignumConvergence;
@@ -20,7 +20,13 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 
 public class SpectralBisectorTest extends GraphTestBase {
 
-  private static final ClusteringSettings settings = new ClusteringSettings(0, 0, 0, 100, 0.999, 10000);
+  private static final ClusteringSettings settings = ClusteringSettings.builder()
+        .withMinClusterSize(0)
+        .withMinClusterLikelihood(0)
+        .withMinAncestorOverlap(0)
+        .withTrailSize(100)
+        .withConvergenceThreshold(0.999)
+        .build();
 
   private static final SignumConvergence conv = new SignumConvergence(1E-6);
   @Rule

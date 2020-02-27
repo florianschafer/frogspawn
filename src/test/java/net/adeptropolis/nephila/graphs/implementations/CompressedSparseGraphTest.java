@@ -7,7 +7,7 @@ package net.adeptropolis.nephila.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
-import net.adeptropolis.nephila.graphs.Edge;
+import net.adeptropolis.nephila.Edge;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.GraphTestBase;
 import net.adeptropolis.nephila.graphs.VertexIterator;

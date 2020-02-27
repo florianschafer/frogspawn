@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila;import net.adeptropolis.nephila.graphs.Edge;
+package net.adeptropolis.nephila;
 
 import java.io.IOException;
 import java.nio.file.Files;

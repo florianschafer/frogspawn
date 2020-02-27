@@ -6,6 +6,7 @@
 package net.adeptropolis.nephila.graphs;
 
 import com.google.common.collect.Lists;
+import net.adeptropolis.nephila.Edge;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.nephila.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.nephila.graphs.traversal.EdgeConsumer;

@@ -5,7 +5,7 @@
 
 package net.adeptropolis.nephila.clustering.postprocessing;
 
-import net.adeptropolis.nephila.ClusteringSettings;
+import net.adeptropolis.nephila.clustering.ClusteringSettings;
 import net.adeptropolis.nephila.clustering.Cluster;
 import net.adeptropolis.nephila.graphs.Graph;
 import org.apache.commons.lang3.time.StopWatch;

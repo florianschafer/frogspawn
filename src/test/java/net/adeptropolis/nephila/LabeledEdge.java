@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila;@SuppressWarnings("squid:ClassVariableVisibilityCheck")
+package net.adeptropolis.nephila;
+
+@SuppressWarnings("squid:ClassVariableVisibilityCheck")
 public class LabeledEdge<T> {
 
   public T u;

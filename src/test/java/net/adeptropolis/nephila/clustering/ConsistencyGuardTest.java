@@ -31,7 +31,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
             .add(51, 52, 1)
             .add(52, 53, 1)
             .build();
-    Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
+    Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{ 50, 51, 52 }));
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 10, 0.0);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNull(consistentSubgraph);

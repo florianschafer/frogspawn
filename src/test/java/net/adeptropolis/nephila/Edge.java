@@ -1,18 +1,18 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.nephila.graphs;
+package net.adeptropolis.nephila;
 
 @SuppressWarnings("squid:ClassVariableVisibilityCheck")
 public class Edge {
 
-  public int u;
-  public int v;
-  public double weight;
+  int u;
+  int v;
+  double weight;
 
-  public Edge(int u, int v, double weight) {
+  Edge(int u, int v, double weight) {
     this.u = u;
     this.v = v;
     this.weight = weight;

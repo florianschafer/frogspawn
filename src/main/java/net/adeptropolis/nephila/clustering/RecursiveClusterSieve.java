@@ -5,7 +5,7 @@
 
 package net.adeptropolis.nephila.clustering;
 
-import net.adeptropolis.nephila.ClusteringSettings;
+import net.adeptropolis.nephila.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.nephila.graphs.Graph;
 import net.adeptropolis.nephila.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.nephila.graphs.algorithms.SpectralBisector;
@@ -27,12 +27,12 @@ public class RecursiveClusterSieve {
   private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
 
-  public RecursiveClusterSieve(Graph graph, ConsistencyMetric metric, ClusteringSettings settings) {
+  public RecursiveClusterSieve(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
     this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> -protocluster.getCluster().depth()));
-    this.consistencyGuard = new ConsistencyGuard(metric, graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
+    this.consistencyGuard = new ConsistencyGuard(settings.getConsistencyMetric(), graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
 
   public Cluster run() {
@@ -44,7 +44,7 @@ public class RecursiveClusterSieve {
     processQueue();
     stopWatch.stop();
     LOG.debug("Finished clustering {} vertices after {}", graph.order(), stopWatch);
-    return root;
+    return new Postprocessing(root, graph, settings).apply();
   }
 
   private void processQueue() {
