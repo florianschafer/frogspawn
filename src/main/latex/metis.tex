@@ -1,0 +1,170 @@
+\documentclass[10pt, a4paper, twocolumn]{article}
+
+\input{structure.tex}
+\title{Metis: A new bifurcation sieve approach to spectral clustering}
+
+\author{
+\authorstyle{Florian Schaefer}
+}
+
+\date{\today}
+
+\begin{document}
+    \maketitle
+    \thispagestyle{firstpage}
+    \lettrineabstract{
+    NOTE: At this moment, this document is a huge mess and far from complete. It's only purpose right now is to retain
+    some information about the use of spectral shifting. Please ignore it for now and come back once
+    it has been put in a proper form.
+    }
+
+    \paragraph{Introduction}
+    Data is the new oil they say.
+    \\
+    While only time will tell whether it will in fact exert a tantamount transformative force on all of society, there exist
+    certain commonalities that can presumed to be satisfied already today.
+    Just like oil, data is not manufactured, but instead extracted from deposits and wells where it came into being as an
+    artifact of life itself.
+    And just like oil, it arrives not only in vast quantities, but also in such an extremely crude, disorganized and impure
+    state that it may very well be considered virtually worthless.
+    That is, until it is refined and split up into its homogeneous constituent groups.
+    It is not oil, but those substances that are at the basis of our everyday lives and that decide over the rise and fall
+    of whole nation states.
+    \\
+    Hence, the initial pondering about the potential society-shaping impact that data might have one day is inextricably
+    linked to the question of whether we can manage to reliably refine it on large scales.
+    \\
+    To put it more ambitiously: If we admit data the crucial importance we claim it deserves, we require tools that are
+    not only able to isolate homogeneous and self-consistent subsets from arbitrary data, but that also allow modelling
+    whole datasets in terms of relationships between those subsets.
+    Moreover, we need generally intelligible criteria that manage to explain the data instead of forcing the user to
+    accept whatever comes out of impenetrable black boxes.
+
+    However, the current landscape of available and ready-to-use clustering algorithms only partially contributes to this goal.
+    While some established methods (such as PCA, t-SNE or LDA) stand on very solid theoretical grounds, none of them
+    actually provides a proper explanation or classification of the results that end users and decision makers might
+    find satisfactory.
+
+    Spectral clustering exhibits a few particular advantages that other clustering methods do not.
+    For example, in terms of the outcome, spectral clustering is very well defined and completely deterministic.
+    There is no need to guess the right amount of clusters as there are no magic initial values. But most
+    importantly, spectral clustering works on relationships between things instead of metric spaces.
+    This not only better reflects the nature of the input, but also allows for a fine-grained control of what the end
+    result should look like.
+
+    \section{Spectral shifting}
+
+    \paragraph
+    As pointed out earlier, we're only interested in the second-smallest eigenvalue of the normalized laplacian.
+    While there exist many libraries (ARPack, Eigen, SLEPc, just to name a few) to perform this task, due to their
+    generality, they lack the ability to exploit certain properties of the problem at hand. More precisely, both the extremal
+    eigenvalues as well as the eigenvector associated with the smallest eigenvalue are known a priori.
+    \\
+    It shows that those properties can easily exploited to transform the matrix at hand such that the new matrix
+    associates the desired eigenvector with its largest eigenvalue. This is performed using a well-known technique called spectral shifting.
+
+    % TODO: Check matrix conditions for both theorems (symmetric? positive-definite? .... v != 0, ...)
+    \subsection{Spectral transformations}
+
+    % https://math.stackexchange.com/questions/2214641/shifting-eigenvalues-of-a-matrix
+    \newtheorem{eigenvalueReplacement}[]{Theorem: Eigenvalue Replacement}[section]
+    \begin{eigenvalueReplacement}
+        Let $A \in \mathbb{R}^{n \times n}$ be a real symmetric matrix, $n \geq i \in \mathbb{N}$ and $\lambda_i, v_i$
+        the $i-th$ eigenvalue and its respective eigenvector of $A$. Then, for any $\mu \in \mathbb{R}$, the matrix
+        \begin{align}
+            \tilde{A} := A + \left(\mu - \lambda_i \right) v_i {v_i}^T
+        \end{align}
+        holds the exact same set of eigenvalues and eigenvectors as $A$, except for $\lambda_i$, which has been replaced by $\mu$.
+        In particular, the eigenvector assigned with $\mu$ is the same as $v_i$.
+        \begin{proof}[Proof]
+            Since $A$ is real and symmetric, we know that there exists a decomposition $A=VDV^T$, where $V$ holds the orthonormal
+            set of eigenvectors and $D$ being a diagonal matrix with the eigenvalues. With this in mind, we can write
+            \begin{align}
+                \begin{split}
+                    \tilde{A} & = A + \left( \mu - \lambda_i \right) v_i {v_i}^T \\
+                    & = A + \left( \mu - \lambda_i \right) v_i {e_i}^T V^T \\
+                    & = A + \left( \mu - \lambda_i \right) \left( V e_i \right) {e_i}^T V^T \\
+                    & = VDV^T + \left( \mu - \lambda_i \right) V \left( e_i {e_i}^T \right) V^T \\
+                    & = V\left( D + \left( \mu - \lambda_i \right) e_i {e_i}^T \right) V^T
+                \end{split}
+            \end{align}
+        \end{proof}
+    \end{eigenvalueReplacement}
+
+    \newtheorem{shifting}[]{Theorem: Spectral shifting (Mirroring special case)}[section]
+    \begin{shifting}
+        Let $A \in \mathbb{R}^{n \times n}$ be a real symmetric matrix and $\sigma \in \mathbb{R}$.
+        Then, the matrix
+        \begin{align}
+            \hat{A} := \sigma I - A
+        \end{align}
+        Will be mirrored along $\sigma$. More precisely, for any eigenvalue $\lambda$ of $A$ and Eigenvector
+        $v \in \mathbb{R}^n$, the following identity holds:
+        \begin{align}
+            \left( \sigma I -A \right) v = \left( \sigma - \lambda \right) v
+        \end{align}
+        Furthermore, the set of eigenvectors of $\hat{A}$ are precisely that of $A$.
+        \begin{proof}[Proof]
+            Let $V \in \mathbb{R}^{n \times n}$ be the orthonormal matrix consisting of all eigenvectors of $A$
+            and $D \in \mathbb{R}^{n \times n}$ the diagonal matrix from its eigenvalues. Then:
+            \begin{align}
+                \begin{split}
+                    V \left( \sigma I - D \right) V^T & = V \left( \sigma I V^T - D V ^T \right) \\
+                    & = V \sigma I V^T - VDV^T \\
+                    & = \sigma V V^T - A \\
+                    & = \sigma I -A
+                \end{split}
+            \end{align}
+        \end{proof}
+    \end{shifting}
+
+    With those tools at hand, we can now formulate the transformation that will assign the eigenvector of the
+    second-smallest eigenvalue to the largest eigenvalue of the transformed matrix.
+    \\
+    Remember that there a few known properties of the normalized laplacian spectrum. In particular:
+    \begin{itemize}
+        \item We know that the smallest eigenvalue is $0$ with eigenvector $\frac{D^\frac{1}{2}}{\lVert D^\frac{1}{2} \rVert}$ % TODO: Wrong! There is no D here
+        \item The largest eigenvalue is known to be $ \leq 2$.
+    \end{itemize}
+
+    \newtheorem{combined}[]{Corollary: Making the $v_2$ accessible }[section]
+    \begin{shifting}
+        Let $\mathcal{L} \in \mathbb{R}^{n \times n}$ be the normalized laplacian of any graph and $v_0$ the known
+        smallest eigenvector belonging to the eigenvalue $0$. Then, the eigenvector associated with the largest
+        eigenvalue of the following matrix is exactly that of the second-smalles eigenvalue of the regular
+        normalized Laplacian
+        \begin{align}
+            \begin{split}
+                \tilde{\mathcal{L}} & = \underbrace{2I -}_{mirror\ spectrum\ along\ 2} \underbrace{\left( \mathcal{L} + 2 v_0 {v_0}^T \right)}_{send\ \lambda_0 \rightarrow 2} \\
+                & = 2 \left( I - v_0 {v_0}^T \right) - \mathcal{L}
+            \end{split}
+        \end{align}
+    \end{shifting}
+
+    \section{Bringing it all together}
+    In \eqref{shiftedlaplacian}, we were presented with a simple analytic solution for any spectrally shifted normalized laplacian.
+    Combining those results with those from (REF MISSING) to fill in the rest:
+    \begin{equation}
+        \begin{split}
+            \hat{\mathcal{L}} & = 2 ( I - v_0 v_0^T ) - \mathcal{L}\\
+            & = I + D^{-\frac{1}{2}} A D^{-\frac{1}{2}} - 2 v_0 v_0^T
+        \end{split}
+    \end{equation}
+    New let's see how this operates on some vector $v \in \mathbb{R}^n$. This immediately yields some major optimizations
+    \begin{equation}
+        \begin{split}
+            \hat{\mathcal{L}}v & = \left( I + D^{-\frac{1}{2}} A D^{-\frac{1}{2}} - 2 v_0 v_0^T\right) v\\
+            & = v + D^{-\frac{1}{2}} A \underbrace{D^{-\frac{1}{2}} v}_{=:\hat{v}} - 2 v_0 \underbrace{v_0^T v}_{=:\frac{\mu}{2}}\\
+            & = v + D^{-\frac{1}{2}} A \hat{v} - \mu v_0
+        \end{split}
+    \end{equation}
+    Thus, the shifted laplacian operator can be realized as a standard matrix multiplication on the original matrix with both the
+    argument and result vectors being slightly transformed. It it also worth noting that since $D$ is strictly diagonal, the multiplications with $D^{-\frac{1}{2}}$
+    are actually linear operations in the number of rows. Also: The operator is sparsity-invariant with respect to $A$
+
+
+    \section{The case against other eigensolvers}
+
+    \printbibliography[title={Bibliography}]
+
+\end{document}
