@@ -1,3 +1,4 @@
-# INSERT NAME HERE
+# Metis
+## A Novel Bifurcation Sieve Approach to Spectral Clustering
 
-...is a novel form of Spectral Sieve Clustering
+TODO: Fill this document with some life
