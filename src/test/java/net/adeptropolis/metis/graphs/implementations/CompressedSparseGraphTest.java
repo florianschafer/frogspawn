@@ -95,7 +95,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseById() {
-    defaultGraph.traverseParallel(defaultGraph.localVertexId(4), consumer);
+    defaultGraph.traverseIncidentEdges(defaultGraph.localVertexId(4), consumer);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(4, 9, 5),
             Edge.of(4, 10, 7),
@@ -104,7 +104,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseNonExistentId() {
-    defaultGraph.traverseParallel(-1, consumer);
+    defaultGraph.traverseIncidentEdges(-1, consumer);
     assertThat(consumer.getEdges().size(), is(0));
   }
 

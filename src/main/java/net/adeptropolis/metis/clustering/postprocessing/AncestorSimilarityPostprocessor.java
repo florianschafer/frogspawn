@@ -16,11 +16,11 @@ class AncestorSimilarityPostprocessor implements Postprocessor {
 
   private static final Logger LOG = LoggerFactory.getLogger(AncestorSimilarityPostprocessor.class.getSimpleName());
 
-  private final double minAncestorOverlap;
+  private final double minparentOverlap;
   private final Graph rootGraph;
 
-  public AncestorSimilarityPostprocessor(double minAncestorOverlap, Graph rootGraph) {
-    this.minAncestorOverlap = minAncestorOverlap;
+  public AncestorSimilarityPostprocessor(double minparentOverlap, Graph rootGraph) {
+    this.minparentOverlap = minparentOverlap;
     this.rootGraph = rootGraph;
   }
 
@@ -43,7 +43,7 @@ class AncestorSimilarityPostprocessor implements Postprocessor {
 
   private Cluster nearestAncestorSatisfyingOverlap(Cluster cluster) {
     Cluster ancestor = cluster.getParent();
-    while (ancestor != null && overlap(cluster, ancestor) < minAncestorOverlap) {
+    while (ancestor != null && overlap(cluster, ancestor) < minparentOverlap) {
       if (ancestor.getParent() == null) {
         break;
       }

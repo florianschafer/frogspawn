@@ -18,7 +18,7 @@ public class ClusteringSettings {
   private final ConsistencyMetric consistencyMetric;
   private final int minClusterSize;
   private final double minClusterLikelihood;
-  private final double minAncestorOverlap;
+  private final double minparentOverlap;
   private final int trailSize;
   private final double convergenceThreshold;
   private final int maxIterations;
@@ -29,21 +29,31 @@ public class ClusteringSettings {
    * @param consistencyMetric    Vertex/cluster consistency metric to be used
    * @param minClusterSize       Minimum cluster size
    * @param minClusterLikelihood Minimum cluster likelihood of a vertex
-   * @param minAncestorOverlap   Minimum ancestor overlap of a child cluster node wrt. to its parent
+   * @param minparentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
    * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold Fraction of converged vertices
    * @param maxIterations        Maximum number of iterations
    */
 
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood,
-                            double minAncestorOverlap, int trailSize, double convergenceThreshold, int maxIterations) {
+                             double minparentOverlap, int trailSize, double convergenceThreshold, int maxIterations) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
-    this.minAncestorOverlap = minAncestorOverlap;
+    this.minparentOverlap = minparentOverlap;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
+  }
+
+  /**
+   * Convenience method
+   *
+   * @return A new builder
+   */
+
+  public static Builder builder() {
+    return new Builder();
   }
 
   /**
@@ -86,8 +96,8 @@ public class ClusteringSettings {
    * @return Minimum ancestor overlap of a child cluster node wrt. to its parent
    */
 
-  public double getMinAncestorOverlap() {
-    return minAncestorOverlap;
+  public double getMinparentOverlap() {
+    return minparentOverlap;
   }
 
   /**
@@ -98,27 +108,19 @@ public class ClusteringSettings {
     return consistencyMetric;
   }
 
-  /**
-   * Convenience method
-   * @return A new builder
-   */
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
   public static class Builder {
 
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
     private int minClusterSize = 50;
     private double minClusterLikelihood = 0.1;
-    private double minAncestorOverlap = 0.4;
+    private double minparentOverlap = 0.4;
     private int trailSize = 25;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
 
     /**
      * Set consistency metric. Default is <code>RelativeWeightConsistencyMetric</code>
+     *
      * @param metric Metric
      * @return this
      */
@@ -130,6 +132,7 @@ public class ClusteringSettings {
 
     /**
      * Set minimum cluster size. Default is 50
+     *
      * @param minClusterSize Minimum cluster size
      * @return this
      */
@@ -141,6 +144,7 @@ public class ClusteringSettings {
 
     /**
      * Set minimum cluster likelihood. Default is 0.1
+     *
      * @param minClusterLikelihood Minimum likelihood
      * @return this
      */
@@ -152,17 +156,19 @@ public class ClusteringSettings {
 
     /**
      * Set Minimum ancestor overlap. Default is 0.4
-     * @param minAncestorOverlap Minimum ancestor overlap
+     *
+     * @param minparentOverlap Minimum ancestor overlap
      * @return this
      */
 
-    public Builder withMinAncestorOverlap(double minAncestorOverlap) {
-      this.minAncestorOverlap = minAncestorOverlap;
+    public Builder withMinparentOverlap(double minparentOverlap) {
+      this.minparentOverlap = minparentOverlap;
       return this;
     }
 
     /**
      * Set trail size of convergence criterion. Default is 25
+     *
      * @param trailSize Trail size
      * @return this
      */
@@ -174,6 +180,7 @@ public class ClusteringSettings {
 
     /**
      * Set convergence threshold (fraction of vertices that have already settled into a cluster). Default is 0.95
+     *
      * @param convergenceThreshold Convergene threshold
      * @return this
      */
@@ -185,6 +192,7 @@ public class ClusteringSettings {
 
     /**
      * Set maxmimum number of iterations for the power method
+     *
      * @param maxIterations Maximum number of iterations
      * @return this
      */
@@ -195,11 +203,12 @@ public class ClusteringSettings {
 
     /**
      * Build settings
+     *
      * @return A new instance of <code>ClusteringSettings</code>
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minAncestorOverlap,
+      return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minparentOverlap,
               trailSize, convergenceThreshold, maxIterations);
     }
 

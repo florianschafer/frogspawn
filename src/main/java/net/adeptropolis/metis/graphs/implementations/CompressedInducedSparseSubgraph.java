@@ -98,7 +98,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
    */
 
   @Override
-  public void traverseParallel(int v, EdgeConsumer consumer) {
+  public void traverseIncidentEdges(int v, EdgeConsumer consumer) {
 
     if (order() == 0 || v < 0) {
       return;

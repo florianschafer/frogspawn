@@ -94,7 +94,7 @@ public class ConnectedComponents implements EdgeConsumer {
     while (!componentQueue.isEmpty()) {
       int j = componentQueue.removeFirstInt();
       component.add(j);
-      graph.traverseParallel(j, this);
+      graph.traverseIncidentEdges(j, this);
     }
   }
 

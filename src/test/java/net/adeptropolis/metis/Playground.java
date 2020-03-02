@@ -5,7 +5,9 @@
 
 package net.adeptropolis.metis;
 
-import net.adeptropolis.metis.clustering.*;
+import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.ClusteringSettings;
+import net.adeptropolis.metis.clustering.RecursiveClusterSieve;
 import net.adeptropolis.metis.clustering.labeling.Labeling;
 import net.adeptropolis.metis.clustering.labeling.TopWeightsRemainderLabeling;
 import net.adeptropolis.metis.clustering.sinks.TextSink;
@@ -26,7 +28,7 @@ public class Playground {
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinClusterSize(25)
             .withMinClusterLikelihood(0.025)
-            .withMinAncestorOverlap(0.3)
+            .withMinparentOverlap(0.3)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));

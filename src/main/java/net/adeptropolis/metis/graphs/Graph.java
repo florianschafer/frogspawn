@@ -60,13 +60,13 @@ public abstract class Graph {
   public abstract int[] collectVertices();
 
   /**
-   * Parallel traversal over all edges adjacent to a given endpoint
+   * Traverse all edges adjacent to a given endpoint
    *
    * @param v        (Local!) vertex id of the endpoint
    * @param consumer Instance of EdgeConsumer
    */
 
-  public abstract void traverseParallel(int v, EdgeConsumer consumer);
+  public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer);
 
   /**
    * Parallel traversal over all edges of the graph

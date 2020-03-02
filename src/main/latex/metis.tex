@@ -75,7 +75,7 @@
             \tilde{A} := A + \left(\mu - \lambda_i \right) v_i {v_i}^T
         \end{align}
         holds the exact same set of eigenvalues and eigenvectors as $A$, except for $\lambda_i$, which has been replaced by $\mu$.
-        In particular, the eigenvector assigned with $\mu$ is the same as $v_i$.
+        Moreover, the eigenvector assigned with $\mu$ is the same as $v_i$.
         \begin{proof}[Proof]
             Since $A$ is real and symmetric, we know that there exists a decomposition $A=VDV^T$, where $V$ holds the orthonormal
             set of eigenvectors and $D$ being a diagonal matrix with the eigenvalues. With this in mind, we can write
@@ -131,7 +131,7 @@
     \begin{shifting}
         Let $\mathcal{L} \in \mathbb{R}^{n \times n}$ be the normalized laplacian of any graph and $v_0$ the known
         smallest eigenvector belonging to the eigenvalue $0$. Then, the eigenvector associated with the largest
-        eigenvalue of the following matrix is exactly that of the second-smalles eigenvalue of the regular
+        eigenvalue of the following matrix is exactly that of the second-smallest eigenvalue of the regular
         normalized Laplacian
         \begin{align}
             \begin{split}

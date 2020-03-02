@@ -21,12 +21,12 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 public class SpectralBisectorTest extends GraphTestBase {
 
   private static final ClusteringSettings settings = ClusteringSettings.builder()
-        .withMinClusterSize(0)
-        .withMinClusterLikelihood(0)
-        .withMinAncestorOverlap(0)
-        .withTrailSize(100)
-        .withConvergenceThreshold(0.999)
-        .build();
+          .withMinClusterSize(0)
+          .withMinClusterLikelihood(0)
+          .withMinparentOverlap(0)
+          .withTrailSize(100)
+          .withConvergenceThreshold(0.999)
+          .build();
 
   private static final SignumConvergence conv = new SignumConvergence(1E-6);
   @Rule

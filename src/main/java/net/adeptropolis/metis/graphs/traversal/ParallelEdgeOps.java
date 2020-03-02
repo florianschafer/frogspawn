@@ -43,7 +43,7 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
       traverseParallel(graph, consumer);
     } else {
       for (int i = 0; i < graph.order(); i++) {
-        graph.traverseParallel(i, consumer);
+        graph.traverseIncidentEdges(i, consumer);
       }
     }
   }
@@ -75,7 +75,7 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
   public void run() {
     int v;
     for (int i = 0; (v = i * THREAD_POOL_SIZE + slice) < graph.order(); i++) {
-      graph.traverseParallel(v, consumer);
+      graph.traverseIncidentEdges(v, consumer);
     }
     latch.countDown();
   }

@@ -40,7 +40,7 @@ public class Vectors {
    */
 
   public static double scalarProduct(double[] v, double[] w) {
-    Preconditions.checkArgument(v.length == w.length, String.format("Argument dimension mismatch: %d != %d", v.length, w.length));
+    Preconditions.checkArgument(v.length == w.length);
     double prod = 0;
     for (int i = 0; i < v.length; i++) {
       prod += v[i] * w[i];
@@ -50,17 +50,15 @@ public class Vectors {
 
   /**
    * In-place vector normalization using the regular 2-norm. In addition, this method will modify the sign of the resulting
-   * vector s.t. the sign of the first entry is always positive.
+   * vector entries s.t. the sign of the first entry is always positive.
    *
    * @param v A vector
    */
 
   public static void normalize2Sig(double[] v) {
     double sig = v[0] != 0 ? Math.signum(v[0]) : 1;
-    double sum = 0;
-    for (double value : v) sum += value * value;
-    double norm = Math.sqrt(sum);
-    for (int i = 0; i < v.length; i++) v[i] = sig * v[i] / norm;
+    double scale = 1.0 / norm2(v);
+    for (int i = 0; i < v.length; i++) v[i] = sig * v[i] * scale;
   }
 
 

@@ -19,7 +19,7 @@ import net.adeptropolis.metis.helpers.Vectors;
  * <p><b>Important:</b> This operator has two strict requirements:
  * <ul>
  *   <li>The underlying graph is required to be connected, undirected and have non-negative edge weights</li>
- *   <li>Any argument passed to this operator must be L2-normalized, i.e. ||x||<sub>2</sub> == 1</li>
+ *   <li>Any argument passed to this operator must be normalized, i.e. ||x||<sub>2</sub> == 1</li>
  * </ul>
  * </p>
  * <p>This implementation does not validate any of those requirements. Any result stemming from ignoring one of the above
@@ -60,7 +60,9 @@ public class SSNLOperator implements LinearGraphOperator {
   static double[] computeV0(Graph graph) {
     double[] v0 = new double[graph.order()];
     double norm = Math.sqrt(graph.totalWeight());
-    for (int i = 0; i < graph.order(); i++) v0[i] = Math.sqrt(graph.weights()[i]) / norm;
+    for (int i = 0; i < graph.order(); i++) {
+      v0[i] = Math.sqrt(graph.weights()[i]) / norm;
+    }
     return v0;
   }
 

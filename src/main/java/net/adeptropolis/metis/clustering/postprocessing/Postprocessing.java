@@ -5,8 +5,8 @@
 
 package net.adeptropolis.metis.clustering.postprocessing;
 
-import net.adeptropolis.metis.clustering.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.ClusteringSettings;
 import net.adeptropolis.metis.graphs.Graph;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -31,7 +31,7 @@ public class Postprocessing {
 
   public Postprocessing(Cluster rootCluster, Graph rootGraph, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
-    this.ancestorSimilarity = new AncestorSimilarityPostprocessor(settings.getMinAncestorOverlap(), rootGraph);
+    this.ancestorSimilarity = new AncestorSimilarityPostprocessor(settings.getMinparentOverlap(), rootGraph);
     this.consistency = new ConsistencyGuardingPostprocessor(rootGraph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
     this.singletons = new SingletonCollapsingPostprocessor();
   }
