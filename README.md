@@ -64,7 +64,7 @@ Cluster root = new RecursiveClusterSieve(graph, settings).run();
 Please refer to the Javadocs about how to process the output. `Cluster#traverse` is a good start.
 You may also look into `ClusterDigester` and `Sink`.
 
-###Details
+### Details
 
 Ignoring some details, the canonical approach to recursive spectral clustering is to bisect the graph
 along its *minimal normalized cut*, i.e. the set of edges whose removal splits the graph into two disjoint partitions in
