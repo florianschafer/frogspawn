@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.labeling;
+package net.adeptropolis.metis.digest;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class TopWeightsAggregateLabelingTest {
+public class TopWeightsAggregateClusterDigesterTest {
 
   @Test
   public void basicFunctionality() {
@@ -54,19 +54,19 @@ public class TopWeightsAggregateLabelingTest {
     c2.addToRemainder(IntIterators.wrap(new int[]{6, 7}));
     Cluster c22 = new Cluster(c2);
     c2.addToRemainder(IntIterators.wrap(new int[]{8, 9}));
-    Labels labels = new TopWeightsAggregateLabeling(3, graph).label(c2);
-    assertThat(labels.getVertices().length, is(3));
-    assertThat(labels.getVertices()[0], is(5));
-    assertThat(labels.getVertices()[1], is(4));
-    assertThat(labels.getVertices()[2], is(9));
-    assertThat(labels.getWeights().length, is(3));
-    assertThat(labels.getWeights()[0], closeTo(91, 1E-9));
-    assertThat(labels.getWeights()[1], closeTo(75, 1E-9));
-    assertThat(labels.getWeights()[2], closeTo(61, 1E-9));
-    assertThat(labels.getLikelihoods().length, is(3));
-    assertThat(labels.getLikelihoods()[0], closeTo(0.8584905660377359, 1E-9));
-    assertThat(labels.getLikelihoods()[1], closeTo(0.8522727272727273, 1E-9));
-    assertThat(labels.getLikelihoods()[2], closeTo(1.0, 1E-9));
+    Digest digest = new TopWeightsAggregateClusterDigester(3, graph).create(c2);
+    assertThat(digest.getVertices().length, is(3));
+    assertThat(digest.getVertices()[0], is(5));
+    assertThat(digest.getVertices()[1], is(4));
+    assertThat(digest.getVertices()[2], is(9));
+    assertThat(digest.getWeights().length, is(3));
+    assertThat(digest.getWeights()[0], closeTo(91, 1E-9));
+    assertThat(digest.getWeights()[1], closeTo(75, 1E-9));
+    assertThat(digest.getWeights()[2], closeTo(61, 1E-9));
+    assertThat(digest.getScores().length, is(3));
+    assertThat(digest.getScores()[0], closeTo(0.8584905660377359, 1E-9));
+    assertThat(digest.getScores()[1], closeTo(0.8522727272727273, 1E-9));
+    assertThat(digest.getScores()[2], closeTo(1.0, 1E-9));
   }
 
   @Test
@@ -77,10 +77,10 @@ public class TopWeightsAggregateLabelingTest {
             .build();
     Cluster root = new Cluster(null);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1}));
-    Labels labels = new TopWeightsAggregateLabeling(3, graph).label(root);
-    assertThat(labels.getVertices().length, is(2));
-    assertThat(labels.getWeights().length, is(2));
-    assertThat(labels.getLikelihoods().length, is(2));
+    Digest digest = new TopWeightsAggregateClusterDigester(3, graph).create(root);
+    assertThat(digest.getVertices().length, is(2));
+    assertThat(digest.getWeights().length, is(2));
+    assertThat(digest.getScores().length, is(2));
   }
 
   @Test
@@ -88,10 +88,10 @@ public class TopWeightsAggregateLabelingTest {
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder().build();
     Cluster root = new Cluster(null);
     root.addToRemainder(IntIterators.wrap(new int[]{}));
-    Labels labels = new TopWeightsAggregateLabeling(3, graph).label(root);
-    assertThat(labels.getVertices().length, is(0));
-    assertThat(labels.getWeights().length, is(0));
-    assertThat(labels.getLikelihoods().length, is(0));
+    Digest digest = new TopWeightsAggregateClusterDigester(3, graph).create(root);
+    assertThat(digest.getVertices().length, is(0));
+    assertThat(digest.getWeights().length, is(0));
+    assertThat(digest.getScores().length, is(0));
   }
 
 

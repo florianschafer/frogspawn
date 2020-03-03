@@ -5,7 +5,7 @@
 
 package net.adeptropolis.metis.graphs.algorithms;
 
-import net.adeptropolis.metis.clustering.ClusteringSettings;
+import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;

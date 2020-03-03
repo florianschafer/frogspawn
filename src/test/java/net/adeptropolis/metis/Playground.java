@@ -6,13 +6,12 @@
 package net.adeptropolis.metis;
 
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.ClusteringSettings;
 import net.adeptropolis.metis.clustering.RecursiveClusterSieve;
-import net.adeptropolis.metis.clustering.labeling.Labeling;
-import net.adeptropolis.metis.clustering.labeling.TopWeightsRemainderLabeling;
-import net.adeptropolis.metis.clustering.sinks.TextSink;
+import net.adeptropolis.metis.digest.ClusterDigester;
+import net.adeptropolis.metis.digest.TopWeightsRemainderClusterDigester;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.metis.sinks.TextSink;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -34,8 +33,8 @@ public class Playground {
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClusterSieve(graph, settings).run();
-    Labeling labeling = new TopWeightsRemainderLabeling(150, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters4.txt"), labeling, g.inverseLabels());
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(150, graph);
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters4.txt"), digester, g.inverseLabels());
     textSink.consume(root);
   }
 
@@ -47,8 +46,8 @@ public class Playground {
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClusterSieve(graph, settings).run();
-    Labeling labeling = new TopWeightsRemainderLabeling(25, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters6.txt"), labeling, g.inverseLabels());
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(25, graph);
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters6.txt"), digester, g.inverseLabels());
 //    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
 

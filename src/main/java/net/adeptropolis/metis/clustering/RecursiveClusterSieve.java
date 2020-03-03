@@ -5,6 +5,7 @@
 
 package net.adeptropolis.metis.clustering;
 
+import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;

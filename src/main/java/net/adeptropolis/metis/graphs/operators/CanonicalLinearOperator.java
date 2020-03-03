@@ -35,7 +35,7 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
 
   /**
    * @param argument A vertex-indexed vector
-   * @return The product Av, with A being the adjacency matrix of the graph and V the argument v
+   * @return The product Av, with A being the adjacency matrix of the graph and v the argument.
    */
 
   public double[] apply(double[] argument) {

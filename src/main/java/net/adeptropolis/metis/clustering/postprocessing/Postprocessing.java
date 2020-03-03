@@ -5,8 +5,8 @@
 
 package net.adeptropolis.metis.clustering.postprocessing;
 
+import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.ClusteringSettings;
 import net.adeptropolis.metis.graphs.Graph;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;

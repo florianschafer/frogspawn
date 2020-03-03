@@ -6,7 +6,7 @@
 
 ### Summary
 
-At its core, Metis is a variant of recursive spectral graph clustering which embeds all vertices of the graph
+At its core, Metis is a variant of recursive spectral graph clustering that embeds all vertices of the graph
 in a tree of clusters, where similar vertices end up in the same cluster and similar clusters form a parent-child
 relationship in the resulting cluster tree.
 
@@ -21,15 +21,16 @@ partitions from former steps, a cluster likelihood score is computed for every v
 new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
 to the last cluster tree node where they satisfy the likelihood criterion (hence the "sieve"). The same goes for all
 vertices of partitions falling short of a certain minimal size. This approach not only yields and enormous benefit to
-both cluster quality and overall clustering speed, but also (especially in combination with a minimal cluster size)
+both cluster quality and overall speed, but also (especially in combination with a minimal cluster size)
 introduces a straightforward and comprehensive parameter that puts a strict condition on the desired clustering outcome
 that is inherent to the graph itself.
 
 Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed in such a way that
-every cluster is required to satisfy a certain consistency criterion with regards to its parent. Clusters that do not
-automatically fulfil that condition, are "pushed up" the cluster tree until that condition is satisfied. This not only
+every cluster is required to satisfy a certain consistency/overlap criterion with regards to its parent. Clusters that do not
+automatically fulfil that condition, are "pushed up" the cluster tree until it is satisfied. This not only
 counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive bisection
-process, but also imposes a more natural structure on the cluster hierarchy.
+process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the strictly
+binary nature of the process.
 
 On the more technical side, Metis' spectral bisector stage is multiple orders of magnitude faster than any naive
 implementation using standard eigensolvers. This is mostly achieved by a two-pronged approach: On the one hand, it
@@ -37,8 +38,8 @@ is possible to exploit known properties of some of the involved eigensystems and
 custom variant of spectral shifting in order to transform the eigenproblem at hand into one that can be solved much
 more efficiently. On the other hand, focusing on the nature of this particular clustering problem allows for an
 immense relaxation of the eigensolver's convergence criterion, which is something that generic eigensolvers simply
-cannot provide. Last but not least, those theoretical optimizations are complemented by a very fast and
-memory-efficient sparse graph representation that allows the creation of induced subgraphs at very little cost.
+cannot provide. Last but not least, those pen-and-paper optimizations are complemented by a very fast and
+memory-efficient sparse graph representation that allows for the creation of induced subgraphs at very little cost.
 
 ### Usage
 

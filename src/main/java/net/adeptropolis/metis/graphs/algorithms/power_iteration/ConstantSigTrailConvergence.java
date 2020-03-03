@@ -37,7 +37,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
   private static final Logger LOG = LoggerFactory.getLogger(ConstantSigTrailConvergence.class.getSimpleName());
   private final Graph graph;
   private final double convergenceThreshold;
-  private final byte[][] sigTrail; // TODO: Check whether using BitSet[] instead would affect the performance
+  private final byte[][] sigTrail; // TODO: Check whether using BitSet[] instead would affect performance
 
   /**
    * Constructor

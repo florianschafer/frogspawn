@@ -3,8 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering;
+package net.adeptropolis.metis;
 
+import net.adeptropolis.metis.clustering.ConsistencyMetric;
+import net.adeptropolis.metis.clustering.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
