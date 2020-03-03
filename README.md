@@ -8,7 +8,7 @@
 
 At its core, Metis is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
 vertices of the graph in a tree of clusters such that similar vertices end up in the same cluster and similar clusters
-form a parent-child relationship in the resulting cluster tree. Please see [the details section](### Details) for
+form a parent-child relationship in the resulting cluster tree. Please see [the details section](# Details) for
 further information.
 
 ### Usage
