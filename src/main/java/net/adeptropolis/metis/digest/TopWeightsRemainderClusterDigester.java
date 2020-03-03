@@ -39,7 +39,7 @@ public class TopWeightsRemainderClusterDigester implements ClusterDigester {
 
   @Override
   public Digest create(Cluster cluster) {
-    Graph graph = rootGraph.inducedSubgraph(cluster.getRemainder().iterator());
+    Graph graph = cluster.remainderGraph(rootGraph);
     int[] vertices = graph.collectVertices();
     double[] weights = graph.weights();
     double[] likelihoods = graph.relativeWeights(rootGraph);

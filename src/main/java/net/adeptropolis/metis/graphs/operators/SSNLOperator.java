@@ -75,7 +75,9 @@ public class SSNLOperator implements LinearGraphOperator {
 
   public double[] apply(double[] x) {
     double mu = 2 * Vectors.scalarProduct(v0, x);
-    for (int i = 0; i < graph.order(); i++) argument[i] = x[i] / Math.sqrt(weights[i]);
+    for (int i = 0; i < graph.order(); i++) {
+      argument[i] = x[i] / Math.sqrt(weights[i]);
+    }
     double[] result = linOp.apply(argument);
     for (int i = 0; i < graph.order(); i++) {
       result[i] = x[i] + result[i] / Math.sqrt(weights[i]) - mu * v0[i];

@@ -4,3 +4,4 @@
  - CUDA
  - Parallel cluster tree traversal (?)
  - Fix size <-> order nomenclature issues
+ - Check whether it makes sense to attach the root graph to all cluster objects instead of passing it everywhere

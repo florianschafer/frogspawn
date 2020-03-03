@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+// TODO: This class is by far the most messy part of the whole project. Find a way to unravel all the mixed concerns we have here!
+
 public class Cluster {
 
   private final Set<Cluster> children;
