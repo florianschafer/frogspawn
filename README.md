@@ -59,7 +59,7 @@ For further details and additional options, please refer to the Javadocs.
 
 The following method will start the actual clustering and return the root node of the resulting cluster tree:
 ```
-Cluster root = new RecursiveClusterSieve(graph, settings).run();
+Cluster root = new RecursiveClustering(graph, settings).run();
 ```
 Please refer to the Javadocs about how to process the output. `Cluster#traverse` is a good start.
 You may also look into `ClusterDigester` and `Sink`.

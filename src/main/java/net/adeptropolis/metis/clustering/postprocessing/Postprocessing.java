@@ -16,8 +16,7 @@ import java.util.PriorityQueue;
 
 /**
  * Main postprocessing class
- * <p>Applies all relevant postprocessors to the cluster tree</p>
- * <b>Note: All postprocessing might need some love performance-wise</b>
+ * <p>Applies all relevant postprocessors to the cluster tree in the correct order</p>
  */
 
 public class Postprocessing {
@@ -25,37 +24,72 @@ public class Postprocessing {
   private static final Logger LOG = LoggerFactory.getLogger(Postprocessing.class.getSimpleName());
 
   private final Cluster rootCluster;
-  private final AncestorSimilarityPostprocessor ancestorSimilarity;
+  private final ParentSimilarityPostprocessor ancestorSimilarity;
   private final ConsistencyGuardingPostprocessor consistency;
   private final SingletonCollapsingPostprocessor singletons;
 
+  /**
+   * Constructor
+   *
+   * @param rootCluster Root cluster
+   * @param rootGraph   Root graph
+   * @param settings    Clustering settings
+   */
+
   public Postprocessing(Cluster rootCluster, Graph rootGraph, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
-    this.ancestorSimilarity = new AncestorSimilarityPostprocessor(settings.getMinparentOverlap(), rootGraph);
+    this.ancestorSimilarity = new ParentSimilarityPostprocessor(settings.getMinparentOverlap(), rootGraph);
     this.consistency = new ConsistencyGuardingPostprocessor(rootGraph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
     this.singletons = new SingletonCollapsingPostprocessor();
   }
 
+  /**
+   * Apply the full postprocessor chain
+   *
+   * @return The root cluster
+   */
+
   public Cluster apply() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    LOG.debug("Collapse singletons");
     applyPostprocessor(singletons);
-    LOG.debug("Shift upwards");
     applyPostprocessor(ancestorSimilarity);
-    LOG.debug("Collapse singletons");
     applyPostprocessor(singletons);
-    LOG.debug("Ensure consistency");
     applyPostprocessor(consistency);
-    LOG.debug("Collapse singletons");
     applyPostprocessor(singletons);
     stopWatch.stop();
     LOG.debug("Postprocessing finished after {}", stopWatch);
     return rootCluster;
   }
 
+  /**
+   * Apply a specific postprocessor to the full cluster hierarchy, bottom-up
+   *
+   * @param postprocessor Postprocessor
+   * @return true if the cluster hierarchy has been changed, else false
+   */
+
   private boolean applyPostprocessor(Postprocessor postprocessor) {
-    PriorityQueue<Cluster> queue = OrderedBTT.queue(rootCluster);
+    LOG.debug("Applying postprocessor: {}", postprocessor.getClass().getSimpleName());
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
+    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
+    boolean changed = processQueue(postprocessor, queue);
+    stopWatch.stop();
+    LOG.debug("{} finished in {}. There were {} to the cluster hierarchy.",
+            postprocessor.getClass().getSimpleName(), stopWatch, changed ? "changes" : "no changes");
+    return changed;
+  }
+
+  /**
+   * Process the cluster queue using a given postprocessor
+   *
+   * @param postprocessor Postprocessor
+   * @param queue         Bottom-up ordered priority queue of clusters
+   * @return true if the cluster hierarchy has been changed, else false
+   */
+
+  private boolean processQueue(Postprocessor postprocessor, PriorityQueue<Cluster> queue) {
     boolean changed = false;
     while (!queue.isEmpty()) {
       Cluster cluster = queue.poll();

@@ -1,12 +1,13 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering;
+package net.adeptropolis.metis.clustering.consistency;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.VertexIterator;

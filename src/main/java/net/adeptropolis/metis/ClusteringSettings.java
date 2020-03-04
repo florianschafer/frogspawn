@@ -5,8 +5,8 @@
 
 package net.adeptropolis.metis;
 
-import net.adeptropolis.metis.clustering.ConsistencyMetric;
-import net.adeptropolis.metis.clustering.RelativeWeightConsistencyMetric;
+import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
+import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
@@ -20,7 +20,7 @@ public class ClusteringSettings {
   private final ConsistencyMetric consistencyMetric;
   private final int minClusterSize;
   private final double minClusterLikelihood;
-  private final double minparentOverlap;
+  private final double minParentOverlap;
   private final int trailSize;
   private final double convergenceThreshold;
   private final int maxIterations;
@@ -31,18 +31,18 @@ public class ClusteringSettings {
    * @param consistencyMetric    Vertex/cluster consistency metric to be used
    * @param minClusterSize       Minimum cluster size
    * @param minClusterLikelihood Minimum cluster likelihood of a vertex
-   * @param minparentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
+   * @param minParentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
    * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold Fraction of converged vertices
    * @param maxIterations        Maximum number of iterations
    */
 
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood,
-                             double minparentOverlap, int trailSize, double convergenceThreshold, int maxIterations) {
+                             double minParentOverlap, int trailSize, double convergenceThreshold, int maxIterations) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
-    this.minparentOverlap = minparentOverlap;
+    this.minParentOverlap = minParentOverlap;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
@@ -99,7 +99,7 @@ public class ClusteringSettings {
    */
 
   public double getMinparentOverlap() {
-    return minparentOverlap;
+    return minParentOverlap;
   }
 
   /**
@@ -115,7 +115,7 @@ public class ClusteringSettings {
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
     private int minClusterSize = 50;
     private double minClusterLikelihood = 0.1;
-    private double minparentOverlap = 0.4;
+    private double minParentOverlap = 0.4;
     private int trailSize = 25;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
@@ -159,12 +159,12 @@ public class ClusteringSettings {
     /**
      * Set Minimum ancestor overlap. Default is 0.4
      *
-     * @param minparentOverlap Minimum ancestor overlap
+     * @param minParentOverlap Minimum ancestor overlap
      * @return this
      */
 
-    public Builder withMinparentOverlap(double minparentOverlap) {
-      this.minparentOverlap = minparentOverlap;
+    public Builder withMinparentOverlap(double minParentOverlap) {
+      this.minParentOverlap = minParentOverlap;
       return this;
     }
 
@@ -210,7 +210,7 @@ public class ClusteringSettings {
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minparentOverlap,
+      return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minParentOverlap,
               trailSize, convergenceThreshold, maxIterations);
     }
 

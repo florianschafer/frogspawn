@@ -6,7 +6,7 @@
 package net.adeptropolis.metis;
 
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.RecursiveClusterSieve;
+import net.adeptropolis.metis.clustering.RecursiveClustering;
 import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.TopWeightsRemainderClusterDigester;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
@@ -32,7 +32,7 @@ public class Playground {
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
-    Cluster root = new RecursiveClusterSieve(graph, settings).run();
+    Cluster root = new RecursiveClustering(graph, settings).run();
     ClusterDigester digester = new TopWeightsRemainderClusterDigester(150, graph);
     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters4.txt"), digester, g.inverseLabels());
     textSink.consume(root);
@@ -45,12 +45,11 @@ public class Playground {
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
-    Cluster root = new RecursiveClusterSieve(graph, settings).run();
+    Cluster root = new RecursiveClustering(graph, settings).run();
     ClusterDigester digester = new TopWeightsRemainderClusterDigester(25, graph);
     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters6.txt"), digester, g.inverseLabels());
 //    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
-
   }
 
 }

@@ -8,18 +8,15 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.ConsistencyGuard;
+import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
-import org.apache.commons.lang3.time.StopWatch;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
- * <p>Ensures the consistency of a cluster during postprocessing</p>
+ * <p>Ensures the consistency of a cluster after postprocessing, namely after the ancestor similarity step.</p>
  * <p>
  * This is very much akin to the in-flight consistency guard, but guarantees that only vertices from the
- * cluster's remainder are shifted upwards.
+ * cluster's remainder are shifted upwards. For this reason, this postprocessor must always be applied bottom-up.
  * </p>
  *
  * @see ConsistencyGuard
@@ -27,8 +24,6 @@ import org.slf4j.LoggerFactory;
 
 
 class ConsistencyGuardingPostprocessor implements Postprocessor {
-
-  private static final Logger LOG = LoggerFactory.getLogger(ConsistencyGuardingPostprocessor.class.getSimpleName());
 
   private final Graph graph;
   private final int minClusterSize;
@@ -40,11 +35,15 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     this.minClusterLikelihood = minClusterLikelihood;
   }
 
+  /**
+   * Ensure that all remainder vertices of a cluster fulfil the <code>minClusterLikelihood</code> criterion.
+   *
+   * @param cluster A cluster. Not necessarily root.
+   * @return true if the cluster has been modified. Otherwise false.
+   */
+
   @Override
   public boolean apply(Cluster cluster) {
-
-    StopWatch stopWatch = new StopWatch();
-    stopWatch.start();
 
     Cluster parent = cluster.getParent();
     if (parent == null) {
@@ -54,14 +53,12 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
     Graph clusterGraph = cluster.aggregateGraph(graph);
     IntRBTreeSet survivors = initSurvivors(clusterGraph);
-    for (Graph subgraph = clusterGraph; true; subgraph = inducedSubgraph(survivors)) {
+    for (Graph subgraph = clusterGraph; true; subgraph = graph.inducedSubgraph(survivors.iterator())) {
       int prevSize = clusterVertices.size();
       shiftInconsistentVertices(clusterVertices, parent, survivors, subgraph);
       if (clusterVertices.size() < minClusterSize) {
         parent.addToRemainder(clusterVertices.iterator());
         parent.assimilateChild(cluster, false);
-        stopWatch.stop();
-        LOG.trace("Finished after {}. There were changes to the cluster structure", stopWatch);
         return true;
       } else if (clusterVertices.size() == prevSize) {
         break;
@@ -69,16 +66,22 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     }
 
     if (clusterVertices.size() == cluster.getRemainder().size()) {
-      stopWatch.stop();
       return false;
-    } else {
-      cluster.setRemainder(new IntArrayList(clusterVertices));
-      stopWatch.stop();
-      LOG.trace("Finished after {}. There were changes to the cluster structure", stopWatch);
-      return true;
     }
 
+    cluster.setRemainder(new IntArrayList(clusterVertices));
+    return true;
+
   }
+
+  /**
+   * Shift inconsistent vertices upwards into the parent's remainder
+   *
+   * @param clusterVertices All original vertices of the cluster
+   * @param parent          The cluster's parent
+   * @param survivors       Vertices surviving the procedure (only updated here)
+   * @param subgraph        The subgraph created from the survivors
+   */
 
   private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
     double[] likelihoods = subgraph.relativeWeights(graph);
@@ -94,9 +97,12 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     }
   }
 
-  private Graph inducedSubgraph(IntRBTreeSet survivors) {
-    return graph.inducedSubgraph(survivors.iterator());
-  }
+  /**
+   * Initialize the survivor set
+   *
+   * @param candidate Graph created from the original cluster
+   * @return Initial survivor set
+   */
 
   private IntRBTreeSet initSurvivors(Graph candidate) {
     IntRBTreeSet remainingVertices = new IntRBTreeSet();

@@ -11,14 +11,22 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
- * Traverse a cluster hierarchy from bottom to top with a guarantee that all clusters
- * are consumed in the order of their depth
+ * Factory for depth-ordered cluster priority queues
  */
 
-class OrderedBTT {
+class OrderedBTTQueueFactory {
 
-  private OrderedBTT() {
+  /**
+   * Constructor
+   */
+
+  private OrderedBTTQueueFactory() {
   }
+
+  /**
+   * @param root Root cluster
+   * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
+   */
 
   static PriorityQueue<Cluster> queue(Cluster root) {
     PriorityQueue<Cluster> queue = new PriorityQueue<>(Comparator.comparingInt(Cluster::depth).reversed());

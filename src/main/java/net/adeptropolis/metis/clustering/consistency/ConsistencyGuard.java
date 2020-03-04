@@ -1,18 +1,20 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering;
+package net.adeptropolis.metis.clustering.consistency;
 
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
+import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
 /**
  * Ensures the consistency of a new subgraph. That is, given a parent cluster and a potential subgraph,
  * vertices from the subgraph are shifted from the subgraph to the parent cluster's remainder bucket until
- * all remaining satisfy the required minimum likelihood.
+ * all remaining satisfy the required minimum likelihood. Since the removal if vertices may affect the cluster likelihood
+ * of remaining ones, the process is repeated until all satisfy the minimum likelihood criterion.
  */
 
 public class ConsistencyGuard {
@@ -25,7 +27,7 @@ public class ConsistencyGuard {
   /**
    * Constructor
    *
-   * @param metric               Instance of ConsistencyMetric
+   * @param metric               The consistency metric to be used
    * @param graph                Root graph
    * @param minClusterSize       Minimum cluster (graph) size
    * @param minClusterLikelihood Minimum cluster (graph) likelihood
@@ -48,7 +50,7 @@ public class ConsistencyGuard {
 
   public Graph ensure(Cluster parentCluster, Graph candidate) {
     IntRBTreeSet survivors = initSurvivors(candidate);
-    for (Graph subgraph = candidate; true; subgraph = inducedSubgraph(survivors)) {
+    for (Graph subgraph = candidate; true; subgraph = graph.inducedSubgraph(survivors.iterator())) {
       int prevSize = survivors.size();
       shiftInconsistentVertices(subgraph, parentCluster, survivors);
       if (survivors.size() < minClusterSize) {
@@ -93,10 +95,6 @@ public class ConsistencyGuard {
       remainingVertices.add(vertexIt.globalId());
     }
     return remainingVertices;
-  }
-
-  private Graph inducedSubgraph(IntRBTreeSet survivors) {
-    return graph.inducedSubgraph(survivors.iterator());
   }
 
 }

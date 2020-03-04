@@ -1,11 +1,12 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
 package net.adeptropolis.metis.clustering;
 
 import net.adeptropolis.metis.ClusteringSettings;
+import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
@@ -18,9 +19,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class RecursiveClusterSieve {
+/**
+ * <p>Recursive clustering</p>
+ * <p>Clusters a given graph and return a hierarchy</p>
+ */
 
-  private static final Logger LOG = LoggerFactory.getLogger(RecursiveClusterSieve.class.getSimpleName());
+public class RecursiveClustering {
+
+  private static final Logger LOG = LoggerFactory.getLogger(RecursiveClustering.class.getSimpleName());
 
   private final Graph graph;
   private final ClusteringSettings settings;
@@ -28,13 +34,24 @@ public class RecursiveClusterSieve {
   private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
 
-  public RecursiveClusterSieve(Graph graph, ClusteringSettings settings) {
+  /**
+   * Constructor
+   * @param graph Input graph
+   * @param settings Clustering settings
+   */
+
+  public RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
     this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> -protocluster.getCluster().depth()));
     this.consistencyGuard = new ConsistencyGuard(settings.getConsistencyMetric(), graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
+
+  /**
+   * Run the recursive clustering
+   * @return Root cluster of the generated cluster hierarchy
+   */
 
   public Cluster run() {
     StopWatch stopWatch = new StopWatch();
@@ -47,6 +64,12 @@ public class RecursiveClusterSieve {
     LOG.debug("Finished clustering {} vertices after {}", graph.order(), stopWatch);
     return new Postprocessing(root, graph, settings).apply();
   }
+
+  /**
+   * Process all elements of the recursive clustering task queue until it is exhausted.
+   * Depending on type of the protocluster, it is either decomposed into its connected components or subject to
+   * spectral bisection.
+   */
 
   private void processQueue() {
     while (!queue.isEmpty()) {
@@ -63,7 +86,7 @@ public class RecursiveClusterSieve {
    * Bisect the protocluster's graph such that the normalized cut is minimized. Possible scenarios for each partition:
    * <ol>
    *   <li>The partition is either smaller than the allowed minimum cluster size or comprises the full
-   *   input graph (which hits an error) -&gt; Add its vertices to the cluster's remainder and terminate</li>
+   *   input graph (which hints an error). In that case, add its vertices to the cluster's remainder and terminate</li>
    *   <li>
    *     Ensure consistency of the resulting subgraph vertices and add all non-compliant vertices to the cluster reminder.
    *     For the remaining subgraph, one of two conditions may apply:
@@ -98,8 +121,8 @@ public class RecursiveClusterSieve {
   /**
    * Decompose the current protocluster's graph into its connected components. There are 3 possible scenarios:
    * <ol>
-   *   <li>The input graph was already fully connected -&gt; label the protocluster's graph as connected component and re-add it to the queue</li>
-   *   <li>The connected component is smaller than the minimum cluster size -&gt; Add its vertices to the cluster's reminder and terminate</li>
+   *   <li>The input graph was already fully connected. Label the protocluster's graph as connected component and re-add it to the queue</li>
+   *   <li>The connected component is smaller than the minimum cluster size. In that case, add its vertices to the cluster's reminder and terminate</li>
    *   <li>Else label the component as connected and add a proper new protocluster to the queue</li>
    * </ol>
    *
@@ -118,6 +141,13 @@ public class RecursiveClusterSieve {
       }
     });
   }
+
+  /**
+   * Insert a new protocluster into the queue
+   * @param graphType Type of the graph for the new protocluster
+   * @param parent Parent cluster
+   * @param subgraph Protocluster graph
+   */
 
   private void enqueueProtocluster(Protocluster.GraphType graphType, Cluster parent, Graph subgraph) {
     Cluster childCluster = new Cluster(parent);

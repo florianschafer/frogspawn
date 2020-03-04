@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-public class OrderedBTTTest {
+public class OrderedBTTQueueFactoryTest {
 
   @Test
   public void defaultBehaviour() {
@@ -26,7 +26,7 @@ public class OrderedBTTTest {
     Cluster child21 = new Cluster(child2);
     Cluster child22 = new Cluster(child2);
     Cluster child221 = new Cluster(child22);
-    PriorityQueue<Cluster> queue = OrderedBTT.queue(root);
+    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(root);
     assertThat(queue.poll().depth(), is(3));
     assertThat(queue.poll().depth(), is(2));
     assertThat(queue.poll().depth(), is(2));

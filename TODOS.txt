@@ -5,3 +5,4 @@
  - Parallel cluster tree traversal (?)
  - Fix size <-> order nomenclature issues
  - Check whether it makes sense to attach the root graph to all cluster objects instead of passing it everywhere
+ - Prevent singletons from ever being created in the first place. Possibly apply the parent similarity PP right away too.
