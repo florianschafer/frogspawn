@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -31,6 +30,7 @@ public class Cluster {
 
   /**
    * Constructor
+   *
    * @param parent Parent cluster. This instance is implicitly added to its children.
    */
 
@@ -63,6 +63,7 @@ public class Cluster {
 
   /**
    * Annex a descendant cluster, i.e. make this cluster its parent
+   *
    * @param cluster Cluster
    */
 
@@ -83,6 +84,7 @@ public class Cluster {
 
   /**
    * Set the remainder of this cluster
+   *
    * @param remainder Remainder
    */
 
@@ -108,6 +110,7 @@ public class Cluster {
 
   /**
    * Add a vertex to this cluster's remainder
+   *
    * @param globalId Global vertex id
    */
 
@@ -117,6 +120,7 @@ public class Cluster {
 
   /**
    * Add multiple vertices to this cluster's remainder
+   *
    * @param it Iterator of global vertex ids
    */
 
@@ -128,6 +132,7 @@ public class Cluster {
 
   /**
    * Add all vertices from a graph to this cluster's remainder
+   *
    * @param graph Graph
    */
 
@@ -141,6 +146,7 @@ public class Cluster {
 
   /**
    * Traverse all descendants of this cluster
+   *
    * @param consumer Cluster consumer
    */
 
@@ -153,6 +159,7 @@ public class Cluster {
 
   /**
    * Aggregate vertices from all descendants of this cluster
+   *
    * @return List of global vertex ids
    */
 

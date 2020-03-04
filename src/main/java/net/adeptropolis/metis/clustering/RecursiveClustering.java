@@ -36,7 +36,8 @@ public class RecursiveClustering {
 
   /**
    * Constructor
-   * @param graph Input graph
+   *
+   * @param graph    Input graph
    * @param settings Clustering settings
    */
 
@@ -50,6 +51,7 @@ public class RecursiveClustering {
 
   /**
    * Run the recursive clustering
+   *
    * @return Root cluster of the generated cluster hierarchy
    */
 
@@ -144,9 +146,10 @@ public class RecursiveClustering {
 
   /**
    * Insert a new protocluster into the queue
+   *
    * @param graphType Type of the graph for the new protocluster
-   * @param parent Parent cluster
-   * @param subgraph Protocluster graph
+   * @param parent    Parent cluster
+   * @param subgraph  Protocluster graph
    */
 
   private void enqueueProtocluster(Protocluster.GraphType graphType, Cluster parent, Graph subgraph) {

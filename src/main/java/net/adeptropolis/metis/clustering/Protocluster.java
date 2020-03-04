@@ -19,9 +19,10 @@ public class Protocluster {
 
   /**
    * Constructor
-   * @param graph A graph, i.e. the cluster candidate
+   *
+   * @param graph     A graph, i.e. the cluster candidate
    * @param graphType Type of the graph. Either <code>ROOT</code>, <code>COMPONENT</code> or <code>SPECTRAL</code>
-   * @param cluster Parent cluster
+   * @param cluster   Parent cluster
    */
 
   Protocluster(Graph graph, GraphType graphType, Cluster cluster) {
@@ -64,6 +65,7 @@ public class Protocluster {
 
   /**
    * Set the parent cluster
+   *
    * @param cluster Parent cluster
    */
 
