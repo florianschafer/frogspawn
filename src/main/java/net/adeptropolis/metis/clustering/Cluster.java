@@ -49,7 +49,6 @@ public class Cluster {
    * @param assimilateRemainder Whether to merge the child's vertices into this cluster's remainder.
    */
 
-  // TODO: Check whether assimilateRemainder == false is the reason why some vertices are missing
   public void assimilateChild(Cluster child, boolean assimilateRemainder) {
     children.remove(child);
     for (Cluster grandchild : child.children) {
@@ -189,7 +188,7 @@ public class Cluster {
    * @return The root cluster
    */
 
-  // TODO: Check performance impact
+  // TODO: Check performance impact (this is later used as dynamic order criterion for a priority queue)
   public Cluster root() {
     Cluster ptr = this;
     while (ptr.getParent() != null) {

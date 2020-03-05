@@ -5,10 +5,12 @@
 
 package net.adeptropolis.metis.clustering;
 
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
+import net.adeptropolis.metis.graphs.VertexIterator;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.metis.graphs.algorithms.SpectralBisector;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
@@ -21,7 +23,7 @@ import java.util.PriorityQueue;
 
 /**
  * <p>Recursive clustering</p>
- * <p>Clusters a given graph and return a hierarchy</p>
+ * <p>Take a given graph and return a hierarchy of semantically consistent clusters</p>
  */
 
 public class RecursiveClustering {
@@ -116,6 +118,10 @@ public class RecursiveClustering {
         }
       });
     } catch (PowerIteration.MaxIterationsExceededException e) {
+      VertexIterator it = protocluster.getGraph().vertexIterator();
+      while (it.hasNext()) {
+        protocluster.getCluster().addToRemainder(it.globalId());
+      }
       LOG.warn("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
     }
   }

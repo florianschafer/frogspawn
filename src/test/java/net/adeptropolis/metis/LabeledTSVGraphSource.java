@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 public class LabeledTSVGraphSource implements GraphSource {
 
-  private static final Pattern TSVParsePattern = Pattern.compile("\\s*(?<weight>[0-9]+)\t+(?<u>[^\t]+)\t+(?<v>.+)\\s*");
+  private static final Pattern TSVParsePattern = Pattern.compile("\\s*(?<weight>[0-9.]+)\t+(?<u>[^\t]+)\t+(?<v>.+)\\s*");
   private final Path path;
   private final ConcurrentMap<String, Integer> labelMap;
 
