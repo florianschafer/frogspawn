@@ -5,12 +5,11 @@
 
 package net.adeptropolis.metis.clustering;
 
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import com.google.common.base.Preconditions;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
-import net.adeptropolis.metis.graphs.VertexIterator;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.metis.graphs.algorithms.SpectralBisector;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
@@ -96,8 +95,9 @@ public class RecursiveClustering {
    *     For the remaining subgraph, one of two conditions may apply:
    *     <ol>
    *       <li>The remaining consistent subgraph is smaller than the allowed minimum cluster
-   *       size -&gt; Add its vertices to the cluster's remainder and terminate</li>
-   *       <li>Else: Create a new protocluster with graph type <code>SPECTRAL</code> and add it to the queue.</li>
+   *       size → Add its vertices to the cluster's remainder and terminate</li>
+   *       <li>Else: Create a new protocluster with graph type <code>SPECTRAL</code> and add it to the queue
+   *       (unless it's exactly as large as the minimum cluster size, in which case a new child cluster is created).</li>
    *     </ol>
    *   </li>
    * </ol>
@@ -112,25 +112,42 @@ public class RecursiveClustering {
           protocluster.getCluster().addToRemainder(partition);
         } else {
           Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
-          if (consistentSubgraph != null && consistentSubgraph.order() > settings.getMinClusterSize()) {
-            enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
+          if (consistentSubgraph != null) {
+            processConsistentSubgraph(protocluster, consistentSubgraph);
           }
         }
       });
     } catch (PowerIteration.MaxIterationsExceededException e) {
-      VertexIterator it = protocluster.getGraph().vertexIterator();
-      while (it.hasNext()) {
-        protocluster.getCluster().addToRemainder(it.globalId());
-      }
+      protocluster.getCluster().addToRemainder(protocluster.getGraph());
       LOG.warn("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
     }
   }
 
   /**
-   * Decompose the current protocluster's graph into its connected components. There are 3 possible scenarios:
+   * <p>Process a subgraph returned by a consistency guard.</p>
+   * <p>If the graph is larger than the minimum cluster size, put it back into the processing queue.
+   * Otherwise, create a child cluster from its vertices and terminate here.</p>
+   *
+   * @param protocluster
+   * @param consistentSubgraph
+   */
+
+  private void processConsistentSubgraph(Protocluster protocluster, Graph consistentSubgraph) {
+    if (consistentSubgraph.size() > settings.getMinClusterSize()) {
+      enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
+    } else {
+      Preconditions.checkState(consistentSubgraph.size() == settings.getMinClusterSize());
+      Cluster child = new Cluster(protocluster.getCluster());
+      child.addToRemainder(consistentSubgraph);
+    }
+  }
+
+  /**
+   * Decompose the current protocluster's graph into its connected components. There are 4 possible scenarios:
    * <ol>
    *   <li>The input graph was already fully connected. Label the protocluster's graph as connected component and re-add it to the queue</li>
    *   <li>The connected component is smaller than the minimum cluster size. In that case, add its vertices to the cluster's reminder and terminate</li>
+   *   <li>The connected component order is exactly the minimum cluster size. Add a new child with the connected component vertices</li>
    *   <li>Else label the component as connected and add a proper new protocluster to the queue</li>
    * </ol>
    *
@@ -144,6 +161,9 @@ public class RecursiveClustering {
         queue.add(protocluster);
       } else if (component.order() < settings.getMinClusterSize()) {
         protocluster.getCluster().addToRemainder(component);
+      } else if (component.order() == settings.getMinClusterSize()) {
+        Cluster child = new Cluster(protocluster.getCluster());
+        child.addToRemainder(component);
       } else if (component.order() > settings.getMinClusterSize()) {
         enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getCluster(), component);
       }

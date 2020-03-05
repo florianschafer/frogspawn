@@ -56,7 +56,7 @@ public class ConsistencyGuard {
       if (survivors.size() < minClusterSize) {
         parentCluster.addToRemainder(survivors.iterator());
         return null;
-      } else if (survivors.size() == prevSize) {
+      } else if (survivors.size() == minClusterSize || survivors.size() == prevSize) {
         return subgraph;
       }
     }

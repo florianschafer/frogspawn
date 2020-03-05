@@ -43,6 +43,20 @@ public class RecursiveClusteringTest {
     root = new RecursiveClustering(graph, settings).run();
   }
 
+  private static Graph loadSmallGraph() {
+    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+    try {
+      Files.lines(Paths.get(ClassLoader.getSystemResource("small_graph.tsv").toURI()))
+              .forEach(line -> {
+                String[] comps = line.split("\t");
+                builder.add(Integer.parseInt(comps[1]), Integer.parseInt(comps[2]), Double.parseDouble(comps[0]));
+              });
+    } catch (IOException | URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+    return builder.build();
+  }
+
   @Test
   public void emptyGraph() {
     Graph emptyGraph = new CompressedSparseGraphBuilder().build();
@@ -75,20 +89,6 @@ public class RecursiveClusteringTest {
     IntOpenHashSet allGraphVertices = new IntOpenHashSet(graph.collectVertices());
     assertThat(allClusterVertices.size(), is(allGraphVertices.size()));
     assertThat(allClusterVertices, is(allGraphVertices));
-  }
-
-  private static Graph loadSmallGraph() {
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-    try {
-      Files.lines(Paths.get(ClassLoader.getSystemResource("small_graph.tsv").toURI()))
-              .forEach(line -> {
-                String[] comps = line.split("\t");
-                builder.add(Integer.parseInt(comps[1]), Integer.parseInt(comps[2]), Double.parseDouble(comps[0]));
-              });
-    } catch (IOException | URISyntaxException e) {
-      throw new RuntimeException(e);
-    }
-    return builder.build();
   }
 
 }

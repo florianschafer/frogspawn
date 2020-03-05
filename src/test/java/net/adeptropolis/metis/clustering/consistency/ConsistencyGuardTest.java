@@ -63,7 +63,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
     Graph candidate = defaultCandidate(graph);
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 3, 0.75);
+    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 4, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
     assertNull(consistentSubgraph);
     cluster.getRemainder().sort(Comparator.comparingInt(x -> x));

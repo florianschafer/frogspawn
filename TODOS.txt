@@ -1,4 +1,3 @@
- - Find out why some vertices are lost
  - Make maxIterations depend on the graph size (mind those nasty alternating beasts!)
  - Write some proper math documentation
  - CUDA
