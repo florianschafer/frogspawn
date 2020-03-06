@@ -28,7 +28,7 @@ public abstract class ParallelOps {
           THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
   protected final Graph graph;
-  protected final int slice;
+  final int slice;
   final CountDownLatch latch;
 
   /**

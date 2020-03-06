@@ -22,32 +22,18 @@ import java.nio.file.Paths;
 public class Playground {
 
   @Test
-  public void remainderClustering() throws FileNotFoundException {
+  public void standardClustering() throws FileNotFoundException {
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinClusterSize(25)
-            .withMinClusterLikelihood(0.025)
-            .withMinparentOverlap(0.3)
+            .withMinClusterLikelihood(0.1)
+            .withMinparentOverlap(0.55)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClustering(graph, settings).run();
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(150, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters4.txt"), digester, g.inverseLabels());
-    textSink.consume(root);
-  }
-
-  @Test
-  public void standardClustering() throws FileNotFoundException {
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
-    ClusteringSettings settings = ClusteringSettings.builder().build();
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-    g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
-    CompressedSparseGraph graph = builder.build();
-    Cluster root = new RecursiveClustering(graph, settings).run();
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(25, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters6.txt"), digester, g.inverseLabels());
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(200, graph);
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters11.txt"), digester, g.inverseLabels());
 //    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
   }

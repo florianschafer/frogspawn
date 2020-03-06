@@ -21,7 +21,8 @@ import java.util.function.Consumer;
  * <p>From an internal-use point of view, this class also provides all methods necessary to manipulate the cluster hierarchy.</p>
  */
 
-// TODO: This class is by far the most messy part of the whole project. Find a way to unravel all the mixed concerns here!
+// TODO: This class is by far the most messy part of the whole project. Find a way to unravel all the mixed concerns here
+//  and expose much less internal methods!
 public class Cluster {
 
   private final Set<Cluster> children;

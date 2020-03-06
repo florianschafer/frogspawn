@@ -115,7 +115,7 @@ public class ClusteringSettings {
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
     private int minClusterSize = 50;
     private double minClusterLikelihood = 0.1;
-    private double minParentOverlap = 0.4;
+    private double minParentOverlap = 0.55;
     private int trailSize = 25;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
