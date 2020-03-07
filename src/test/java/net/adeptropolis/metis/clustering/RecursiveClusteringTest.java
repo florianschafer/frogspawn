@@ -10,6 +10,7 @@ import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.graphs.Graph;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectors;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,12 +27,13 @@ public class RecursiveClusteringTest {
 
   private static Graph graph;
   private static Cluster root;
+  private static ClusteringSettings settings;
 
   @BeforeClass
   public static void initialize() {
     graph = loadSmallGraph();
     ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
-    ClusteringSettings settings = ClusteringSettings.builder()
+    settings = ClusteringSettings.builder()
             .withConsistencyMetric(metric)
             .withMinClusterSize(50)
             .withMinClusterLikelihood(0.1)
@@ -89,6 +91,26 @@ public class RecursiveClusteringTest {
     IntOpenHashSet allGraphVertices = new IntOpenHashSet(graph.collectVertices());
     assertThat(allClusterVertices.size(), is(allGraphVertices.size()));
     assertThat(allClusterVertices, is(allGraphVertices));
+  }
+
+  @Test
+  // NOTE: This test might break with parallel execution due to not resetting the random source in a controlled manner
+  public void determinism() {
+    RandomInitialVectors.resetRandom();
+    long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run());
+    for (int i = 0; i < 9; i++) {
+      RandomInitialVectors.resetRandom();
+      long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run());
+      assertThat(fp, is(refFp));
+    }
+  }
+
+  private long hierarchyFingerprint(Cluster cluster) {
+    long fp = (cluster.depth() + (long) new IntOpenHashSet(cluster.getRemainder()).hashCode());
+    for (Cluster child : cluster.getChildren()) {
+      fp += hierarchyFingerprint(child);
+    }
+    return fp;
   }
 
 }

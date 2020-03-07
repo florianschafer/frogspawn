@@ -70,7 +70,6 @@ public class Postprocessing {
    */
 
   private boolean applyPostprocessor(Postprocessor postprocessor) {
-    LOG.debug("Applying postprocessor: {}", postprocessor.getClass().getSimpleName());
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);

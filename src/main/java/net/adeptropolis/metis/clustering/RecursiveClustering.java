@@ -17,8 +17,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * <p>Recursive clustering</p>
@@ -32,8 +31,11 @@ public class RecursiveClustering {
   private final Graph graph;
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
-  private final PriorityQueue<Protocluster> queue;
   private final ConsistencyGuard consistencyGuard;
+
+  // NOTE: By construction, this type of queue induces the top-town ordering required for determinism
+  // and ensures the correct behaviour of consistency guards
+  private final ConcurrentLinkedQueue<Protocluster> queue;
 
   /**
    * Constructor
@@ -46,7 +48,7 @@ public class RecursiveClustering {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
-    this.queue = new PriorityQueue<>(Comparator.comparingInt(protocluster -> -protocluster.getCluster().depth()));
+    this.queue = new ConcurrentLinkedQueue<>();
     this.consistencyGuard = new ConsistencyGuard(settings.getConsistencyMetric(), graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
   }
 
@@ -118,8 +120,12 @@ public class RecursiveClustering {
         }
       });
     } catch (PowerIteration.MaxIterationsExceededException e) {
-      protocluster.getCluster().addToRemainder(protocluster.getGraph());
-      LOG.warn("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
+      if (protocluster.getGraph().size() >= settings.getMinClusterSize()) {
+        addTerminalChild(protocluster, protocluster.getGraph());
+      } else {
+        protocluster.getCluster().addToRemainder(protocluster.getGraph());
+      }
+      LOG.debug("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
     }
   }
 
@@ -128,8 +134,8 @@ public class RecursiveClustering {
    * <p>If the graph is larger than the minimum cluster size, put it back into the processing queue.
    * Otherwise, create a child cluster from its vertices and terminate here.</p>
    *
-   * @param protocluster
-   * @param consistentSubgraph
+   * @param protocluster       Protocluster
+   * @param consistentSubgraph Subgraph whose vertices are fully self-consistent wrt. to the graph
    */
 
   private void processConsistentSubgraph(Protocluster protocluster, Graph consistentSubgraph) {
@@ -137,9 +143,20 @@ public class RecursiveClustering {
       enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
     } else {
       Preconditions.checkState(consistentSubgraph.size() == settings.getMinClusterSize());
-      Cluster child = new Cluster(protocluster.getCluster());
-      child.addToRemainder(consistentSubgraph);
+      addTerminalChild(protocluster, consistentSubgraph);
     }
+  }
+
+  /**
+   * Create a new child to the current (proto)cluster and add a graph to its remainder
+   *
+   * @param protocluster The current protocluster
+   * @param graph        A graph
+   */
+
+  private void addTerminalChild(Protocluster protocluster, Graph graph) {
+    Cluster child = new Cluster(protocluster.getCluster());
+    child.addToRemainder(graph);
   }
 
   /**
@@ -162,8 +179,7 @@ public class RecursiveClustering {
       } else if (component.order() < settings.getMinClusterSize()) {
         protocluster.getCluster().addToRemainder(component);
       } else if (component.order() == settings.getMinClusterSize()) {
-        Cluster child = new Cluster(protocluster.getCluster());
-        child.addToRemainder(component);
+        addTerminalChild(protocluster, component);
       } else if (component.order() > settings.getMinClusterSize()) {
         enqueueProtocluster(Protocluster.GraphType.COMPONENT, protocluster.getCluster(), component);
       }
