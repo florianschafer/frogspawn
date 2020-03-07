@@ -74,7 +74,7 @@ public class ParallelEdgeOpsTest extends GraphTestBase implements Thread.Uncaugh
       try {
         t.join();
       } catch (InterruptedException e) {
-        throw new RuntimeException(e);
+        throw new ParallelOpsException(e);
       }
     });
   }

@@ -1,3 +1,4 @@
+ - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
  - Make maxIterations depend on the graph size (mind those nasty alternating beasts!)
  - Write some proper math documentation
  - CUDA

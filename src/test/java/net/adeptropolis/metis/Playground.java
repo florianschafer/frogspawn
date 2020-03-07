@@ -25,15 +25,17 @@ public class Playground {
   public void standardClustering() throws FileNotFoundException {
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinClusterLikelihood(0.1)
-            .withMinparentOverlap(0.55)
+            .withMinClusterLikelihood(0.05)
+            .withMinparentOverlap(0.65)
+//            .withMinClusterLikelihood(0.1)
+//            .withMinparentOverlap(0.4)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClustering(graph, settings).run();
     ClusterDigester digester = new TopWeightsRemainderClusterDigester(200, graph);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters11.txt"), digester, g.inverseLabels());
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters13.txt"), digester, g.inverseLabels());
 //    Sink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters.txt"), labeling, g.inverseLabels());
     textSink.consume(root);
   }

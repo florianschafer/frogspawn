@@ -66,7 +66,7 @@ public class RecursiveClustering {
     queue.add(initialProtocluster);
     processQueue();
     stopWatch.stop();
-    LOG.debug("Finished clustering {} vertices after {}", graph.order(), stopWatch);
+    LOG.info("Finished clustering {} vertices after {}", graph.order(), stopWatch);
     return new Postprocessing(root, graph, settings).apply();
   }
 

@@ -58,7 +58,7 @@ public class Postprocessing {
     applyPostprocessor(consistency);
     applyPostprocessor(singletons);
     stopWatch.stop();
-    LOG.debug("Postprocessing finished after {}", stopWatch);
+    LOG.info("Postprocessing finished after {}", stopWatch);
     return rootCluster;
   }
 
