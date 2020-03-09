@@ -24,6 +24,7 @@ public class ClusteringSettings {
   private final int trailSize;
   private final double convergenceThreshold;
   private final int maxIterations;
+  private final long randomSeed;
 
   /**
    * Constructor
@@ -35,10 +36,12 @@ public class ClusteringSettings {
    * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold Fraction of converged vertices
    * @param maxIterations        Maximum number of iterations
+   * @param randomSeed           Seed value for random initial value generation
    */
 
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood,
-                             double minParentOverlap, int trailSize, double convergenceThreshold, int maxIterations) {
+                             double minParentOverlap, int trailSize, double convergenceThreshold, int maxIterations,
+                             long randomSeed) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
@@ -46,6 +49,7 @@ public class ClusteringSettings {
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
+    this.randomSeed = randomSeed;
   }
 
   /**
@@ -80,6 +84,14 @@ public class ClusteringSettings {
 
   public int getMaxIterations() {
     return maxIterations;
+  }
+
+  /**
+   * @return Seed for random initial vector generation
+   */
+
+  public long getRandomSeed() {
+    return randomSeed;
   }
 
   /**
@@ -119,6 +131,7 @@ public class ClusteringSettings {
     private int trailSize = 25;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
+    private long randomSeed = 42133742L;
 
     /**
      * Set consistency metric. Default is <code>RelativeWeightConsistencyMetric</code>
@@ -204,6 +217,17 @@ public class ClusteringSettings {
     }
 
     /**
+     * Set random initial vector generation seed
+     *
+     * @param seed Seed value
+     * @return this
+     */
+    public Builder withRandomSeed(long seed) {
+      this.randomSeed = seed;
+      return this;
+    }
+
+    /**
      * Build settings
      *
      * @return A new instance of <code>ClusteringSettings</code>
@@ -211,7 +235,7 @@ public class ClusteringSettings {
 
     public ClusteringSettings build() {
       return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minParentOverlap,
-              trailSize, convergenceThreshold, maxIterations);
+              trailSize, convergenceThreshold, maxIterations, randomSeed);
     }
 
   }

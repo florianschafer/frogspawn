@@ -1,4 +1,5 @@
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
+ - ParentSimilarityPostprocessor is awfully slow. Look into binary/interpolative search to find a suitable ancestor
  - Make maxIterations depend on the graph size (mind those nasty alternating beasts!)
  - Write some proper math documentation
  - CUDA

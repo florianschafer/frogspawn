@@ -13,6 +13,7 @@ import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.metis.graphs.algorithms.SpectralBisector;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class RecursiveClustering {
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
   private final ConsistencyGuard consistencyGuard;
+  private final RandomInitialVectorsSource ivSource;
 
   // NOTE: By construction, this type of queue induces the top-town ordering required for determinism
   // and ensures the correct behaviour of consistency guards
@@ -50,6 +52,7 @@ public class RecursiveClustering {
     this.bisector = new SpectralBisector(settings);
     this.queue = new ConcurrentLinkedQueue<>();
     this.consistencyGuard = new ConsistencyGuard(settings.getConsistencyMetric(), graph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
+    this.ivSource = new RandomInitialVectorsSource(settings.getRandomSeed());
   }
 
   /**
@@ -88,7 +91,26 @@ public class RecursiveClustering {
   }
 
   /**
-   * Bisect the protocluster's graph such that the normalized cut is minimized. Possible scenarios for each partition:
+   * Bisect the protocluster's graph such that the normalized cut is minimized.
+   *
+   * @param protocluster A protocluster
+   */
+
+  private void bisect(Protocluster protocluster) {
+    try {
+      bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), ivSource, partition -> processPartition(protocluster, partition));
+    } catch (PowerIteration.MaxIterationsExceededException e) {
+      if (protocluster.getGraph().size() >= settings.getMinClusterSize()) {
+        addTerminalChild(protocluster, protocluster.getGraph());
+      } else {
+        protocluster.getCluster().addToRemainder(protocluster.getGraph());
+      }
+      LOG.debug("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
+    }
+  }
+
+  /**
+   * Process a partition coming out of the spectral bisection step. Possible scenarios:
    * <ol>
    *   <li>The partition is either smaller than the allowed minimum cluster size or comprises the full
    *   input graph (which hints an error). In that case, add its vertices to the cluster's remainder and terminate</li>
@@ -104,28 +126,18 @@ public class RecursiveClustering {
    *   </li>
    * </ol>
    *
-   * @param protocluster A protocluster
+   * @param protocluster Current protocluster
+   * @param partition    Cluster candidate partition
    */
 
-  private void bisect(Protocluster protocluster) {
-    try {
-      bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), partition -> {
-        if (partition.order() < settings.getMinClusterSize() || partition.order() == protocluster.getGraph().order()) {
-          protocluster.getCluster().addToRemainder(partition);
-        } else {
-          Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
-          if (consistentSubgraph != null) {
-            processConsistentSubgraph(protocluster, consistentSubgraph);
-          }
-        }
-      });
-    } catch (PowerIteration.MaxIterationsExceededException e) {
-      if (protocluster.getGraph().size() >= settings.getMinClusterSize()) {
-        addTerminalChild(protocluster, protocluster.getGraph());
-      } else {
-        protocluster.getCluster().addToRemainder(protocluster.getGraph());
+  private void processPartition(Protocluster protocluster, Graph partition) {
+    if (partition.order() < settings.getMinClusterSize() || partition.order() == protocluster.getGraph().order()) {
+      protocluster.getCluster().addToRemainder(partition);
+    } else {
+      Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
+      if (consistentSubgraph != null) {
+        processConsistentSubgraph(protocluster, consistentSubgraph);
       }
-      LOG.debug("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
     }
   }
 

@@ -7,10 +7,10 @@ package net.adeptropolis.metis.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.metis.ClusteringSettings;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
-import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
+import net.adeptropolis.metis.digest.ClusterDigester;
+import net.adeptropolis.metis.digest.Digest;
+import net.adeptropolis.metis.digest.TopWeightsRemainderClusterDigester;
 import net.adeptropolis.metis.graphs.Graph;
-import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectors;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,30 +25,25 @@ import static org.junit.Assert.assertThat;
 
 public class RecursiveClusteringTest {
 
-  private static Graph graph;
+  private static Graph defaultGraph;
   private static Cluster root;
-  private static ClusteringSettings settings;
+  private static ClusteringSettings defaultSettings;
 
   @BeforeClass
   public static void initialize() {
-    graph = loadSmallGraph();
-    ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
-    settings = ClusteringSettings.builder()
-            .withConsistencyMetric(metric)
+    defaultGraph = loadGraph("small_graph.tsv");
+    defaultSettings = ClusteringSettings.builder()
             .withMinClusterSize(50)
             .withMinClusterLikelihood(0.1)
             .withMinparentOverlap(0.4)
-            .withTrailSize(25)
-            .withConvergenceThreshold(0.95)
-            .withMaxIterations(10000)
             .build();
-    root = new RecursiveClustering(graph, settings).run();
+    root = new RecursiveClustering(defaultGraph, defaultSettings).run();
   }
 
-  private static Graph loadSmallGraph() {
+  private static Graph loadGraph(String filename) {
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     try {
-      Files.lines(Paths.get(ClassLoader.getSystemResource("small_graph.tsv").toURI()))
+      Files.lines(Paths.get(ClassLoader.getSystemResource(filename).toURI()))
               .forEach(line -> {
                 String[] comps = line.split("\t");
                 builder.add(Integer.parseInt(comps[1]), Integer.parseInt(comps[2]), Double.parseDouble(comps[0]));
@@ -72,9 +67,9 @@ public class RecursiveClusteringTest {
   @Test
   public void recursionExcessPreservesVertices() {
     ClusteringSettings settings = ClusteringSettings.builder().withMaxIterations(0).build();
-    root = new RecursiveClustering(graph, settings).run();
+    root = new RecursiveClustering(defaultGraph, settings).run();
     IntOpenHashSet allClusterVertices = new IntOpenHashSet(root.aggregateVertices().iterator());
-    IntOpenHashSet allGraphVertices = new IntOpenHashSet(graph.collectVertices());
+    IntOpenHashSet allGraphVertices = new IntOpenHashSet(defaultGraph.collectVertices());
     assertThat(allClusterVertices.size(), is(allGraphVertices.size()));
     assertThat(allClusterVertices, is(allGraphVertices));
   }
@@ -88,27 +83,49 @@ public class RecursiveClusteringTest {
   @Test
   public void allVerticesArePreserved() {
     IntOpenHashSet allClusterVertices = new IntOpenHashSet(root.aggregateVertices().iterator());
-    IntOpenHashSet allGraphVertices = new IntOpenHashSet(graph.collectVertices());
+    IntOpenHashSet allGraphVertices = new IntOpenHashSet(defaultGraph.collectVertices());
     assertThat(allClusterVertices.size(), is(allGraphVertices.size()));
     assertThat(allClusterVertices, is(allGraphVertices));
   }
 
   @Test
-  // NOTE: This test might break with parallel execution due to not resetting the random source in a controlled manner
-  public void determinism() {
-    RandomInitialVectors.resetRandom();
-    long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run());
-    for (int i = 0; i < 9; i++) {
-      RandomInitialVectors.resetRandom();
-      long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run());
+  public void determinismSmall() {
+    verifyDeterminism(defaultGraph, defaultSettings, 10);
+  }
+
+  @Test
+  public void determinismMedium() {
+    ClusteringSettings settings = ClusteringSettings.builder()
+            .withMinClusterSize(50)
+            .withMinClusterLikelihood(0.05)
+            .withMinparentOverlap(0.65)
+            .build();
+    Graph graph = loadGraph("medium_graph.tsv");
+    verifyDeterminism(graph, settings, 5);
+  }
+
+  private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(0, graph);
+    long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
+    for (int i = 0; i < rounds - 1; i++) {
+      long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
       assertThat(fp, is(refFp));
     }
   }
 
-  private long hierarchyFingerprint(Cluster cluster) {
-    long fp = (cluster.depth() + (long) new IntOpenHashSet(cluster.getRemainder()).hashCode());
+  private long hierarchyFingerprint(Cluster cluster, ClusterDigester digester) {
+    Digest digest = digester.create(cluster);
+    long fp = cluster.depth() + digestFingerprint(digest);
     for (Cluster child : cluster.getChildren()) {
-      fp += hierarchyFingerprint(child);
+      fp += hierarchyFingerprint(child, digester);
+    }
+    return fp;
+  }
+
+  private long digestFingerprint(Digest digest) {
+    long fp = 0;
+    for (int i = 0; i < digest.size(); i++) {
+      fp += Math.round(1000 * (i + 1) * digest.getVertices()[i] * digest.getWeights()[i] * digest.getScores()[i]);
     }
     return fp;
   }

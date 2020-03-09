@@ -9,7 +9,7 @@ import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
-import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectors;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
 import net.adeptropolis.metis.graphs.operators.SSNLOperator;
 
 import java.util.function.Consumer;
@@ -46,14 +46,15 @@ public class SpectralBisector {
    *
    * @param graph         The input graph
    * @param maxIterations Maximum number of iterations
+   * @param ivSource      Source for random initial vectors
    * @param consumer      A consumer for the resulting partitions
    * @throws PowerIteration.MaxIterationsExceededException if the number of iterations has been exceeded
    */
 
-  public void bisect(Graph graph, int maxIterations, Consumer<Graph> consumer) throws PowerIteration.MaxIterationsExceededException {
+  public void bisect(Graph graph, int maxIterations, RandomInitialVectorsSource ivSource, Consumer<Graph> consumer) throws PowerIteration.MaxIterationsExceededException {
     PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
     SSNLOperator ssnl = new SSNLOperator(graph);
-    double[] iv = RandomInitialVectors.generate(graph.order());
+    double[] iv = ivSource.generate(graph.order());
     double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations);
     convergenceCriterion.postprocess(v2);
     yieldSubgraph(graph, v2, consumer, 1);

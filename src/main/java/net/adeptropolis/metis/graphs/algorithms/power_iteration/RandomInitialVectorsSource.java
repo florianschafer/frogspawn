@@ -5,7 +5,6 @@
 
 package net.adeptropolis.metis.graphs.algorithms.power_iteration;
 
-import com.google.common.annotations.VisibleForTesting;
 import net.adeptropolis.metis.helpers.Vectors;
 
 import java.util.Random;
@@ -14,13 +13,12 @@ import java.util.Random;
  * <p>Helper class that provides random initial vectors for the power iterations</p>
  */
 
-public class RandomInitialVectors {
+public class RandomInitialVectorsSource {
 
+  private final Random random;
 
-  private static final int SEED = 42133742;
-  private static Random random = new Random(SEED);
-
-  private RandomInitialVectors() {
+  public RandomInitialVectorsSource(long seed) {
+    random = new Random(seed);
   }
 
   /**
@@ -30,23 +28,13 @@ public class RandomInitialVectors {
    * @return the desired vector
    */
 
-  public static double[] generate(int size) {
+  public double[] generate(int size) {
     double[] iv = new double[size];
     for (int i = 0; i < size; i++) {
       iv[i] = random.nextDouble();
     }
     Vectors.normalize2Sig(iv);
     return iv;
-  }
-
-  /**
-   * Reset <code>random</code> to the original seed. Only used in <code>RecursiveClusteringTest</code>
-   * to check determinism.
-   */
-
-  @VisibleForTesting
-  public static void resetRandom() {
-    random.setSeed(SEED);
   }
 
 }
