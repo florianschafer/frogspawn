@@ -10,8 +10,8 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 /**
@@ -25,7 +25,10 @@ import java.util.function.Consumer;
 //  and expose much less internal methods!
 public class Cluster {
 
-  private final Set<Cluster> children;
+  private static final AtomicInteger CURR_ID = new AtomicInteger(Integer.MIN_VALUE);
+
+  private final SortedSet<Cluster> children;
+  private final int id;
   private Cluster parent;
   private IntArrayList remainder;
 
@@ -37,9 +40,10 @@ public class Cluster {
 
   public Cluster(Cluster parent) {
     this.parent = parent;
-    this.children = new HashSet<>();
+    this.children = new TreeSet<>(Comparator.comparingInt(Cluster::getId)); // Important for determinism
     this.remainder = new IntArrayList();
     if (parent != null) parent.children.add(this);
+    this.id = CURR_ID.getAndIncrement();
   }
 
   /**
@@ -224,6 +228,14 @@ public class Cluster {
     Set<Cluster> clusters = new HashSet<>();
     traverse(clusters::add);
     return clusters;
+  }
+
+  /**
+   * @return Cluster id used for stable child sorting (determinism)
+   */
+
+  private int getId() {
+    return id;
   }
 
   /**
