@@ -8,8 +8,8 @@
 
 At its core, Metis is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
 vertices of the graph in a tree of clusters such that similar vertices end up in the same cluster and similar clusters
-form a parent-child relationship in the resulting cluster tree. Please see the details section below for further
-information.
+form a parent-child relationship in the resulting cluster tree. For a more technically detailed description, please
+refer to the bottom section.
 
 ### Usage
 
@@ -34,7 +34,7 @@ Graph graph = builder.build();
  - Vertices are identified as `int`. It is strongly recommended (although not strictly required) to construct vertex ids in such a way that they are **consecutive** integers starting at 0.
  - All edges are interpreted as being **undirected**.
  - All edge weights must be ≥ 1.
- - By design, vertices with only 1 neighbour do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
+ - By design, leaf vertices (i.e. those of degree 1) do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
  - To improve performance, it is **highly** recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand. 
  - There is currently no built-in mapping between vertex ids and the objects they represent. Thus, this must be taken care of externally. 
 
@@ -49,7 +49,7 @@ The most important ones are described in the example below (using the defaults):
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)        // Minimum size of a cluster
   .withMinClusterLikelihood(0.1) // Minimum consistency score that a vertex may yield with respect to its cluster
-  .withMinparentOverlap(0.4)     // Minimum consistency score that a cluster may yield with respect to its parent
+  .withMinParentOverlap(0.4)     // Minimum consistency score that a cluster may yield with respect to its parent
   .build();
 ```
 

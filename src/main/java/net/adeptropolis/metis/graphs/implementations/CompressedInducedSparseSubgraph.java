@@ -139,7 +139,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
   }
 
   /**
-   * Internal: Traverse all neighbours of a given local vertex by the non-zero entries of the adjacency matrix
+   * Traverse all neighbours of a given local vertex by the non-zero entries of the adjacency matrix
    *
    * @param leftEndpoint A local vertex id
    * @param consumer     An instance of <code>EdgeConsumer</code>
