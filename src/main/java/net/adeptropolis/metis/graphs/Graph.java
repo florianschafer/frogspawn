@@ -60,6 +60,14 @@ public abstract class Graph {
   public abstract int[] collectVertices();
 
   /**
+   * Create an iterator over all global vertex ids of this graph
+   *
+   * @return Iterator over all global vertex ids
+   */
+
+  public abstract IntIterator globalVertexIdIterator();
+
+  /**
    * Traverse all edges adjacent to a given endpoint
    *
    * @param v        (Local!) vertex id of the endpoint
@@ -105,6 +113,17 @@ public abstract class Graph {
    */
 
   public abstract int globalVertexId(int localVertexId);
+
+  /**
+   * Check whether a graph contains a given vertex
+   *
+   * @param globalVertexId A global vertex id
+   * @return true if this graph contains the given vertex, otherwise false
+   */
+
+  public boolean containsVertex(int globalVertexId) {
+    return localVertexId(globalVertexId) >= 0;
+  }
 
   /**
    * <p>Compute the induced subgraph from a given set of global vertex ids</p>
@@ -185,13 +204,11 @@ public abstract class Graph {
    */
 
   public double overlap(Graph supergraph) {
-    double weight = 0;
     double supergraphEmbeddingWeight = 0;
     for (int i = 0; i < order(); i++) {
-      weight += weights()[i];
       supergraphEmbeddingWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
     }
-    return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;
+    return (supergraphEmbeddingWeight > 0) ? totalWeight() / supergraphEmbeddingWeight : 0;
   }
 
   public interface Builder {

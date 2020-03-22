@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 public class GraphTest {
 
@@ -57,6 +57,19 @@ public class GraphTest {
   }
 
   @Test
+  public void contains() {
+    Graph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .build()
+            .inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
+    assertTrue(graph.containsVertex(0));
+    assertTrue(graph.containsVertex(1));
+    assertTrue(graph.containsVertex(2));
+    assertFalse(graph.containsVertex(3));
+  }
+
+  @Test
   public void overlap() {
     Graph graph = new CompressedSparseGraphBuilder()
             .add(0, 1, 3)
@@ -66,6 +79,7 @@ public class GraphTest {
             .add(3, 2, 7)
             .add(3, 4, 8)
             .build();
+    assertThat(graph.overlap(graph), closeTo(1.0, 1E-6));
     Graph subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
     double overlap = subgraph.overlap(graph);
     assertThat(overlap, closeTo(24d / 37d, 1E-6));

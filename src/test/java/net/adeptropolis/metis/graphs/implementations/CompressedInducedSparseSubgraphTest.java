@@ -7,6 +7,7 @@ package net.adeptropolis.metis.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.adeptropolis.metis.Edge;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
@@ -83,6 +84,12 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
     assertThat(vertices[0], is(4));
     assertThat(vertices[1], is(9));
     assertThat(vertices[2], is(10));
+  }
+
+  @Test
+  public void globalVertexIdIterator() {
+    IntList list = IntIterators.pour(defaultSubgraph(4, 9, 10).globalVertexIdIterator());
+    assertThat(list, is(new IntArrayList(new int[]{ 4, 9, 10 })));
   }
 
   @Test

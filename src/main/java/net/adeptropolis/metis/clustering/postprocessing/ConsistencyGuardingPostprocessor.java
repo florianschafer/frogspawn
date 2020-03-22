@@ -52,7 +52,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
 
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
     Graph clusterGraph = cluster.aggregateGraph(graph);
-    IntRBTreeSet survivors = initSurvivors(clusterGraph);
+    IntRBTreeSet survivors = new IntRBTreeSet(clusterGraph.globalVertexIdIterator());
     for (Graph subgraph = clusterGraph; true; subgraph = graph.inducedSubgraph(survivors.iterator())) {
       int prevSize = clusterVertices.size();
       shiftInconsistentVertices(clusterVertices, parent, survivors, subgraph);
@@ -95,22 +95,6 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
         survivors.remove(it.globalId());
       }
     }
-  }
-
-  /**
-   * Initialize the survivor set
-   *
-   * @param candidate Graph created from the original cluster
-   * @return Initial survivor set
-   */
-
-  private IntRBTreeSet initSurvivors(Graph candidate) {
-    IntRBTreeSet remainingVertices = new IntRBTreeSet();
-    VertexIterator vertexIt = candidate.vertexIterator();
-    while (vertexIt.hasNext()) {
-      remainingVertices.add(vertexIt.globalId());
-    }
-    return remainingVertices;
   }
 
 }

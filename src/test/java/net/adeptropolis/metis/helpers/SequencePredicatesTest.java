@@ -63,6 +63,13 @@ public class SequencePredicatesTest {
     assertNull(first);
   }
 
+  @Test
+  public void objSequenceExhaustedWithinInitialStepSize() {
+    Integer first = SequencePredicates.findFirst(0, 20,
+            v -> (v >= 15) ? null :  v + 1, v -> v >= 13);
+    assertThat(first, is(13));
+  }
+
   private void verifyInt(int low, int high, int threshold) {
     int first = SequencePredicates.findFirst(low, high, i -> i >= threshold);
     assertThat(first, is(threshold));

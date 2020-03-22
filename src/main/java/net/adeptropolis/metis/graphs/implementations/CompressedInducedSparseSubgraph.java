@@ -89,6 +89,15 @@ public class CompressedInducedSparseSubgraph extends Graph {
    */
 
   @Override
+  public IntIterator globalVertexIdIterator() {
+    return IntIterators.wrap(vertices);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+
+  @Override
   public void traverseParallel(EdgeConsumer consumer) {
     ParallelEdgeOps.traverse(this, consumer);
   }

@@ -6,6 +6,7 @@
 package net.adeptropolis.metis.graphs.implementations;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 import net.adeptropolis.metis.graphs.traversal.EdgeConsumer;
@@ -80,6 +81,15 @@ public class CompressedSparseGraph extends Graph {
       vertices[i] = i;
     }
     return vertices;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+
+  @Override
+  public IntIterator globalVertexIdIterator() {
+    return IntIterators.fromTo(0, order());
   }
 
   /**

@@ -51,7 +51,6 @@ public class ConstantSigTrailConvergenceTest extends GraphTestBase {
     for (int i = 0; i < 3; i++) {
       assertFalse(conv.satisfied(null, new double[]{-1, alternatingValue(i), 1, alternatingValue(i + 1)}, i));
     }
-    System.out.println(alternatingValue(3));
     double[] v = new double[]{-1, alternatingValue(3), 1, alternatingValue(3 + 1)};
     assertTrue(conv.satisfied(null, v, 3));
     conv.postprocess(v);

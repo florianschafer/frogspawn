@@ -49,7 +49,7 @@ public class ConsistencyGuard {
    */
 
   public Graph ensure(Cluster parentCluster, Graph candidate) {
-    IntRBTreeSet survivors = initSurvivors(candidate);
+    IntRBTreeSet survivors = new IntRBTreeSet(candidate.globalVertexIdIterator());
     for (Graph subgraph = candidate; true; subgraph = graph.inducedSubgraph(survivors.iterator())) {
       int prevSize = survivors.size();
       shiftInconsistentVertices(subgraph, parentCluster, survivors);
@@ -79,22 +79,6 @@ public class ConsistencyGuard {
         survivors.remove(it.globalId());
       }
     }
-  }
-
-  /**
-   * Initialize survivors set with all vertices of a subgraph candidate
-   *
-   * @param candidate The subgraph candidate
-   * @return The full set of candidate vertices
-   */
-
-  private IntRBTreeSet initSurvivors(Graph candidate) {
-    IntRBTreeSet remainingVertices = new IntRBTreeSet();
-    VertexIterator vertexIt = candidate.vertexIterator();
-    while (vertexIt.hasNext()) {
-      remainingVertices.add(vertexIt.globalId());
-    }
-    return remainingVertices;
   }
 
 }
