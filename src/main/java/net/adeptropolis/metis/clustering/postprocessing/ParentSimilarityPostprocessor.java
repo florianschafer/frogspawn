@@ -7,6 +7,7 @@ package net.adeptropolis.metis.clustering.postprocessing;
 
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
+import net.adeptropolis.metis.helpers.SequencePredicates;
 
 /**
  * <p>Parent similarity postprocessor</p>
@@ -32,17 +33,19 @@ import net.adeptropolis.metis.graphs.Graph;
 class ParentSimilarityPostprocessor implements Postprocessor {
 
   private final double minParentOverlap;
+  private final int searchStepSize;
   private final Graph rootGraph;
 
   /**
    * Constructor
-   *
    * @param minParentOverlap Minimum parent overlap (<code>w/p</code> from above)
+   * @param searchStepSize   Parent search step size
    * @param rootGraph        The root graph
    */
 
-  public ParentSimilarityPostprocessor(double minParentOverlap, Graph rootGraph) {
+  public ParentSimilarityPostprocessor(double minParentOverlap, int searchStepSize, Graph rootGraph) {
     this.minParentOverlap = minParentOverlap;
+    this.searchStepSize = searchStepSize;
     this.rootGraph = rootGraph;
   }
 
@@ -59,7 +62,7 @@ class ParentSimilarityPostprocessor implements Postprocessor {
       return false;
     }
     Cluster ancestor = nearestAncestorSatisfyingOverlap(cluster);
-    if (ancestor == null || ancestor == cluster.getParent()) {
+    if (ancestor == null || ancestor.equals(cluster.getParent())) {
       return false;
     }
     ancestor.annex(cluster);
@@ -74,14 +77,15 @@ class ParentSimilarityPostprocessor implements Postprocessor {
    */
 
   private Cluster nearestAncestorSatisfyingOverlap(Cluster cluster) {
-    Cluster ancestor = cluster.getParent();
-    while (ancestor != null && overlap(cluster, ancestor) < minParentOverlap) {
-      if (ancestor.getParent() == null) {
-        break;
-      }
-      ancestor = ancestor.getParent();
+
+    Cluster parent = cluster.getParent();
+    if (parent == null) {
+      return null;
     }
-    return ancestor;
+
+    return SequencePredicates.findFirst(parent, searchStepSize, Cluster::getParent,
+            ancestor -> overlap(cluster, ancestor) >= minParentOverlap);
+
   }
 
   /**

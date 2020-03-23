@@ -21,6 +21,7 @@ public class ClusteringSettings {
   private final int minClusterSize;
   private final double minClusterLikelihood;
   private final double minParentOverlap;
+  private final int parentSearchStepSize;
   private final int trailSize;
   private final double convergenceThreshold;
   private final int maxIterations;
@@ -33,6 +34,7 @@ public class ClusteringSettings {
    * @param minClusterSize       Minimum cluster size
    * @param minClusterLikelihood Minimum cluster likelihood of a vertex
    * @param minParentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
+   * @param parentSearchStepSize Step size of parent search
    * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold Fraction of converged vertices
    * @param maxIterations        Maximum number of iterations
@@ -40,12 +42,13 @@ public class ClusteringSettings {
    */
 
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood,
-                             double minParentOverlap, int trailSize, double convergenceThreshold, int maxIterations,
-                             long randomSeed) {
+                             double minParentOverlap, int parentSearchStepSize, int trailSize,
+                             double convergenceThreshold, int maxIterations, long randomSeed) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
     this.minParentOverlap = minParentOverlap;
+    this.parentSearchStepSize = parentSearchStepSize;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
@@ -115,6 +118,14 @@ public class ClusteringSettings {
   }
 
   /**
+   * @return Step size of parent search
+   */
+
+  public int getParentSearchStepSize() {
+    return parentSearchStepSize;
+  }
+
+  /**
    * @return Currently used consistency metric
    */
 
@@ -128,6 +139,7 @@ public class ClusteringSettings {
     private int minClusterSize = 50;
     private double minClusterLikelihood = 0.1;
     private double minParentOverlap = 0.55;
+    private int parentSearchStepSize = 15;
     private int trailSize = 25;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
@@ -178,6 +190,18 @@ public class ClusteringSettings {
 
     public Builder withMinparentOverlap(double minParentOverlap) {
       this.minParentOverlap = minParentOverlap;
+      return this;
+    }
+
+    /**
+     * Set parent search step size. Default is 15
+     *
+     * @param stepSize Parent search step size
+     * @return this
+     */
+
+    public Builder withParentSearchStepSize(int stepSize) {
+      this.parentSearchStepSize = stepSize;
       return this;
     }
 
@@ -235,7 +259,7 @@ public class ClusteringSettings {
 
     public ClusteringSettings build() {
       return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minParentOverlap,
-              trailSize, convergenceThreshold, maxIterations, randomSeed);
+              parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed);
     }
 
   }

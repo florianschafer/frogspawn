@@ -73,7 +73,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
     Graph graph = completeGraph(10);
     Cluster root = new Cluster(null);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.0, graph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.0, 15, graph);
     assertFalse(pp.apply(root));
   }
 
@@ -84,13 +84,13 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
     root.addToRemainder(IntIterators.wrap(new int[]{4, 5, 6, 7, 8, 9}));
     Cluster child = new Cluster(root);
     child.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.0, graph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.0, 15, graph);
     assertFalse(pp.apply(child));
   }
 
   @Test
   public void thresholdAboveMinOverlap() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.5, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.5, 15, defaultGraph);
     boolean modified = pp.apply(c67);
     assertFalse(modified);
     assertThat(c67.getParent(), is(c4));
@@ -100,7 +100,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
   @Test
   @Ignore("Fixme!")
   public void thresholdAllowsPullingUpC67OneLevel() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.51, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.51, 15, defaultGraph);
     boolean modified = pp.apply(c67);
     assertTrue(modified);
     assertThat(c67.getParent(), is(c2));
@@ -109,7 +109,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void thresholdAllowsPullingUpC67TwoLevels() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.7, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.7, 15, defaultGraph);
     boolean modified = pp.apply(c67);
     assertTrue(modified);
     assertThat(c67.getParent(), is(c0));
@@ -118,7 +118,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void pullIngUpStopsAtRootNode() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(1.0, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(1.0, 15, defaultGraph);
     boolean modified = pp.apply(c67);
     assertTrue(modified);
     assertThat(c67.getParent(), is(c0));
