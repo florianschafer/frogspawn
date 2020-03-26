@@ -204,11 +204,14 @@ public abstract class Graph {
    */
 
   public double overlap(Graph supergraph) {
+    double weight = 0;
     double supergraphEmbeddingWeight = 0;
     for (int i = 0; i < order(); i++) {
+      weight += weights()[i];
       supergraphEmbeddingWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
     }
-    return (supergraphEmbeddingWeight > 0) ? totalWeight() / supergraphEmbeddingWeight : 0;
+    /// XXX "Edge weight loss?"
+    return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;
   }
 
   public interface Builder {

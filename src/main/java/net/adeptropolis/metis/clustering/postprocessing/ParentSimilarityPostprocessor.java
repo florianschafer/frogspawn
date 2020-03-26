@@ -8,6 +8,10 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.helpers.SequencePredicates;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * <p>Parent similarity postprocessor</p>
@@ -31,6 +35,8 @@ import net.adeptropolis.metis.helpers.SequencePredicates;
  */
 
 class ParentSimilarityPostprocessor implements Postprocessor {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ParentSimilarityPostprocessor.class.getSimpleName());
 
   private final double minParentOverlap;
   private final int searchStepSize;
@@ -62,7 +68,10 @@ class ParentSimilarityPostprocessor implements Postprocessor {
       return false;
     }
     Cluster ancestor = nearestAncestorSatisfyingOverlap(cluster);
-    if (ancestor == null || ancestor.equals(cluster.getParent())) {
+    if (ancestor == null) {
+      ancestor = cluster.root();
+    }
+    if (ancestor.equals(cluster.getParent())) {
       return false;
     }
     ancestor.annex(cluster);
@@ -77,15 +86,13 @@ class ParentSimilarityPostprocessor implements Postprocessor {
    */
 
   private Cluster nearestAncestorSatisfyingOverlap(Cluster cluster) {
-
     Cluster parent = cluster.getParent();
-    if (parent == null) {
-      return null;
-    }
-
-    return SequencePredicates.findFirst(parent, searchStepSize, Cluster::getParent,
-            ancestor -> overlap(cluster, ancestor) >= minParentOverlap);
-
+    AtomicInteger predicateChecks = new AtomicInteger();
+    Cluster first = SequencePredicates.findFirst(parent, searchStepSize, Cluster::getParent, ancestor -> {
+      predicateChecks.getAndIncrement();
+      return overlap(cluster, ancestor) >= minParentOverlap; });
+    LOGGER.trace("Finished after taking {} samples", predicateChecks.get());
+    return first;
   }
 
   /**

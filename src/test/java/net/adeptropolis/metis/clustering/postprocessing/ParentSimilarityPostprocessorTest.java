@@ -9,121 +9,86 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
-import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsCollectionContaining.hasItem;
 import static org.junit.Assert.*;
 
+@Ignore("This postprocessor is bogus at best. Replace.")
 public class ParentSimilarityPostprocessorTest extends GraphTestBase {
 
   private Graph defaultGraph;
-  private Cluster c0;
-  private Cluster c1;
-  private Cluster c2;
-  private Cluster c3;
-  private Cluster c4;
-  private Cluster c5;
-  private Cluster c67;
+  private Cluster[] clusters;
 
   @Before
   public void setUp() {
-    defaultGraph = new CompressedSparseGraphBuilder()
-            .add(0, 1, 1)
-            .add(0, 2, 1)
-            .add(2, 3, 1)
-            .add(2, 4, 1)
-            .add(4, 5, 1)
-            .add(4, 6, 1)
-            .add(4, 7, 1)
-            .add(6, 7, 1)
-            .add(6, 0, 1)
-            .add(6, 1, 1)
-            .add(6, 2, 1)
-            .add(6, 3, 1)
-            .add(6, 5, 1)
-            .add(6, 7, 1)
-            .add(7, 0, 1)
-            .add(7, 1, 1)
-            .add(7, 2, 1)
-            .add(7, 3, 1)
-            .add(7, 5, 1)
-            .build();
-    c0 = new Cluster(null);
-    c0.addToRemainder(IntIterators.wrap(new int[]{0}));
-    c1 = new Cluster(c0);
-    c1.addToRemainder(IntIterators.wrap(new int[]{1}));
-    c2 = new Cluster(c0);
-    c2.addToRemainder(IntIterators.wrap(new int[]{2}));
-    c3 = new Cluster(c2);
-    c3.addToRemainder(IntIterators.wrap(new int[]{3}));
-    c4 = new Cluster(c2);
-    c4.addToRemainder(IntIterators.wrap(new int[]{4}));
-    c5 = new Cluster(c4);
-    c5.addToRemainder(IntIterators.wrap(new int[]{5}));
-    c67 = new Cluster(c4);
-    c67.addToRemainder(IntIterators.wrap(new int[]{2, 6, 7}));
+    defaultGraph = completeGraph(18);
+    clusters = new Cluster[9];
+    clusters[0] = new Cluster(null);
+    clusters[0].addToRemainder(IntIterators.wrap(new int[]{0, 1}));
+    addCluster(1, 0, 2, 3);
+    addCluster(2, 0, 4, 5);
+    addCluster(3, 2, 6, 7);
+    addCluster(4, 2, 8, 9);
+    addCluster(5, 4, 10, 11);
+    addCluster(6, 4, 12, 13);
+    addCluster(7, 6, 14, 15);
+    addCluster(8, 6, 16, 17);
   }
 
   @Test
   public void skipIfRootNode() {
-    Graph graph = completeGraph(10);
-    Cluster root = new Cluster(null);
-    root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.0, 15, graph);
-    assertFalse(pp.apply(root));
+    Postprocessor pp = new ParentSimilarityPostprocessor(0, 15, defaultGraph);
+    assertFalse(pp.apply(clusters[0]));
   }
 
   @Test
   public void skipIfParentIsRootNode() {
-    Graph graph = completeGraph(10);
-    Cluster root = new Cluster(null);
-    root.addToRemainder(IntIterators.wrap(new int[]{4, 5, 6, 7, 8, 9}));
-    Cluster child = new Cluster(root);
-    child.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.0, 15, graph);
-    assertFalse(pp.apply(child));
+    Postprocessor pp = new ParentSimilarityPostprocessor(0, 15, defaultGraph);
+    assertFalse(pp.apply(clusters[1]));
+    assertFalse(pp.apply(clusters[2]));
   }
 
   @Test
-  public void thresholdAboveMinOverlap() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.5, 15, defaultGraph);
-    boolean modified = pp.apply(c67);
-    assertFalse(modified);
-    assertThat(c67.getParent(), is(c4));
-    assertThat(c4.getChildren(), hasItem(c67));
+  public void parentSatisfiesCriterion() {
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.19, 15, defaultGraph);
+    assertFalse(pp.apply(clusters[8]));
+    assertThat(clusters[8].getParent(), is(clusters[6]));
   }
 
   @Test
-  @Ignore("Fixme!")
-  public void thresholdAllowsPullingUpC67OneLevel() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.51, 15, defaultGraph);
-    boolean modified = pp.apply(c67);
-    assertTrue(modified);
-    assertThat(c67.getParent(), is(c2));
-    assertThat(c2.getChildren(), hasItem(c67));
+  public void leafPushedUpOneLevel() {
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.18, 15, defaultGraph);
+    assertTrue(pp.apply(clusters[8]));
+    assertThat(clusters[8].getParent(), is(clusters[4]));
   }
 
   @Test
-  public void thresholdAllowsPullingUpC67TwoLevels() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.7, 15, defaultGraph);
-    boolean modified = pp.apply(c67);
-    assertTrue(modified);
-    assertThat(c67.getParent(), is(c0));
-    assertThat(c0.getChildren(), hasItem(c67));
+  public void leafPushedUpTwoLevels() {
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.10, 15, defaultGraph);
+    assertTrue(pp.apply(clusters[8]));
+    assertThat(clusters[8].getParent(), is(clusters[2]));
   }
 
   @Test
-  public void pullIngUpStopsAtRootNode() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(1.0, 15, defaultGraph);
-    boolean modified = pp.apply(c67);
-    assertTrue(modified);
-    assertThat(c67.getParent(), is(c0));
-    assertThat(c0.getChildren(), hasItem(c67));
+  public void leafPushedUpToRoot() {
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.06, 15, defaultGraph);
+    assertTrue(pp.apply(clusters[8]));
+    assertThat(clusters[8].getParent(), is(clusters[0]));
   }
 
+  @Test
+  public void clustersFailingThresholdArePushedToRoot() {
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.01, 15, defaultGraph);
+    assertTrue(pp.apply(clusters[8]));
+    assertThat(clusters[8].getParent(), is(clusters[0]));
+  }
+
+  private void addCluster(int idx, int parent, int... vertices) {
+    clusters[idx] = new Cluster(clusters[parent]);
+    clusters[idx].addToRemainder(IntIterators.wrap(vertices));
+  }
 
 }
