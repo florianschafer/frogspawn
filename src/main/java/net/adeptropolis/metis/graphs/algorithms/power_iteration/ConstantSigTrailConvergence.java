@@ -6,12 +6,13 @@
 package net.adeptropolis.metis.graphs.algorithms.power_iteration;
 
 import com.google.common.base.Preconditions;
-import com.google.common.util.concurrent.AtomicDouble;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.SignumSelectingIndexIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
 
 /**
  * <p>Power iteration convergence criterion based on the sign trail of multiple iterations.</p>
@@ -36,8 +37,10 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   private static final Logger LOG = LoggerFactory.getLogger(ConstantSigTrailConvergence.class.getSimpleName());
   private final Graph graph;
-  private final double convergenceThreshold;
-  private final byte[][] sigTrail; // TODO: Check whether using BitSet[] instead would affect performance
+  private final int trailSize;
+  private final int threshold;
+  private final byte[] prevSig;
+  private final int[] constSigTrail;
 
   /**
    * Constructor
@@ -49,11 +52,12 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   public ConstantSigTrailConvergence(Graph graph, int trailSize, double convergenceThreshold) {
     this.graph = graph;
-    this.sigTrail = new byte[trailSize][];
-    for (int i = 0; i < trailSize; i++) {
-      this.sigTrail[i] = new byte[graph.order()];
-    }
-    this.convergenceThreshold = convergenceThreshold;
+    this.prevSig = new byte[graph.order()];
+    this.constSigTrail = new int[graph.order()];
+    this.trailSize = trailSize;
+    this.threshold = (int) (convergenceThreshold * graph.order());
+    Arrays.fill(prevSig, (byte) -2);
+    Arrays.fill(constSigTrail, 0);
   }
 
   /**
@@ -67,13 +71,20 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   @Override
   public boolean satisfied(double[] previous, double[] current, int iterations) {
+    int converged = 0;
     for (int v = 0; v < graph.order(); v++) {
-      sigTrail[iterations % sigTrail.length][v] = (byte) Math.signum(current[v]);
+      byte sig = (byte) Math.signum(current[v]);
+      if (sig == prevSig[v]) {
+        constSigTrail[v]++;
+        if (hasConstantTrail(v)) {
+          converged++;
+        }
+      } else {
+        constSigTrail[v] = 0;
+      }
+      prevSig[v] = sig;
     }
-    if (iterations < sigTrail.length) {
-      return false;
-    }
-    return convergedFraction() >= convergenceThreshold;
+    return converged >= threshold;
   }
 
   /**
@@ -157,21 +168,6 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
   }
 
   /**
-   * @return Fraction of eigenvector entries that have fully converged already
-   */
-
-  private double convergedFraction() {
-    AtomicDouble converged = new AtomicDouble();
-    graph.traverseVerticesParallel(v -> {
-      if (hasConstantTrail(v)) {
-        converged.addAndGet(1d);
-      }
-    });
-    return converged.get() / graph.order();
-  }
-
-
-  /**
    * Determine whether an eigenvector entry signum is constant over the full window
    *
    * @param i Index of a particular eigenvector entry
@@ -179,13 +175,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
    */
 
   private boolean hasConstantTrail(int i) {
-    byte refSig = (byte) Math.signum(sigTrail[0][i]);
-    for (int round = 1; round < sigTrail.length; round++) {
-      if (sigTrail[round][i] != refSig) {
-        return false;
-      }
-    }
-    return true;
+    return constSigTrail[i] >= trailSize - 1;
   }
 
 }

@@ -47,7 +47,7 @@ public class ConstantSigTrailConvergenceTest extends GraphTestBase {
             .add(1, 2, 1)
             .add(2, 3, 10)
             .build();
-    ConstantSigTrailConvergence conv = new ConstantSigTrailConvergence(graph, 3, 0.49);
+    ConstantSigTrailConvergence conv = new ConstantSigTrailConvergence(graph, 4, 0.49);
     for (int i = 0; i < 3; i++) {
       assertFalse(conv.satisfied(null, new double[]{-1, alternatingValue(i), 1, alternatingValue(i + 1)}, i));
     }
