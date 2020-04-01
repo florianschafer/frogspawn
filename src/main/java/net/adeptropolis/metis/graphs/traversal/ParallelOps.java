@@ -7,10 +7,8 @@ package net.adeptropolis.metis.graphs.traversal;
 
 import net.adeptropolis.metis.graphs.Graph;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Base class for parallel graph traversal operations
@@ -25,7 +23,7 @@ public abstract class ParallelOps {
 
   public static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
   static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
-          THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+          THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new DaemonThreadFactory());
 
   protected final Graph graph;
   final int slice;
@@ -43,6 +41,24 @@ public abstract class ParallelOps {
     this.graph = graph;
     this.slice = slice;
     this.latch = latch;
+  }
+
+  static class DaemonThreadFactory implements ThreadFactory {
+
+    private final AtomicInteger threadId;
+
+    DaemonThreadFactory() {
+      threadId = new AtomicInteger();
+    }
+
+    @Override
+    public Thread newThread(Runnable runnable) {
+      Thread thread = new Thread(runnable, String.format("worker-thread-%d", threadId.getAndIncrement()));
+      thread.setDaemon(true);
+      thread.setPriority(5);
+      return thread;
+    }
+
   }
 
 }
