@@ -56,7 +56,7 @@ public class SequencePredicates {
    * elements. The sequence elements are first tested in a step-like manner before a binary search is applied.
    * </p
    * <p>
-   *   It is explicitly assumed that once the predicate has been satisfied, all succeeding elements also satisfy the predicate.
+   * It is explicitly assumed that once the predicate has been satisfied, all succeeding elements also satisfy the predicate.
    * </p>
    *
    * @param initialValue    First element to be tested

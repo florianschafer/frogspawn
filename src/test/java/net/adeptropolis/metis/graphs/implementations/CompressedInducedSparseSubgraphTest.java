@@ -89,7 +89,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   @Test
   public void globalVertexIdIterator() {
     IntList list = IntIterators.pour(defaultSubgraph(4, 9, 10).globalVertexIdIterator());
-    assertThat(list, is(new IntArrayList(new int[]{ 4, 9, 10 })));
+    assertThat(list, is(new IntArrayList(new int[]{4, 9, 10})));
   }
 
   @Test

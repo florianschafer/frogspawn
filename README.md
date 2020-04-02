@@ -31,7 +31,7 @@ Graph graph = builder.build();
 ```
 
 ##### Remarks
- - Vertices are identified as `int`. It is strongly recommended (although not strictly required) to construct vertex ids in such a way that they are **consecutive** integers starting at 0.
+ - Vertices are identified as `int`. It is strictly required to construct vertex ids as **consecutive** integers starting at 0.
  - All edges are interpreted as being **undirected**.
  - All edge weights must be ≥ 1.
  - By design, leaf vertices (i.e. those of degree 1) do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.

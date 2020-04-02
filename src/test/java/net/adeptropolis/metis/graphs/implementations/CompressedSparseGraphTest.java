@@ -63,7 +63,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   @Test
   public void globalVertexIdIterator() {
     IntList list = IntIterators.pour(defaultGraph.globalVertexIdIterator());
-    assertThat(list, is(new IntArrayList(new int[]{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 })));
+    assertThat(list, is(new IntArrayList(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11})));
   }
 
   @Test

@@ -44,6 +44,7 @@ class ParentSimilarityPostprocessor implements Postprocessor {
 
   /**
    * Constructor
+   *
    * @param minParentOverlap Minimum parent overlap (<code>w/p</code> from above)
    * @param searchStepSize   Parent search step size
    * @param rootGraph        The root graph
@@ -90,7 +91,8 @@ class ParentSimilarityPostprocessor implements Postprocessor {
     AtomicInteger predicateChecks = new AtomicInteger();
     Cluster first = SequencePredicates.findFirst(parent, searchStepSize, Cluster::getParent, ancestor -> {
       predicateChecks.getAndIncrement();
-      return overlap(cluster, ancestor) >= minParentOverlap; });
+      return overlap(cluster, ancestor) >= minParentOverlap;
+    });
     LOGGER.trace("Finished after taking {} samples", predicateChecks.get());
     return first;
   }

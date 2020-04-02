@@ -11,7 +11,6 @@ import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.TopWeightsRemainderClusterDigester;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
-import net.adeptropolis.metis.sinks.LeafTextSink;
 import net.adeptropolis.metis.sinks.TextSink;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,10 +43,12 @@ public class Playground {
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
     ClusteringSettings settings = ClusteringSettings.builder()
+//            .withTrailSize(10)
+//            .withConvergenceThreshold(0.9)
 //            .withMinClusterLikelihood(0.05)
-            .withMinClusterLikelihood(0.1)
-//            .withMinparentOverlap(0.65)
-            .withMinparentOverlap(0.15)
+            .withMinClusterLikelihood(0.05)
+//            .withMinparentOverlap(0.15)
+            .withMinparentOverlap(0.25)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
@@ -55,7 +56,7 @@ public class Playground {
     Cluster root = new RecursiveClustering(graph, settings).run();
 //    ClusterDigester digester = new TopWeightsAggregateClusterDigester(1000, graph);
     ClusterDigester digester = new TopWeightsRemainderClusterDigester(1000, graph);
-     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters14.txt"), digester, g.inverseLabels());
+    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters14.txt"), digester, g.inverseLabels());
 //    LeafTextSink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters16.txt"), digester, g.inverseLabels());
     textSink.consume(root);
   }
