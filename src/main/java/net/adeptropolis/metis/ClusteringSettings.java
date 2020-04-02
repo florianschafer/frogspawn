@@ -5,11 +5,15 @@
 
 package net.adeptropolis.metis;
 
+import com.google.common.collect.Lists;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
+
+import java.util.List;
 
 /**
  * Stores all relevant clustering settings
@@ -26,11 +30,11 @@ public class ClusteringSettings {
   private final double convergenceThreshold;
   private final int maxIterations;
   private final long randomSeed;
+  private final List<Postprocessor> customPostprocessors;
 
   /**
    * Constructor
-   *
-   * @param consistencyMetric    Vertex/cluster consistency metric to be used
+   * @param consistencyMetric   Vertex/cluster consistency metric to be used
    * @param minClusterSize       Minimum cluster size
    * @param minClusterLikelihood Minimum cluster likelihood of a vertex
    * @param minParentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
@@ -39,11 +43,12 @@ public class ClusteringSettings {
    * @param convergenceThreshold Fraction of converged vertices
    * @param maxIterations        Maximum number of iterations
    * @param randomSeed           Seed value for random initial value generation
+   * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
    */
 
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood,
                              double minParentOverlap, int parentSearchStepSize, int trailSize,
-                             double convergenceThreshold, int maxIterations, long randomSeed) {
+                             double convergenceThreshold, int maxIterations, long randomSeed, List<Postprocessor> customPostprocessors) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
@@ -53,6 +58,7 @@ public class ClusteringSettings {
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
     this.randomSeed = randomSeed;
+    this.customPostprocessors = customPostprocessors;
   }
 
   /**
@@ -133,6 +139,14 @@ public class ClusteringSettings {
     return consistencyMetric;
   }
 
+  /**
+   * @return The list of custom postprocessors
+   */
+
+  public List<Postprocessor> getCustomPostprocessors() {
+    return customPostprocessors;
+  }
+
   public static class Builder {
 
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
@@ -144,6 +158,7 @@ public class ClusteringSettings {
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
     private long randomSeed = 42133742L;
+    private List<Postprocessor> customPostprocessors = Lists.newArrayList();
 
     /**
      * Set consistency metric. Default is <code>RelativeWeightConsistencyMetric</code>
@@ -252,6 +267,18 @@ public class ClusteringSettings {
     }
 
     /**
+     * Add a custom postprocessor to the pipeline
+     *
+     * @param postprocessor A postprocessor
+     * @return this
+     */
+
+    public Builder withCustomPostprocessor(Postprocessor postprocessor) {
+      this.customPostprocessors.add(postprocessor);
+      return this;
+    }
+
+    /**
      * Build settings
      *
      * @return A new instance of <code>ClusteringSettings</code>
@@ -259,7 +286,7 @@ public class ClusteringSettings {
 
     public ClusteringSettings build() {
       return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minParentOverlap,
-              parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed);
+              parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors);
     }
 
   }

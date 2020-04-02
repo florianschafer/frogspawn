@@ -5,6 +5,7 @@
 
 package net.adeptropolis.metis.clustering.postprocessing;
 
+import com.google.common.collect.Lists;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -24,9 +26,7 @@ public class Postprocessing {
   private static final Logger LOG = LoggerFactory.getLogger(Postprocessing.class.getSimpleName());
 
   private final Cluster rootCluster;
-  private final ParentSimilarityPostprocessor ancestorSimilarity;
-  private final ConsistencyGuardingPostprocessor consistency;
-  private final SingletonCollapsingPostprocessor singletons;
+  private final List<Postprocessor> pipeline;
 
   /**
    * Constructor
@@ -38,9 +38,32 @@ public class Postprocessing {
 
   public Postprocessing(Cluster rootCluster, Graph rootGraph, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
-    this.ancestorSimilarity = new ParentSimilarityPostprocessor(settings.getMinparentOverlap(), settings.getParentSearchStepSize(), rootGraph);
-    this.consistency = new ConsistencyGuardingPostprocessor(rootGraph, settings.getMinClusterSize(), settings.getMinClusterLikelihood());
-    this.singletons = new SingletonCollapsingPostprocessor();
+    this.pipeline = createPipeline(rootGraph, settings);
+  }
+
+  /**
+   * Create the default postprocessing pipeline
+   *
+   * @param rootGraph Root graph
+   * @param settings  Settings to be used
+   * @return New pipeline
+   */
+
+  private static List<Postprocessor> createPipeline(Graph rootGraph, ClusteringSettings settings) {
+    ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(settings.getMinparentOverlap(),
+            settings.getParentSearchStepSize(), rootGraph);
+    ConsistencyGuardingPostprocessor consistency = new ConsistencyGuardingPostprocessor(rootGraph,
+            settings.getMinClusterSize(), settings.getMinClusterLikelihood());
+    SingletonCollapsingPostprocessor singletons = new SingletonCollapsingPostprocessor();
+    List<Postprocessor> pipeline = Lists.newArrayList(
+            singletons,
+            ancestorSimilarity,
+            singletons,
+            consistency,
+            singletons
+    );
+    pipeline.addAll(settings.getCustomPostprocessors());
+    return pipeline;
   }
 
   /**
@@ -52,11 +75,7 @@ public class Postprocessing {
   public Cluster apply() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    applyPostprocessor(singletons);
-    applyPostprocessor(ancestorSimilarity);
-    applyPostprocessor(singletons);
-    applyPostprocessor(consistency);
-    applyPostprocessor(singletons);
+    pipeline.forEach(this::applyPostprocessor);
     stopWatch.stop();
     LOG.info("Postprocessing finished after {}", stopWatch);
     return rootCluster;
@@ -98,6 +117,5 @@ public class Postprocessing {
     }
     return changed;
   }
-
 
 }

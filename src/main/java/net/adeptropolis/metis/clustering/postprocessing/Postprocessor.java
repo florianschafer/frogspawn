@@ -12,6 +12,7 @@ import net.adeptropolis.metis.clustering.Cluster;
  */
 
 @FunctionalInterface
+public
 interface Postprocessor {
 
   /**
