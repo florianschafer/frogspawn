@@ -8,7 +8,6 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import com.google.common.collect.Lists;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.graphs.Graph;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,28 +31,24 @@ public class Postprocessing {
    * Constructor
    *
    * @param rootCluster Root cluster
-   * @param rootGraph   Root graph
    * @param settings    Clustering settings
    */
 
-  public Postprocessing(Cluster rootCluster, Graph rootGraph, ClusteringSettings settings) {
+  public Postprocessing(Cluster rootCluster, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
-    this.pipeline = createPipeline(rootGraph, settings);
+    this.pipeline = createPipeline(settings);
   }
 
   /**
    * Create the default postprocessing pipeline
    *
-   * @param rootGraph Root graph
-   * @param settings  Settings to be used
+   * @param settings Settings to be used
    * @return New pipeline
    */
 
-  private static List<Postprocessor> createPipeline(Graph rootGraph, ClusteringSettings settings) {
-    ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(settings.getMinparentOverlap(),
-            settings.getParentSearchStepSize(), rootGraph);
-    ConsistencyGuardingPostprocessor consistency = new ConsistencyGuardingPostprocessor(rootGraph,
-            settings.getMinClusterSize(), settings.getMinClusterLikelihood());
+  private static List<Postprocessor> createPipeline(ClusteringSettings settings) {
+    ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(settings.getMinparentOverlap(), settings.getParentSearchStepSize());
+    ConsistencyGuardingPostprocessor consistency = new ConsistencyGuardingPostprocessor(settings.getMinClusterSize(), settings.getMinClusterLikelihood());
     SingletonCollapsingPostprocessor singletons = new SingletonCollapsingPostprocessor();
     List<Postprocessor> pipeline = Lists.newArrayList(
             singletons,

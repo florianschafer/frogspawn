@@ -34,7 +34,8 @@ public class ClusteringSettings {
 
   /**
    * Constructor
-   * @param consistencyMetric   Vertex/cluster consistency metric to be used
+   *
+   * @param consistencyMetric    Vertex/cluster consistency metric to be used
    * @param minClusterSize       Minimum cluster size
    * @param minClusterLikelihood Minimum cluster likelihood of a vertex
    * @param minParentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent

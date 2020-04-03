@@ -105,7 +105,7 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(0, graph);
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(0);
     long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
     for (int i = 0; i < rounds - 1; i++) {
       long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);

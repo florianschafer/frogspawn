@@ -40,20 +40,17 @@ class ParentSimilarityPostprocessor implements Postprocessor {
 
   private final double minParentOverlap;
   private final int searchStepSize;
-  private final Graph rootGraph;
 
   /**
    * Constructor
    *
    * @param minParentOverlap Minimum parent overlap (<code>w/p</code> from above)
    * @param searchStepSize   Parent search step size
-   * @param rootGraph        The root graph
    */
 
-  public ParentSimilarityPostprocessor(double minParentOverlap, int searchStepSize, Graph rootGraph) {
+  public ParentSimilarityPostprocessor(double minParentOverlap, int searchStepSize) {
     this.minParentOverlap = minParentOverlap;
     this.searchStepSize = searchStepSize;
-    this.rootGraph = rootGraph;
   }
 
   /**
@@ -106,8 +103,8 @@ class ParentSimilarityPostprocessor implements Postprocessor {
    */
 
   private double overlap(Cluster cluster, Cluster ancestor) {
-    Graph clusterGraph = cluster.aggregateGraph(rootGraph);
-    Graph ancestorGraph = ancestor.aggregateGraph(rootGraph);
+    Graph clusterGraph = cluster.aggregateGraph();
+    Graph ancestorGraph = ancestor.aggregateGraph();
     return clusterGraph.overlap(ancestorGraph);
   }
 

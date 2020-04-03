@@ -24,9 +24,9 @@ public class TopWeightsRemainderClusterDigesterTest {
             .add(0, 2, 2)
             .add(0, 3, 3)
             .build();
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    Digest digest = new TopWeightsRemainderClusterDigester(2, graph).create(root);
+    Digest digest = new TopWeightsRemainderClusterDigester(2).create(root);
     assertThat(digest.size(), is(2));
     assertThat(digest.totalSize(), is(4));
     assertThat(digest.getVertices()[0], is(0));

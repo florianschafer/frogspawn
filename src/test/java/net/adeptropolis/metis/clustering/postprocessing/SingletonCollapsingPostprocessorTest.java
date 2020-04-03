@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.graphs.Graph;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,7 +23,7 @@ public class SingletonCollapsingPostprocessorTest {
   @Test
   public void notApplicable() {
     SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor();
-    Cluster rootCluster = new Cluster(null);
+    Cluster rootCluster = new Cluster((Graph) null);
     Cluster childCluster1 = new Cluster(rootCluster);
     childCluster1.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
     Cluster childCluster2 = new Cluster(rootCluster);
@@ -37,7 +38,7 @@ public class SingletonCollapsingPostprocessorTest {
   @Test
   public void doCollapse() {
     SingletonCollapsingPostprocessor shaper = new SingletonCollapsingPostprocessor();
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child = new Cluster(root);
     child.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
     Cluster grandchild1 = new Cluster(child);

@@ -26,12 +26,12 @@ public class ConsistencyGuardTest extends GraphTestBase {
 
   @Test
   public void sizeBelowThreshold() {
-    Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
             .add(50, 51, 1)
             .add(51, 52, 1)
             .add(52, 53, 1)
             .build();
+    Cluster cluster = new Cluster(graph);
     Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 10, 0.0);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
@@ -41,8 +41,8 @@ public class ConsistencyGuardTest extends GraphTestBase {
 
   @Test
   public void filteringOutCascade() {
-    Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
+    Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 0, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
@@ -60,8 +60,8 @@ public class ConsistencyGuardTest extends GraphTestBase {
 
   @Test
   public void sizeFallsShortDuringIteration() {
-    Cluster cluster = new Cluster(null);
     CompressedSparseGraph graph = defaultGraph();
+    Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 4, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);

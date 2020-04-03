@@ -26,23 +26,40 @@ import java.util.function.Consumer;
 public class Cluster {
 
   private static final AtomicInteger CURR_ID = new AtomicInteger(Integer.MIN_VALUE);
+  private static final Comparator<Cluster> DETERMINISTIC_CHILD_COMPARATOR = Comparator.comparingInt(Cluster::getId);
 
   private final SortedSet<Cluster> children;
   private final int id;
+  private final Root root;
   private Cluster parent;
   private IntArrayList remainder;
 
   /**
-   * Constructor
+   * Root cluster constructor
+   *
+   * @param rootGraph Root graph for the whole clustering run
+   */
+
+  public Cluster(Graph rootGraph) {
+    this.root = new Root(this, rootGraph);
+    this.parent = null;
+    this.children = new TreeSet<>(DETERMINISTIC_CHILD_COMPARATOR);
+    this.remainder = new IntArrayList();
+    this.id = CURR_ID.getAndIncrement();
+  }
+
+  /**
+   * Standard constructor
    *
    * @param parent Parent cluster. This instance is implicitly added to its children.
    */
 
   public Cluster(Cluster parent) {
     this.parent = parent;
-    this.children = new TreeSet<>(Comparator.comparingInt(Cluster::getId)); // Important for determinism
+    this.parent.children.add(this);
+    this.root = parent.root;
+    this.children = new TreeSet<>(DETERMINISTIC_CHILD_COMPARATOR);
     this.remainder = new IntArrayList();
-    if (parent != null) parent.children.add(this);
     this.id = CURR_ID.getAndIncrement();
   }
 
@@ -193,31 +210,32 @@ public class Cluster {
    * @return The root cluster
    */
 
-  // TODO: Check performance impact (this is later used as dynamic order criterion for a priority queue)
   public Cluster root() {
-    Cluster ptr = this;
-    while (ptr.getParent() != null) {
-      ptr = ptr.getParent();
-    }
-    return ptr;
+    return root.cluster;
   }
 
   /**
-   * @param rootGraph Root graph
+   * @return The root graph
+   */
+
+  public Graph rootGraph() {
+    return root.graph;
+  }
+
+  /**
    * @return A new subgraph from this cluster's vertices and that of all its descendants
    */
 
-  public Graph aggregateGraph(Graph rootGraph) {
-    return rootGraph.inducedSubgraph(aggregateVertices().iterator());
+  public Graph aggregateGraph() {
+    return root.graph.inducedSubgraph(aggregateVertices().iterator());
   }
 
   /**
-   * @param rootGraph Root graph
    * @return A new subgraph only consisting of this cluster's remainder vertices
    */
 
-  public Graph remainderGraph(Graph rootGraph) {
-    return rootGraph.inducedSubgraph(remainder.iterator());
+  public Graph remainderGraph() {
+    return root.graph.inducedSubgraph(remainder.iterator());
   }
 
   /**
@@ -265,6 +283,22 @@ public class Cluster {
   @Override
   public int hashCode() {
     return super.hashCode();
+  }
+
+  /**
+   * Simple storage class for the root cluster and graph
+   */
+
+  private static class Root {
+
+    private final Cluster cluster;
+    private final Graph graph;
+
+    private Root(Cluster cluster, Graph graph) {
+      this.cluster = cluster;
+      this.graph = graph;
+    }
+
   }
 
 }

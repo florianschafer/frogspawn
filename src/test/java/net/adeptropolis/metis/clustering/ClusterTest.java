@@ -24,7 +24,7 @@ public class ClusterTest {
 
   @Test
   public void returnChildren() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child1 = new Cluster(root);
     Cluster child2 = new Cluster(root);
     assertThat(root.getChildren().size(), is(2));
@@ -33,28 +33,28 @@ public class ClusterTest {
 
   @Test
   public void returnParent() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child = new Cluster(root);
     assertThat(child.getParent(), is(root));
   }
 
   @Test
   public void addSingleVerticesToRemainder() {
-    Cluster cluster = new Cluster(null);
+    Cluster cluster = new Cluster((Graph) null);
     cluster.addToRemainder(42);
     assertThat(cluster.getRemainder(), is(new IntArrayList(IntIterators.wrap(new int[]{42}))));
   }
 
   @Test
   public void growRemainderUsingIterator() {
-    Cluster cluster = new Cluster(null);
+    Cluster cluster = new Cluster((Graph) null);
     cluster.addToRemainder(IntIterators.wrap(new int[]{271, 314}));
     assertThat(cluster.getRemainder(), is(new IntArrayList(IntIterators.wrap(new int[]{271, 314}))));
   }
 
   @Test
   public void addGraphToRemainder() {
-    Cluster cluster = new Cluster(null);
+    Cluster cluster = new Cluster((Graph) null);
     Graph graph = new CompressedSparseGraphBuilder()
             .add(42, 73, 3)
             .build()
@@ -65,7 +65,7 @@ public class ClusterTest {
 
   @Test
   public void traverse() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child1 = new Cluster(root);
     Cluster child2 = new Cluster(root);
     Cluster child11 = new Cluster(child1);
@@ -79,7 +79,7 @@ public class ClusterTest {
 
   @Test
   public void aggregateVertices() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     root.addToRemainder(42);
     Cluster child1 = new Cluster(root);
     child1.addToRemainder(314);
@@ -92,7 +92,7 @@ public class ClusterTest {
 
   @Test
   public void depth() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child1 = new Cluster(root);
     Cluster child11 = new Cluster(child1);
     Cluster child12 = new Cluster(child1);
@@ -112,7 +112,7 @@ public class ClusterTest {
 
   @Test
   public void root() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child2 = new Cluster(root);
     Cluster child22 = new Cluster(child2);
     Cluster child221 = new Cluster(child22);
@@ -121,7 +121,7 @@ public class ClusterTest {
 
   @Test
   public void aggregateClusters() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child1 = new Cluster(root);
     Cluster child2 = new Cluster(root);
     assertThat(root.aggregateClusters(), is(ImmutableSet.of(root, child1, child2)));

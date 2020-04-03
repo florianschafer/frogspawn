@@ -56,7 +56,7 @@ public class ConsistencyGuardingPostprocessorTest {
             .add(7, 5, 1)
             .add(8, 7, 10)
             .build();
-    c0 = new Cluster(null);
+    c0 = new Cluster(graph);
     c0.addToRemainder(IntIterators.wrap(new int[]{0}));
     c1 = new Cluster(c0);
     c1.addToRemainder(IntIterators.wrap(new int[]{1}));
@@ -75,13 +75,13 @@ public class ConsistencyGuardingPostprocessorTest {
 
   @Test
   public void ignoreRootCluster() {
-    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(graph, 10, 0.5);
+    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(10, 0.5);
     assertFalse(unsafeConsistencyGuardingPostprocessor.apply(c0));
   }
 
   @Test
   public void allVerticesAreInconsistent() {
-    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(graph, 10000, 1.0);
+    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(10000, 1.0);
     assertTrue(unsafeConsistencyGuardingPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c5.getParent(), is(c4));
@@ -90,7 +90,7 @@ public class ConsistencyGuardingPostprocessorTest {
 
   @Test
   public void allVerticesAreConsistent() {
-    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(graph, 1, 0.0);
+    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(1, 0.0);
     assertFalse(unsafeConsistencyGuardingPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4));
@@ -98,7 +98,7 @@ public class ConsistencyGuardingPostprocessorTest {
 
   @Test
   public void someVerticesAreConsistent() {
-    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(graph, 1, 0.27);
+    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(1, 0.27);
     assertTrue(unsafeConsistencyGuardingPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6));
@@ -107,7 +107,7 @@ public class ConsistencyGuardingPostprocessorTest {
 
   @Test
   public void numberOfConsistentVerticesBelowMinClusterSize() {
-    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(graph, 3, 0.27);
+    unsafeConsistencyGuardingPostprocessor = new ConsistencyGuardingPostprocessor(3, 0.27);
     assertTrue(unsafeConsistencyGuardingPostprocessor.apply(c678));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));

@@ -25,12 +25,10 @@ import net.adeptropolis.metis.graphs.VertexIterator;
 
 class ConsistencyGuardingPostprocessor implements Postprocessor {
 
-  private final Graph graph;
   private final int minClusterSize;
   private final double minClusterLikelihood;
 
-  public ConsistencyGuardingPostprocessor(Graph graph, int minClusterSize, double minClusterLikelihood) {
-    this.graph = graph;
+  public ConsistencyGuardingPostprocessor(int minClusterSize, double minClusterLikelihood) {
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
   }
@@ -51,9 +49,9 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     }
 
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
-    Graph clusterGraph = cluster.aggregateGraph(graph);
+    Graph clusterGraph = cluster.aggregateGraph();
     IntRBTreeSet survivors = new IntRBTreeSet(clusterGraph.globalVertexIdIterator());
-    for (Graph subgraph = clusterGraph; true; subgraph = graph.inducedSubgraph(survivors.iterator())) {
+    for (Graph subgraph = clusterGraph; true; subgraph = cluster.rootGraph().inducedSubgraph(survivors.iterator())) {
       int prevSize = clusterVertices.size();
       shiftInconsistentVertices(clusterVertices, parent, survivors, subgraph);
       if (clusterVertices.size() < minClusterSize) {
@@ -84,7 +82,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
    */
 
   private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
-    double[] likelihoods = subgraph.relativeWeights(graph);
+    double[] likelihoods = subgraph.relativeWeights(parent.rootGraph());
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
       if (likelihoods[it.localId()] < minClusterLikelihood) {

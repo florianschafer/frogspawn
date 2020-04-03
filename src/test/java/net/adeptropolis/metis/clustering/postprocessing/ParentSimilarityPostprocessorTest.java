@@ -26,7 +26,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
   public void setUp() {
     defaultGraph = completeGraph(18);
     clusters = new Cluster[9];
-    clusters[0] = new Cluster(null);
+    clusters[0] = new Cluster(defaultGraph);
     clusters[0].addToRemainder(IntIterators.wrap(new int[]{0, 1}));
     addCluster(1, 0, 2, 3);
     addCluster(2, 0, 4, 5);
@@ -40,48 +40,48 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
 
   @Test
   public void skipIfRootNode() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0, 15);
     assertFalse(pp.apply(clusters[0]));
   }
 
   @Test
   public void skipIfParentIsRootNode() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0, 15);
     assertFalse(pp.apply(clusters[1]));
     assertFalse(pp.apply(clusters[2]));
   }
 
   @Test
   public void parentSatisfiesCriterion() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.19, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.19, 15);
     assertFalse(pp.apply(clusters[8]));
     assertThat(clusters[8].getParent(), is(clusters[6]));
   }
 
   @Test
   public void leafPushedUpOneLevel() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.18, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.18, 15);
     assertTrue(pp.apply(clusters[8]));
     assertThat(clusters[8].getParent(), is(clusters[4]));
   }
 
   @Test
   public void leafPushedUpTwoLevels() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.10, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.10, 15);
     assertTrue(pp.apply(clusters[8]));
     assertThat(clusters[8].getParent(), is(clusters[2]));
   }
 
   @Test
   public void leafPushedUpToRoot() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.06, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.06, 15);
     assertTrue(pp.apply(clusters[8]));
     assertThat(clusters[8].getParent(), is(clusters[0]));
   }
 
   @Test
   public void clustersFailingThresholdArePushedToRoot() {
-    Postprocessor pp = new ParentSimilarityPostprocessor(0.01, 15, defaultGraph);
+    Postprocessor pp = new ParentSimilarityPostprocessor(0.01, 15);
     assertTrue(pp.apply(clusters[8]));
     assertThat(clusters[8].getParent(), is(clusters[0]));
   }

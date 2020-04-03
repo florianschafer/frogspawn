@@ -33,7 +33,7 @@ public class Playground {
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClustering(graph, settings).run();
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(200, graph);
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(200);
     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/siemens_results.txt"), digester, g.inverseLabels());
     textSink.consume(root);
   }
@@ -56,7 +56,7 @@ public class Playground {
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClustering(graph, settings).run();
 //    ClusterDigester digester = new TopWeightsAggregateClusterDigester(1000, graph);
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(1000, graph);
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(1000);
     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters14.txt"), digester, g.inverseLabels());
 //    LeafTextSink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters16.txt"), digester, g.inverseLabels());
     textSink.consume(root);

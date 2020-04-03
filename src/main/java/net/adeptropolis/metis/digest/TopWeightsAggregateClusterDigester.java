@@ -19,18 +19,15 @@ import net.adeptropolis.metis.helpers.Arr;
 public class TopWeightsAggregateClusterDigester implements ClusterDigester {
 
   private final int maxSize;
-  private final Graph rootGraph;
 
   /**
    * Constructor
    *
-   * @param maxSize   Maxumum number of vertices
-   * @param rootGraph Root graph
+   * @param maxSize Maxumum number of vertices
    */
 
-  public TopWeightsAggregateClusterDigester(int maxSize, Graph rootGraph) {
+  public TopWeightsAggregateClusterDigester(int maxSize) {
     this.maxSize = maxSize;
-    this.rootGraph = rootGraph;
   }
 
   /**
@@ -39,10 +36,10 @@ public class TopWeightsAggregateClusterDigester implements ClusterDigester {
 
   @Override
   public Digest create(Cluster cluster) {
-    Graph graph = cluster.aggregateGraph(rootGraph);
+    Graph graph = cluster.aggregateGraph();
     int[] vertices = graph.collectVertices();
     double[] weights = graph.weights();
-    double[] likelihoods = graph.relativeWeights(rootGraph);
+    double[] likelihoods = graph.relativeWeights(cluster.rootGraph());
     WeightSortOps weightSortOps = new WeightSortOps(vertices, weights, likelihoods);
     Arrays.mergeSort(0, graph.order(), weightSortOps, weightSortOps);
     if (maxSize > 0) {

@@ -6,6 +6,7 @@
 package net.adeptropolis.metis.clustering.postprocessing;
 
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.graphs.Graph;
 import org.junit.Test;
 
 import java.util.PriorityQueue;
@@ -18,7 +19,7 @@ public class OrderedBTTQueueFactoryTest {
 
   @Test
   public void defaultBehaviour() {
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster((Graph) null);
     Cluster child1 = new Cluster(root);
     Cluster child11 = new Cluster(child1);
     Cluster child12 = new Cluster(child1);

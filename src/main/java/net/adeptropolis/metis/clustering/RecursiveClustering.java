@@ -64,13 +64,13 @@ public class RecursiveClustering {
   public Cluster run() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    Cluster root = new Cluster(null);
+    Cluster root = new Cluster(graph);
     Protocluster initialProtocluster = new Protocluster(graph, Protocluster.GraphType.ROOT, root);
     queue.add(initialProtocluster);
     processQueue();
     stopWatch.stop();
     LOG.info("Finished clustering {} vertices after {}", graph.order(), stopWatch);
-    return new Postprocessing(root, graph, settings).apply();
+    return new Postprocessing(root, settings).apply();
   }
 
   /**
