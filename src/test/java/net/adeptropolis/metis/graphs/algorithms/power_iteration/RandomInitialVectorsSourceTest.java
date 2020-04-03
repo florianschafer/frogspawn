@@ -9,9 +9,9 @@ import net.adeptropolis.metis.helpers.Vectors;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.number.IsCloseTo.closeTo;
-import static org.junit.Assert.assertThat;
 
 public class RandomInitialVectorsSourceTest {
 

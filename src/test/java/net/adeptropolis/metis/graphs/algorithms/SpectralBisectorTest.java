@@ -9,14 +9,13 @@ import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.junit.Assert.assertThrows;
 
 public class SpectralBisectorTest extends GraphTestBase {
 
@@ -30,9 +29,6 @@ public class SpectralBisectorTest extends GraphTestBase {
           .withConvergenceThreshold(0.999)
           .build();
 
-  @Rule
-  public final ExpectedException exception = ExpectedException.none();
-
   @Test
   public void completeBipartiteGraphs() throws PowerIteration.MaxIterationsExceededException {
     SpectralBisector bisector = new SpectralBisector(settings);
@@ -44,11 +40,12 @@ public class SpectralBisectorTest extends GraphTestBase {
   }
 
   @Test
-  public void iterationExcessYieldsException() throws PowerIteration.MaxIterationsExceededException {
-    exception.expect(PowerIteration.MaxIterationsExceededException.class);
+  public void iterationExcessYieldsException() {
     SpectralBisector bisector = new SpectralBisector(settings);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
-    bisector.bisect(largeCircle(), 10, IV_SOURCE, c);
+    assertThrows(PowerIteration.MaxIterationsExceededException.class, () -> {
+      bisector.bisect(largeCircle(), 10, IV_SOURCE, c);
+    });
   }
 
 }

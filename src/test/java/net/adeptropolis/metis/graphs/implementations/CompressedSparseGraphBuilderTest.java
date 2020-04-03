@@ -9,9 +9,9 @@ import org.junit.Test;
 
 import static net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph.builder;
 import static net.adeptropolis.metis.graphs.implementations.arrays.Helpers.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class CompressedSparseGraphBuilderTest {
 

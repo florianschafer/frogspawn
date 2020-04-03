@@ -19,7 +19,6 @@ import java.util.Arrays;
 import static net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertTrue;
 
 
 public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
@@ -163,10 +162,10 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
 
 
     VertexIterator it = subgraph.vertexIterator();
-    assertTrue("Subgraph vertex 4", it.hasNext());
+    assertThat("Subgraph vertex 4", it.hasNext(), is(true));
     assertThat(it.localId(), equalTo(0));
     assertThat(it.globalId(), equalTo(4));
-    assertTrue("Subgraph vertex 10", it.hasNext());
+    assertThat("Subgraph vertex 10", it.hasNext(), is(true));
     assertThat(it.localId(), equalTo(1));
     assertThat(it.globalId(), equalTo(10));
 

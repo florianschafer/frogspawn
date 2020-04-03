@@ -12,13 +12,13 @@ import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import static it.unimi.dsi.fastutil.ints.IntComparators.NATURAL_COMPARATOR;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class ClusterTest {
 
@@ -86,7 +86,7 @@ public class ClusterTest {
     Cluster child2 = new Cluster(root);
     child2.addToRemainder(271);
     IntArrayList vertices = root.aggregateVertices();
-    vertices.sort(Comparator.comparingInt(x -> x));
+    vertices.sort(NATURAL_COMPARATOR);
     assertThat(vertices, is(new IntArrayList(IntIterators.wrap(new int[]{42, 271, 314}))));
   }
 

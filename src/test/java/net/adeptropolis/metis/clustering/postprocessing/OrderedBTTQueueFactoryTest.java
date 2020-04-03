@@ -11,9 +11,8 @@ import org.junit.Test;
 
 import java.util.PriorityQueue;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 public class OrderedBTTQueueFactoryTest {
 
@@ -36,7 +35,7 @@ public class OrderedBTTQueueFactoryTest {
     assertThat(queue.poll().depth(), is(1));
     assertThat(queue.poll().depth(), is(1));
     assertThat(queue.poll().depth(), is(0));
-    assertTrue(queue.isEmpty());
+    assertThat(queue.isEmpty(), is(true));
   }
 
 }

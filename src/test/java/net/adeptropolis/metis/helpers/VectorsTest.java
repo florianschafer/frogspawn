@@ -7,8 +7,8 @@ package net.adeptropolis.metis.helpers;
 
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertThat;
 
 public class VectorsTest {
 

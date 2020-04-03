@@ -15,10 +15,11 @@ import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
 
-import java.util.Comparator;
-
+import static it.unimi.dsi.fastutil.ints.IntComparators.NATURAL_COMPARATOR;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class ConsistencyGuardTest extends GraphTestBase {
 
@@ -35,7 +36,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 10, 0.0);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
-    assertNull(consistentSubgraph);
+    assertThat(consistentSubgraph, is(nullValue()));
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52})));
   }
 
@@ -46,15 +47,15 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Graph candidate = defaultCandidate(graph);
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 0, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
-    assertNotNull(consistentSubgraph);
-    cluster.getRemainder().sort(Comparator.comparingInt(x -> x));
+    assertThat(consistentSubgraph, is(notNullValue()));
+    cluster.getRemainder().sort(NATURAL_COMPARATOR);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{52, 53})));
     IntArrayList consistentVertices = new IntArrayList();
     VertexIterator it = consistentSubgraph.vertexIterator();
     while (it.hasNext()) {
       consistentVertices.add(it.globalId());
     }
-    consistentVertices.sort(Comparator.comparingInt(x -> x));
+    consistentVertices.sort(NATURAL_COMPARATOR);
     assertThat(consistentVertices, is(IntArrayList.wrap(new int[]{50, 51})));
   }
 
@@ -65,8 +66,8 @@ public class ConsistencyGuardTest extends GraphTestBase {
     Graph candidate = defaultCandidate(graph);
     ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 4, 0.75);
     Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
-    assertNull(consistentSubgraph);
-    cluster.getRemainder().sort(Comparator.comparingInt(x -> x));
+    assertThat(consistentSubgraph, is(nullValue()));
+    cluster.getRemainder().sort(NATURAL_COMPARATOR);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));
   }
 

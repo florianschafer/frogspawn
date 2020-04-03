@@ -10,9 +10,9 @@ import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
 
 public class GraphTest {
 
@@ -63,10 +63,10 @@ public class GraphTest {
             .add(1, 2, 4)
             .build()
             .inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
-    assertTrue(graph.containsVertex(0));
-    assertTrue(graph.containsVertex(1));
-    assertTrue(graph.containsVertex(2));
-    assertFalse(graph.containsVertex(3));
+    assertThat(graph.containsVertex(0), is(true));
+    assertThat(graph.containsVertex(1), is(true));
+    assertThat(graph.containsVertex(2), is(true));
+    assertThat(graph.containsVertex(3), is(false));
   }
 
   @Test

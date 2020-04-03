@@ -7,9 +7,9 @@ package net.adeptropolis.metis.helpers;
 
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.nullValue;
 
 public class SequencePredicatesTest {
 
@@ -60,7 +60,7 @@ public class SequencePredicatesTest {
   public void objSequenceExhaustedBeforeFindingMatch() {
     Integer first = SequencePredicates.findFirst(0, 20,
             v -> (v >= 22) ? null : v + 1, v -> v >= 25);
-    assertNull(first);
+    assertThat(first, is(nullValue()));
   }
 
   @Test

@@ -13,8 +13,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.*;
 
 @Ignore("This postprocessor is bogus at best. Replace.")
 public class ParentSimilarityPostprocessorTest extends GraphTestBase {
@@ -41,48 +41,48 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
   @Test
   public void skipIfRootNode() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0, 15);
-    assertFalse(pp.apply(clusters[0]));
+    assertThat(pp.apply(clusters[0]), is(false));
   }
 
   @Test
   public void skipIfParentIsRootNode() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0, 15);
-    assertFalse(pp.apply(clusters[1]));
-    assertFalse(pp.apply(clusters[2]));
+    assertThat(pp.apply(clusters[1]), is(false));
+    assertThat(pp.apply(clusters[2]), is(false));
   }
 
   @Test
   public void parentSatisfiesCriterion() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0.19, 15);
-    assertFalse(pp.apply(clusters[8]));
+    assertThat(pp.apply(clusters[8]), is(false));
     assertThat(clusters[8].getParent(), is(clusters[6]));
   }
 
   @Test
   public void leafPushedUpOneLevel() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0.18, 15);
-    assertTrue(pp.apply(clusters[8]));
+    assertThat(pp.apply(clusters[8]), is(true));
     assertThat(clusters[8].getParent(), is(clusters[4]));
   }
 
   @Test
   public void leafPushedUpTwoLevels() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0.10, 15);
-    assertTrue(pp.apply(clusters[8]));
+    assertThat(pp.apply(clusters[8]), is(true));
     assertThat(clusters[8].getParent(), is(clusters[2]));
   }
 
   @Test
   public void leafPushedUpToRoot() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0.06, 15);
-    assertTrue(pp.apply(clusters[8]));
+    assertThat(pp.apply(clusters[8]), is(true));
     assertThat(clusters[8].getParent(), is(clusters[0]));
   }
 
   @Test
   public void clustersFailingThresholdArePushedToRoot() {
     Postprocessor pp = new ParentSimilarityPostprocessor(0.01, 15);
-    assertTrue(pp.apply(clusters[8]));
+    assertThat(pp.apply(clusters[8]), is(true));
     assertThat(clusters[8].getParent(), is(clusters[0]));
   }
 

@@ -9,12 +9,12 @@ import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
-import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.is;
+
 
 public class ConstantSigTrailConvergenceTest extends GraphTestBase {
 
@@ -23,21 +23,21 @@ public class ConstantSigTrailConvergenceTest extends GraphTestBase {
   @Test
   public void basicConvergence() {
     ConstantSigTrailConvergence conv = new ConstantSigTrailConvergence(K3, 3, 1.0);
-    assertFalse(conv.satisfied(null, new double[]{1, -1, 1}, 0));
-    assertFalse(conv.satisfied(null, new double[]{1, -1, -1}, 1));
-    assertFalse(conv.satisfied(null, new double[]{1, -1, -1}, 2));
-    assertTrue(conv.satisfied(null, new double[]{1, -1, -1}, 3));
+    assertThat(conv.satisfied(null, new double[]{1, -1, 1}, 0), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, -1}, 1), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, -1}, 2), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, -1}, 3), is(true));
   }
 
   @Test
   public void convergeAfterInitialPertubations() {
     ConstantSigTrailConvergence conv = new ConstantSigTrailConvergence(K3, 3, 1.0);
-    assertFalse(conv.satisfied(null, new double[]{1, -1, 1}, 0));
-    assertFalse(conv.satisfied(null, new double[]{1, -1, 1}, 1));
-    assertFalse(conv.satisfied(null, new double[]{-1, -1, -1}, 2));
-    assertFalse(conv.satisfied(null, new double[]{1, -1, -1}, 3));
-    assertFalse(conv.satisfied(null, new double[]{1, -1, -1}, 4));
-    assertTrue(conv.satisfied(null, new double[]{1, -1, -1}, 5));
+    assertThat(conv.satisfied(null, new double[]{1, -1, 1}, 0), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, 1}, 1), is(false));
+    assertThat(conv.satisfied(null, new double[]{-1, -1, -1}, 2), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, -1}, 3), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, -1}, 4), is(false));
+    assertThat(conv.satisfied(null, new double[]{1, -1, -1}, 5), is(true));
   }
 
   @Test
@@ -49,15 +49,15 @@ public class ConstantSigTrailConvergenceTest extends GraphTestBase {
             .build();
     ConstantSigTrailConvergence conv = new ConstantSigTrailConvergence(graph, 4, 0.49);
     for (int i = 0; i < 3; i++) {
-      assertFalse(conv.satisfied(null, new double[]{-1, alternatingValue(i), 1, alternatingValue(i + 1)}, i));
+      assertThat(conv.satisfied(null, new double[]{-1, alternatingValue(i), 1, alternatingValue(i + 1)}, i), is(false));
     }
     double[] v = new double[]{-1, alternatingValue(3), 1, alternatingValue(3 + 1)};
-    assertTrue(conv.satisfied(null, v, 3));
+    assertThat(conv.satisfied(null, v, 3), is(true));
     conv.postprocess(v);
-    MatcherAssert.assertThat(v[0], closeTo(-1, 1E-6));
-    MatcherAssert.assertThat(v[1], closeTo(-1, 1E-6));
-    MatcherAssert.assertThat(v[2], closeTo(1, 1E-6));
-    MatcherAssert.assertThat(v[3], closeTo(1, 1E-6));
+    assertThat(v[0], closeTo(-1, 1E-6));
+    assertThat(v[1], closeTo(-1, 1E-6));
+    assertThat(v[2], closeTo(1, 1E-6));
+    assertThat(v[3], closeTo(1, 1E-6));
   }
 
   private int alternatingValue(int i) {
