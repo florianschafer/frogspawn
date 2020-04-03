@@ -40,7 +40,8 @@ public class Playground {
 
   @Test
   public void standardClustering() throws FileNotFoundException {
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.10M.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
     ClusteringSettings settings = ClusteringSettings.builder()
 //            .withTrailSize(18)
@@ -48,7 +49,7 @@ public class Playground {
 //            .withMinClusterLikelihood(0.05)
             .withMinClusterLikelihood(0.05)
 //            .withMinparentOverlap(0.15)
-            .withMinparentOverlap(0.55)
+//            .withMinparentOverlap(0.55)
 //            .withParentSearchStepSize(40)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();

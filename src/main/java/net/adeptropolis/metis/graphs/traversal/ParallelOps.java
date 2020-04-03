@@ -19,7 +19,7 @@ public abstract class ParallelOps {
   /**
    * Minimum number of vertices required to allow for parallel traversal (as opposed to single-threaded)
    */
-  public static final int PARALLELIZATION_THRESHOLD = 1000;
+  public static final int PARALLELIZATION_THRESHOLD = 128;
 
   public static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
   static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(

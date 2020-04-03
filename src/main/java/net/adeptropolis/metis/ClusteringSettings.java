@@ -154,8 +154,8 @@ public class ClusteringSettings {
     private int minClusterSize = 50;
     private double minClusterLikelihood = 0.1;
     private double minParentOverlap = 0.55;
-    private int parentSearchStepSize = 15;
-    private int trailSize = 32;
+    private int parentSearchStepSize = 32;
+    private int trailSize = 18;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
     private long randomSeed = 42133742L;
@@ -198,7 +198,7 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set Minimum ancestor overlap. Default is 0.4
+     * Set Minimum ancestor overlap. Default is 0.55
      *
      * @param minParentOverlap Minimum ancestor overlap
      * @return this
@@ -210,7 +210,7 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set parent search step size. Default is 15
+     * Set parent search step size. Default is 32
      *
      * @param stepSize Parent search step size
      * @return this
@@ -222,7 +222,7 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set trail size of convergence criterion. Default is 25
+     * Set trail size of convergence criterion. Default is 18
      *
      * @param trailSize Trail size
      * @return this
