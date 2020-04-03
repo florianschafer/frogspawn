@@ -12,7 +12,7 @@ import java.util.function.UnaryOperator;
 public class SequencePredicates {
 
   /**
-   * Helpers functions for dealing with the application of expensive predicates to large sequences
+   * Helper functions for dealing with the application of expensive predicates to large sequences
    */
 
   private SequencePredicates() {

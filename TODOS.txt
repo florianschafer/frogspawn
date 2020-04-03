@@ -1,3 +1,4 @@
+ - Fastutil's latest version now supports merge sort on big arrays. Check if replacing custom (big) arrays is an option here
  - NCut: Look into triangular-style traversal
  - NCut: Check whether using the hash set is faster than performing a regular search
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing

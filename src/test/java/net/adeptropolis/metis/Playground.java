@@ -43,12 +43,13 @@ public class Playground {
     LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
     ClusteringSettings settings = ClusteringSettings.builder()
-//            .withTrailSize(10)
+//            .withTrailSize(18)
 //            .withConvergenceThreshold(0.9)
 //            .withMinClusterLikelihood(0.05)
             .withMinClusterLikelihood(0.05)
 //            .withMinparentOverlap(0.15)
-            .withMinparentOverlap(0.25)
+            .withMinparentOverlap(0.55)
+//            .withParentSearchStepSize(40)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));

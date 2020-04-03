@@ -11,6 +11,7 @@ import net.adeptropolis.metis.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.metis.graphs.implementations.arrays.BigInts;
 import net.adeptropolis.metis.graphs.implementations.arrays.LongMergeSort;
 import net.adeptropolis.metis.graphs.implementations.arrays.LongMergeSort.SortOps;
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,6 +113,8 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   @VisibleForTesting
   CompressedSparseGraphDatastore buildDatastore() {
+    StopWatch stopWatch = new StopWatch();
+    stopWatch.start();
     if (ptr == 0L) {
       return new CompressedSparseGraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
@@ -120,7 +123,8 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
     compact();
     int graphSize = edges[0].get(ptr - 1) + 1;
     long[] pointers = computePointers(graphSize);
-    LOG.debug("Finished building graph with {} vertices and {} edges", graphSize, ptr);
+    stopWatch.stop();
+    LOG.info("Finished building graph with {} vertices and {} edges in {}", graphSize, ptr, stopWatch);
     return new CompressedSparseGraphDatastore(graphSize, ptr, pointers, edges[1], weights);
   }
 

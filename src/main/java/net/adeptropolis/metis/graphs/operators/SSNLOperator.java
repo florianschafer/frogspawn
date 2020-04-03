@@ -51,6 +51,7 @@ public class SSNLOperator implements LinearGraphOperator {
 
   /**
    * Compute the eigenvector associated with the smallest eigenvalue of the regular normalized laplacian of the graph.
+   * Note that this eigenvector is known a priori and can be directly computed from the original graph's weights.
    *
    * @param graph A graph
    * @return The desired eigenvector

@@ -28,7 +28,7 @@ public class SpectralBisector {
   }
 
   /**
-   * Create a subgraph based on the signum of the second-largest eigenvector of the Normalized Laplacian
+   * Create a subgraph based on the signs of the eigenvector for the second-smallest eigenvalue of the Normalized Laplacian
    *
    * @param graph        The input graph
    * @param v2           The approximate second-smallest eigenvector of the Normalized Laplacian of the Graph

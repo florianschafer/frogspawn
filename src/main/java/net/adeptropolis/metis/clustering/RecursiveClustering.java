@@ -113,9 +113,10 @@ public class RecursiveClustering {
    * Process a partition coming out of the spectral bisection step. Possible scenarios:
    * <ol>
    *   <li>The partition is either smaller than the allowed minimum cluster size or comprises the full
-   *   input graph (which hints an error). In that case, add its vertices to the cluster's remainder and terminate</li>
+   *   input graph (which hints an iteration excess or an error). In that case, add its vertices to the cluster's remainder
+   *   and terminate</li>
    *   <li>
-   *     Ensure consistency of the resulting subgraph vertices and add all non-compliant vertices to the cluster reminder.
+   *     Ensure consistency of the resulting subgraph vertices and add all non-compliant vertices to the cluster remainder.
    *     For the remaining subgraph, one of two conditions may apply:
    *     <ol>
    *       <li>The remaining consistent subgraph is smaller than the allowed minimum cluster
@@ -175,7 +176,7 @@ public class RecursiveClustering {
    * Decompose the current protocluster's graph into its connected components. There are 4 possible scenarios:
    * <ol>
    *   <li>The input graph was already fully connected. Label the protocluster's graph as connected component and re-add it to the queue</li>
-   *   <li>The connected component is smaller than the minimum cluster size. In that case, add its vertices to the cluster's reminder and terminate</li>
+   *   <li>The connected component is smaller than the minimum cluster size. In that case, add its vertices to the cluster's remainder and terminate</li>
    *   <li>The connected component order is exactly the minimum cluster size. Add a new child with the connected component vertices</li>
    *   <li>Else label the component as connected and add a proper new protocluster to the queue</li>
    * </ol>
