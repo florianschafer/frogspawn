@@ -155,7 +155,7 @@ public class ClusteringSettings {
     private double minClusterLikelihood = 0.1;
     private double minParentOverlap = 0.55;
     private int parentSearchStepSize = 32;
-    private int trailSize = 18;
+    private int trailSize = 20;
     private double convergenceThreshold = 0.95;
     private int maxIterations = 10000;
     private long randomSeed = 42133742L;
@@ -222,7 +222,7 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set trail size of convergence criterion. Default is 18
+     * Set trail size of convergence criterion. Default is 20
      *
      * @param trailSize Trail size
      * @return this

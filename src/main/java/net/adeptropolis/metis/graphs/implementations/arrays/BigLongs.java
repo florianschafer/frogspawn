@@ -6,7 +6,9 @@
 package net.adeptropolis.metis.graphs.implementations.arrays;
 
 import com.google.common.base.Preconditions;
-import net.adeptropolis.metis.graphs.implementations.arrays.LongMergeSort.SortOps;
+import it.unimi.dsi.fastutil.BigArrays;
+import it.unimi.dsi.fastutil.BigSwapper;
+import it.unimi.dsi.fastutil.longs.LongComparator;
 
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -15,7 +17,7 @@ import java.util.stream.LongStream;
  * A big (i.e. long-indexed) array of longs.
  */
 
-public class BigLongs implements SortOps {
+public class BigLongs implements LongComparator, BigSwapper {
 
   static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
@@ -106,7 +108,7 @@ public class BigLongs implements SortOps {
    */
 
   public BigLongs sort() {
-    LongMergeSort.mergeSort(0, size, this);
+    BigArrays.mergeSort(0, size, this, this);
     return this;
   }
 

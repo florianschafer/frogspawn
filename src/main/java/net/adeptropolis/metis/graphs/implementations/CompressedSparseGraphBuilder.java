@@ -6,11 +6,12 @@
 package net.adeptropolis.metis.graphs.implementations;
 
 import com.google.common.annotations.VisibleForTesting;
+import it.unimi.dsi.fastutil.BigArrays;
+import it.unimi.dsi.fastutil.BigSwapper;
+import it.unimi.dsi.fastutil.longs.LongComparator;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.metis.graphs.implementations.arrays.BigInts;
-import net.adeptropolis.metis.graphs.implementations.arrays.LongMergeSort;
-import net.adeptropolis.metis.graphs.implementations.arrays.LongMergeSort.SortOps;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,7 +135,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   private void sort() {
     EdgeSortOps ops = new EdgeSortOps();
-    LongMergeSort.mergeSort(0, ptr, ops);
+    BigArrays.mergeSort(0, ptr, ops, ops);
   }
 
   /**
@@ -215,7 +216,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    * Edge buffer implementation of SortOps
    */
 
-  private class EdgeSortOps implements SortOps {
+  private class EdgeSortOps implements LongComparator, BigSwapper {
 
     /**
      * Compare two edges by (1) left node (2) right node
