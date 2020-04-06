@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.Digest;
-import net.adeptropolis.metis.digest.TopWeightsRemainderClusterDigester;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.BeforeClass;
@@ -20,6 +19,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_WEIGHTS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -105,7 +105,7 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(settings.getConsistencyMetric(), 0);
+    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 0, false, DESCENDING_WEIGHTS);
     long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
     for (int i = 0; i < rounds - 1; i++) {
       long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);

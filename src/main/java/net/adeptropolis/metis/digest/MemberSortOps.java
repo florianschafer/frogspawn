@@ -5,6 +5,7 @@
 
 package net.adeptropolis.metis.digest;
 
+import it.unimi.dsi.fastutil.Arrays;
 import it.unimi.dsi.fastutil.Swapper;
 import it.unimi.dsi.fastutil.ints.IntComparator;
 import net.adeptropolis.metis.helpers.Arr;
@@ -13,24 +14,41 @@ import net.adeptropolis.metis.helpers.Arr;
  * Helper class for sorting aligned lists of vertices, weights and consistency scores by weight
  */
 
-class WeightSortOps implements IntComparator, Swapper {
+class MemberSortOps implements IntComparator, Swapper {
 
   private final int[] vertices;
   private final double[] weights;
   private final double[] scores;
+  private final ClusterMemberComparator comparator;
 
   /**
    * Constructor
    *
-   * @param vertices Vertices
-   * @param weights  Vertex weights
-   * @param scores   Vertex consistency scores
+   * @param vertices   Vertices
+   * @param weights    Vertex weights
+   * @param scores     Vertex consistency scores
+   * @param comparator Indirect comparator for cluster vertices
    */
 
-  WeightSortOps(int[] vertices, double[] weights, double[] scores) {
+  MemberSortOps(int[] vertices, double[] weights, double[] scores, ClusterMemberComparator comparator) {
     this.vertices = vertices;
     this.weights = weights;
     this.scores = scores;
+    this.comparator = comparator;
+  }
+
+  /**
+   * Sort a given (vertices, weights, scores)-triple using a supplied indirect comparator
+   *
+   * @param vertices   Cluster vertices
+   * @param weights    Vertex weights
+   * @param scores     Vertex scores
+   * @param comparator Indirect comparator
+   */
+
+  public static void sort(int[] vertices, double[] weights, double[] scores, ClusterMemberComparator comparator) {
+    MemberSortOps ops = new MemberSortOps(vertices, weights, scores, comparator);
+    Arrays.mergeSort(0, vertices.length, ops, ops);
   }
 
   /**
@@ -57,7 +75,7 @@ class WeightSortOps implements IntComparator, Swapper {
 
   @Override
   public int compare(int i, int j) {
-    return Double.compare(weights[j], weights[i]);
+    return comparator.compare(vertices, weights, scores, i, j);
   }
 
 }
