@@ -62,6 +62,7 @@ public class RecursiveClustering {
    */
 
   public Cluster run() {
+    LOG.info("Starting with recursive clustering of {} vertices using settings: {}", graph.order(), settings);
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     Cluster root = new Cluster(graph);

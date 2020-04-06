@@ -12,6 +12,8 @@ import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.List;
 
@@ -148,6 +150,26 @@ public class ClusteringSettings {
     return customPostprocessors;
   }
 
+  /**
+   * @return Settings string representation
+   */
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
+            .append("consistencyMetric", consistencyMetric)
+            .append("minClusterSize", minClusterSize)
+            .append("minClusterLikelihood", minClusterLikelihood)
+            .append("minParentOverlap", minParentOverlap)
+            .append("parentSearchStepSize", parentSearchStepSize)
+            .append("trailSize", trailSize)
+            .append("convergenceThreshold", convergenceThreshold)
+            .append("maxIterations", convergenceThreshold)
+            .append("randomSeed", randomSeed)
+            .append("customPostprocessors", customPostprocessors)
+            .build();
+  }
+
   public static class Builder {
 
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
@@ -156,10 +178,10 @@ public class ClusteringSettings {
     private double minParentOverlap = 0.55;
     private int parentSearchStepSize = 32;
     private int trailSize = 20;
-    private double convergenceThreshold = 0.95;
-    private int maxIterations = 10000;
+    private double convergenceThreshold = 0.95; // Note that values <= ~0.75-0.8 actually degrade performance
     private long randomSeed = 42133742L;
     private List<Postprocessor> customPostprocessors = Lists.newArrayList();
+    private int maxIterations = 540; // Set as twice the 99.9% quantile of the required iterations on a large sample within a parameter range of 15-35 for trail size and 0.9-0.98 for convergence threshold
 
     /**
      * Set consistency metric. Default is <code>RelativeWeightConsistencyMetric</code>
@@ -246,7 +268,7 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set maxmimum number of iterations for the power method
+     * Set maxmimum number of iterations for the power method. Default is 540
      *
      * @param maxIterations Maximum number of iterations
      * @return this
