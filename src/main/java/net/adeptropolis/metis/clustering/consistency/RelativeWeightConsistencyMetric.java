@@ -27,4 +27,12 @@ public class RelativeWeightConsistencyMetric implements ConsistencyMetric {
     return subgraph.relativeWeights(graph);
   }
 
+  /**
+   * @return Just the simple class name
+   */
+
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 }

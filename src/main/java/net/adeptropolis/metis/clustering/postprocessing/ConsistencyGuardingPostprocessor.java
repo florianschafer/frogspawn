@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
+import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
@@ -25,10 +26,20 @@ import net.adeptropolis.metis.graphs.VertexIterator;
 
 class ConsistencyGuardingPostprocessor implements Postprocessor {
 
+  private final ConsistencyMetric consistencyMetric;
   private final int minClusterSize;
   private final double minClusterLikelihood;
 
-  public ConsistencyGuardingPostprocessor(int minClusterSize, double minClusterLikelihood) {
+  /**
+   * Constructor
+   *
+   * @param consistencyMetric Consistency metric to be used
+   * @param minClusterSize Minimum cluster size
+   * @param minClusterLikelihood Minimum cluster likelihood
+   */
+
+  public ConsistencyGuardingPostprocessor(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood) {
+    this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minClusterLikelihood = minClusterLikelihood;
   }
@@ -82,7 +93,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
    */
 
   private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
-    double[] likelihoods = subgraph.relativeWeights(parent.rootGraph());
+    double[] likelihoods = consistencyMetric.compute(parent.rootGraph(), subgraph);
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
       if (likelihoods[it.localId()] < minClusterLikelihood) {
