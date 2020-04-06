@@ -25,7 +25,7 @@ public class ClusteringSettings {
 
   private final ConsistencyMetric consistencyMetric;
   private final int minClusterSize;
-  private final double minClusterLikelihood;
+  private final double minVertexConsistency;
   private final double minParentOverlap;
   private final int parentSearchStepSize;
   private final int trailSize;
@@ -39,7 +39,7 @@ public class ClusteringSettings {
    *
    * @param consistencyMetric    Vertex/cluster consistency metric to be used
    * @param minClusterSize       Minimum cluster size
-   * @param minClusterLikelihood Minimum cluster likelihood of a vertex
+   * @param minVertexConsistency Minimum consistency score of a vertex wrt. to a cluster
    * @param minParentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
    * @param parentSearchStepSize Step size of parent search
    * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
@@ -49,12 +49,12 @@ public class ClusteringSettings {
    * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
    */
 
-  private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood,
+  private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minVertexConsistency,
                              double minParentOverlap, int parentSearchStepSize, int trailSize,
                              double convergenceThreshold, int maxIterations, long randomSeed, List<Postprocessor> customPostprocessors) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
-    this.minClusterLikelihood = minClusterLikelihood;
+    this.minVertexConsistency = minVertexConsistency;
     this.minParentOverlap = minParentOverlap;
     this.parentSearchStepSize = parentSearchStepSize;
     this.trailSize = trailSize;
@@ -83,11 +83,11 @@ public class ClusteringSettings {
   }
 
   /**
-   * @return Minimum cluster likelihood of a vertex
+   * @return Minimum consistency of a vertex wrt. to a cluster
    */
 
-  public double getMinClusterLikelihood() {
-    return minClusterLikelihood;
+  public double getMinVertexConsistency() {
+    return minVertexConsistency;
   }
 
   /**
@@ -159,7 +159,7 @@ public class ClusteringSettings {
     return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
             .append("consistencyMetric", consistencyMetric)
             .append("minClusterSize", minClusterSize)
-            .append("minClusterLikelihood", minClusterLikelihood)
+            .append("minVertexConsistency", minVertexConsistency)
             .append("minParentOverlap", minParentOverlap)
             .append("parentSearchStepSize", parentSearchStepSize)
             .append("trailSize", trailSize)
@@ -174,7 +174,7 @@ public class ClusteringSettings {
 
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
     private int minClusterSize = 50;
-    private double minClusterLikelihood = 0.1;
+    private double minVertexConsistency = 0.1;
     private double minParentOverlap = 0.55;
     private int parentSearchStepSize = 32;
     private int trailSize = 20;
@@ -208,14 +208,14 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set minimum cluster likelihood. Default is 0.1
+     * Set minimum vertex consistency score. Default is 0.1
      *
-     * @param minClusterLikelihood Minimum likelihood
+     * @param minVertexConsistency Minimum consistency score
      * @return this
      */
 
-    public Builder withMinClusterLikelihood(double minClusterLikelihood) {
-      this.minClusterLikelihood = minClusterLikelihood;
+    public Builder withMinVertexConsistency(double minVertexConsistency) {
+      this.minVertexConsistency = minVertexConsistency;
       return this;
     }
 
@@ -308,7 +308,7 @@ public class ClusteringSettings {
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(consistencyMetric, minClusterSize, minClusterLikelihood, minParentOverlap,
+      return new ClusteringSettings(consistencyMetric, minClusterSize, minVertexConsistency, minParentOverlap,
               parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors);
     }
 

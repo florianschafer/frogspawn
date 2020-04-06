@@ -7,6 +7,7 @@ package net.adeptropolis.metis.digest;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
@@ -16,6 +17,8 @@ import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
 public class TopWeightsAggregateClusterDigesterTest {
+
+  private static final RelativeWeightConsistencyMetric metric = new RelativeWeightConsistencyMetric();
 
   @Test
   public void basicFunctionality() {
@@ -54,7 +57,7 @@ public class TopWeightsAggregateClusterDigesterTest {
     c2.addToRemainder(IntIterators.wrap(new int[]{6, 7}));
     Cluster c22 = new Cluster(c2);
     c2.addToRemainder(IntIterators.wrap(new int[]{8, 9}));
-    Digest digest = new TopWeightsAggregateClusterDigester(3).create(c2);
+    Digest digest = new TopWeightsAggregateClusterDigester(metric, 3).create(c2);
     assertThat(digest.getVertices().length, is(3));
     assertThat(digest.getVertices()[0], is(5));
     assertThat(digest.getVertices()[1], is(4));
@@ -77,7 +80,7 @@ public class TopWeightsAggregateClusterDigesterTest {
             .build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1}));
-    Digest digest = new TopWeightsAggregateClusterDigester(3).create(root);
+    Digest digest = new TopWeightsAggregateClusterDigester(metric, 3).create(root);
     assertThat(digest.getVertices().length, is(2));
     assertThat(digest.getWeights().length, is(2));
     assertThat(digest.getScores().length, is(2));
@@ -88,7 +91,7 @@ public class TopWeightsAggregateClusterDigesterTest {
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder().build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{}));
-    Digest digest = new TopWeightsAggregateClusterDigester(3).create(root);
+    Digest digest = new TopWeightsAggregateClusterDigester(metric, 3).create(root);
     assertThat(digest.getVertices().length, is(0));
     assertThat(digest.getWeights().length, is(0));
     assertThat(digest.getScores().length, is(0));

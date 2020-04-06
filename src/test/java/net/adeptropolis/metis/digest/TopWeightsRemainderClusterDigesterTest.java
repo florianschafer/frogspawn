@@ -7,6 +7,8 @@ package net.adeptropolis.metis.digest;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
+import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
@@ -19,6 +21,7 @@ public class TopWeightsRemainderClusterDigesterTest {
 
   @Test
   public void basicFunctionality() {
+    ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
             .add(0, 1, 1)
             .add(0, 2, 2)
@@ -26,7 +29,7 @@ public class TopWeightsRemainderClusterDigesterTest {
             .build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    Digest digest = new TopWeightsRemainderClusterDigester(2).create(root);
+    Digest digest = new TopWeightsRemainderClusterDigester(metric, 2).create(root);
     assertThat(digest.size(), is(2));
     assertThat(digest.totalSize(), is(4));
     assertThat(digest.getVertices()[0], is(0));

@@ -7,8 +7,8 @@ package net.adeptropolis.metis.digest;
 
 /**
  * <p>A cluster digest</p>
- * <p>Digests are precursors of final cluster outputs and hold three index-aligned lists or vertices, weights and cluster
- * likelihood scores that aggregated from a given cluster and sorted according to some criterion. Digests may either store
+ * <p>Digests are precursors of final cluster outputs and hold three index-aligned lists or vertices, weights and vertex
+ * consistency scores that aggregated from a given cluster and sorted according to some criterion. Digests may either store
  * all cluster vertices or just the top-ranked subset.
  * </p>
  */
@@ -25,7 +25,7 @@ public class Digest {
    *
    * @param vertices  (Aggregated) cluster vertices
    * @param weights   Vertex weights
-   * @param scores    Vertex cluster likelihood scores
+   * @param scores    Vertex consistency scores
    * @param totalSize Total size of available vertices. Useful if the digest doesn't contain all cluster vertices.
    */
 
@@ -53,7 +53,7 @@ public class Digest {
   }
 
   /**
-   * @return Cluster likelihood scores
+   * @return Vertex consistency scores
    */
 
   public double[] getScores() {

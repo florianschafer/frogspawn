@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import net.adeptropolis.metis.helpers.Arr;
 
 /**
- * Helper class for sorting aligned lists of vertices, weights and cluster likelihood scores by weight
+ * Helper class for sorting aligned lists of vertices, weights and consistency scores by weight
  */
 
 class WeightSortOps implements IntComparator, Swapper {
@@ -24,7 +24,7 @@ class WeightSortOps implements IntComparator, Swapper {
    *
    * @param vertices Vertices
    * @param weights  Vertex weights
-   * @param scores   Vertex cluster likelihood scores
+   * @param scores   Vertex consistency scores
    */
 
   WeightSortOps(int[] vertices, double[] weights, double[] scores) {

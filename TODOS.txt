@@ -1,6 +1,4 @@
- - Possibly remove RelativeWeightConsistencyMetric class (it's a functional interface with a 1-liner)
  - Dot sink
- - Rename likelihood -> consistency
  - Custom cluster member comparator
  - Supply some default index mapping machinery
  - Move playground from tests into a proper main

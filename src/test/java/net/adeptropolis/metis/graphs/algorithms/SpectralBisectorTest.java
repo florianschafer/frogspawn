@@ -23,7 +23,7 @@ public class SpectralBisectorTest extends GraphTestBase {
 
   private static final ClusteringSettings settings = ClusteringSettings.builder()
           .withMinClusterSize(0)
-          .withMinClusterLikelihood(0)
+          .withMinVertexConsistency(0)
           .withMinparentOverlap(0)
           .withTrailSize(100)
           .withConvergenceThreshold(0.999)

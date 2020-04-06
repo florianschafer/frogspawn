@@ -34,7 +34,7 @@ public class RecursiveClusteringTest {
     defaultGraph = loadGraph("small_graph.tsv");
     defaultSettings = ClusteringSettings.builder()
             .withMinClusterSize(50)
-            .withMinClusterLikelihood(0.1)
+            .withMinVertexConsistency(0.1)
             .withMinparentOverlap(0.4)
             .build();
     root = new RecursiveClustering(defaultGraph, defaultSettings).run();
@@ -97,7 +97,7 @@ public class RecursiveClusteringTest {
   public void determinismMedium() {
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinClusterSize(50)
-            .withMinClusterLikelihood(0.05)
+            .withMinVertexConsistency(0.05)
             .withMinparentOverlap(0.65)
             .build();
     Graph graph = loadGraph("medium_graph.tsv");
@@ -105,7 +105,7 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    ClusterDigester digester = new TopWeightsRemainderClusterDigester(0);
+    ClusterDigester digester = new TopWeightsRemainderClusterDigester(settings.getConsistencyMetric(), 0);
     long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
     for (int i = 0; i < rounds - 1; i++) {
       long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);

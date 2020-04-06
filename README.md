@@ -48,7 +48,7 @@ The most important ones are described in the example below (using the defaults):
 ```
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)        // Minimum size of a cluster
-  .withMinClusterLikelihood(0.1) // Minimum consistency score that a vertex may yield with respect to its cluster
+  .withVertexConsistency(0.1)    // Minimum consistency score that a vertex may yield with respect to its cluster
   .withMinParentOverlap(0.4)     // Minimum consistency score that a cluster may yield with respect to its parent
   .build();
 ```
@@ -73,9 +73,9 @@ the graph. This process is then applied in a recursive manner until some termina
 effectively creating a binary tree with the clusters at its leafs.
 
 Here, this procedure is augmented in two important ways: Firstly, instead of indiscriminately applying recursion to the
-partitions from former steps, a cluster likelihood score is computed for every vertex with respect to every potentially
+partitions from former steps, a vertex consistency score is computed for every vertex with respect to every potentially
 new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
-to the last cluster tree node where they satisfy the likelihood criterion (hence the "sieve"). The same goes for all
+to the last cluster tree node where they satisfy the consistency criterion (hence the "sieve"). The same goes for all
 vertices of partitions falling short of a certain minimal size. This approach not only yields and enormous benefit to
 both cluster quality and overall speed, but also (especially in combination with a minimal cluster size)
 introduces a straightforward and comprehensive parameter that puts a strict condition on the desired clustering outcome

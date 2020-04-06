@@ -28,24 +28,24 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
 
   private final ConsistencyMetric consistencyMetric;
   private final int minClusterSize;
-  private final double minClusterLikelihood;
+  private final double minVertexConsistency;
 
   /**
    * Constructor
    *
-   * @param consistencyMetric Consistency metric to be used
-   * @param minClusterSize Minimum cluster size
-   * @param minClusterLikelihood Minimum cluster likelihood
+   * @param consistencyMetric    Consistency metric to be used
+   * @param minClusterSize       Minimum cluster size
+   * @param minVertexConsistency Minimum vertex consistency wrt. to a cluster
    */
 
-  public ConsistencyGuardingPostprocessor(ConsistencyMetric consistencyMetric, int minClusterSize, double minClusterLikelihood) {
+  public ConsistencyGuardingPostprocessor(ConsistencyMetric consistencyMetric, int minClusterSize, double minVertexConsistency) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
-    this.minClusterLikelihood = minClusterLikelihood;
+    this.minVertexConsistency = minVertexConsistency;
   }
 
   /**
-   * Ensure that all remainder vertices of a cluster fulfil the <code>minClusterLikelihood</code> criterion.
+   * Ensure that all remainder vertices of a cluster fulfil the <code>minVertexConsistency</code> criterion.
    *
    * @param cluster A cluster. Not necessarily root.
    * @return true if the cluster has been modified. Otherwise false.
@@ -93,10 +93,10 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
    */
 
   private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
-    double[] likelihoods = consistencyMetric.compute(parent.rootGraph(), subgraph);
+    double[] consistencyScores = consistencyMetric.compute(parent.rootGraph(), subgraph);
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
-      if (likelihoods[it.localId()] < minClusterLikelihood) {
+      if (consistencyScores[it.localId()] < minVertexConsistency) {
         if (clusterVertices.contains(it.globalId())) {
           parent.addToRemainder(it.globalId());
           clusterVertices.remove(it.globalId());

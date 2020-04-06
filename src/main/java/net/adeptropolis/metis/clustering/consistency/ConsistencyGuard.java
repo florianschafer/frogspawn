@@ -13,8 +13,8 @@ import net.adeptropolis.metis.graphs.VertexIterator;
 /**
  * Ensures the consistency of a new subgraph. That is, given a parent cluster and a potential subgraph,
  * vertices from the subgraph are shifted from the subgraph to the parent cluster's remainder bucket until
- * all remaining satisfy the required minimum likelihood. Since the removal if vertices may affect the cluster likelihood
- * of remaining ones, the process is repeated until all satisfy the minimum likelihood criterion.
+ * all remaining satisfy the required minimum consistency criterion. Since the removal if vertices may affect the consistency
+ * of remaining ones, the process is repeated until all satisfy the minimum consistency criterion.
  */
 
 public class ConsistencyGuard {
@@ -22,22 +22,22 @@ public class ConsistencyGuard {
   private final ConsistencyMetric metric;
   private final Graph graph;
   private final int minClusterSize;
-  private final double minClusterLikelihood;
+  private final double minConsistency;
 
   /**
    * Constructor
    *
-   * @param metric               The consistency metric to be used
-   * @param graph                Root graph
-   * @param minClusterSize       Minimum cluster (graph) size
-   * @param minClusterLikelihood Minimum cluster (graph) likelihood
+   * @param metric         The consistency metric to be used
+   * @param graph          Root graph
+   * @param minClusterSize Minimum cluster (graph) size
+   * @param minConsistency Minimum vertex consistency score
    */
 
-  public ConsistencyGuard(ConsistencyMetric metric, Graph graph, int minClusterSize, double minClusterLikelihood) {
+  public ConsistencyGuard(ConsistencyMetric metric, Graph graph, int minClusterSize, double minConsistency) {
     this.metric = metric;
     this.graph = graph;
     this.minClusterSize = minClusterSize;
-    this.minClusterLikelihood = minClusterLikelihood;
+    this.minConsistency = minConsistency;
   }
 
   /**
@@ -45,7 +45,8 @@ public class ConsistencyGuard {
    *
    * @param parentCluster An existing cluster that the new graph should be assigned to as subcluster
    * @param candidate     The subcluster graph candidate
-   * @return Either a new subgraph with all vertices guaranteed to exhibit ≥ minClusterLikelihood or null if that graph would be smaller than the allowed min size
+   * @return Either a new subgraph with all vertices guaranteed to <code>exhibit ≥ minConsistency</code> or <code>null</code>
+   * if that graph would be smaller than the allowed min size
    */
 
   public Graph ensure(Cluster parentCluster, Graph candidate) {
@@ -74,7 +75,7 @@ public class ConsistencyGuard {
     double[] metrics = metric.compute(graph, subgraph);
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
-      if (metrics[it.localId()] < minClusterLikelihood) {
+      if (metrics[it.localId()] < minConsistency) {
         parentCluster.addToRemainder(it.globalId());
         survivors.remove(it.globalId());
       }
