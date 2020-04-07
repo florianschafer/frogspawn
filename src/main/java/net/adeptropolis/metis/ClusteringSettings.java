@@ -173,6 +173,7 @@ public class ClusteringSettings {
 
   public static class Builder {
 
+    private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
     private int minClusterSize = 50;
     private double minVertexConsistency = 0.1;
@@ -181,7 +182,6 @@ public class ClusteringSettings {
     private int trailSize = 20;
     private double convergenceThreshold = 0.95; // Note that values <= ~0.75-0.8 actually degrade performance
     private long randomSeed = 42133742L;
-    private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
     private int maxIterations = 540; // Set as twice the 99.9% quantile of the required iterations on a large sample within a parameter range of 15-35 for trail size and 0.9-0.98 for convergence threshold
 
     /**

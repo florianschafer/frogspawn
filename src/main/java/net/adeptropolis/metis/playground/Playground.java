@@ -9,12 +9,14 @@ import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.RecursiveClustering;
 import net.adeptropolis.metis.digest.ClusterDigester;
-import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.metis.graphs.labeled.LabeledGraph;
+import net.adeptropolis.metis.graphs.labeled.LabeledGraphSource;
 import net.adeptropolis.metis.sinks.Sink;
 import net.adeptropolis.metis.sinks.TextSink;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_COMBINED;
@@ -27,26 +29,23 @@ import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_COMBINED;
 
 public class Playground {
 
-  public static void main(String[] args) throws FileNotFoundException {
+  private static final Path LARGE_GRAPH = Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv");
+  private static final Path MEDIUM_GRAPH = Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.10M.tsv");
+  private static final Path SMALL_GRAPH = Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv");
+
+  public static void main(String[] args) throws IOException {
     new Playground().standardClustering();
   }
 
-  private void standardClustering() throws FileNotFoundException {
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.10M.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
+  private void standardClustering() throws IOException {
+    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(SMALL_GRAPH));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexConsistency(0.05)
             .withMinparentOverlap(0.65)
             .build();
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-    g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
-    CompressedSparseGraph graph = builder.build();
-    Cluster root = new RecursiveClustering(graph, settings).run();
-//    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, DESCENDING_WEIGHTS);
+    Cluster root = new RecursiveClustering(labeledGraph.getGraph(), settings).run();
     ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, DESCENDING_COMBINED.apply(1.75));
-    Sink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters15.txt"), digester, g.inverseLabels());
-//    LeafTextSink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters16.txt"), digester, g.inverseLabels());
+    Sink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters15.txt"), digester, labeledGraph.getLabels());
     textSink.consume(root);
 
   }

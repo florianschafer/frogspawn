@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.playground;
+package net.adeptropolis.metis.graphs;
 
 @SuppressWarnings("squid:ClassVariableVisibilityCheck")
 public class Edge {

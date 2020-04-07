@@ -3,23 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.graphs.implementations;
+package net.adeptropolis.metis.graphs.labeled;
 
 import com.google.common.collect.ImmutableList;
+import net.adeptropolis.metis.graphs.Edge;
 import net.adeptropolis.metis.graphs.GraphTestBase;
-import net.adeptropolis.metis.playground.Edge;
+import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import org.junit.Test;
 
 import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;
 
 public class LabeledGraphBuilderTest extends GraphTestBase {
 
   @Test
   public void vertexMappings() {
-    LabeledGraph<String> labeledGraph = new LabeledGraphBuilder<String>()
+    LabeledGraph<String> labeledGraph = new LabeledGraphBuilder<>(String.class)
             .add("0", "1", 2)
             .add("1", "2", 3)
             .add("3", "4", 5)
@@ -32,7 +33,7 @@ public class LabeledGraphBuilderTest extends GraphTestBase {
 
   @Test
   public void graph() {
-    CompressedSparseGraph graph = new LabeledGraphBuilder<String>()
+    CompressedSparseGraph graph = new LabeledGraphBuilder<>(String.class)
             .add("0", "1", 2)
             .add("1", "2", 3)
             .build()

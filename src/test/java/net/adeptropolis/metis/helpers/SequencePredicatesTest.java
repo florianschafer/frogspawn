@@ -59,14 +59,14 @@ public class SequencePredicatesTest {
   @Test
   public void objSequenceExhaustedBeforeFindingMatch() {
     Integer first = SequencePredicates.findFirst(0, 20,
-            v -> (v >= 22) ? null : v + 1, v -> v >= 25);
+            Integer.class, v -> (v >= 22) ? null : v + 1, v -> v >= 25);
     assertThat(first, is(nullValue()));
   }
 
   @Test
   public void objSequenceExhaustedWithinInitialStepSize() {
     Integer first = SequencePredicates.findFirst(0, 20,
-            v -> (v >= 15) ? null : v + 1, v -> v >= 13);
+            Integer.class, v -> (v >= 15) ? null : v + 1, v -> v >= 13);
     assertThat(first, is(13));
   }
 
@@ -76,7 +76,7 @@ public class SequencePredicatesTest {
   }
 
   private void verifyObj(int initialValue, int stepSize, int threshold) {
-    Integer first = SequencePredicates.findFirst(initialValue, stepSize, v -> v + 1, v -> v >= threshold);
+    Integer first = SequencePredicates.findFirst(initialValue, stepSize, Integer.class, v -> v + 1, v -> v >= threshold);
     assertThat(first, is(threshold));
   }
 

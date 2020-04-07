@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.graphs.implementations;
+package net.adeptropolis.metis.graphs.labeled;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
+import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
+
+import java.lang.reflect.Array;
 
 /**
  * Provides a convenient builder for compressed sparse graphs from labels instead of integers.
@@ -17,12 +21,16 @@ public class LabeledGraphBuilder<V> {
 
   private final Object2IntOpenHashMap<V> vertexMap;
   private final CompressedSparseGraphBuilder builder;
+  private final Class<V> labelClass;
 
   /**
    * Constructor
+   *
+   * @param labelClass Label class
    */
 
-  public LabeledGraphBuilder() {
+  public LabeledGraphBuilder(Class<V> labelClass) {
+    this.labelClass = labelClass;
     this.vertexMap = new Object2IntOpenHashMap<>();
     this.builder = new CompressedSparseGraphBuilder();
   }
@@ -47,7 +55,6 @@ public class LabeledGraphBuilder<V> {
    * @return A new immutable LabeledGraph instance
    */
 
-
   public LabeledGraph<V> build() {
     CompressedSparseGraph graph = builder.build();
     V[] labels = invertLabels();
@@ -60,7 +67,7 @@ public class LabeledGraphBuilder<V> {
 
   private V[] invertLabels() {
     @SuppressWarnings("unchecked")
-    V[] map = (V[]) new Object[vertexMap.size()];
+    V[] map = (V[]) Array.newInstance(labelClass, vertexMap.size());
     vertexMap.forEach((label, id) -> map[id] = label);
     return map;
   }

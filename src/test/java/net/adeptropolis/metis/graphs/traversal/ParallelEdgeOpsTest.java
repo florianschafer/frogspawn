@@ -5,7 +5,7 @@
 
 package net.adeptropolis.metis.graphs.traversal;
 
-import net.adeptropolis.metis.playground.Edge;
+import net.adeptropolis.metis.graphs.Edge;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;

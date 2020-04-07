@@ -5,6 +5,7 @@
 
 package net.adeptropolis.metis.helpers;
 
+import java.lang.reflect.Array;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -61,6 +62,7 @@ public class SequencePredicates {
    *
    * @param initialValue    First element to be tested
    * @param stepSize        Step size of the initial search
+   * @param clazz           Element class
    * @param advanceOperator Operator accepting an object of type <code>T</code> and returning
    *                        its successor or <code>null</code> if no such element is available.
    * @param predicate       Predicate to be checked against
@@ -68,14 +70,15 @@ public class SequencePredicates {
    * <code>null</code> if no such element could be found.
    */
 
-  public static <T> T findFirst(T initialValue, int stepSize, UnaryOperator<T> advanceOperator, Predicate<T> predicate) {
+  public static <T> T findFirst(T initialValue, int stepSize, Class<T> clazz, UnaryOperator<T> advanceOperator, Predicate<T> predicate) {
 
     if (predicate.test(initialValue)) {
       return initialValue;
     }
 
     @SuppressWarnings("unchecked")
-    T[] buffer = (T[]) new Object[stepSize];
+    T[] buffer = (T[]) Array.newInstance(clazz, stepSize);
+
     IntPredicate intPredicate = i -> predicate.test(buffer[i]);
 
     while (true) {

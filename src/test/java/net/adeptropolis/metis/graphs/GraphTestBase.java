@@ -6,7 +6,6 @@
 package net.adeptropolis.metis.graphs;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.metis.playground.Edge;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.metis.graphs.traversal.EdgeConsumer;
@@ -267,6 +266,7 @@ public class GraphTestBase {
           .add(2, 3, 7)
           .add(2, 5, 13)
           .build();
+
   protected final Graph K43 = new CompressedSparseGraphBuilder()
           .add(0, 1, 5)
           .add(0, 3, 11)
@@ -281,10 +281,12 @@ public class GraphTestBase {
           .add(4, 5, 73)
           .add(5, 6, 83)
           .build();
+
   protected final Graph K12 = new CompressedSparseGraphBuilder()
           .add(0, 1, 2)
           .add(0, 2, 3)
           .build();
+
   protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
   private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
@@ -364,7 +366,7 @@ public class GraphTestBase {
     return b.build();
   }
 
-  public long bandedGraphFingerprint(int n, int k) {
+  protected long bandedGraphFingerprint(int n, int k) {
     long fp = 0;
     for (long i = 0; i < n; i++) {
       for (long j = i + 1; j < Math.min(i + k, n); j++) {

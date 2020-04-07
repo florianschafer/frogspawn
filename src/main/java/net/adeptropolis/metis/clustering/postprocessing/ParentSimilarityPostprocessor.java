@@ -86,7 +86,7 @@ class ParentSimilarityPostprocessor implements Postprocessor {
   private Cluster nearestAncestorSatisfyingOverlap(Cluster cluster) {
     Cluster parent = cluster.getParent();
     AtomicInteger predicateChecks = new AtomicInteger();
-    Cluster first = SequencePredicates.findFirst(parent, searchStepSize, Cluster::getParent, ancestor -> {
+    Cluster first = SequencePredicates.findFirst(parent, searchStepSize, Cluster.class, Cluster::getParent, ancestor -> {
       predicateChecks.getAndIncrement();
       return overlap(cluster, ancestor) >= minParentOverlap;
     });

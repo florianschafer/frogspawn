@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.graphs.implementations;
+package net.adeptropolis.metis.graphs.labeled;
+
+import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 
 /**
  * A labeled graph.
@@ -48,4 +50,11 @@ public class LabeledGraph<V> {
     return labels[vertexId];
   }
 
+  /**
+   * @return All vertex-label mappings
+   */
+
+  public V[] getLabels() {
+    return labels;
+  }
 }
