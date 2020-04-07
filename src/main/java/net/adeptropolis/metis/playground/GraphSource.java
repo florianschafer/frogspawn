@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis;
+package net.adeptropolis.metis.playground;
 
 import java.util.stream.IntStream;
 import java.util.stream.Stream;

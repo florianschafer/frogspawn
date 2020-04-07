@@ -6,7 +6,7 @@
 package net.adeptropolis.metis.graphs;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.metis.Edge;
+import net.adeptropolis.metis.playground.Edge;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.metis.graphs.traversal.EdgeConsumer;

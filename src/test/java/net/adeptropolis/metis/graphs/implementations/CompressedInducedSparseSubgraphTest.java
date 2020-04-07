@@ -8,7 +8,7 @@ package net.adeptropolis.metis.graphs.implementations;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntList;
-import net.adeptropolis.metis.Edge;
+import net.adeptropolis.metis.playground.Edge;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.VertexIterator;

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis;
+package net.adeptropolis.metis.playground;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +37,7 @@ public class LabeledTSVGraphSource implements GraphSource {
     parseLabeledEdges()
             .flatMap(edge -> Stream.of(edge.u, edge.v))
             .parallel()
-            .forEach(label -> indices.computeIfAbsent(label, (x) -> currentIdx.getAndIncrement()));
+            .forEach(label -> indices.computeIfAbsent(label, x -> currentIdx.getAndIncrement()));
     return indices;
   }
 
