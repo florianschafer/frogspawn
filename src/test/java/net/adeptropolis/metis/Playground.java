@@ -17,47 +17,32 @@ import org.junit.Test;
 import java.io.FileNotFoundException;
 import java.nio.file.Paths;
 
+import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_COMBINED;
 import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_WEIGHTS;
+
+/**
+ * !!!
+ * Please ignore this class. It's only being used for manual testing and will go away soon
+ * !!!
+ */
 
 @Ignore("Manual testing")
 public class Playground {
 
   @Test
-  public void siemens() throws FileNotFoundException {
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/tmp/siemens.tsv"));
-    ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinVertexConsistency(0.4)
-            .withMinparentOverlap(0.7)
-            .withMinClusterSize(10)
-            .build();
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-    g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
-    CompressedSparseGraph graph = builder.build();
-    Cluster root = new RecursiveClustering(graph, settings).run();
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 200, false, DESCENDING_WEIGHTS);
-    TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/siemens_results.txt"), digester, g.inverseLabels());
-    textSink.consume(root);
-  }
-
-  @Test
   public void standardClustering() throws FileNotFoundException {
-//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
+    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.very_large.tsv"));
 //    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.10M.tsv"));
-    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
+//    LabeledTSVGraphSource g = new LabeledTSVGraphSource(Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv"));
     ClusteringSettings settings = ClusteringSettings.builder()
-//            .withTrailSize(18)
-//            .withConvergenceThreshold(0.9)
             .withMinVertexConsistency(0.05)
-//            .withMinparentOverlap(0.15)
-//            .withMinparentOverlap(0.55)
-//            .withParentSearchStepSize(40)
             .build();
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     g.edges().sequential().forEach(e -> builder.add(e.u, e.v, e.weight));
     CompressedSparseGraph graph = builder.build();
     Cluster root = new RecursiveClustering(graph, settings).run();
-//    ClusterDigester digester = new TopWeightsAggregateClusterDigester(1000, graph);
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, DESCENDING_WEIGHTS);
+//    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, DESCENDING_WEIGHTS);
+    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, DESCENDING_COMBINED.apply(1.5));
     TextSink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters14.txt"), digester, g.inverseLabels());
 //    LeafTextSink textSink = new LeafTextSink(Paths.get("/home/florian/tmp/clusters16.txt"), digester, g.inverseLabels());
     textSink.consume(root);
