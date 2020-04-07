@@ -411,7 +411,7 @@ public class GraphTestBase {
     }
   }
 
-  protected static class CollectingEdgeConsumer implements EdgeConsumer {
+  public static class CollectingEdgeConsumer implements EdgeConsumer {
 
     private final List<Edge> edges = new ArrayList<>();
 
