@@ -84,11 +84,7 @@ public class ConnectedComponents implements EdgeConsumer {
    */
 
   private void processComponent(int i) {
-    /*
-    component.clear();
-    Unfortunately the line below is way faster than any clear() on a suitable data structure. Let the GC have fun with it.
-     */
-    component = new IntOpenHashSet();
+    component = new IntOpenHashSet(); // Much much faster than IntOpenHashSet::clear() :O
     componentQueue.clear();
     componentQueue.add(i);
     while (!componentQueue.isEmpty()) {

@@ -9,6 +9,7 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
@@ -56,13 +57,13 @@ public class BigDoubles implements LongComparator, BigSwapper {
    */
 
   public void resize(long capacity) {
-    int currentbins = (data != null) ? data.length : 0;
+    int currentBins = (data != null) ? data.length : 0;
     int requestedBins = Math.max(1, (int) (((capacity - 1) >> BIN_BITS) + 1));
-    if (requestedBins == currentbins) return;
+    if (requestedBins == currentBins) return;
     double[][] newData = new double[requestedBins][];
-    if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentbins, requestedBins));
-    for (int i = currentbins; i < requestedBins; i++) newData[i] = new double[1 << BIN_BITS];
-    if (currentbins > requestedBins) size = capacity;
+    if (data != null) System.arraycopy(data, 0, newData, 0, Math.min(currentBins, requestedBins));
+    for (int i = currentBins; i < requestedBins; i++) newData[i] = new double[1 << BIN_BITS];
+    if (currentBins > requestedBins) size = capacity;
     data = newData;
   }
 
@@ -150,6 +151,14 @@ public class BigDoubles implements LongComparator, BigSwapper {
     set(idx2, val1);
   }
 
+
+  /**
+   * Compare with another object. Only used for testing.
+   *
+   * @param obj Object to be compared against
+   * @return True if the other object is an instance of <code>BigDoubles</code> and all entries agree. Otherwise <code>false</code>.
+   */
+
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof BigDoubles)) return false;
@@ -158,6 +167,23 @@ public class BigDoubles implements LongComparator, BigSwapper {
     for (int i = 0; i < size; i++) if (get(i) != other.get(i)) return false;
     return true;
   }
+
+  /**
+   * @return Hash code of this object. Just implemented to shut up SonarLint
+   */
+
+  @Override
+  public int hashCode() {
+    HashCodeBuilder builder = new HashCodeBuilder();
+    for (long i = 0; i < size; i++) {
+      builder.append(get(i));
+    }
+    return builder.hashCode();
+  }
+
+  /**
+   * @return A string representation of this object
+   */
 
   @Override
   public String toString() {

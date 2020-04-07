@@ -64,6 +64,7 @@ public final class ParallelVertexOps extends ParallelOps implements Runnable {
     try {
       latch.await();
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
       throw new ParallelOpsException(e);
     }
   }

@@ -49,6 +49,7 @@ public class ClusteringSettings {
    * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
    */
 
+  @SuppressWarnings("squid:S00107")
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minVertexConsistency,
                              double minParentOverlap, int parentSearchStepSize, int trailSize,
                              double convergenceThreshold, int maxIterations, long randomSeed, List<Postprocessor> customPostprocessors) {
@@ -180,7 +181,7 @@ public class ClusteringSettings {
     private int trailSize = 20;
     private double convergenceThreshold = 0.95; // Note that values <= ~0.75-0.8 actually degrade performance
     private long randomSeed = 42133742L;
-    private List<Postprocessor> customPostprocessors = Lists.newArrayList();
+    private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
     private int maxIterations = 540; // Set as twice the 99.9% quantile of the required iterations on a large sample within a parameter range of 15-35 for trail size and 0.9-0.98 for convergence threshold
 
     /**

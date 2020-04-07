@@ -31,8 +31,6 @@ import java.util.Arrays;
  * @see net.adeptropolis.metis.helpers.Vectors#normalize2Sig(double[])
  */
 
-// TODO: check whether caching the results of hasConstantTrail would further improve performance
-
 public class ConstantSigTrailConvergence implements PartialConvergenceCriterion {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConstantSigTrailConvergence.class.getSimpleName());

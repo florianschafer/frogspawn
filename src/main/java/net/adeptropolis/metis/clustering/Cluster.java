@@ -252,7 +252,7 @@ public class Cluster {
    * @return Cluster id used for stable child sorting (determinism)
    */
 
-  public int getId() {
+  private int getId() {
     return id;
   }
 

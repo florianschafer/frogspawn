@@ -42,7 +42,7 @@ public class CompressedSparseGraphDatastore {
    * @param weights   Edge weights
    */
 
-  public CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
+  CompressedSparseGraphDatastore(int size, long edgeCount, long[] pointers, BigInts edges, BigDoubles weights) {
     this.size = size;
     this.edgeCount = edgeCount;
     this.pointers = pointers;

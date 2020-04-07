@@ -30,7 +30,7 @@ class MemberSortOps implements IntComparator, Swapper {
    * @param comparator Indirect comparator for cluster vertices
    */
 
-  MemberSortOps(int[] vertices, double[] weights, double[] scores, ClusterMemberComparator comparator) {
+  private MemberSortOps(int[] vertices, double[] weights, double[] scores, ClusterMemberComparator comparator) {
     this.vertices = vertices;
     this.weights = weights;
     this.scores = scores;

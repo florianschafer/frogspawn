@@ -33,7 +33,7 @@ public class TextSink implements Sink {
    * @param path         Path to the output file
    * @param digester     Digester to use
    * @param vertexLabels Array used to map between vertex ids and the String values represented by that vertex
-   * @throws FileNotFoundException
+   * @throws FileNotFoundException Thrown if output path does not exist
    * @see ClusterDigester
    */
 

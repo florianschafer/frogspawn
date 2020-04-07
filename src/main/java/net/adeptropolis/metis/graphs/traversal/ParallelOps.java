@@ -14,18 +14,18 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Base class for parallel graph traversal operations
  */
 
-public abstract class ParallelOps {
+abstract class ParallelOps {
 
   /**
    * Minimum number of vertices required to allow for parallel traversal (as opposed to single-threaded)
    */
-  public static final int PARALLELIZATION_THRESHOLD = 128;
+  static final int PARALLELIZATION_THRESHOLD = 128;
 
-  public static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
+  static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
   static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
           THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new DaemonThreadFactory());
 
-  protected final Graph graph;
+  final Graph graph;
   final int slice;
   final CountDownLatch latch;
 
@@ -52,6 +52,7 @@ public abstract class ParallelOps {
     }
 
     @Override
+    @SuppressWarnings("NullableProblems")
     public Thread newThread(Runnable runnable) {
       Thread thread = new Thread(runnable, String.format("worker-thread-%d", threadId.getAndIncrement()));
       thread.setDaemon(true);

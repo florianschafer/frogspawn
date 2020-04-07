@@ -22,14 +22,15 @@ public class ClusterDigester {
 
   public static final ClusterMemberComparator DESCENDING_WEIGHTS = (vertices, weights, scores, i, j) -> Double.compare(weights[j], weights[i]);
   public static final ClusterMemberComparator DESCENDING_SCORES = (vertices, weights, scores, i, j) -> Double.compare(scores[j], scores[i]);
-  public static final Function<Double, ClusterMemberComparator> DESCENDING_COMBINED = (weightExp) -> (vertices, weights, scores, i, j) -> Double.compare(
-                  Math.pow(weights[j], weightExp) * scores[j],
-                  Math.pow(weights[i], weightExp) * scores[i]);
+  public static final Function<Double, ClusterMemberComparator> DESCENDING_COMBINED = weightExp -> (vertices, weights, scores, i, j) -> Double.compare(
+          Math.pow(weights[j], weightExp) * scores[j],
+          Math.pow(weights[i], weightExp) * scores[i]);
 
   private final ConsistencyMetric metric;
   private final int maxSize;
   private final boolean aggregate;
   private final ClusterMemberComparator comparator;
+
   /**
    * Constructor
    *

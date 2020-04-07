@@ -208,7 +208,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
 
     private final AtomicLong cnt;
 
-    public EdgeCountingConsumer() {
+    EdgeCountingConsumer() {
       cnt = new AtomicLong();
     }
 
@@ -217,7 +217,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
       cnt.incrementAndGet();
     }
 
-    public long getCount() {
+    long getCount() {
       return cnt.get();
     }
 

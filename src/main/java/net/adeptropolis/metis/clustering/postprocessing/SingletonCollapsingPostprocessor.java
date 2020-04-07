@@ -11,10 +11,6 @@ import net.adeptropolis.metis.clustering.Cluster;
  * Singleton collapsing postprocessor
  */
 
-// TODO: This postprocessor is inexplicably slow when executed bottom up. Check whether
-//  a) an unexpectedly high amount of singletons is created or
-//  b) the queue depth order criterion (OrderedBTT) is so expensive.
-
 class SingletonCollapsingPostprocessor implements Postprocessor {
 
   /**

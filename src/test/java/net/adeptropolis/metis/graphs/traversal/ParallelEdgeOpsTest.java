@@ -25,6 +25,7 @@ public class ParallelEdgeOpsTest extends GraphTestBase implements Thread.Uncaugh
 
   @Test
   @Ignore("Intended for performance debugging")
+  @SuppressWarnings("squid:S2699")
   public void perfTest() {
     Graph graph = bandedGraph(120000, 20);
     while (true) {
