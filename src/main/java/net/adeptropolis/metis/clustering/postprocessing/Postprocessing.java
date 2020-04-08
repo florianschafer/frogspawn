@@ -80,10 +80,9 @@ public class Postprocessing {
    * Apply a specific postprocessor to the full cluster hierarchy, bottom-up
    *
    * @param postprocessor Postprocessor
-   * @return true if the cluster hierarchy has been changed, else false
    */
 
-  private boolean applyPostprocessor(Postprocessor postprocessor) {
+  private void applyPostprocessor(Postprocessor postprocessor) {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
@@ -91,7 +90,6 @@ public class Postprocessing {
     stopWatch.stop();
     LOG.debug("{} finished in {}. There were {} to the cluster hierarchy.",
             postprocessor.getClass().getSimpleName(), stopWatch, changed ? "changes" : "no changes");
-    return changed;
   }
 
   /**

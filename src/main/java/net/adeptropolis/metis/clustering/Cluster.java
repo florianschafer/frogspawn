@@ -27,6 +27,8 @@ public class Cluster {
 
   private static final AtomicInteger CURR_ID = new AtomicInteger(Integer.MIN_VALUE);
   private static final Comparator<Cluster> DETERMINISTIC_CHILD_COMPARATOR = Comparator.comparingInt(Cluster::getId);
+  private static final long HASH_MULTIPLIER_PRIME = 8388581L;
+  private static final long HASH_MOD_PRIME = 2147483647L;
 
   private final SortedSet<Cluster> children;
   private final int id;
@@ -259,30 +261,32 @@ public class Cluster {
   /**
    * Equals
    *
-   * <p>Please note that due to the fact that clusters may be wildly modified in the process and still two clusters should only
-   * be regarded as equal if they refer to the same instance. The call below is just there as a reminder of this fact.</p>
+   * <p>Note: Cluster equality refers to identical instances instead of the content of its members.
+   * Thus, two clusters are considered equal if and only if they have the same id.</p>
    *
-   * @param obj The reference object with which to compare.
+   * @param obj The reference object to compare against.
    * @return True if this object is the same as the obj argument; false otherwise.
    */
 
   @Override
   public boolean equals(Object obj) {
-    return super.equals(obj);
+    if (!(obj instanceof Cluster)) return false;
+    Cluster other = (Cluster) obj;
+    return other.getId() == getId();
   }
 
   /**
    * Hash Code
    *
-   * <p>Please note that due to the fact that clusters may be wildly modified in the process and still two clusters should only
-   * yield the same hash code if they refer to the same instance. The call below is just there as a reminder of this fact.</p>
+   * <p>Note: With the cluster id, there is already a unique integer value representing a particular cluster instance.
+   * This hash function merely spreads out the ids over the full int range.</p>
    *
    * @return A hash code value for this object.
    */
 
   @Override
   public int hashCode() {
-    return super.hashCode();
+    return (int) ((HASH_MULTIPLIER_PRIME * getId()) % HASH_MOD_PRIME);
   }
 
   /**

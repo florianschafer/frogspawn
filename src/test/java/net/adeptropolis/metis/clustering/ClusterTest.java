@@ -17,8 +17,7 @@ import java.util.Set;
 
 import static it.unimi.dsi.fastutil.ints.IntComparators.NATURAL_COMPARATOR;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class ClusterTest {
 
@@ -127,5 +126,26 @@ public class ClusterTest {
     assertThat(root.aggregateClusters(), is(ImmutableSet.of(root, child1, child2)));
   }
 
+  @Test
+  public void equality() {
+    Cluster cluster1 = new Cluster((Graph) null);
+    Cluster cluster2 = new Cluster((Cluster)cluster1);
+    assertThat(cluster1, is(cluster1));
+    assertThat(cluster2, is(cluster2));
+    assertThat(cluster1, not(is(cluster2)));
+    assertThat(cluster2, not(is(cluster1)));
+  }
+
+  @Test
+  public void hashes() {
+    Cluster cluster1 = new Cluster((Graph) null);
+    Cluster cluster2 = new Cluster((Cluster)cluster1);
+    int hash1 = cluster1.hashCode();
+    int hash2 = cluster2.hashCode();
+    assertThat(hash1, is(hash1));
+    assertThat(hash2, is(hash2));
+    assertThat(hash1, not(is(hash2)));
+    assertThat(hash2, not(is(hash1)));
+  }
 
 }

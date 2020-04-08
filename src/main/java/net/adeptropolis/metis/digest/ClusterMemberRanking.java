@@ -6,8 +6,8 @@
 package net.adeptropolis.metis.digest;
 
 @FunctionalInterface
-public interface ClusterMemberComparator {
+public interface ClusterMemberRanking {
 
-  int compare(int[] vertices, double[] weights, double[] scores, int i, int j);
+  double compute(int vertexId, double weight, double score);
 
 }

@@ -13,7 +13,7 @@ import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_WEIGHTS;
+import static net.adeptropolis.metis.digest.ClusterDigester.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
@@ -59,7 +59,7 @@ public class ClusterDigesterTest {
     c2.addToRemainder(IntIterators.wrap(new int[]{6, 7}));
     Cluster c22 = new Cluster(c2);
     c2.addToRemainder(IntIterators.wrap(new int[]{8, 9}));
-    Digest digest = new ClusterDigester(metric, 3, true, DESCENDING_WEIGHTS).create(c2);
+    Digest digest = new ClusterDigester(metric, 3, true, WEIGHT_RANKING).create(c2);
     assertThat(digest.getVertices().length, is(3));
     assertThat(digest.getVertices()[0], is(5));
     assertThat(digest.getVertices()[1], is(4));
@@ -82,7 +82,7 @@ public class ClusterDigesterTest {
             .build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1}));
-    Digest digest = new ClusterDigester(metric, 3, true, DESCENDING_WEIGHTS).create(root);
+    Digest digest = new ClusterDigester(metric, 3, true, WEIGHT_RANKING).create(root);
     assertThat(digest.getVertices().length, is(2));
     assertThat(digest.getWeights().length, is(2));
     assertThat(digest.getScores().length, is(2));
@@ -93,7 +93,7 @@ public class ClusterDigesterTest {
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder().build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{}));
-    Digest digest = new ClusterDigester(metric, 3, true, DESCENDING_WEIGHTS).create(root);
+    Digest digest = new ClusterDigester(metric, 3, true, WEIGHT_RANKING).create(root);
     assertThat(digest.getVertices().length, is(0));
     assertThat(digest.getWeights().length, is(0));
     assertThat(digest.getScores().length, is(0));
@@ -109,7 +109,7 @@ public class ClusterDigesterTest {
             .build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    Digest digest = new ClusterDigester(metric, 2, false, DESCENDING_WEIGHTS).create(root);
+    Digest digest = new ClusterDigester(metric, 2, false, WEIGHT_RANKING).create(root);
     assertThat(digest.size(), is(2));
     assertThat(digest.totalSize(), is(4));
     assertThat(digest.getVertices()[0], is(0));

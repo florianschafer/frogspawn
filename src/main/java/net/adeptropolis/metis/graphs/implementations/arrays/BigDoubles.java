@@ -5,7 +5,6 @@
 
 package net.adeptropolis.metis.graphs.implementations.arrays;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
@@ -188,21 +187,6 @@ public class BigDoubles implements LongComparator, BigSwapper {
   @Override
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
-  }
-
-  /**
-   * <b>Only for testing</b> (obviously)
-   *
-   * @return A primitive array representation of this object
-   */
-
-  public double[] toArray() {
-    Preconditions.checkState(size <= Integer.MAX_VALUE);
-    double[] arr = new double[Math.toIntExact(size())];
-    for (int i = 0; i < size(); i++) {
-      arr[i] = get(i);
-    }
-    return arr;
   }
 
 }

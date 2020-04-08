@@ -20,16 +20,15 @@ import java.util.function.Function;
 
 public class ClusterDigester {
 
-  public static final ClusterMemberComparator DESCENDING_WEIGHTS = (vertices, weights, scores, i, j) -> Double.compare(weights[j], weights[i]);
-  public static final ClusterMemberComparator DESCENDING_SCORES = (vertices, weights, scores, i, j) -> Double.compare(scores[j], scores[i]);
-  public static final Function<Double, ClusterMemberComparator> DESCENDING_COMBINED = weightExp -> (vertices, weights, scores, i, j) -> Double.compare(
-          Math.pow(weights[j], weightExp) * scores[j],
-          Math.pow(weights[i], weightExp) * scores[i]);
+  public static final ClusterMemberRanking WEIGHT_RANKING = (vertexId, weight, score) -> weight;
+  public static final ClusterMemberRanking SCORE_RANKING = (vertexId, weight, score) -> score;
+  public static final Function<Double, ClusterMemberRanking> COMBINED_RANKING
+          = weightExp -> (vertexId, weight, score) -> Math.pow(weight, weightExp) * score;
 
   private final ConsistencyMetric metric;
   private final int maxSize;
   private final boolean aggregate;
-  private final ClusterMemberComparator comparator;
+  private final ClusterMemberRanking comparator;
 
   /**
    * Constructor
@@ -40,7 +39,7 @@ public class ClusterDigester {
    * @param comparator Indirect comparator for cluster member sorting
    */
 
-  public ClusterDigester(ConsistencyMetric metric, int maxSize, boolean aggregate, ClusterMemberComparator comparator) {
+  public ClusterDigester(ConsistencyMetric metric, int maxSize, boolean aggregate, ClusterMemberRanking comparator) {
     this.metric = metric;
     this.maxSize = maxSize;
     this.aggregate = aggregate;

@@ -8,8 +8,8 @@ package net.adeptropolis.metis.digest;
 import org.junit.Before;
 import org.junit.Test;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_SCORES;
-import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_WEIGHTS;
+import static net.adeptropolis.metis.digest.ClusterDigester.SCORE_RANKING;
+import static net.adeptropolis.metis.digest.ClusterDigester.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
@@ -29,37 +29,37 @@ public class MemberSortOpsTest {
 
   @Test
   public void sortByCustomAscendingVertex() {
-    sort((vertices, weights, scores, i, j) -> Double.compare(vertices[i], vertices[j]));
+    sort((vertexId, weight, score) -> -vertexId);
     assertIsAscending();
   }
 
   @Test
   public void sortByCustomDescendingVertex() {
-    sort((vertices, weights, scores, i, j) -> Double.compare(vertices[j], vertices[i]));
+    sort((vertexId, weight, score) -> vertexId);
     assertIsDescending();
   }
 
   @Test
   public void sortByWeight() {
-    sort(DESCENDING_WEIGHTS);
+    sort(WEIGHT_RANKING);
     assertIsDescending();
   }
 
   @Test
   public void sortByCustomAscendingWeight() {
-    sort((vertices, weights, scores, i, j) -> Double.compare(weights[i], weights[j]));
+    sort((vertexId, weight, score) -> -weight);
     assertIsAscending();
   }
 
   @Test
   public void sortByScore() {
-    sort(DESCENDING_SCORES);
+    sort(SCORE_RANKING);
     assertIsDescending();
   }
 
   @Test
   public void sortByCustomAscendingScore() {
-    sort((vertices, weights, scores, i, j) -> Double.compare(scores[i], scores[j]));
+    sort((vertexId, weight, score) -> -score);
     assertIsAscending();
   }
 
@@ -81,8 +81,8 @@ public class MemberSortOpsTest {
     assertThat(scores[1], closeTo(100d, 1E-6));
   }
 
-  private void sort(ClusterMemberComparator comparator) {
-    MemberSortOps.sort(vertices, weights, scores, comparator);
+  private void sort(ClusterMemberRanking ranking) {
+    MemberSortOps.sort(vertices, weights, scores, ranking);
   }
 
 }

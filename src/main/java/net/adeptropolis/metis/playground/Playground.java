@@ -19,7 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_COMBINED;
+import static net.adeptropolis.metis.digest.ClusterDigester.COMBINED_RANKING;
 
 /**
  * !!!
@@ -38,13 +38,13 @@ public class Playground {
   }
 
   private void standardClustering() throws IOException {
-    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(SMALL_GRAPH));
+    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(LARGE_GRAPH));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexConsistency(0.05)
             .withMinparentOverlap(0.65)
             .build();
     Cluster root = new RecursiveClustering(labeledGraph.getGraph(), settings).run();
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, DESCENDING_COMBINED.apply(1.75));
+    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, COMBINED_RANKING.apply(1.75));
     Sink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters15.txt"), digester, labeledGraph.getLabels());
     textSink.consume(root);
 

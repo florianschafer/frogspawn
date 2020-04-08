@@ -19,35 +19,35 @@ class MemberSortOps implements IntComparator, Swapper {
   private final int[] vertices;
   private final double[] weights;
   private final double[] scores;
-  private final ClusterMemberComparator comparator;
+  private final ClusterMemberRanking ranking;
 
   /**
    * Constructor
    *
-   * @param vertices   Vertices
-   * @param weights    Vertex weights
-   * @param scores     Vertex consistency scores
-   * @param comparator Indirect comparator for cluster vertices
+   * @param vertices Vertices
+   * @param weights  Vertex weights
+   * @param scores   Vertex consistency scores
+   * @param ranking  Intra-cluster vertex ranking function
    */
 
-  private MemberSortOps(int[] vertices, double[] weights, double[] scores, ClusterMemberComparator comparator) {
+  private MemberSortOps(int[] vertices, double[] weights, double[] scores, ClusterMemberRanking ranking) {
     this.vertices = vertices;
     this.weights = weights;
     this.scores = scores;
-    this.comparator = comparator;
+    this.ranking = ranking;
   }
 
   /**
-   * Sort a given (vertices, weights, scores)-triple using a supplied indirect comparator
+   * Sort a given (vertices, weights, scores)-triple using a supplied vertex ranking
    *
-   * @param vertices   Cluster vertices
-   * @param weights    Vertex weights
-   * @param scores     Vertex scores
-   * @param comparator Indirect comparator
+   * @param vertices Cluster vertices
+   * @param weights  Vertex weights
+   * @param scores   Vertex scores
+   * @param ranking  Intra-cluster vertex ranking function
    */
 
-  public static void sort(int[] vertices, double[] weights, double[] scores, ClusterMemberComparator comparator) {
-    MemberSortOps ops = new MemberSortOps(vertices, weights, scores, comparator);
+  public static void sort(int[] vertices, double[] weights, double[] scores, ClusterMemberRanking ranking) {
+    MemberSortOps ops = new MemberSortOps(vertices, weights, scores, ranking);
     Arrays.mergeSort(0, vertices.length, ops, ops);
   }
 
@@ -66,16 +66,18 @@ class MemberSortOps implements IntComparator, Swapper {
   }
 
   /**
-   * Compare two indices by their associated weight
+   * Compare two indices by the supplied ranking function. Defaults to descending order!
    *
    * @param i First index
    * @param j Second index
-   * @return -1 if <code>weights[j] &lt; weights[i]</code>, 0 if equal, 1 otherwise
+   * @return -1 if the ranking function of i is greater than that of j. 1 Otherwise.
    */
 
   @Override
   public int compare(int i, int j) {
-    return comparator.compare(vertices, weights, scores, i, j);
+    return Double.compare(
+            ranking.compute(vertices[j], weights[j], scores[j]),
+            ranking.compute(vertices[i], weights[i], scores[i]));
   }
 
 }

@@ -1,9 +1,9 @@
- - Supply some default index mapping machinery
- - Move playground from tests into a proper main
+ - Create new Cluster class with just parent/child relationships and stream<U> + some supplied
+   Function<Digest, Stream<U>> or just U and stream is a potential option for that
+ - Possibly remove old convergence criteria?
+ - Try out having a more strict consistency threshold for the postfilter
+ - Update documentation
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
- - Check whether it's possible to parallelize the singleton postprocessor
- - Parallel cluster tree traversal (?)
- - Fix size <-> order nomenclature issues
  - Write some proper math documentation
  - CUDA
  - Check whether it makes sense to replace custom big array with fastutil's

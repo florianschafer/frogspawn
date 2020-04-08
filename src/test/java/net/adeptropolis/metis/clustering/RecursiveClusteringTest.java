@@ -19,7 +19,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.DESCENDING_WEIGHTS;
+import static net.adeptropolis.metis.digest.ClusterDigester.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -105,7 +105,7 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 0, false, DESCENDING_WEIGHTS);
+    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 0, false, WEIGHT_RANKING);
     long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
     for (int i = 0; i < rounds - 1; i++) {
       long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
