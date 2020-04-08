@@ -61,7 +61,7 @@ public class TextSink implements Sink {
    */
 
   private void traverse(Cluster cluster, String prefix) {
-    Digest digest = digester.create(cluster);
+    Digest digest = digester.digest(cluster);
     String labelStr = IntStream.range(0, digest.size())
             .mapToObj(i -> vertexLabels[digest.getVertices()[i]])
             .collect(Collectors.joining(", "));

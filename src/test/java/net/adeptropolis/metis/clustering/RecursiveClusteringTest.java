@@ -114,7 +114,7 @@ public class RecursiveClusteringTest {
   }
 
   private long hierarchyFingerprint(Cluster cluster, ClusterDigester digester) {
-    Digest digest = digester.create(cluster);
+    Digest digest = digester.digest(cluster);
     long fp = cluster.depth() + digestFingerprint(digest);
     for (Cluster child : cluster.getChildren()) {
       fp += hierarchyFingerprint(child, digester);

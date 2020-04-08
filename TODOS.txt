@@ -1,6 +1,5 @@
  - Create new Cluster class with just parent/child relationships and stream<U> + some supplied
    Function<Digest, Stream<U>> or just U and stream is a potential option for that
- - Possibly remove old convergence criteria?
  - Try out having a more strict consistency threshold for the postfilter
  - Update documentation
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing

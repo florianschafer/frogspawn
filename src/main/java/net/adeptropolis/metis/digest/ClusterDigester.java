@@ -53,7 +53,7 @@ public class ClusterDigester {
    * @return New cluster digest
    */
 
-  public Digest create(Cluster cluster) {
+  public Digest digest(Cluster cluster) {
     Graph graph = aggregate ? cluster.aggregateGraph() : cluster.remainderGraph();
     int[] vertices = graph.collectVertices();
     double[] weights = graph.weights();
