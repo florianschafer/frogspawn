@@ -22,7 +22,6 @@ public class Digest {
   private final double[] weights;
   private final double[] scores;
   private final int totalSize;
-  private final int depth;
 
   /**
    * Constructor
@@ -31,15 +30,13 @@ public class Digest {
    * @param weights   Vertex weights
    * @param scores    Vertex consistency scores
    * @param totalSize Total size of available vertices. Useful if the digest doesn't contain all cluster vertices.
-   * @param depth     Cluster depth within the hierarchy
    */
 
-  Digest(int[] vertices, double[] weights, double[] scores, int totalSize, int depth) {
+  Digest(int[] vertices, double[] weights, double[] scores, int totalSize) {
     this.vertices = vertices;
     this.weights = weights;
     this.scores = scores;
     this.totalSize = totalSize;
-    this.depth = depth;
   }
 
   /**

@@ -9,15 +9,18 @@ import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.RecursiveClustering;
 import net.adeptropolis.metis.digest.ClusterDigester;
+import net.adeptropolis.metis.digest.LabeledDigestMapping;
 import net.adeptropolis.metis.graphs.labeled.LabeledGraph;
 import net.adeptropolis.metis.graphs.labeled.LabeledGraphSource;
-import net.adeptropolis.metis.sinks.Sink;
-import net.adeptropolis.metis.sinks.TextSink;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.stream.Collectors;
 
 import static net.adeptropolis.metis.digest.ClusterDigester.COMBINED_RANKING;
 
@@ -41,13 +44,25 @@ public class Playground {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(LARGE_GRAPH));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexConsistency(0.05)
-            .withMinparentOverlap(0.65)
+            .withMinparentOverlap(0.60)
             .build();
     Cluster root = new RecursiveClustering(labeledGraph.getGraph(), settings).run();
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 1000, false, COMBINED_RANKING.apply(1.75));
-    Sink textSink = new TextSink(Paths.get("/home/florian/tmp/clusters15.txt"), digester, labeledGraph.getLabels());
-    textSink.consume(root);
+    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 0, false, COMBINED_RANKING.apply(1.75));
+    LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
+    export("/home/florian/tmp/clusters16.txt", labeledGraph, root, digester, mapping);
 
+  }
+
+  private void export(String path, LabeledGraph<String> labeledGraph, Cluster root, ClusterDigester digester, LabeledDigestMapping<String, String> mapping) throws FileNotFoundException {
+    PrintWriter w = new PrintWriter(path);
+    root.traverse(cluster -> {
+      String c = digester.digest(cluster)
+              .map(mapping, labeledGraph.getLabels())
+              .collect(Collectors.joining(", "));
+      String d = StringUtils.repeat("==", cluster.depth());
+      w.printf("%s> %s\n", d, c);
+    });
+    w.close();
   }
 
 }
