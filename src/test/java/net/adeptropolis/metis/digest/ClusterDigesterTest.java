@@ -13,6 +13,8 @@ import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Test;
 
+import java.util.stream.Collectors;
+
 import static net.adeptropolis.metis.digest.ClusterDigester.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
@@ -101,15 +103,7 @@ public class ClusterDigesterTest {
 
   @Test
   public void remainderOnly() {
-    ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
-            .add(0, 1, 1)
-            .add(0, 2, 2)
-            .add(0, 3, 3)
-            .build();
-    Cluster root = new Cluster(graph);
-    root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    Digest digest = new ClusterDigester(metric, 2, false, WEIGHT_RANKING).digest(root);
+    Digest digest = defaultDigest();
     assertThat(digest.size(), is(2));
     assertThat(digest.totalSize(), is(4));
     assertThat(digest.getVertices()[0], is(0));
@@ -118,5 +112,33 @@ public class ClusterDigesterTest {
     assertThat(digest.getWeights()[1], closeTo(3, 1E-6));
   }
 
+  @Test
+  public void mapping() {
+    String digestFingerprint = defaultDigest()
+            .map((vertexId, weight, score) -> String.format("%d|%.1f|%.1f", vertexId, weight, score))
+            .collect(Collectors.joining(","));
+    assertThat(digestFingerprint, is("0|6.0|1.0,3|3.0|1.0"));
+  }
+
+  @Test
+  public void labeledMapping() {
+    String[] labels = new String[]{"[0]", "[1]", "[2]", "[3]"};
+    String digestFingerprint = defaultDigest()
+            .map((label, weight, score) -> String.format("%s|%.1f|%.1f", label, weight, score), labels)
+            .collect(Collectors.joining(","));
+    assertThat(digestFingerprint, is("[0]|6.0|1.0,[3]|3.0|1.0"));
+  }
+
+  private Digest defaultDigest() {
+    ConsistencyMetric metric = new RelativeWeightConsistencyMetric();
+    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(0, 2, 2)
+            .add(0, 3, 3)
+            .build();
+    Cluster root = new Cluster(graph);
+    root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
+    return new ClusterDigester(metric, 2, false, WEIGHT_RANKING).digest(root);
+  }
 
 }

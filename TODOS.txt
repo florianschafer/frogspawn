@@ -1,7 +1,5 @@
- - Create new Cluster class with just parent/child relationships and stream<U> + some supplied
-   Function<Digest, Stream<U>> or just U and stream is a potential option for that
- - Try out having a more strict consistency threshold for the postfilter
  - Update documentation
+ - Try out having a more strict consistency threshold for the postfilter
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
  - Write some proper math documentation
  - CUDA

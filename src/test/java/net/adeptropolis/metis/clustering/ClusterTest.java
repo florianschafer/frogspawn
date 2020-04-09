@@ -129,7 +129,7 @@ public class ClusterTest {
   @Test
   public void equality() {
     Cluster cluster1 = new Cluster((Graph) null);
-    Cluster cluster2 = new Cluster((Cluster)cluster1);
+    Cluster cluster2 = new Cluster(cluster1);
     assertThat(cluster1, is(cluster1));
     assertThat(cluster2, is(cluster2));
     assertThat(cluster1, not(is(cluster2)));
@@ -139,7 +139,7 @@ public class ClusterTest {
   @Test
   public void hashes() {
     Cluster cluster1 = new Cluster((Graph) null);
-    Cluster cluster2 = new Cluster((Cluster)cluster1);
+    Cluster cluster2 = new Cluster(cluster1);
     int hash1 = cluster1.hashCode();
     int hash2 = cluster2.hashCode();
     assertThat(hash1, is(hash1));

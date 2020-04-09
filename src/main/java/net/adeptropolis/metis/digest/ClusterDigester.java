@@ -60,9 +60,9 @@ public class ClusterDigester {
     double[] consistencyScores = metric.compute(cluster.rootGraph(), graph);
     MemberSortOps.sort(vertices, weights, consistencyScores, comparator);
     if (maxSize > 0) {
-      return subsetDigest(vertices, weights, consistencyScores, graph.order());
+      return subsetDigest(vertices, weights, consistencyScores, vertices.length, cluster.depth());
     }
-    return new Digest(vertices, weights, consistencyScores, graph.order());
+    return new Digest(vertices, weights, consistencyScores, vertices.length, cluster.depth());
   }
 
   /**
@@ -72,15 +72,16 @@ public class ClusterDigester {
    * @param weights           Vertex weights
    * @param consistencyScores Vertex consistency scores
    * @param totalSize         Total cluster size
+   * @param depth             Cluster depth within the hierarchy
    * @return New cluster digest
    */
 
-  private Digest subsetDigest(int[] vertices, double[] weights, double[] consistencyScores, int totalSize) {
+  private Digest subsetDigest(int[] vertices, double[] weights, double[] consistencyScores, int totalSize, int depth) {
     return new Digest(
             Arr.shrink(vertices, maxSize),
             Arr.shrink(weights, maxSize),
             Arr.shrink(consistencyScores, maxSize),
-            totalSize);
+            totalSize, depth);
   }
 
 }

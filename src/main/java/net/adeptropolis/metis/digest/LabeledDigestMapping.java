@@ -3,23 +3,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.mapped;
+package net.adeptropolis.metis.digest;
 
 /**
- * Provides a mapping between clusters generated from a labeled graph and effective mapped cluster members
+ * Provides a mapping between cluster digest vertices generated from labeled graphs and custom cluster
+ * member objects
  *
  * @param <V> Vertex label type
- * @param <T> Effective cluster member type
+ * @param <T> Custom cluster member type
  */
 
 @FunctionalInterface
-interface ClusterMemberMapper<V, T> {
+public
+interface LabeledDigestMapping<V, T> {
 
   /**
    * @param vertexLabel Vertex label
    * @param weight      Vertex weight
    * @param score       Vertex consistency score
-   * @return New effective mapped cluster member
+   * @return Custom cluster member object
    */
   T map(V vertexLabel, double weight, double score);
 

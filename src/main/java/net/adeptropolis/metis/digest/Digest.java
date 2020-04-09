@@ -5,6 +5,9 @@
 
 package net.adeptropolis.metis.digest;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 /**
  * <p>A cluster digest</p>
  * <p>Digests are precursors of final cluster outputs and hold three index-aligned lists or vertices, weights and vertex
@@ -19,21 +22,24 @@ public class Digest {
   private final double[] weights;
   private final double[] scores;
   private final int totalSize;
+  private final int depth;
 
   /**
    * Constructor
    *
-   * @param vertices  (Aggregated) cluster vertices
+   * @param vertices  cluster digest vertices
    * @param weights   Vertex weights
    * @param scores    Vertex consistency scores
    * @param totalSize Total size of available vertices. Useful if the digest doesn't contain all cluster vertices.
+   * @param depth     Cluster depth within the hierarchy
    */
 
-  Digest(int[] vertices, double[] weights, double[] scores, int totalSize) {
+  Digest(int[] vertices, double[] weights, double[] scores, int totalSize, int depth) {
     this.vertices = vertices;
     this.weights = weights;
     this.scores = scores;
     this.totalSize = totalSize;
+    this.depth = depth;
   }
 
   /**
@@ -75,4 +81,31 @@ public class Digest {
   public int totalSize() {
     return totalSize;
   }
+
+  /**
+   * Provides a stream of custom digest members
+   *
+   * @param mapper Mapping between cluster digest vertices and custom cluster member objects
+   * @param <T>    Type of the custom cluster member objects
+   * @return Custom cluster member object
+   */
+
+  public <T> Stream<T> map(DigestMapping<T> mapper) {
+    return IntStream.range(0, size())
+            .mapToObj(i -> mapper.map(vertices[i], weights[i], scores[i]));
+  }
+
+  /**
+   * Provides a stream of custom digest members for a labeled graph
+   *
+   * @param mapper Mapping between cluster digest vertices and custom cluster member objects
+   * @param <T>    Type of the custom cluster member objects
+   * @return Custom cluster member object
+   */
+
+  public <V, T> Stream<T> map(LabeledDigestMapping<V, T> mapper, V[] labels) {
+    return IntStream.range(0, size())
+            .mapToObj(i -> mapper.map(labels[vertices[i]], weights[i], scores[i]));
+  }
+
 }

@@ -76,10 +76,9 @@ Here, this procedure is augmented in two important ways: Firstly, instead of ind
 partitions from former steps, a vertex consistency score is computed for every vertex with respect to every potentially
 new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
 to the last cluster tree node where they satisfy the consistency criterion (hence the "sieve"). The same goes for all
-vertices of partitions falling short of a certain minimal size. This approach not only yields and enormous benefit to
-both cluster quality and overall speed, but also (especially in combination with a minimal cluster size)
-introduces a straightforward and comprehensive parameter that puts a strict condition on the desired clustering outcome
-that is inherent to the graph itself.
+vertices of partitions falling short of a certain minimal size. This approach not only yields an enormous benefit to
+both cluster quality and overall speed, but also introduces a straightforward and comprehensive parameter that puts a
+strict condition on the desired clustering outcome that is inherent to the graph itself.
 
 Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed in such a way that
 every cluster is required to satisfy a certain consistency/overlap criterion with regards to its parent. Clusters that do not
