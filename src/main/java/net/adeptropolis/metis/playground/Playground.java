@@ -22,8 +22,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.COMBINED_RANKING;
-
 /**
  * !!!
  * Please ignore this class. It's only being used for manual testing and will go away soon
@@ -44,10 +42,9 @@ public class Playground {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(LARGE_GRAPH));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexConsistency(0.05)
-            .withMinparentOverlap(0.60)
             .build();
-    Cluster root = new RecursiveClustering(labeledGraph.getGraph(), settings).run();
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 0, false, COMBINED_RANKING.apply(1.75));
+    Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
+    ClusterDigester digester = new ClusterDigester(settings);
     LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
     export("/home/florian/tmp/clusters16.txt", labeledGraph, root, digester, mapping);
 

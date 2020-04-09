@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.digest.DigestRanking;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
@@ -17,22 +18,31 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.List;
 
+import static net.adeptropolis.metis.digest.ClusterDigester.COMBINED_RANKING;
+
 /**
  * Stores all relevant clustering settings
  */
 
 public class ClusteringSettings {
 
+  private final List<Postprocessor> customPostprocessors;
   private final ConsistencyMetric consistencyMetric;
   private final int minClusterSize;
   private final double minVertexConsistency;
   private final double minParentOverlap;
   private final int parentSearchStepSize;
+
+  // Power iteration
   private final int trailSize;
   private final double convergenceThreshold;
   private final int maxIterations;
   private final long randomSeed;
-  private final List<Postprocessor> customPostprocessors;
+
+  // Digest creation
+  private final int maxDigestSize;
+  private final boolean aggregateDigests;
+  private final DigestRanking digestRanking;
 
   /**
    * Constructor
@@ -47,12 +57,17 @@ public class ClusteringSettings {
    * @param maxIterations        Maximum number of iterations
    * @param randomSeed           Seed value for random initial value generation
    * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
+   * @param maxDigestSize        Maximum size of cluster digests
+   * @param aggregateDigests     Whether the digester should aggregate descendant clusters
+   * @param digestRanking        Vertex ranking function for cluster digests
    */
 
   @SuppressWarnings("squid:S00107")
   private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minVertexConsistency,
                              double minParentOverlap, int parentSearchStepSize, int trailSize,
-                             double convergenceThreshold, int maxIterations, long randomSeed, List<Postprocessor> customPostprocessors) {
+                             double convergenceThreshold, int maxIterations, long randomSeed,
+                             List<Postprocessor> customPostprocessors, int maxDigestSize, boolean aggregateDigests,
+                             DigestRanking digestRanking) {
     this.consistencyMetric = consistencyMetric;
     this.minClusterSize = minClusterSize;
     this.minVertexConsistency = minVertexConsistency;
@@ -63,6 +78,9 @@ public class ClusteringSettings {
     this.maxIterations = maxIterations;
     this.randomSeed = randomSeed;
     this.customPostprocessors = customPostprocessors;
+    this.maxDigestSize = maxDigestSize;
+    this.aggregateDigests = aggregateDigests;
+    this.digestRanking = digestRanking;
   }
 
   /**
@@ -152,6 +170,30 @@ public class ClusteringSettings {
   }
 
   /**
+   * @return Maximum size of cluster digests
+   */
+
+  public int getMaxDigestSize() {
+    return maxDigestSize;
+  }
+
+  /**
+   * @return Whether the digester should aggregate descendant clusters
+   */
+
+  public boolean isAggregateDigests() {
+    return aggregateDigests;
+  }
+
+  /**
+   * @return Vertex ranking function for cluster digests
+   */
+
+  public DigestRanking getDigestRanking() {
+    return digestRanking;
+  }
+
+  /**
    * @return Settings string representation
    */
 
@@ -168,6 +210,9 @@ public class ClusteringSettings {
             .append("maxIterations", convergenceThreshold)
             .append("randomSeed", randomSeed)
             .append("customPostprocessors", customPostprocessors)
+            .append("maxDigestSize", maxDigestSize)
+            .append("aggregateDigests", aggregateDigests)
+            .append("digestRanking", digestRanking)
             .build();
   }
 
@@ -179,10 +224,17 @@ public class ClusteringSettings {
     private double minVertexConsistency = 0.1;
     private double minParentOverlap = 0.55;
     private int parentSearchStepSize = 32;
+
+    // Power iteration
     private int trailSize = 20;
     private double convergenceThreshold = 0.95; // Note that values <= ~0.75-0.8 actually degrade performance
     private long randomSeed = 42133742L;
     private int maxIterations = 540; // Set as twice the 99.9% quantile of the required iterations on a large sample within a parameter range of 15-35 for trail size and 0.9-0.98 for convergence threshold
+
+    // Digest creation
+    private int maxDigestSize = 0;
+    private boolean aggregateDigests = false;
+    private DigestRanking digestRanking = COMBINED_RANKING.apply(1.75);
 
     /**
      * Set consistency metric. Default is <code>RelativeWeightConsistencyMetric</code>
@@ -280,6 +332,44 @@ public class ClusteringSettings {
     }
 
     /**
+     * Set maximum size of cluster digests. Default is 0 (use all available vertices)
+     *
+     * @param maxDigestSize Maximum digest size
+     * @return this
+     */
+
+    public Builder withMaxDigestSize(int maxDigestSize) {
+      this.maxDigestSize = maxDigestSize;
+      return this;
+    }
+
+    /**
+     * Configure whether the digestor should aggregate all vertices from a cluster's descentents. Default is false,
+     * in which case only the cluster's remainder is processed.
+     *
+     * @param aggregateDigests Whether the digester should aggregate descendant clusters
+     * @return this
+     */
+
+    public Builder withAggregateDigests(boolean aggregateDigests) {
+      this.aggregateDigests = aggregateDigests;
+      return this;
+    }
+
+    /**
+     * Configure the vertex ranking function for cluster digests. All vertices will be sorted accordingly.
+     * Default is <code>COMBINED_RANKING.apply(1.75)</code> (i.e. weight^1.75 * consistency score)
+     *
+     * @param digestRanking Ranking function for cluster digests
+     * @return this
+     */
+
+    public Builder withDigestRanking(DigestRanking digestRanking) {
+      this.digestRanking = digestRanking;
+      return this;
+    }
+
+    /**
      * Set random initial vector generation seed
      *
      * @param seed Seed value
@@ -310,7 +400,8 @@ public class ClusteringSettings {
 
     public ClusteringSettings build() {
       return new ClusteringSettings(consistencyMetric, minClusterSize, minVertexConsistency, minParentOverlap,
-              parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors);
+              parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors,
+              maxDigestSize, aggregateDigests, digestRanking);
     }
 
   }

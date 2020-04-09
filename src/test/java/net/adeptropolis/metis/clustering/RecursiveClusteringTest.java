@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -37,7 +36,7 @@ public class RecursiveClusteringTest {
             .withMinVertexConsistency(0.1)
             .withMinparentOverlap(0.4)
             .build();
-    root = new RecursiveClustering(defaultGraph, defaultSettings).run();
+    root = RecursiveClustering.run(defaultGraph, defaultSettings);
   }
 
   private static Graph loadGraph(String filename) {
@@ -58,7 +57,7 @@ public class RecursiveClusteringTest {
   public void emptyGraph() {
     Graph emptyGraph = new CompressedSparseGraphBuilder().build();
     ClusteringSettings settings = ClusteringSettings.builder().build();
-    Cluster root = new RecursiveClustering(emptyGraph, settings).run();
+    Cluster root = RecursiveClustering.run(emptyGraph, settings);
     assertThat(root.aggregateClusters(), hasSize(1));
     assertThat(root.aggregateClusters(), contains(root));
     assertThat(root.aggregateVertices().size(), is(0));
@@ -67,7 +66,7 @@ public class RecursiveClusteringTest {
   @Test
   public void recursionExcessPreservesVertices() {
     ClusteringSettings settings = ClusteringSettings.builder().withMaxIterations(0).build();
-    root = new RecursiveClustering(defaultGraph, settings).run();
+    root = RecursiveClustering.run(defaultGraph, settings);
     IntOpenHashSet allClusterVertices = new IntOpenHashSet(root.aggregateVertices().iterator());
     IntOpenHashSet allGraphVertices = new IntOpenHashSet(defaultGraph.collectVertices());
     assertThat(allClusterVertices.size(), is(allGraphVertices.size()));
@@ -105,10 +104,10 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    ClusterDigester digester = new ClusterDigester(settings.getConsistencyMetric(), 0, false, WEIGHT_RANKING);
-    long refFp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
+    ClusterDigester digester = new ClusterDigester(settings);
+    long refFp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester);
     for (int i = 0; i < rounds - 1; i++) {
-      long fp = hierarchyFingerprint(new RecursiveClustering(graph, settings).run(), digester);
+      long fp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester);
       assertThat(fp, is(refFp));
     }
   }

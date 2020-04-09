@@ -6,6 +6,7 @@
 package net.adeptropolis.metis.digest;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
@@ -22,7 +23,13 @@ import static org.hamcrest.Matchers.is;
 
 public class ClusterDigesterTest {
 
-  private static final RelativeWeightConsistencyMetric metric = new RelativeWeightConsistencyMetric();
+  private static final ClusteringSettings settings = ClusteringSettings.builder()
+          .withConsistencyMetric(new RelativeWeightConsistencyMetric())
+          .withMaxDigestSize(3)
+          .withAggregateDigests(true)
+          .withDigestRanking(WEIGHT_RANKING)
+          .build();
+
 
   @Test
   public void aggregate() {
@@ -61,7 +68,7 @@ public class ClusterDigesterTest {
     c2.addToRemainder(IntIterators.wrap(new int[]{6, 7}));
     Cluster c22 = new Cluster(c2);
     c2.addToRemainder(IntIterators.wrap(new int[]{8, 9}));
-    Digest digest = new ClusterDigester(metric, 3, true, WEIGHT_RANKING).digest(c2);
+    Digest digest = new ClusterDigester(settings).digest(c2);
     assertThat(digest.getVertices().length, is(3));
     assertThat(digest.getVertices()[0], is(5));
     assertThat(digest.getVertices()[1], is(4));
@@ -84,7 +91,7 @@ public class ClusterDigesterTest {
             .build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1}));
-    Digest digest = new ClusterDigester(metric, 3, true, WEIGHT_RANKING).digest(root);
+    Digest digest = new ClusterDigester(settings).digest(root);
     assertThat(digest.getVertices().length, is(2));
     assertThat(digest.getWeights().length, is(2));
     assertThat(digest.getScores().length, is(2));
@@ -95,7 +102,7 @@ public class ClusterDigesterTest {
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder().build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{}));
-    Digest digest = new ClusterDigester(metric, 3, true, WEIGHT_RANKING).digest(root);
+    Digest digest = new ClusterDigester(settings).digest(root);
     assertThat(digest.getVertices().length, is(0));
     assertThat(digest.getWeights().length, is(0));
     assertThat(digest.getScores().length, is(0));
@@ -138,7 +145,13 @@ public class ClusterDigesterTest {
             .build();
     Cluster root = new Cluster(graph);
     root.addToRemainder(IntIterators.wrap(new int[]{0, 1, 2, 3}));
-    return new ClusterDigester(metric, 2, false, WEIGHT_RANKING).digest(root);
+    ClusteringSettings altSettings = ClusteringSettings.builder()
+            .withConsistencyMetric(new RelativeWeightConsistencyMetric())
+            .withMaxDigestSize(2)
+            .withAggregateDigests(false)
+            .withDigestRanking(WEIGHT_RANKING)
+            .build();
+    return new ClusterDigester(altSettings).digest(root);
   }
 
 }

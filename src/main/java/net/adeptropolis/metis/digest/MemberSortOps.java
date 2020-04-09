@@ -19,7 +19,7 @@ class MemberSortOps implements IntComparator, Swapper {
   private final int[] vertices;
   private final double[] weights;
   private final double[] scores;
-  private final ClusterMemberRanking ranking;
+  private final DigestRanking ranking;
 
   /**
    * Constructor
@@ -30,7 +30,7 @@ class MemberSortOps implements IntComparator, Swapper {
    * @param ranking  Intra-cluster vertex ranking function
    */
 
-  private MemberSortOps(int[] vertices, double[] weights, double[] scores, ClusterMemberRanking ranking) {
+  private MemberSortOps(int[] vertices, double[] weights, double[] scores, DigestRanking ranking) {
     this.vertices = vertices;
     this.weights = weights;
     this.scores = scores;
@@ -46,7 +46,7 @@ class MemberSortOps implements IntComparator, Swapper {
    * @param ranking  Intra-cluster vertex ranking function
    */
 
-  public static void sort(int[] vertices, double[] weights, double[] scores, ClusterMemberRanking ranking) {
+  public static void sort(int[] vertices, double[] weights, double[] scores, DigestRanking ranking) {
     MemberSortOps ops = new MemberSortOps(vertices, weights, scores, ranking);
     Arrays.mergeSort(0, vertices.length, ops, ops);
   }

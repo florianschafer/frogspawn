@@ -46,13 +46,17 @@ public class RecursiveClustering {
    * @param settings Clustering settings
    */
 
-  public RecursiveClustering(Graph graph, ClusteringSettings settings) {
+  private RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
     this.queue = new ConcurrentLinkedQueue<>();
     this.consistencyGuard = new ConsistencyGuard(settings.getConsistencyMetric(), graph, settings.getMinClusterSize(), settings.getMinVertexConsistency());
     this.ivSource = new RandomInitialVectorsSource(settings.getRandomSeed());
+  }
+
+  public static Cluster run(Graph graph, ClusteringSettings settings) {
+    return new RecursiveClustering(graph, settings).run();
   }
 
   /**

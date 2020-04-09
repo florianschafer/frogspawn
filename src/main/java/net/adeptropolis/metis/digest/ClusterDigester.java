@@ -5,6 +5,7 @@
 
 package net.adeptropolis.metis.digest;
 
+import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.graphs.Graph;
@@ -20,30 +21,27 @@ import java.util.function.Function;
 
 public class ClusterDigester {
 
-  public static final ClusterMemberRanking WEIGHT_RANKING = (vertexId, weight, score) -> weight;
-  public static final ClusterMemberRanking SCORE_RANKING = (vertexId, weight, score) -> score;
-  public static final Function<Double, ClusterMemberRanking> COMBINED_RANKING
+  public static final DigestRanking WEIGHT_RANKING = (vertexId, weight, score) -> weight;
+  public static final DigestRanking SCORE_RANKING = (vertexId, weight, score) -> score;
+  public static final Function<Double, DigestRanking> COMBINED_RANKING
           = weightExp -> (vertexId, weight, score) -> Math.pow(weight, weightExp) * score;
 
   private final ConsistencyMetric metric;
   private final int maxSize;
   private final boolean aggregate;
-  private final ClusterMemberRanking comparator;
+  private final DigestRanking ranking;
 
   /**
    * Constructor
    *
-   * @param metric     Consistency metric to be used
-   * @param maxSize    Maximum number of vertices
-   * @param aggregate  <code>false</code> if only the cluster's remainder vertices should be considered,
-   * @param comparator Indirect comparator for cluster member sorting
+   * @param settings Global clustering settings
    */
 
-  public ClusterDigester(ConsistencyMetric metric, int maxSize, boolean aggregate, ClusterMemberRanking comparator) {
-    this.metric = metric;
-    this.maxSize = maxSize;
-    this.aggregate = aggregate;
-    this.comparator = comparator;
+  public ClusterDigester(ClusteringSettings settings) {
+    this.metric = settings.getConsistencyMetric();
+    this.maxSize = settings.getMaxDigestSize();
+    this.aggregate = settings.isAggregateDigests();
+    this.ranking = settings.getDigestRanking();
   }
 
   /**
@@ -58,7 +56,7 @@ public class ClusterDigester {
     int[] vertices = graph.collectVertices();
     double[] weights = graph.weights();
     double[] consistencyScores = metric.compute(cluster.rootGraph(), graph);
-    MemberSortOps.sort(vertices, weights, consistencyScores, comparator);
+    MemberSortOps.sort(vertices, weights, consistencyScores, ranking);
     if (maxSize > 0) {
       return subsetDigest(vertices, weights, consistencyScores, vertices.length);
     }

@@ -6,7 +6,7 @@
 package net.adeptropolis.metis.digest;
 
 @FunctionalInterface
-public interface ClusterMemberRanking {
+public interface DigestRanking {
 
   double compute(int vertexId, double weight, double score);
 

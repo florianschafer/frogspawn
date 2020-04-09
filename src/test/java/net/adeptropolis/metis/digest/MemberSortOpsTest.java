@@ -81,7 +81,7 @@ public class MemberSortOpsTest {
     assertThat(scores[1], closeTo(100d, 1E-6));
   }
 
-  private void sort(ClusterMemberRanking ranking) {
+  private void sort(DigestRanking ranking) {
     MemberSortOps.sort(vertices, weights, scores, ranking);
   }
 
