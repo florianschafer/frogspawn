@@ -1,3 +1,5 @@
+ - Both the digest consistency score computation as well as the consistency guarding postprocessor refer to
+   the remainder only. That's WRONG!
  - Update documentation
  - Try out having a more strict consistency threshold for the postfilter
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing

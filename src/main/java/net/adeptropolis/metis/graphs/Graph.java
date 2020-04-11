@@ -176,26 +176,6 @@ public abstract class Graph {
   }
 
   /**
-   * Return the fractional weights of a subgraph relative to its supergraph
-   * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
-   *
-   * @param supergraph The supergraph
-   * @return The array of relative weights
-   */
-
-  public double[] relativeWeights(Graph supergraph) {
-    double[] relWeights = new double[order()];
-    VertexIterator it = vertexIterator();
-    while (it.hasNext()) {
-      int v = supergraph.localVertexId(it.globalId());
-      assert v >= 0;
-      double supergraphWeight = supergraph.weights()[v];
-      relWeights[it.localId()] = (supergraphWeight != 0) ? weights()[it.localId()] / supergraphWeight : 0;
-    }
-    return relWeights;
-  }
-
-  /**
    * Return the fractional total weight of a subgraph relative to its supergraph
    * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
    *
