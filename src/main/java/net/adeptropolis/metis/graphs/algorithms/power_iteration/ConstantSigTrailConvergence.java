@@ -149,7 +149,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
    */
 
   private double relativeWeight(Graph subgraph, int i) {
-    return subgraph.weights()[subgraph.localVertexId(graph.globalVertexId(i))] / subgraph.totalWeight();
+    return subgraph.weightForGlobalId(graph.globalVertexId(i)) / subgraph.totalWeight();
   }
 
   /**

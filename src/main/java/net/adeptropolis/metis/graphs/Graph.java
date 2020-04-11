@@ -157,6 +157,15 @@ public abstract class Graph {
   }
 
   /**
+   * @param globalVertexId global vertex id
+   * @return Weight for this id
+   */
+
+  public double weightForGlobalId(int globalVertexId) {
+    return weights()[localVertexId(globalVertexId)];
+  }
+
+  /**
    * The total weight of the graph. <b>Note:</b> For undirected graphs, weights are counted twice!
    *
    * @return The total weight of the graph
@@ -188,7 +197,7 @@ public abstract class Graph {
     double supergraphEmbeddingWeight = 0;
     for (int i = 0; i < order(); i++) {
       weight += weights()[i];
-      supergraphEmbeddingWeight += supergraph.weights()[supergraph.localVertexId(globalVertexId(i))];
+      supergraphEmbeddingWeight += supergraph.weightForGlobalId(globalVertexId(i));
     }
     /// XXX "Edge weight loss?"
     return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;

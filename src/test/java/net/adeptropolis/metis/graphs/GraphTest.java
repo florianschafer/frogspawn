@@ -27,6 +27,7 @@ public class GraphTest {
     assertThat(graph.weights()[0], closeTo(8, 1E-9));
     assertThat(graph.weights()[1], closeTo(7, 1E-9));
     assertThat(graph.weights()[2], closeTo(9, 1E-9));
+
   }
 
   @Test
@@ -66,6 +67,19 @@ public class GraphTest {
     Graph subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
     double overlap = subgraph.overlap(graph);
     assertThat(overlap, closeTo(24d / 37d, 1E-6));
+  }
+
+  @Test
+  public void weightForGlobalId() {
+    Graph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .add(2, 3, 5)
+            .build()
+            .inducedSubgraph(IntIterators.wrap(new int[]{1, 2, 3}));;
+    assertThat(graph.weightForGlobalId(1), closeTo(4.0, 1E-6));
+    assertThat(graph.weightForGlobalId(2), closeTo(9.0, 1E-6));
+    assertThat(graph.weightForGlobalId(3), closeTo(5.0, 1E-6));
   }
 
 }
