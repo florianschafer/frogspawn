@@ -185,7 +185,7 @@ LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.
 Digests only refer to single clusters. In order to create the output for the full cluster tree, one needs to traverse
 it starting from the root cluster and create the digests and output hierarchy on the fly. There are many ways to
 navigate through a cluster hierarchy, although in most cases, it is recommended to use `Cluster#traverse`, which takes a
-`Consumer<Cluster>` and walks through the hierarchy in a classical breadth-first-like fashion. For more information,
+`Consumer<Cluster>` and walks through the hierarchy in a classical depth-first-like fashion. For more information,
 please see the javadocs.
 
 ```
