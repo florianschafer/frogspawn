@@ -1,68 +1,12 @@
 # Metis
 ## A Bifurcation Sieve Approach to Spectral Graph Clustering
 
-| DISCLAIMER: This is a work in progress! While the core implementation is mostly finished and very stable (read: "don't hesitate to use in production"), there are currently some features missing. Notably, Metis is library-only right now and will require you to build and weight the input graphs and vertex mappings yourself. Depending on your intended usage pattern, you may also need to create a suitable result representation yourself. |
-| --- |
-
 ### Summary
 
 At its core, Metis is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
 vertices of the graph in a tree of clusters such that similar vertices end up in the same cluster and similar clusters
 form a parent-child relationship in the resulting cluster tree. For a more technically detailed description, please
 refer to the bottom section.
-
-### Usage
-
-#### Building Graphs
-
-All graphs are efficiently stored in a compressed sparse format. You may use the supplied
-builder class for construction:
-```
-CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
-```
-Adding edges to the builder is straightforward:
-```
-builder.add(left, right, weight)
-```
-Note that during graph construction, edges may appear multiple times. In this situation,
-their weights are simply added together. To finally build the graph, use  
-```
-Graph graph = builder.build();
-```
-
-##### Remarks
- - Vertices are identified as `int`. It is strictly required to construct vertex ids as **consecutive** integers starting at 0.
- - All edges are interpreted as being **undirected**.
- - All edge weights must be ≥ 1.
- - By design, leaf vertices (i.e. those of degree 1) do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
- - To improve performance, it is **highly** recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand. 
- - There is currently no built-in mapping between vertex ids and the objects they represent. Thus, this must be taken care of externally. 
-
-In case of bipartite document-feature graphs, using the length-adjusted tfidf and normalizing through division by the minimal value has been proven to be very successful. That same measure may also be used for edge filtering.
-
-#### Configuration
-
-The desired clustering outcome may be configured using a variety of parameters.
-The most important ones are described in the example below (using the defaults):
-
-```
-ClusteringSettings settings = ClusteringSettings.builder()
-  .withMinClusterSize(50)        // Minimum size of a cluster
-  .withVertexConsistency(0.1)    // Minimum consistency score that a vertex may yield with respect to its cluster
-  .withMinParentOverlap(0.4)     // Minimum consistency score that a cluster may yield with respect to its parent
-  .build();
-```
-
-For further details and additional options, please refer to the Javadocs.
-
-#### Start the Clustering
-
-The following method will start the actual clustering and return the root node of the resulting cluster tree:
-```
-Cluster root = new RecursiveClustering(graph, settings).run();
-```
-Please refer to the Javadocs about how to process the output. `Cluster#traverse` is a good start.
-You may also look into `ClusterDigester` and `Sink`.
 
 ### Details
 
@@ -82,7 +26,7 @@ strict condition on the desired clustering outcome that is inherent to the graph
 
 Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed in such a way that
 every cluster is required to satisfy a certain consistency/overlap criterion with regards to its parent. Clusters that do not
-automatically fulfil that condition, are "pushed up" the cluster tree until it is satisfied. This not only
+automatically fulfill that condition, are "pushed up" the cluster tree until it is satisfied. This not only
 counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive bisection
 process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the strictly
 binary nature of the process.
@@ -95,3 +39,196 @@ more efficiently. On the other hand, focusing on the nature of this particular c
 immense relaxation of the eigensolver's convergence criterion, which is something that generic eigensolvers simply
 cannot provide. Last but not least, those pen-and-paper optimizations are complemented by a very fast and
 memory-efficient sparse graph representation that allows for the creation of induced subgraphs at very little cost.
+
+### Usage
+
+#### Building and feeding Graphs
+
+##### Building Labeled Graphs
+
+Internally, graphs are efficiently stored in a compressed sparse format with integers as vertex ids. Since
+most of the time graphs are labeled, i.e. their vertices represent some business objects or just plain
+strings, there are a couple of convenience classes that automatically provide a mapping between internal
+vertex ids and those objects. In these cases, it is recommended to use the supplied `LabeledGraphBuilder`
+for building graphs:
+
+```
+LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(String.class);
+```
+
+Adding edges to the builder is straightforward using two vertex labels and an edge weight:
+
+```
+builder.add("left", "right", 42);
+```
+
+All edges are interpreted as being undirected, i.e. using `builder.add("right", "left", 42)` in the above
+example would yield the same result. Furthermore, edges may be added multiple times, in which case their
+weights are simply summed up later. To finally build the graph, use
+
+```
+LabeledGraph<String> = builder.build();
+```
+
+Note that instances of `LabeledGraph` are merely a thin wrapper around the internal graph API (see below)
+that store the graph itself together with a mapping between vertex ids and label objects. Most methods
+relevant to clustering expect simple `Graph` objects, which can be retrieved via `LabeledGraph#getGraph`.
+
+For a more practical example on how to use the builder, please refer to `LabeledGraphSource#fromTSV`. 
+
+##### Building Graphs using the Low-Level API
+
+Building graphs using the internal API is almost identical to using the labeled version above, but
+requires the vertex ids to be **consecutive integers starting at 0**. Note that violating this
+requirement will result in undefined behavior.
+
+```
+CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+builder.add(left, right, weight)
+...
+builder.add(anotherLeft, anotherRight, anotherWeight)
+Graph graph = builder.build();
+```
+
+For more information on how to use the low-level Graph API, please refer to the javadocs.
+
+##### General Remarks
+ - Edge weights **must** be ≥ 1 when used for clustering.
+ - By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
+ - To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
+
+#### Configuration
+
+The desired clustering outcome may be configured using a variety of parameters. The most important ones are described
+in the example below (using the defaults):
+
+```
+ClusteringSettings settings = ClusteringSettings.builder()
+  .withMinClusterSize(50)      // Min cluster size
+  .withVertexConsistency(0.1)  // Min consistency score that a vertex may yield with respect to its cluster
+  .minAncestorOverlap(0.55)    // Min consistency score that a cluster may yield with respect to its parent
+  .build();
+```
+
+Using the default consistency metric, the vertex score is computed as the fraction of the intra-cluster
+weight of the vertex (also counting descendant clusters) compared to its global weight.
+Similarly, the ancestor overlap is computed as the sum of all intra-cluster weights of its members compared
+to the intra-cluster weight of those vertices within an ancestor cluster.
+
+Note that the consistency and overlap settings are always guaranteed to be satisfied: Any cluster will only
+contain vertices whose intra-cluster score satisfies at least the min consistency criterion. Likewise,
+all parent-child relationships are guaranteed to satisfy the min ancestor overlap criterion.    
+
+For further details and additional options, please refer to the javadocs.
+
+#### Start the Clustering
+
+The following method will start the actual clustering and return the root node of the resulting cluster tree:
+
+```
+Cluster root = RecursiveClustering.run(graph, settings);
+```
+
+As mentioned before, when using labeled graphs, the input graph can be retrieved from the labeled
+instance, i.e.
+
+```
+Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
+```
+
+#### Cluster Output Creation
+
+There is currently no generic way to produce cluster outputs. However, there are a couple of classes that make it
+very easy to create custom ones, namely `ClusterDigester`, `Digest`, `DigestMapping` and `LabeledDigestMapping`.
+
+##### Digests and Mappings
+
+In this context, a digest is an output-ready representation of a cluster. Digests store all vertices, weights
+and consistency scores, sorted by custom or predefined ranking function. Moreover, depending on the configuration,
+it may not just encompass the cluster vertices but also aggregate those of all of its descendants.
+
+Currently, there may be only one digest per clustering, which is configured as part of the general settings:
+
+```
+ClusteringSettings settings = ClusteringSettings.builder()
+  ...
+  .withMaxDigestSize(0)                             # Return all vertices
+  .withAggregateDigests(false)                      # Only return the vertices of the cluster itself
+  .withDigestRanking(COMBINED_RANKING.apply(1.75))  # Predefined ranking function: weight^1.75 * consistencyScore
+  .build();
+
+ClusterDigester digester = new ClusterDigester(settings);
+```
+
+Please refer to the `DigestRanking` interface on how to create custom ranking functions. Currently, there are three
+predefined options:
+
+ - `WEIGHT_RANKING`: Sort by vertex weight (descending)
+ - `SCORE_RANKING`: Sort by vertex consistency score (descending)
+ - `COMBINED_RANKING`: Sort by both vertex weight and score, balancing their impact using an exponent on the weighs 
+
+Digests are not intended to be used directly for output. Instead, one should supply a digest mapping function
+that maps the cluster members onto custom user-defined objects. For this purpose, there are two functional interfaces
+that one may use to supply arbitrary mapping functions:
+ 
+ - `DigestMapping<output type>`: Simple mapping using vertex ids
+ - `LabeledDigestMapping<label type, output type>`: Mapping using vertex labels
+
+As an example, the following mapping creates a simple String representation for every digest vertex:
+
+```
+LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f %.2f]", label, weight, score);
+```
+
+##### Traversing clusters for output
+
+Digests only refer to single clusters. In order to create the output for the full cluster tree, one needs to traverse
+it starting from the root cluster and create the digests and output hierarchy on the fly. There are many ways to
+navigate through a cluster hierarchy, although in most cases, it is recommended to use `Cluster#traverse`, which takes a
+`Consumer<Cluster>` and walks through the hierarchy in a classical breadth-first-like fashion. For more information,
+please see the javadocs.
+
+```
+root.traverse(cluster -> {
+ // Apply a digester to the cluster, evaluate the local hierarchy using cluster.getChildren() / cluster.getParent,... 
+});
+```
+
+### Full working example
+
+Below, you will find a fully working example of running clustering and exporting results using a labeled graph that has
+been imported from a TSV file using default settings.
+
+```
+LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines("/path/to/edges/in/tsv/format.tsv"));
+
+ClusteringSettings settings = ClusteringSettings.builder().build();
+
+Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
+
+ClusterDigester digester = new ClusterDigester(settings);
+LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f]", label, weight);
+
+PrintWriter w = new PrintWriter("/output/path.txt");
+root.traverse(cluster -> {
+  Digest digest = digester.digest(cluster);
+  String vertices = digest.map(mapping, labeledGraph.getLabels()).collect(Collectors.joining(", "));
+  String prefix = StringUtils.repeat("==", cluster.depth());
+  w.printf("%s> %d: %s\n", prefix, digest.totalSize(), vertices);
+});
+w.close();
+```
+
+This will create a semi-structured output in the following fashion:
+
+```
+> 4250: root_member_a [123], root_member_b [42], ...
+==> 15497: child_1_member_a [435], child_1_member_b [271], ...
+====> 878: child_11_member_a [435], child_11_member_b [271], ...
+======> 878: child_111_member_a [43], child_111_member_b [21], ...
+======> 878: child_112_member_a [56], child_112_member_b [28], ...
+====> 248: child_12_member_a [124], child_12_member_b [67], ...
+====> 124: child_13_member_a [341], child_13_member_b [221], ...
+==> 15497: child_2_member_a [345], child_2_member_b [45], ...
+...
+```

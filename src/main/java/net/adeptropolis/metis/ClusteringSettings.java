@@ -18,7 +18,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.List;
 
-import static net.adeptropolis.metis.digest.ClusterDigester.COMBINED_RANKING;
+import static net.adeptropolis.metis.digest.DigestRanking.COMBINED_RANKING;
 
 /**
  * Stores all relevant clustering settings
@@ -50,7 +50,7 @@ public class ClusteringSettings {
    * @param consistencyMetric    Vertex/cluster consistency metric to be used
    * @param minClusterSize       Minimum cluster size
    * @param minVertexConsistency Minimum consistency score of a vertex wrt. to a cluster
-   * @param minParentOverlap     Minimum ancestor overlap of a child cluster node wrt. to its parent
+   * @param minParentOverlap     Minimum overlap of a child cluster node wrt. to one of its ancestors
    * @param parentSearchStepSize Step size of parent search
    * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold Fraction of converged vertices
@@ -138,10 +138,10 @@ public class ClusteringSettings {
   }
 
   /**
-   * @return Minimum ancestor overlap of a child cluster node wrt. to its parent
+   * @return Minimum overlap of a child cluster node wrt. to one of its ancestors
    */
 
-  public double getMinparentOverlap() {
+  public double getMinAncestorOverlap() {
     return minParentOverlap;
   }
 
@@ -222,7 +222,7 @@ public class ClusteringSettings {
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
     private int minClusterSize = 50;
     private double minVertexConsistency = 0.1;
-    private double minParentOverlap = 0.55;
+    private double minAncestorOverlap = 0.55;
     private int parentSearchStepSize = 32;
 
     // Power iteration
@@ -275,12 +275,12 @@ public class ClusteringSettings {
     /**
      * Set Minimum ancestor overlap. Default is 0.55
      *
-     * @param minParentOverlap Minimum ancestor overlap
+     * @param minAncestorOverlap Minimum ancestor overlap
      * @return this
      */
 
-    public Builder withMinparentOverlap(double minParentOverlap) {
-      this.minParentOverlap = minParentOverlap;
+    public Builder withMinparentOverlap(double minAncestorOverlap) {
+      this.minAncestorOverlap = minAncestorOverlap;
       return this;
     }
 
@@ -399,7 +399,7 @@ public class ClusteringSettings {
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(consistencyMetric, minClusterSize, minVertexConsistency, minParentOverlap,
+      return new ClusteringSettings(consistencyMetric, minClusterSize, minVertexConsistency, minAncestorOverlap,
               parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors,
               maxDigestSize, aggregateDigests, digestRanking);
     }
