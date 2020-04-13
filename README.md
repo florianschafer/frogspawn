@@ -52,13 +52,13 @@ strings, there are a couple of convenience classes that automatically provide a 
 vertex ids and those objects. In these cases, it is recommended to use the supplied `LabeledGraphBuilder`
 for building graphs:
 
-```
+```java
 LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(String.class);
 ```
 
 Adding edges to the builder is straightforward using two vertex labels and an edge weight:
 
-```
+```java
 builder.add("left", "right", 42);
 ```
 
@@ -66,7 +66,7 @@ All edges are interpreted as being undirected, i.e. using `builder.add("right", 
 example would yield the same result. Furthermore, edges may be added multiple times, in which case their
 weights are simply summed up later. To finally build the graph, use
 
-```
+```java
 LabeledGraph<String> = builder.build();
 ```
 
@@ -82,7 +82,7 @@ Building graphs using the internal API is almost identical to using the labeled 
 requires the vertex ids to be **consecutive integers starting at 0**. Note that violating this
 requirement will result in undefined behavior.
 
-```
+```java
 CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
 builder.add(left, right, weight)
 ...
@@ -102,7 +102,7 @@ For more information on how to use the low-level Graph API, please refer to the 
 The desired clustering outcome may be configured using a variety of parameters. The most important ones are described
 in the example below (using the defaults):
 
-```
+```java
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)      // Min cluster size
   .withVertexConsistency(0.1)  // Min consistency score that a vertex may yield with respect to its cluster
@@ -132,7 +132,7 @@ Cluster root = RecursiveClustering.run(graph, settings);
 As mentioned before, when using labeled graphs, the input graph can be retrieved from the labeled
 instance, i.e.
 
-```
+```java
 Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
 ```
 
@@ -149,7 +149,7 @@ it may not just encompass the cluster vertices but also aggregate those of all o
 
 Currently, there may be only one digest per clustering, which is configured as part of the general settings:
 
-```
+```java
 ClusteringSettings settings = ClusteringSettings.builder()
   ...
   .withMaxDigestSize(0)                             # Return all vertices
@@ -176,7 +176,7 @@ that one may use to supply arbitrary mapping functions:
 
 As an example, the following mapping creates a simple String representation for every digest vertex:
 
-```
+```java
 LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f %.2f]", label, weight, score);
 ```
 
@@ -188,7 +188,7 @@ navigate through a cluster hierarchy, although in most cases, it is recommended 
 `Consumer<Cluster>` and walks through the hierarchy in a classical depth-first-like fashion. For more information,
 please see the javadocs.
 
-```
+```java
 root.traverse(cluster -> {
  // Apply a digester to the cluster, evaluate the local hierarchy using cluster.getChildren() / cluster.getParent,... 
 });
@@ -199,7 +199,7 @@ root.traverse(cluster -> {
 Below, you will find a fully working example of running clustering and exporting results using a labeled graph that has
 been imported from a TSV file using default settings.
 
-```
+```java
 LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines("/path/to/edges/in/tsv/format.tsv"));
 
 ClusteringSettings settings = ClusteringSettings.builder().build();
