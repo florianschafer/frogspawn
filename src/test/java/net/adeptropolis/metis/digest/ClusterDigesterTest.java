@@ -13,6 +13,7 @@ import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilde
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -124,7 +125,7 @@ public class ClusterDigesterTest {
   public void mapping() {
     String digestFingerprint = new ClusterDigester(aggregate3Settings)
             .digest(c2)
-            .map((vertexId, weight, score) -> String.format("%d|%.1f|%.3f", vertexId, weight, score))
+            .map((vertexId, weight, score) -> String.format(Locale.US, "%d|%.1f|%.3f", vertexId, weight, score))
             .collect(Collectors.joining(","));
     assertThat(digestFingerprint, is("5|91.0|0.858,4|75.0|0.852,9|61.0|1.000"));
   }
@@ -136,7 +137,7 @@ public class ClusterDigesterTest {
             .mapToObj(i -> String.format("[%d]", i)).toArray(String[]::new);
     String digestFingerprint = new ClusterDigester(aggregate3Settings)
             .digest(c2)
-            .map((label, weight, score) -> String.format("%s|%.1f|%.3f", label, weight, score), labels)
+            .map((label, weight, score) -> String.format(Locale.US, "%s|%.1f|%.3f", label, weight, score), labels)
             .collect(Collectors.joining(","));
     assertThat(digestFingerprint, is("[5]|91.0|0.858,[4]|75.0|0.852,[9]|61.0|1.000"));
   }

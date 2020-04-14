@@ -153,7 +153,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * @param leftEndpoint A local vertex id
    * @param consumer     An instance of <code>EdgeConsumer</code>
    * @param low          Initial edge pointer
-   * @param high         Maximum edge pointer (inclusive!)
+   * @param high         Maximum edge pointer (exclusive!)
    */
 
   private void traverseByAdjacent(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {
@@ -175,7 +175,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * @param leftEndpoint A local vertex id
    * @param consumer     An instance of <code>EdgeConsumer</code>
    * @param low          Initial edge pointer
-   * @param high         Maximum edge pointer (inclusive!)
+   * @param high         Maximum edge pointer (exclusive!)
    */
 
   private void traverseByVertices(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {

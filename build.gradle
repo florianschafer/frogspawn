@@ -23,13 +23,18 @@ repositories {
     mavenCentral()
 }
 
+test {
+    minHeapSize = "16G"
+    maxHeapSize = "16G"
+}
+
 dependencies {
-    compile group: 'com.google.guava', name: 'guava', version: '28.2-jre'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
-    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
-    compile group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.1'
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
-    compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30'
-    testCompile group: 'junit', name: 'junit', version: '4.13'
-    testCompile group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
+    implementation group: 'com.google.guava', name: 'guava', version: '28.2-jre'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    implementation group: 'it.unimi.dsi', name: 'fastutil', version: '8.3.1'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.30'
+    testImplementation group: 'junit', name: 'junit', version: '4.13'
+    testImplementation group: 'org.hamcrest', name: 'hamcrest-all', version: '1.3'
 }
