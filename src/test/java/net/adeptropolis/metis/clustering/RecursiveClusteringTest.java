@@ -10,6 +10,7 @@ import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.Digest;
 import net.adeptropolis.metis.graphs.Graph;
+import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,7 +20,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
+import static net.adeptropolis.metis.digest.DigestRanking.COMBINED_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -104,6 +107,36 @@ public class RecursiveClusteringTest {
             .build();
     Graph graph = loadGraph("medium_graph.tsv");
     verifyDeterminism(graph, settings, 5);
+  }
+
+  @Test
+  public void problematicSmallGraph() {
+    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(1, 2, 1)
+            .add(2, 3, 1)
+            .add(3, 4, 1)
+            .add(4, 5, 1)
+            .add(0, 6, 1)
+            .add(6, 7, 1)
+            .add(7, 8, 1)
+            .add(8, 5, 1)
+            .add(9, 10, 1)
+            .add(10, 9, 1)
+            .build();
+    ClusteringSettings settings = ClusteringSettings.builder()
+            .withMinVertexConsistency(0.5)
+            .withMinClusterSize(1)
+            .withDigestRanking(COMBINED_RANKING.apply(1.75))
+            .build();
+    IntOpenHashSet vertices = new IntOpenHashSet();
+    ClusterDigester digester = new ClusterDigester(settings);
+    RecursiveClustering.run(graph, settings).traverse(cluster -> {
+      digester.digest(cluster)
+        .map((vertexId, weight, score) -> vertexId)
+        .forEach(vertices::add);
+    });
+    assertThat(vertices.size(), is(11));
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
