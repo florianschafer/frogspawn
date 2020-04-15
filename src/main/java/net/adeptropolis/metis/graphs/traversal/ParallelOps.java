@@ -7,6 +7,7 @@ package net.adeptropolis.metis.graphs.traversal;
 
 import net.adeptropolis.metis.graphs.Graph;
 
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,7 +24,7 @@ abstract class ParallelOps {
 
   static final int THREAD_POOL_SIZE = Runtime.getRuntime().availableProcessors();
   static final ThreadPoolExecutor EXECUTOR = new ThreadPoolExecutor(
-          THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new DaemonThreadFactory());
+          THREAD_POOL_SIZE, THREAD_POOL_SIZE, Long.MAX_VALUE, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), new DaemonThreadOps());
 
   final Graph graph;
   final int slice;
@@ -43,11 +44,11 @@ abstract class ParallelOps {
     this.latch = latch;
   }
 
-  static class DaemonThreadFactory implements ThreadFactory {
+  static class DaemonThreadOps implements ThreadFactory, UncaughtExceptionHandler {
 
     private final AtomicInteger threadId;
 
-    DaemonThreadFactory() {
+    DaemonThreadOps() {
       threadId = new AtomicInteger();
     }
 
@@ -57,9 +58,14 @@ abstract class ParallelOps {
       Thread thread = new Thread(runnable, String.format("worker-thread-%d", threadId.getAndIncrement()));
       thread.setDaemon(true);
       thread.setPriority(5);
+      thread.setUncaughtExceptionHandler(this);
       return thread;
     }
 
+    @Override
+    public void uncaughtException(Thread thread, Throwable throwable) {
+      throw new ParallelOpsException(throwable);
+    }
   }
 
 }

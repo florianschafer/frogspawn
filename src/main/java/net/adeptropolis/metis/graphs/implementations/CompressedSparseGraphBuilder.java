@@ -27,10 +27,29 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   private static final Logger LOG = LoggerFactory.getLogger(CompressedSparseGraphBuilder.class.getSimpleName());
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
+  private final double minWeight;
   private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
+
+  /**
+   * Constructor setting a min edge weight
+   *
+   * @param minWeight
+   */
+
+  public CompressedSparseGraphBuilder(double minWeight) {
+    this.minWeight = minWeight;
+  }
+
+  /**
+   * Default Constructor
+   */
+
+  public CompressedSparseGraphBuilder() {
+    this(1d);
+  }
 
   /**
    * Add a new undirected edge to the graph.
@@ -44,8 +63,8 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   @Override
   @SuppressWarnings("squid:S2234")
   public CompressedSparseGraphBuilder add(int u, int v, double weight) {
-    set(ptr++, u, v, weight);
-    if (u != v) set(ptr++, v, u, weight);
+    addDirected(u, v, weight);
+    if (u != v) addDirected(v, u, weight);
     return this;
   }
 
@@ -60,6 +79,9 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   @Override
   public Graph.Builder addDirected(int u, int v, double weight) {
+    if (weight < minWeight) {
+      throw new GraphConstructionException(String.format("Tried to add an edge with weight < %.3f", minWeight));
+    }
     set(ptr++, u, v, weight);
     return this;
   }

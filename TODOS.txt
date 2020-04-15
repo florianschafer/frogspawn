@@ -1,3 +1,4 @@
+ - Missing vertices
  - ConsistencyGuard: else if survivors.size() == minClusterSize => Shouldn't this return a new graph(survivors)?
  - Additional intra-cluster consistency?
  - Try out having a more strict consistency threshold for the postfilter

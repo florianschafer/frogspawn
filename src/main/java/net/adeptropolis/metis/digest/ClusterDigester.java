@@ -12,8 +12,6 @@ import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 import net.adeptropolis.metis.helpers.Arr;
 
-import java.util.function.Function;
-
 /**
  * Digester using only the remainder of a cluster
  *

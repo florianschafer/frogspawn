@@ -14,14 +14,10 @@ import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class ParallelEdgeOpsTest extends GraphTestBase implements Thread.UncaughtExceptionHandler {
+public class ParallelEdgeOpsTest extends GraphTestBase {
 
   @Test
   @Ignore("Intended for performance debugging")
@@ -58,31 +54,5 @@ public class ParallelEdgeOpsTest extends GraphTestBase implements Thread.Uncaugh
     assertThat("Fingerprint mismatch", traverseFingerprint(graph), is(bandedGraphFingerprint(20000, 100)));
   }
 
-  @Test
-  public void parallelTraversal() {
-    List<Thread> threads = IntStream.range(0, 50).mapToObj(i -> {
-      Thread thread = new Thread(() -> {
-        Graph graph = bandedGraph(10000, 30);
-        FingerprintingEdgeConsumer fp = new FingerprintingEdgeConsumer();
-        ParallelEdgeOps.traverse(graph, fp);
-        assertThat("Fingerprint mismatch", fp.getFingerprint(), is(bandedGraphFingerprint(10000, 30)));
-      });
-      thread.setUncaughtExceptionHandler(this);
-      thread.start();
-      return thread;
-    }).collect(Collectors.toList());
-    threads.forEach(t -> {
-      try {
-        t.join();
-      } catch (InterruptedException e) {
-        throw new ParallelOpsException(e);
-      }
-    });
-  }
-
-  @Override
-  public void uncaughtException(Thread thread, Throwable throwable) {
-    throw new RuntimeException(thread.getName(), throwable);
-  }
 }
 

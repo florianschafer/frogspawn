@@ -18,12 +18,14 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class RecursiveClusteringTest {
 
+  private static final Pattern COMMENT_PATTERN = Pattern.compile("^\\s*#.*");
   private static Graph defaultGraph;
   private static Cluster root;
   private static ClusteringSettings defaultSettings;
@@ -43,6 +45,7 @@ public class RecursiveClusteringTest {
     CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
     try {
       Files.lines(Paths.get(ClassLoader.getSystemResource(filename).toURI()))
+              .filter(line -> !COMMENT_PATTERN.matcher(line).matches())
               .forEach(line -> {
                 String[] comps = line.split("\t");
                 builder.add(Integer.parseInt(comps[1]), Integer.parseInt(comps[2]), Double.parseDouble(comps[0]));

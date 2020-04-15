@@ -12,6 +12,7 @@ import static net.adeptropolis.metis.graphs.implementations.arrays.Helpers.asser
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThrows;
 
 public class CompressedSparseGraphBuilderTest {
 
@@ -178,6 +179,13 @@ public class CompressedSparseGraphBuilderTest {
             .build();
     assertThat(graph, instanceOf(CompressedSparseGraph.class));
     assertThat(graph.order(), is(3));
+  }
+
+  @Test
+  public void edgeWeightBelowMinThrows() {
+    assertThrows(GraphConstructionException.class, () -> {
+      builder().add(0, 1, 1.0 - 1E-9);
+    });
   }
 
 }

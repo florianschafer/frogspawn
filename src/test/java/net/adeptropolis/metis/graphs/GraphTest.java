@@ -76,7 +76,7 @@ public class GraphTest {
             .add(1, 2, 4)
             .add(2, 3, 5)
             .build()
-            .inducedSubgraph(IntIterators.wrap(new int[]{1, 2, 3}));;
+            .inducedSubgraph(IntIterators.wrap(new int[]{1, 2, 3}));
     assertThat(graph.weightForGlobalId(1), closeTo(4.0, 1E-6));
     assertThat(graph.weightForGlobalId(2), closeTo(9.0, 1E-6));
     assertThat(graph.weightForGlobalId(3), closeTo(5.0, 1E-6));

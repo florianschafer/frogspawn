@@ -24,8 +24,8 @@ repositories {
 }
 
 test {
-    minHeapSize = "16G"
-    maxHeapSize = "16G"
+    minHeapSize = "1G"
+    maxHeapSize = "1G"
 }
 
 dependencies {

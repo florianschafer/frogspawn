@@ -27,7 +27,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
 
   @Test
   public void sizeBelowThreshold() {
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+    CompressedSparseGraph graph = new CompressedSparseGraphBuilder(0)
             .add(50, 51, 1)
             .add(51, 52, 1)
             .add(52, 53, 1)
@@ -72,7 +72,7 @@ public class ConsistencyGuardTest extends GraphTestBase {
   }
 
   private CompressedSparseGraph defaultGraph() {
-    return new CompressedSparseGraphBuilder()
+    return new CompressedSparseGraphBuilder(0)
             .add(50, 51, 10)
             .add(51, 52, 1)
             .add(52, 53, 1)

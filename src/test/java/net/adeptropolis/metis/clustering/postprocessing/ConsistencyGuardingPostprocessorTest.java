@@ -37,7 +37,7 @@ public class ConsistencyGuardingPostprocessorTest {
   @Before
   public void setUp() {
     metric = new RelativeWeightConsistencyMetric();
-    graph = new CompressedSparseGraphBuilder()
+    graph = new CompressedSparseGraphBuilder(0)
             .add(0, 1, 1)
             .add(0, 2, 1)
             .add(2, 3, 1)
