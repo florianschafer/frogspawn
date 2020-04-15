@@ -92,7 +92,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
    */
 
   @Override
-  public void postprocess(double[] vec) {
+  public void postprocess(double[] vec) throws PartialConvergencePostprocessingException {
     Preconditions.checkState(vec.length == graph.order(), "Vector length does not match graph size");
     Graph lGraph = extractPostprocessingSubgraph(vec, -1);
     Graph rGraph = extractPostprocessingSubgraph(vec, 1);
@@ -103,7 +103,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
     } else if (rGraph.order() > 0) {
       classifyNonConvergentFallback(vec, 1);
     } else {
-      LOG.warn("Postprocessing failed. Both graphs are empty.");
+      throw new PartialConvergencePostprocessingException("Postprocessing failed: Both graphs are empty");
     }
   }
 

@@ -8,6 +8,7 @@ package net.adeptropolis.metis.graphs.algorithms;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIterationException;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
 import org.junit.Test;
 
@@ -30,7 +31,7 @@ public class SpectralBisectorTest extends GraphTestBase {
           .build();
 
   @Test
-  public void completeBipartiteGraphs() throws PowerIteration.MaxIterationsExceededException {
+  public void completeBipartiteGraphs() throws PowerIterationException {
     SpectralBisector bisector = new SpectralBisector(settings);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
     bisector.bisect(completeBipartiteWithWeakLink(), 100000, IV_SOURCE, c);

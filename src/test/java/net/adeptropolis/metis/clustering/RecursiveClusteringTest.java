@@ -20,7 +20,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static net.adeptropolis.metis.digest.DigestRanking.COMBINED_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -133,8 +132,8 @@ public class RecursiveClusteringTest {
     ClusterDigester digester = new ClusterDigester(settings);
     RecursiveClustering.run(graph, settings).traverse(cluster -> {
       digester.digest(cluster)
-        .map((vertexId, weight, score) -> vertexId)
-        .forEach(vertices::add);
+              .map((vertexId, weight, score) -> vertexId)
+              .forEach(vertices::add);
     });
     assertThat(vertices.size(), is(11));
   }

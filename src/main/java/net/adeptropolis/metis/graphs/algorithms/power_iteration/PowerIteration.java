@@ -42,7 +42,7 @@ public class PowerIteration {
     for (int i = 0; ; i++) {
       System.arraycopy(y, 0, x, 0, op.size());
       if (i >= maxIterations) {
-        throw new MaxIterationsExceededException();
+        throw new MaxIterationsExceededException(String.format("Exceeded maximum number of iterations (%d)", maxIterations));
       }
       y = op.apply(x);
       Vectors.normalize2Sig(y);
@@ -58,9 +58,9 @@ public class PowerIteration {
    * Exception for handling an excess in the number of allowed iterations
    */
 
-  public static class MaxIterationsExceededException extends Exception {
-    MaxIterationsExceededException() {
-      super();
+  public static class MaxIterationsExceededException extends PowerIterationException {
+    MaxIterationsExceededException(String message) {
+      super(message);
     }
   }
 

@@ -12,7 +12,7 @@ import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.metis.graphs.algorithms.SpectralBisector;
-import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIterationException;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -104,13 +104,13 @@ public class RecursiveClustering {
   private void bisect(Protocluster protocluster) {
     try {
       bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), ivSource, partition -> processPartition(protocluster, partition));
-    } catch (PowerIteration.MaxIterationsExceededException e) {
+    } catch (PowerIterationException e) {
       if (protocluster.getGraph().size() >= settings.getMinClusterSize()) {
         addTerminalChild(protocluster, protocluster.getGraph());
       } else {
         protocluster.getCluster().addToRemainder(protocluster.getGraph());
       }
-      LOG.debug("Exceeded maximum number of iterations ({}). Not clustering any further.", settings.getMaxIterations());
+      LOG.debug(String.format("%s. Not clustering any further.", e.getMessage()));
     }
   }
 

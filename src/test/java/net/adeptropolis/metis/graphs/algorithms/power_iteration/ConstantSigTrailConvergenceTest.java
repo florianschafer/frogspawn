@@ -41,7 +41,7 @@ public class ConstantSigTrailConvergenceTest extends GraphTestBase {
   }
 
   @Test
-  public void postprocessing() {
+  public void postprocessing() throws PartialConvergencePostprocessingException {
     CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
             .add(0, 1, 10)
             .add(1, 2, 1)
