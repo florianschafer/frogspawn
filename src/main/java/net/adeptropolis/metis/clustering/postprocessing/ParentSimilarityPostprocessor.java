@@ -5,8 +5,8 @@
 
 package net.adeptropolis.metis.clustering.postprocessing;
 
-import com.google.common.annotations.VisibleForTesting;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.similarity.GraphSimilarityMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.helpers.SequencePredicates;
 import org.slf4j.Logger;
@@ -39,23 +39,26 @@ class ParentSimilarityPostprocessor implements Postprocessor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParentSimilarityPostprocessor.class.getSimpleName());
 
-  private final double minParentOverlap;
+  private final GraphSimilarityMetric metric;
+  private final double minSimilarity;
   private final int searchStepSize;
 
   /**
    * Constructor
    *
-   * @param minParentOverlap Minimum parent overlap (<code>w/p</code> from above)
-   * @param searchStepSize   Parent search step size
+   * @param metric         Graph similarity metric
+   * @param minSimilarity  Minimum similarity between a cluster and its parent
+   * @param searchStepSize Parent search step size
    */
 
-  public ParentSimilarityPostprocessor(double minParentOverlap, int searchStepSize) {
-    this.minParentOverlap = minParentOverlap;
+  public ParentSimilarityPostprocessor(GraphSimilarityMetric metric, double minSimilarity, int searchStepSize) {
+    this.metric = metric;
+    this.minSimilarity = minSimilarity;
     this.searchStepSize = searchStepSize;
   }
 
   /**
-   * Move the cluster up in the tree until its parent overlap is at least <code>minParentOverlap</code>
+   * Move the cluster up in the tree until its similarity wrt to its parent is at least <code>minSimilarity</code>
    *
    * @param cluster A cluster. Not necessarily root.
    * @return true if the underlying cluster has been modified, else false
@@ -66,7 +69,7 @@ class ParentSimilarityPostprocessor implements Postprocessor {
     if (cluster.getParent() == null || cluster.getParent().getParent() == null) {
       return false;
     }
-    Cluster ancestor = nearestAncestorSatisfyingOverlap(cluster);
+    Cluster ancestor = nearestAncestorSatisfyingSimilarity(cluster);
     if (ancestor == null) {
       ancestor = cluster.root();
     }
@@ -78,55 +81,35 @@ class ParentSimilarityPostprocessor implements Postprocessor {
   }
 
   /**
-   * Moving upwards, find the first ancestor whose overlap with the given cluster is at least <code>minParentOverlap</code>
+   * Moving upwards, find the first ancestor whose similarity with the given cluster is at least <code>minSimilarity</code>
    *
    * @param cluster The Cluster
    * @return The ancestor matching the condition
    */
 
-  private Cluster nearestAncestorSatisfyingOverlap(Cluster cluster) {
+  private Cluster nearestAncestorSatisfyingSimilarity(Cluster cluster) {
     Cluster parent = cluster.getParent();
     AtomicInteger predicateChecks = new AtomicInteger();
     Cluster first = SequencePredicates.findFirst(parent, searchStepSize, Cluster.class, Cluster::getParent, ancestor -> {
       predicateChecks.getAndIncrement();
-      return overlap(cluster, ancestor) >= minParentOverlap;
+      return similarity(cluster, ancestor) >= minSimilarity;
     });
     LOGGER.trace("Finished after taking {} samples", predicateChecks.get());
     return first;
   }
 
   /**
-   * Compute the overlap score between a cluster and one of its ancestors
+   * Compute the similarity score between a cluster and one of its ancestors
    *
    * @param cluster  The cluster
    * @param ancestor The cluster's ancestor
-   * @return Overlap between the cluster and its ancestor
+   * @return Similarity between the cluster and its ancestor
    */
 
-  private double overlap(Cluster cluster, Cluster ancestor) {
+  private double similarity(Cluster cluster, Cluster ancestor) {
     Graph clusterGraph = cluster.aggregateGraph();
     Graph ancestorGraph = ancestor.aggregateGraph();
-    return overlap(clusterGraph, ancestorGraph);
-  }
-
-  /**
-   * Return the fractional total weight of a subgraph relative to its supergraph
-   * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
-   *
-   * @param graph      A graph
-   * @param supergraph Supergraph of graph
-   * @return relative overlap
-   */
-
-  @VisibleForTesting
-  double overlap(Graph graph, Graph supergraph) {
-    double weight = 0;
-    double supergraphEmbeddingWeight = 0;
-    for (int i = 0; i < graph.order(); i++) {
-      weight += graph.weights()[i];
-      supergraphEmbeddingWeight += supergraph.weightForGlobalId(graph.globalVertexId(i));
-    }
-    return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;
+    return metric.compute(ancestorGraph, clusterGraph);
   }
 
 }

@@ -9,6 +9,8 @@ import com.google.common.collect.Lists;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.clustering.similarity.GraphSimilarityMetric;
+import net.adeptropolis.metis.clustering.similarity.OverlapGraphSimilarityMetric;
 import net.adeptropolis.metis.digest.DigestRanking;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
@@ -28,9 +30,11 @@ public class ClusteringSettings {
 
   private final List<Postprocessor> customPostprocessors;
   private final ConsistencyMetric consistencyMetric;
+
+  private final GraphSimilarityMetric similarityMetric;
   private final int minClusterSize;
   private final double minVertexConsistency;
-  private final double minParentOverlap;
+  private final double minAncestorSimilarity;
   private final int parentSearchStepSize;
 
   // Power iteration
@@ -47,31 +51,33 @@ public class ClusteringSettings {
   /**
    * Constructor
    *
-   * @param consistencyMetric    Vertex/cluster consistency metric to be used
-   * @param minClusterSize       Minimum cluster size
-   * @param minVertexConsistency Minimum consistency score of a vertex wrt. to a cluster
-   * @param minParentOverlap     Minimum overlap of a child cluster node wrt. to one of its ancestors
-   * @param parentSearchStepSize Step size of parent search
-   * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
-   * @param convergenceThreshold Fraction of converged vertices
-   * @param maxIterations        Maximum number of iterations
-   * @param randomSeed           Seed value for random initial value generation
-   * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
-   * @param maxDigestSize        Maximum size of cluster digests
-   * @param aggregateDigests     Whether the digester should aggregate descendant clusters
-   * @param digestRanking        Vertex ranking function for cluster digests
+   * @param consistencyMetric     Vertex/cluster consistency metric to be used
+   * @param similarityMetric      Graph similarity metric
+   * @param minClusterSize        Minimum cluster size
+   * @param minVertexConsistency  Minimum consistency score of a vertex wrt. to a cluster
+   * @param minAncestorSimilarity Minimum similarity between a child cluster and one of its ancestors
+   * @param parentSearchStepSize  Step size of parent search
+   * @param trailSize             Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
+   * @param convergenceThreshold  Fraction of converged vertices
+   * @param maxIterations         Maximum number of iterations
+   * @param randomSeed            Seed value for random initial value generation
+   * @param customPostprocessors  List of custom postprocessors to be executed at the end of the default pipeline
+   * @param maxDigestSize         Maximum size of cluster digests
+   * @param aggregateDigests      Whether the digester should aggregate descendant clusters
+   * @param digestRanking         Vertex ranking function for cluster digests
    */
 
   @SuppressWarnings("squid:S00107")
-  private ClusteringSettings(ConsistencyMetric consistencyMetric, int minClusterSize, double minVertexConsistency,
-                             double minParentOverlap, int parentSearchStepSize, int trailSize,
+  private ClusteringSettings(ConsistencyMetric consistencyMetric, GraphSimilarityMetric similarityMetric, int minClusterSize, double minVertexConsistency,
+                             double minAncestorSimilarity, int parentSearchStepSize, int trailSize,
                              double convergenceThreshold, int maxIterations, long randomSeed,
                              List<Postprocessor> customPostprocessors, int maxDigestSize, boolean aggregateDigests,
                              DigestRanking digestRanking) {
     this.consistencyMetric = consistencyMetric;
+    this.similarityMetric = similarityMetric;
     this.minClusterSize = minClusterSize;
     this.minVertexConsistency = minVertexConsistency;
-    this.minParentOverlap = minParentOverlap;
+    this.minAncestorSimilarity = minAncestorSimilarity;
     this.parentSearchStepSize = parentSearchStepSize;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
@@ -138,11 +144,11 @@ public class ClusteringSettings {
   }
 
   /**
-   * @return Minimum overlap of a child cluster node wrt. to one of its ancestors
+   * @return Minimum similarity of a child cluster node wrt. to one of its ancestors
    */
 
-  public double getMinAncestorOverlap() {
-    return minParentOverlap;
+  public double getMinAncestorSimilarity() {
+    return minAncestorSimilarity;
   }
 
   /**
@@ -159,6 +165,14 @@ public class ClusteringSettings {
 
   public ConsistencyMetric getConsistencyMetric() {
     return consistencyMetric;
+  }
+
+  /**
+   * @return Currently used graph similarity metric
+   */
+
+  public GraphSimilarityMetric getSimilarityMetric() {
+    return similarityMetric;
   }
 
   /**
@@ -203,7 +217,7 @@ public class ClusteringSettings {
             .append("consistencyMetric", consistencyMetric)
             .append("minClusterSize", minClusterSize)
             .append("minVertexConsistency", minVertexConsistency)
-            .append("minParentOverlap", minParentOverlap)
+            .append("minAncestorSimilarity", minAncestorSimilarity)
             .append("parentSearchStepSize", parentSearchStepSize)
             .append("trailSize", trailSize)
             .append("convergenceThreshold", convergenceThreshold)
@@ -220,9 +234,10 @@ public class ClusteringSettings {
 
     private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
     private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
+    private GraphSimilarityMetric similarityMetric = new OverlapGraphSimilarityMetric();
     private int minClusterSize = 50;
     private double minVertexConsistency = 0.1;
-    private double minAncestorOverlap = 0.55;
+    private double minAncestorSimilarity = 0.55;
     private int parentSearchStepSize = 32;
 
     // Power iteration
@@ -245,6 +260,18 @@ public class ClusteringSettings {
 
     public Builder withConsistencyMetric(ConsistencyMetric metric) {
       this.consistencyMetric = metric;
+      return this;
+    }
+
+    /**
+     * Set the graph similarity metric. Default is <code>OverlapGraphSimilarityMetric</code>
+     *
+     * @param metric Metric
+     * @return this
+     */
+
+    public Builder withSimilarityMetric(GraphSimilarityMetric metric) {
+      this.similarityMetric = metric;
       return this;
     }
 
@@ -273,14 +300,14 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set Minimum ancestor overlap. Default is 0.55
+     * Set Minimum ancestor similarity. Default is 0.55
      *
-     * @param minAncestorOverlap Minimum ancestor overlap
+     * @param minAncestorSimilarity Minimum ancestor similarity
      * @return this
      */
 
-    public Builder withMinparentOverlap(double minAncestorOverlap) {
-      this.minAncestorOverlap = minAncestorOverlap;
+    public Builder withMinAncestorSimilarity(double minAncestorSimilarity) {
+      this.minAncestorSimilarity = minAncestorSimilarity;
       return this;
     }
 
@@ -399,9 +426,9 @@ public class ClusteringSettings {
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(consistencyMetric, minClusterSize, minVertexConsistency, minAncestorOverlap,
-              parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors,
-              maxDigestSize, aggregateDigests, digestRanking);
+      return new ClusteringSettings(consistencyMetric, similarityMetric, minClusterSize, minVertexConsistency,
+              minAncestorSimilarity, parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed,
+              customPostprocessors, maxDigestSize, aggregateDigests, digestRanking);
     }
 
   }

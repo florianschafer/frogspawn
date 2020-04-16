@@ -25,7 +25,7 @@ both cluster quality and overall speed, but also introduces a straightforward an
 strict condition on the desired clustering outcome that is inherent to the graph itself.
 
 Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed in such a way that
-every cluster is required to satisfy a certain consistency/overlap criterion with regards to its parent. Clusters that do not
+every cluster is required to satisfy a certain similarity criterion with regards to its parent. Clusters that do not
 automatically fulfill that condition, are "pushed up" the cluster tree until it is satisfied. This not only
 counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive bisection
 process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the strictly
@@ -104,20 +104,20 @@ in the example below (using the defaults):
 
 ```java
 ClusteringSettings settings = ClusteringSettings.builder()
-  .withMinClusterSize(50)      // Min cluster size
-  .withVertexConsistency(0.1)  // Min consistency score that a vertex may yield with respect to its cluster
-  .minAncestorOverlap(0.55)    // Min consistency score that a cluster may yield with respect to its parent
+  .withMinClusterSize(50)          // Min cluster size
+  .withVertexConsistency(0.1)      // Min consistency score that a vertex may yield with respect to its cluster
+  .withMinAncestorSimilarity(0.55) // Min similarity score that a cluster may yield with respect to its parent
   .build();
 ```
 
 Using the default consistency metric, the vertex score is computed as the fraction of the intra-cluster
 weight of the vertex (also counting descendant clusters) compared to its global weight.
-Similarly, the ancestor overlap is computed as the sum of all intra-cluster weights of its members compared
+Similarly, the ancestor similarity is computed as the sum of all intra-cluster weights of its members compared
 to the intra-cluster weight of those vertices within an ancestor cluster.
 
-Note that the consistency and overlap settings are always guaranteed to be satisfied: Any cluster will only
+Note that the consistency and similarity settings are always guaranteed to be satisfied: Any cluster will only
 contain vertices whose intra-cluster score satisfies at least the min consistency criterion. Likewise,
-all parent-child relationships are guaranteed to satisfy the min ancestor overlap criterion.    
+all parent-child relationships are guaranteed to satisfy the similarity criterion.    
 
 For further details and additional options, please refer to the javadocs.
 

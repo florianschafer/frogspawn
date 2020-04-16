@@ -16,7 +16,7 @@ import net.adeptropolis.metis.graphs.traversal.VertexConsumer;
  * <ul>
  *   <li>Very fast edge traversal over either the full graph or the set of adjacent vertices wrt. a given endpoint</li>
  *   <li>Efficient creation of induced subgraphs</li>
- *   <li>Fast computation of various properties and metrics such as vertex weights, relative weights (wrt. a supergraph) or edge overlap</li>
+ *   <li>Fast computation of various properties and metrics</li>
  * </ul>
  */
 

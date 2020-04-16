@@ -47,8 +47,10 @@ public class Postprocessing {
    */
 
   private static List<Postprocessor> createPipeline(ClusteringSettings settings) {
-    ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(settings.getMinAncestorOverlap(), settings.getParentSearchStepSize());
-    ConsistencyGuardingPostprocessor consistency = new ConsistencyGuardingPostprocessor(settings.getConsistencyMetric(), settings.getMinClusterSize(), settings.getMinVertexConsistency());
+    ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(
+            settings.getSimilarityMetric(), settings.getMinAncestorSimilarity(), settings.getParentSearchStepSize());
+    ConsistencyGuardingPostprocessor consistency = new ConsistencyGuardingPostprocessor(
+            settings.getConsistencyMetric(), settings.getMinClusterSize(), settings.getMinVertexConsistency());
     SingletonCollapsingPostprocessor singletons = new SingletonCollapsingPostprocessor();
     List<Postprocessor> pipeline = Lists.newArrayList(
             singletons,

@@ -44,20 +44,16 @@ public class Playground {
   private static final Path ENTITY_GRAPH = Paths.get("/home/florian/tmp/wiki_ents.tsv");
   private static final Path ENTITY_GRAPH_TERMS = Paths.get("/home/florian/tmp/wiki_ents_terms_only.tsv");
   private static final Path NAMES_2M = Paths.get("/home/florian/Datasets/Workbench/fb_names.2M.tsv");
-
+  private static final Path NAMES_20M = Paths.get("/home/florian/Datasets/Workbench/fb_names.20M.tsv");
 
   public static void main(String[] args) throws IOException {
     new Playground().standardClustering();
   }
 
   private void standardClustering() throws IOException {
-    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(NAMES_2M));
+    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(NAMES_20M));
     ClusteringSettings settings = ClusteringSettings.builder()
-//            .withMinVertexConsistency(0.05)
-//            .withMinVertexConsistency(0.1)
-            .withMinVertexConsistency(0.4)
-//            .withDigestRanking( (int vertexId, double weight, double score) -> weight * (1.0 - score))
-//            .withDigestRanking(COMBINED_RANKING.apply(1.75))
+            .withMinVertexConsistency(0.05)
             .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);

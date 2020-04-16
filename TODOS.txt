@@ -1,5 +1,3 @@
- - Move overlap from graph to only class using it
- - Try out having a more strict consistency threshold for the postfilter
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
  - Write some proper math documentation
  - CUDA
