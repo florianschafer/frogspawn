@@ -9,18 +9,18 @@ import com.google.common.collect.Lists;
 import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
 import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
-import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
-import net.adeptropolis.metis.graphs.similarity.OverlapGraphSimilarityMetric;
 import net.adeptropolis.metis.digest.DigestRanking;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
+import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
+import net.adeptropolis.metis.graphs.similarity.OverlapGraphSimilarityMetric;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.util.List;
 
-import static net.adeptropolis.metis.digest.DigestRanking.COMBINED_RANKING;
+import static net.adeptropolis.metis.digest.DigestRankings.COMBINED_RANKING;
 
 /**
  * Stores all relevant clustering settings

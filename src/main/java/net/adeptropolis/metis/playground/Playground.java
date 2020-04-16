@@ -26,7 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-import static net.adeptropolis.metis.digest.DigestRanking.COMBINED_RANKING;
+import static net.adeptropolis.metis.digest.DigestRankings.COMBINED_RANKING;
 
 /**
  * !!!

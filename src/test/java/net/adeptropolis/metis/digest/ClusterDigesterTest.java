@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static net.adeptropolis.metis.digest.DigestRanking.WEIGHT_RANKING;
+import static net.adeptropolis.metis.digest.DigestRankings.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;

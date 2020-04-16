@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.regex.Pattern;
 
-import static net.adeptropolis.metis.digest.DigestRanking.COMBINED_RANKING;
+import static net.adeptropolis.metis.digest.DigestRankings.COMBINED_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

@@ -7,10 +7,10 @@ package net.adeptropolis.metis.clustering.postprocessing;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
-import net.adeptropolis.metis.graphs.similarity.OverlapGraphSimilarityMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
+import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
+import net.adeptropolis.metis.graphs.similarity.OverlapGraphSimilarityMetric;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

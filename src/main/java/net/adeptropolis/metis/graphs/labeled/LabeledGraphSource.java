@@ -18,6 +18,14 @@ public class LabeledGraphSource {
   private static final Pattern TSVParsePattern = Pattern.compile("\\s*(?<weight>[0-9.]+)\t+(?<u>[^\t]+)\t+(?<v>.+)\\s*");
 
   /**
+   * Default constructor
+   */
+
+  private LabeledGraphSource() {
+
+  }
+
+  /**
    * Read a labeled graph from a Tab-delimited file
    * <p>The expected format is <code>weight left right</code></p>
    *
