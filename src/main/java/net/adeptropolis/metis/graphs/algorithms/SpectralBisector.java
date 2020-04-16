@@ -7,7 +7,10 @@ package net.adeptropolis.metis.graphs.algorithms;
 
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.graphs.Graph;
-import net.adeptropolis.metis.graphs.algorithms.power_iteration.*;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIteration;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.PowerIterationException;
+import net.adeptropolis.metis.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
 import net.adeptropolis.metis.graphs.operators.SSNLOperator;
 
 import java.util.function.Consumer;

@@ -9,11 +9,13 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
+import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.core.Is.is;
 
 @Ignore("This postprocessor is bogus at best. Replace.")
@@ -84,6 +86,23 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
     Postprocessor pp = new ParentSimilarityPostprocessor(0.01, 15);
     assertThat(pp.apply(clusters[8]), is(true));
     assertThat(clusters[8].getParent(), is(clusters[0]));
+  }
+
+  @Test
+  public void overlap() {
+    ParentSimilarityPostprocessor pp = new ParentSimilarityPostprocessor(0.01, 15);
+    Graph graph = new CompressedSparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .add(2, 0, 5)
+            .add(1, 3, 6)
+            .add(3, 2, 7)
+            .add(3, 4, 8)
+            .build();
+    assertThat(pp.overlap(graph, graph), closeTo(1.0, 1E-6));
+    Graph subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
+    double overlap = pp.overlap(subgraph, graph);
+    assertThat(overlap, closeTo(24d / 37d, 1E-6));
   }
 
   private void addCluster(int idx, int parent, int... vertices) {

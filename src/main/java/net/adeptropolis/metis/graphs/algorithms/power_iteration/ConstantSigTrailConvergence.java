@@ -9,8 +9,6 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.SignumSelectingIndexIterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 
@@ -33,7 +31,6 @@ import java.util.Arrays;
 
 public class ConstantSigTrailConvergence implements PartialConvergenceCriterion {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ConstantSigTrailConvergence.class.getSimpleName());
   private final Graph graph;
   private final int trailSize;
   private final int threshold;

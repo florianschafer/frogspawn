@@ -54,22 +54,6 @@ public class GraphTest {
   }
 
   @Test
-  public void overlap() {
-    Graph graph = new CompressedSparseGraphBuilder()
-            .add(0, 1, 3)
-            .add(1, 2, 4)
-            .add(2, 0, 5)
-            .add(1, 3, 6)
-            .add(3, 2, 7)
-            .add(3, 4, 8)
-            .build();
-    assertThat(graph.overlap(graph), closeTo(1.0, 1E-6));
-    Graph subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
-    double overlap = subgraph.overlap(graph);
-    assertThat(overlap, closeTo(24d / 37d, 1E-6));
-  }
-
-  @Test
   public void weightForGlobalId() {
     Graph graph = new CompressedSparseGraphBuilder()
             .add(0, 1, 3)

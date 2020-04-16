@@ -5,6 +5,7 @@
 
 package net.adeptropolis.metis.clustering.postprocessing;
 
+import com.google.common.annotations.VisibleForTesting;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.helpers.SequencePredicates;
@@ -105,7 +106,27 @@ class ParentSimilarityPostprocessor implements Postprocessor {
   private double overlap(Cluster cluster, Cluster ancestor) {
     Graph clusterGraph = cluster.aggregateGraph();
     Graph ancestorGraph = ancestor.aggregateGraph();
-    return clusterGraph.overlap(ancestorGraph);
+    return overlap(clusterGraph, ancestorGraph);
+  }
+
+  /**
+   * Return the fractional total weight of a subgraph relative to its supergraph
+   * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
+   *
+   * @param graph      A graph
+   * @param supergraph Supergraph of graph
+   * @return relative overlap
+   */
+
+  @VisibleForTesting
+  double overlap(Graph graph, Graph supergraph) {
+    double weight = 0;
+    double supergraphEmbeddingWeight = 0;
+    for (int i = 0; i < graph.order(); i++) {
+      weight += graph.weights()[i];
+      supergraphEmbeddingWeight += supergraph.weightForGlobalId(graph.globalVertexId(i));
+    }
+    return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;
   }
 
 }

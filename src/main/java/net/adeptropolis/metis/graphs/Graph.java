@@ -184,25 +184,6 @@ public abstract class Graph {
     return total;
   }
 
-  /**
-   * Return the fractional total weight of a subgraph relative to its supergraph
-   * <p><b>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
-   *
-   * @param supergraph The supergraph
-   * @return relative overlap
-   */
-
-  public double overlap(Graph supergraph) {
-    double weight = 0;
-    double supergraphEmbeddingWeight = 0;
-    for (int i = 0; i < order(); i++) {
-      weight += weights()[i];
-      supergraphEmbeddingWeight += supergraph.weightForGlobalId(globalVertexId(i));
-    }
-    /// XXX "Edge weight loss?"
-    return (supergraphEmbeddingWeight > 0) ? weight / supergraphEmbeddingWeight : 0;
-  }
-
   public interface Builder {
 
     Builder add(int u, int v, double weight);
