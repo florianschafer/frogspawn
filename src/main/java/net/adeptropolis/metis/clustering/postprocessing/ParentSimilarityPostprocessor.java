@@ -6,7 +6,7 @@
 package net.adeptropolis.metis.clustering.postprocessing;
 
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.similarity.GraphSimilarityMetric;
+import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.helpers.SequencePredicates;
 import org.slf4j.Logger;

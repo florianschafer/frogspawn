@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.similarity;
+package net.adeptropolis.metis.graphs.similarity;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.graphs.Graph;
