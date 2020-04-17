@@ -22,8 +22,10 @@ public class InterpolationSearchTest {
     BigInts buf = new BigInts(BASE_SIZE);
     for (int i = 0; i < 10000; i++) buf.set(i, i);
     buf.sort();
-    for (int i = 0; i < 10000; i++)
-      assertThat(InterpolationSearch.search(buf, i, 0, 9999), greaterThanOrEqualTo(0L));
+    for (long i = 0; i < 10000; i++) {
+      assertThat(InterpolationSearch.search(buf, (int) i, 0, 9999), is(i));
+    }
+    assertThat(InterpolationSearch.search(buf, 10000, 0, 9999), is(-1L));
   }
 
   @Test
@@ -32,7 +34,7 @@ public class InterpolationSearchTest {
     for (int i = 0; i < 10000; i++) buf.set(i, i * 13);
     buf.sort();
     for (int i = 0; i < 10000; i++) {
-      if (i % 13 == 0) assertThat(InterpolationSearch.search(buf, i, 0, 9999), greaterThanOrEqualTo(0L));
+      if (i % 13 == 0) assertThat(InterpolationSearch.search(buf, i, 0, 9999), is(i / 13L));
       else assertThat(InterpolationSearch.search(buf, i, 0, 9999), lessThan(0L));
     }
   }
@@ -53,7 +55,8 @@ public class InterpolationSearchTest {
     for (int i = 0; i < 10000; i++) arr[i] = i;
     Arrays.sort(arr, 0, 10000);
     for (int i = 0; i < 10000; i++)
-      assertThat(InterpolationSearch.search(arr, i, 0, 9999), greaterThanOrEqualTo(0));
+      assertThat(InterpolationSearch.search(arr, i, 0, 9999), is(i));
+    assertThat(InterpolationSearch.search(arr, 10000, 0, 9999), is(-1));
   }
 
   @Test
@@ -62,7 +65,7 @@ public class InterpolationSearchTest {
     for (int i = 0; i < 10000; i++) arr[i] = i * 13;
     Arrays.sort(arr, 0, 10000);
     for (int i = 0; i < 10000; i++) {
-      if (i % 13 == 0) assertThat(InterpolationSearch.search(arr, i, 0, 9999), greaterThanOrEqualTo(0));
+      if (i % 13 == 0) assertThat(InterpolationSearch.search(arr, i, 0, 9999), greaterThanOrEqualTo(i / 13));
       else assertThat(InterpolationSearch.search(arr, i, 0, 9999), lessThan(0));
     }
   }

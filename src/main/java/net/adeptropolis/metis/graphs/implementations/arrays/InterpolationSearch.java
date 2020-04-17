@@ -27,15 +27,19 @@ public class InterpolationSearch {
 
   public static long search(BigInts ints, int key, long low, long high) {
 
-    long mid;
-
     int lowVal = ints.get(low);
-    int highVal = ints.get(high);
-    int midVal;
 
-    while ((highVal != lowVal) && (key >= lowVal) && (key <= highVal)) {
-      mid = low + ((key - lowVal) * (high - low) / (highVal - lowVal));
-      midVal = ints.get(mid);
+    if (lowVal == key) {
+      return low;
+    }
+
+    int highVal = ints.get(high);
+
+    while (key >= lowVal && key <= highVal) {
+
+      long mid = (int) (low + (((key - lowVal) * (high - low)) / (highVal - lowVal)));
+      int midVal = ints.get(mid);
+
       if (key > midVal) {
         low = mid + 1;
         lowVal = ints.get(low);
@@ -45,13 +49,10 @@ public class InterpolationSearch {
       } else {
         return mid;
       }
+
     }
 
-    if (key == lowVal)
-      return low;
-    else
-      return -1;
-
+    return -1;
   }
 
   /**
@@ -66,15 +67,19 @@ public class InterpolationSearch {
 
   public static int search(int[] array, int key, int low, int high) {
 
-    int mid;
-
     int lowVal = array[low];
-    int highVal = array[high];
-    int midVal;
 
-    while ((highVal != lowVal) && (key >= lowVal) && (key <= highVal)) {
-      mid = (int) (low + (((key - lowVal) * (long) (high - low)) / (highVal - lowVal)));
-      midVal = array[mid];
+    if (lowVal == key) {
+      return low;
+    }
+
+    int highVal = array[high];
+
+    while (key >= lowVal && key <= highVal) {
+
+      int mid = (int) (low + (((key - lowVal) * (long) (high - low)) / (highVal - lowVal)));
+      int midVal = array[mid];
+
       if (key > midVal) {
         low = mid + 1;
         lowVal = array[low];
@@ -84,13 +89,10 @@ public class InterpolationSearch {
       } else {
         return mid;
       }
+
     }
 
-    if (key == lowVal)
-      return low;
-    else
-      return -1;
-
+    return -1;
   }
 
 }
