@@ -26,15 +26,17 @@ public class PowerIteration {
    * <p>Apply the power iteration method to any Operator to find the eigenvector associated with its' largest eigenvalue</p>
    * <p>The initial vector needs to satisfy ||x|| = 1</p>
    *
-   * @param op                   The operator operator
-   * @param convergenceCriterion A given convergence criterion for the iteration
-   * @param initialVector        Initial vector for the iteration
-   * @param maxIterations        Maximum number of iterations.
+   * @param op                        The operator operator
+   * @param convergenceCriterion      A given convergence criterion for the iteration
+   * @param initialVector             Initial vector for the iteration
+   * @param maxIterations             Maximum number of iterations.
+   * @param expectNegativeEigenvalues Whether to expect any negative eigenvalues.
    * @return Either the converged eigenvector or <code>null</code> if the number of allowed iterations has been exhausted.
    * @see ConvergenceCriterion
    */
 
-  public static double[] apply(LinearGraphOperator op, ConvergenceCriterion convergenceCriterion, double[] initialVector, int maxIterations) throws MaxIterationsExceededException {
+  public static double[] apply(LinearGraphOperator op, ConvergenceCriterion convergenceCriterion,
+                               double[] initialVector, int maxIterations, boolean expectNegativeEigenvalues) throws MaxIterationsExceededException {
     double[] x = new double[op.size()];
     double[] y = initialVector;
     StopWatch stopWatch = new StopWatch();
@@ -45,7 +47,11 @@ public class PowerIteration {
         throw new MaxIterationsExceededException(String.format("Exceeded maximum number of iterations (%d)", maxIterations));
       }
       y = op.apply(x);
-      Vectors.normalize2Sig(y);
+      if (expectNegativeEigenvalues) {
+        Vectors.normalize2Sig(y);
+      } else {
+        Vectors.normalize2(y);
+      }
       if (convergenceCriterion.satisfied(x, y, i)) {
         stopWatch.stop();
         LOG.trace("Power iteration for operator size {} finished after {} rounds in {}", op.size(), i + 1, stopWatch);

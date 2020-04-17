@@ -26,7 +26,7 @@ public class PowerIterationTest extends GraphTestBase {
     CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-6);
     double[] iv = RANDOM_IV.generate(10);
-    double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000);
+    double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000, true);
     assertThat(r, is(notNullValue()));
     for (int i = 0; i < op.size(); i++) {
       assertThat(r[i], closeTo(expected[i], 1E-5));
@@ -39,7 +39,7 @@ public class PowerIterationTest extends GraphTestBase {
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-18);
     double[] iv = RANDOM_IV.generate(10);
     assertThrows(PowerIteration.MaxIterationsExceededException.class, () -> {
-      PowerIteration.apply(op, convergenceCriterion, iv, 5);
+      PowerIteration.apply(op, convergenceCriterion, iv, 5, true);
     });
   }
 
@@ -48,7 +48,7 @@ public class PowerIterationTest extends GraphTestBase {
     SSNLOperator op = new SSNLOperator(EIGEN_REF_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-9);
     double[] iv = RANDOM_IV.generate(op.size());
-    double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 1000);
+    double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 1000, true);
     assertThat(r, is(notNullValue()));
     assertThat(r[0], closeTo(0.33423, 1E-5));
     assertThat(r[1], closeTo(0.18452, 1E-5));
@@ -63,7 +63,7 @@ public class PowerIterationTest extends GraphTestBase {
     SSNLOperator op = new SSNLOperator(WEIGHTED_K20);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-9);
     double[] iv = RANDOM_IV.generate(op.size());
-    double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000);
+    double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000, true);
     assertThat(r, is(notNullValue()));
     double[] expected = new double[]{0.422554, -0.102237, 0.287406, 0.100775, -0.178143, -0.115820, -0.033225, -0.029026, -0.107263, -0.208185, -0.271339, 0.262986, 0.152637, 0.060499, 0.319281, -0.189389, -0.366464, 0.155779, 0.221442, -0.318028};
     for (int i = 0; i < expected.length; i++) {

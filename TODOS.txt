@@ -10,3 +10,25 @@ Notes / explore:
   - Measure amount of noise during Power iteration
   - Explore flicker factor as alternative to convergence threshold
 
+
+=========
+
+public static int search(int[] array, int key, int low, int high) {
+    int lowVal = array[low];
+    if (lowVal == key) return low;
+    int highVal = array[high];
+    while (key >= lowVal && key <= highVal) {
+      int mid = (int) (low + (((key - lowVal) * (long) (high - low)) / (highVal - lowVal)));
+      int midVal = array[mid];
+      if (key > midVal) {
+        low = mid + 1;
+        lowVal = array[low];
+      } else if (key < midVal) {
+        high = mid - 1;
+        highVal = array[high];
+      } else {
+        return mid;
+      }
+    }
+    return -1;
+  }

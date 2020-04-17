@@ -56,7 +56,7 @@ public class SpectralBisector {
     PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
     SSNLOperator ssnl = new SSNLOperator(graph);
     double[] iv = ivSource.generate(graph.order());
-    double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations);
+    double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations, false);
     convergenceCriterion.postprocess(v2);
     yieldSubgraph(graph, v2, consumer, 1);
     yieldSubgraph(graph, v2, consumer, -1);

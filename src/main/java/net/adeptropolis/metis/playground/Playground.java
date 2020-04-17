@@ -54,6 +54,7 @@ public class Playground {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(NAMES_20M));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexConsistency(0.05)
+//            .withMaxIterations(10000)
             .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
