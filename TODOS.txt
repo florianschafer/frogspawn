@@ -5,3 +5,4 @@
  - Check whether it makes sense to replace custom big array with fastutil's
  - Explore flicker factor as alternative to convergence threshold
  - Measure amount of noise during Power iteration
+ - Try working consistency guarding directly into TrivialClusterRedistributionPostprocessor
