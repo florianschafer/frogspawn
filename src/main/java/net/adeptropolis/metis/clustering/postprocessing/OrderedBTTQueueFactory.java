@@ -14,23 +14,13 @@ import java.util.PriorityQueue;
  * Factory for depth-ordered cluster priority queues
  */
 
-class OrderedClusterQueueFactory {
+class OrderedBTTQueueFactory {
 
   /**
    * Constructor
    */
 
-  private OrderedClusterQueueFactory() {
-  }
-
-  /**
-   * @return A new cluster priority queue, ordered by depth (bottom to top)
-   */
-
-  static PriorityQueue<Cluster> bottomUpQueue() {
-    return new PriorityQueue<>(Comparator.comparingInt(Cluster::depth)
-            .reversed()
-            .thenComparingInt(cluster -> -cluster.getRemainder().size()));
+  private OrderedBTTQueueFactory() {
   }
 
   /**
@@ -38,8 +28,8 @@ class OrderedClusterQueueFactory {
    * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
    */
 
-  static PriorityQueue<Cluster> bottomUpQueue(Cluster root) {
-    PriorityQueue<Cluster> queue = bottomUpQueue();
+  static PriorityQueue<Cluster> queue(Cluster root) {
+    PriorityQueue<Cluster> queue = new PriorityQueue<>(Comparator.comparingInt(Cluster::depth).reversed());
     root.traverse(queue::add);
     return queue;
   }
