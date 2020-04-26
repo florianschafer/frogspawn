@@ -54,7 +54,7 @@ public class Playground {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(ENTITY_GRAPH_TERMS));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexAffiliation(0.1)
-            .withMinAncestorSimilarity(0.5)
+            .withMinAncestorSimilarity(0.4)
             .withMinClusterSize(100)
             .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();
@@ -74,7 +74,8 @@ public class Playground {
       String vertices = digest.map(mapping, labeledGraph.getLabels())
               .collect(Collectors.joining(", "));
       String prefix = StringUtils.repeat("==", cluster.depth());
-      w.printf("%s> %d: %s\n", prefix, digest.totalSize(), vertices);
+      double totalWeight = cluster.aggregateGraph().totalWeight();
+      w.printf("%s> %d / %.3f: %s\n", prefix, digest.totalSize(), totalWeight, vertices);
     });
     w.close();
     stopWatch.stop();

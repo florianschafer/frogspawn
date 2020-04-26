@@ -8,10 +8,7 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import com.google.common.collect.Lists;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.ParentSimilarityPostprocessor;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.RemainderSizePostprocessor;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.SingletonCollapsingPostprocessor;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.VertexAffiliationGuardingPostprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.*;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +48,7 @@ public class Postprocessing {
 
   private static List<Postprocessor> createPipeline(ClusteringSettings settings) {
     RemainderSizePostprocessor remainderSize = new RemainderSizePostprocessor(settings.getMinClusterSize());
+    SingletonRedistributionPostprocessor singletonRedistribution = new SingletonRedistributionPostprocessor();
     ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(
             settings.getSimilarityMetric(), settings.getMinAncestorSimilarity(), settings.getParentSearchStepSize());
     VertexAffiliationGuardingPostprocessor affiliation = new VertexAffiliationGuardingPostprocessor(
@@ -58,7 +56,7 @@ public class Postprocessing {
     SingletonCollapsingPostprocessor singletons = new SingletonCollapsingPostprocessor();
     List<Postprocessor> pipeline = Lists.newArrayList(
             remainderSize,
-            singletons,
+            singletonRedistribution,
             ancestorSimilarity,
             singletons,
             affiliation,

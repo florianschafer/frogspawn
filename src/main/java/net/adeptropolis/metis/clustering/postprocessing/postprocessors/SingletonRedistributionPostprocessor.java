@@ -28,10 +28,6 @@ import java.util.Set;
 
 public class SingletonRedistributionPostprocessor implements Postprocessor {
 
-
-  public SingletonRedistributionPostprocessor() {
-  }
-
   /**
    * Process the queue
    */

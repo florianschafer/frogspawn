@@ -7,6 +7,19 @@ package net.adeptropolis.metis.clustering.postprocessing;
 
 public enum TreeTraversalMode {
 
-  LOCAL_BOTTOM_TO_TOP, GLOBAL_CUSTOM
+  /**
+   * Built-in mode for traversing the full cluster tree bottom-to-top.
+   * Use for postprocessors that operate locally and require this
+   * traversal direction
+   */
+
+  LOCAL_BOTTOM_TO_TOP,
+
+  /**
+   * Signifies that the postprocessor is responsible for traversing
+   * the cluster tree.
+   */
+
+  GLOBAL_CUSTOM
 
 }
