@@ -42,7 +42,7 @@ public class Playground {
   private static final Path MEDIUM_GRAPH = Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.10M.tsv");
   private static final Path SMALL_GRAPH = Paths.get("/home/florian/Datasets/Workbench/wiki_corenlp.filtered.graph.small.tsv");
   private static final Path ENTITY_GRAPH = Paths.get("/home/florian/tmp/wiki_ents.tsv");
-  private static final Path ENTITY_GRAPH_TERMS = Paths.get("/home/florian/tmp/wiki_ents_terms_only.tsv");
+  private static final Path ENTITY_GRAPH_TERMS = Paths.get("/home/florian/tmp/wiki_ents_terms_only.norm.tsv");
   private static final Path NAMES_2M = Paths.get("/home/florian/Datasets/Workbench/fb_names.2M.tsv");
   private static final Path NAMES_20M = Paths.get("/home/florian/Datasets/Workbench/fb_names.20M.tsv");
 
@@ -53,14 +53,15 @@ public class Playground {
   private void standardClustering() throws IOException {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(NAMES_20M));
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinVertexAffiliation(0.05)
+            .withMinVertexAffiliation(0.1)
+            .withMinAncestorSimilarity(0.5)
 //            .withMaxIterations(10000)
             .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
     ClusterDigester digester = new ClusterDigester(settings);
     LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
-    export("/home/florian/tmp/clusters19.txt", labeledGraph, root, digester, mapping);
+    export("/home/florian/tmp/clusters4.txt", labeledGraph, root, digester, mapping);
 
   }
 
