@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * Main postprocessing class
@@ -85,7 +84,7 @@ public class Postprocessing {
   }
 
   /**
-   * Apply a specific postprocessor to the full cluster hierarchy, bottom-up
+   * Apply a specific postprocessor
    *
    * @param postprocessor Postprocessor
    */
@@ -93,40 +92,10 @@ public class Postprocessing {
   private void applyPostprocessor(Postprocessor postprocessor) {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    boolean changed;
-    switch (postprocessor.traversalMode()) {
-      case LOCAL_BOTTOM_TO_TOP:
-        PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
-        changed = processQueue(postprocessor, queue);
-        break;
-      case GLOBAL_CUSTOM:
-        changed = postprocessor.apply(rootCluster);
-        break;
-      default:
-        throw new PostprocessingException(String.format("Unsupported tree traversal type: %s", postprocessor.traversalMode()));
-    }
+    boolean changed = PostprocessingTraversal.apply(postprocessor, rootCluster);
     stopWatch.stop();
     LOG.debug("{} finished in {}. There were {} to the cluster hierarchy.",
             postprocessor.getClass().getSimpleName(), stopWatch, changed ? "changes" : "no changes");
-  }
-
-  /**
-   * Process the cluster queue using a given postprocessor
-   *
-   * @param postprocessor Postprocessor
-   * @param queue         Bottom-up ordered priority queue of clusters
-   * @return true if the cluster hierarchy has been changed, else false
-   */
-
-  private boolean processQueue(Postprocessor postprocessor, PriorityQueue<Cluster> queue) {
-    boolean changed = false;
-    while (!queue.isEmpty()) {
-      Cluster cluster = queue.poll();
-      if (rootCluster.aggregateClusters().contains(cluster)) {
-        changed |= postprocessor.apply(cluster);
-      }
-    }
-    return changed;
   }
 
 }

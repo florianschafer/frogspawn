@@ -7,15 +7,12 @@ package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.SingletonRedistributionPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class SingletonRedistributionPostprocessorTest {
 

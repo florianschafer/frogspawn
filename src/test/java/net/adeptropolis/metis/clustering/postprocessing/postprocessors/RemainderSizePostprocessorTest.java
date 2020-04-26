@@ -8,7 +8,6 @@ package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.RemainderSizePostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import org.hamcrest.core.Is;

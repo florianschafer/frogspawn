@@ -11,7 +11,6 @@ import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
 import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.VertexAffiliationGuardingPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.hamcrest.core.Is;

@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.ParentSimilarityPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;

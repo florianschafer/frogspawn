@@ -33,28 +33,6 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   }
 
   /**
-   * Apply postprocessing
-   *
-   * @return The original root cluster
-   */
-
-  public boolean apply(Cluster root) {
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue();
-    Set<Cluster> enqueued = new HashSet<>();
-    enqueueLeafs(root, queue, enqueued);
-    return processQueue(queue, enqueued);
-  }
-
-  /**
-   * @return This class implements a custom cluster tree traversal mechanism
-   */
-
-  @Override
-  public TreeTraversalMode traversalMode() {
-    return TreeTraversalMode.GLOBAL_CUSTOM;
-  }
-
-  /**
    * Process the queue
    */
 
@@ -155,6 +133,28 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
       queue.add(cluster);
       enqueued.add(cluster);
     }
+  }
+
+  /**
+   * Apply postprocessing
+   *
+   * @return The original root cluster
+   */
+
+  public boolean apply(Cluster root) {
+    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue();
+    Set<Cluster> enqueued = new HashSet<>();
+    enqueueLeafs(root, queue, enqueued);
+    return processQueue(queue, enqueued);
+  }
+
+  /**
+   * @return This class implements a custom cluster tree traversal mechanism
+   */
+
+  @Override
+  public TreeTraversalMode traversalMode() {
+    return TreeTraversalMode.GLOBAL_CUSTOM;
   }
 
 }

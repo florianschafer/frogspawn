@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
-import net.adeptropolis.metis.clustering.postprocessing.postprocessors.SingletonCollapsingPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import org.hamcrest.core.Is;
 import org.junit.Test;
