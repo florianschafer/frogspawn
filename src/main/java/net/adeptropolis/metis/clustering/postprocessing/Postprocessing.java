@@ -8,6 +8,10 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import com.google.common.collect.Lists;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.ParentSimilarityPostprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.RemainderSizePostprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.SingletonCollapsingPostprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.VertexAffiliationGuardingPostprocessor;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,8 +93,18 @@ public class Postprocessing {
   private void applyPostprocessor(Postprocessor postprocessor) {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
-    boolean changed = processQueue(postprocessor, queue);
+    boolean changed;
+    switch (postprocessor.traversalMode()) {
+      case LOCAL_BOTTOM_TO_TOP:
+        PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
+        changed = processQueue(postprocessor, queue);
+        break;
+      case GLOBAL_CUSTOM:
+        changed = postprocessor.apply(rootCluster);
+        break;
+      default:
+        throw new PostprocessingException(String.format("Unsupported tree traversal type: %s", postprocessor.traversalMode()));
+    }
     stopWatch.stop();
     LOG.debug("{} finished in {}. There were {} to the cluster hierarchy.",
             postprocessor.getClass().getSimpleName(), stopWatch, changed ? "changes" : "no changes");

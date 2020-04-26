@@ -3,12 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.RemainderSizePostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,6 +46,11 @@ public class RemainderSizePostprocessorTest extends GraphTestBase {
     c12.addToRemainder(C12_VERTICES.iterator());
     c121 = new Cluster(c12);
     c121.addToRemainder(C121_VERTICES.iterator());
+  }
+
+  @Test
+  public void traversalMode() {
+    assertThat(new RemainderSizePostprocessor(1).traversalMode(), Is.is(TreeTraversalMode.LOCAL_BOTTOM_TO_TOP));
   }
 
   @Test

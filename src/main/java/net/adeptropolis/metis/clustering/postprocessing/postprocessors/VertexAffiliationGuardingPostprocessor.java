@@ -1,15 +1,17 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationGuard;
 import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
@@ -24,7 +26,7 @@ import net.adeptropolis.metis.graphs.VertexIterator;
  */
 
 
-class VertexAffiliationGuardingPostprocessor implements Postprocessor {
+public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
 
   private final VertexAffiliationMetric vertexAffiliationMetric;
   private final int minClusterSize;
@@ -81,6 +83,15 @@ class VertexAffiliationGuardingPostprocessor implements Postprocessor {
     cluster.setRemainder(new IntArrayList(clusterVertices));
     return true;
 
+  }
+
+  /**
+   * @return Generic bottom-to-top traversal mode
+   */
+
+  @Override
+  public TreeTraversalMode traversalMode() {
+    return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
   }
 
   /**

@@ -1,11 +1,13 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.metis.helpers.SequencePredicates;
@@ -35,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @see VertexAffiliationGuardingPostprocessor
  */
 
-class ParentSimilarityPostprocessor implements Postprocessor {
+public class ParentSimilarityPostprocessor implements Postprocessor {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ParentSimilarityPostprocessor.class.getSimpleName());
 
@@ -78,6 +80,15 @@ class ParentSimilarityPostprocessor implements Postprocessor {
     }
     ancestor.annex(cluster);
     return true;
+  }
+
+  /**
+   * @return Generic bottom-to-top traversal mode
+   */
+
+  @Override
+  public TreeTraversalMode traversalMode() {
+    return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
   }
 
   /**

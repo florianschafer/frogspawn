@@ -3,19 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
 
 /**
  * Postprocessor that ensures all cluster remainders obey the minimum cluster size criterion
  */
 
-class RemainderSizePostprocessor implements Postprocessor {
+public class RemainderSizePostprocessor implements Postprocessor {
 
   private final int minClusterSize;
 
-  RemainderSizePostprocessor(int minClusterSize) {
+  public RemainderSizePostprocessor(int minClusterSize) {
     this.minClusterSize = minClusterSize;
   }
 
@@ -34,6 +36,15 @@ class RemainderSizePostprocessor implements Postprocessor {
       return true;
     }
     return false;
+  }
+
+  /**
+   * @return Generic bottom-to-top traversal mode
+   */
+
+  @Override
+  public TreeTraversalMode traversalMode() {
+    return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
   }
 
 }

@@ -1,12 +1,15 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.ParentSimilarityPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.GraphTestBase;
 import net.adeptropolis.metis.graphs.similarity.GraphSimilarityMetric;
@@ -40,6 +43,11 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
     addCluster(6, 4, 12, 13);
     addCluster(7, 6, 14, 15);
     addCluster(8, 6, 16, 17);
+  }
+
+  @Test
+  public void traversalMode() {
+    assertThat(new ParentSimilarityPostprocessor(metric, 0, 15).traversalMode(), is(TreeTraversalMode.LOCAL_BOTTOM_TO_TOP));
   }
 
   @Test

@@ -51,11 +51,11 @@ public class Playground {
   }
 
   private void standardClustering() throws IOException {
-    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(NAMES_20M));
+    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(ENTITY_GRAPH_TERMS));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexAffiliation(0.1)
             .withMinAncestorSimilarity(0.5)
-//            .withMaxIterations(10000)
+            .withMinClusterSize(100)
             .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);

@@ -1,17 +1,19 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
 
 /**
  * Singleton collapsing postprocessor
  */
 
-class SingletonCollapsingPostprocessor implements Postprocessor {
+public class SingletonCollapsingPostprocessor implements Postprocessor {
 
   /**
    * Check whether a cluster is a singleton. If so, assign its remainder and children to the parent and remove it.
@@ -30,4 +32,14 @@ class SingletonCollapsingPostprocessor implements Postprocessor {
       return false;
     }
   }
+
+  /**
+   * @return Generic bottom-to-top traversal mode
+   */
+
+  @Override
+  public TreeTraversalMode traversalMode() {
+    return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
+  }
+
 }

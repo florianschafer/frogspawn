@@ -9,11 +9,10 @@ import net.adeptropolis.metis.clustering.Cluster;
 
 /**
  * Cluster hierarchy postprocessor
+ * <p>Note: All postprocessors must be stateless!</p>
  */
 
-@FunctionalInterface
-public
-interface Postprocessor {
+public interface Postprocessor {
 
   /**
    * Impose a particular structure upon the current cluster or change its place in the cluster tree
@@ -23,5 +22,7 @@ interface Postprocessor {
    */
 
   boolean apply(Cluster cluster);
+
+  TreeTraversalMode traversalMode();
 
 }

@@ -1,15 +1,18 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntLists;
 import net.adeptropolis.metis.clustering.Cluster;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.SingletonCollapsingPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
+import org.hamcrest.core.Is;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,6 +20,11 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 public class SingletonCollapsingPostprocessorTest {
+
+  @Test
+  public void traversalMode() {
+    assertThat(new SingletonCollapsingPostprocessor().traversalMode(), Is.is(TreeTraversalMode.LOCAL_BOTTOM_TO_TOP));
+  }
 
   @Test
   public void notApplicable() {

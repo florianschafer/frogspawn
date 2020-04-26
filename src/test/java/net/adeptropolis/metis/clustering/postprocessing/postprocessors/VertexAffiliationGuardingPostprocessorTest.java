@@ -1,17 +1,20 @@
 /*
- * Copyright Florian Schaefer 2019.
+ * Copyright (c) Florian Schaefer 2020.
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.postprocessing;
+package net.adeptropolis.metis.clustering.postprocessing.postprocessors;
 
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
 import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.metis.clustering.postprocessing.TreeTraversalMode;
+import net.adeptropolis.metis.clustering.postprocessing.postprocessors.VertexAffiliationGuardingPostprocessor;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
+import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,6 +78,11 @@ public class VertexAffiliationGuardingPostprocessorTest {
     c678 = new Cluster(c4);
     c678.addToRemainder(IntIterators.wrap(new int[]{6, 7, 8}));
     c9 = new Cluster(c678);
+  }
+
+  @Test
+  public void traversalMode() {
+    assertThat(new VertexAffiliationGuardingPostprocessor(metric, 10, 0.5).traversalMode(), Is.is(TreeTraversalMode.LOCAL_BOTTOM_TO_TOP));
   }
 
   @Test
