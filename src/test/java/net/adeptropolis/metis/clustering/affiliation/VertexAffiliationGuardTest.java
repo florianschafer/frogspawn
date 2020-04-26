@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.consistency;
+package net.adeptropolis.metis.clustering.affiliation;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -21,9 +21,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-public class ConsistencyGuardTest extends GraphTestBase {
+public class VertexAffiliationGuardTest extends GraphTestBase {
 
-  private static final ConsistencyMetric METRIC = new RelativeWeightConsistencyMetric();
+  private static final VertexAffiliationMetric METRIC = new RelativeWeightVertexAffiliationMetric();
 
   @Test
   public void sizeBelowThreshold() {
@@ -34,9 +34,9 @@ public class ConsistencyGuardTest extends GraphTestBase {
             .build();
     Cluster cluster = new Cluster(graph);
     Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 10, 0.0);
-    Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
-    assertThat(consistentSubgraph, is(nullValue()));
+    VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 10, 0.0);
+    Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
+    assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52})));
   }
 
@@ -45,18 +45,18 @@ public class ConsistencyGuardTest extends GraphTestBase {
     CompressedSparseGraph graph = defaultGraph();
     Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 0, 0.75);
-    Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
-    assertThat(consistentSubgraph, is(notNullValue()));
+    VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 0, 0.75);
+    Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
+    assertThat(subgraphWithGuaranteedAffiliations, is(notNullValue()));
     cluster.getRemainder().sort(NATURAL_COMPARATOR);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{52, 53})));
-    IntArrayList consistentVertices = new IntArrayList();
-    VertexIterator it = consistentSubgraph.vertexIterator();
+    IntArrayList verticesFulFillingAffiliation = new IntArrayList();
+    VertexIterator it = subgraphWithGuaranteedAffiliations.vertexIterator();
     while (it.hasNext()) {
-      consistentVertices.add(it.globalId());
+      verticesFulFillingAffiliation.add(it.globalId());
     }
-    consistentVertices.sort(NATURAL_COMPARATOR);
-    assertThat(consistentVertices, is(IntArrayList.wrap(new int[]{50, 51})));
+    verticesFulFillingAffiliation.sort(NATURAL_COMPARATOR);
+    assertThat(verticesFulFillingAffiliation, is(IntArrayList.wrap(new int[]{50, 51})));
   }
 
   @Test
@@ -64,9 +64,9 @@ public class ConsistencyGuardTest extends GraphTestBase {
     CompressedSparseGraph graph = defaultGraph();
     Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
-    ConsistencyGuard consistencyGuard = new ConsistencyGuard(METRIC, graph, 4, 0.75);
-    Graph consistentSubgraph = consistencyGuard.ensure(cluster, candidate);
-    assertThat(consistentSubgraph, is(nullValue()));
+    VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 4, 0.75);
+    Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
+    assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
     cluster.getRemainder().sort(NATURAL_COMPARATOR);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));
   }

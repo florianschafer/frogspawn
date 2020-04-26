@@ -37,7 +37,7 @@ public class RecursiveClusteringTest {
     defaultGraph = loadGraph("small_graph.tsv");
     defaultSettings = ClusteringSettings.builder()
             .withMinClusterSize(50)
-            .withMinVertexConsistency(0.1)
+            .withMinVertexAffiliation(0.1)
             .withMinAncestorSimilarity(0.4)
             .build();
     root = RecursiveClustering.run(defaultGraph, defaultSettings);
@@ -101,7 +101,7 @@ public class RecursiveClusteringTest {
   public void determinismMedium() {
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinClusterSize(50)
-            .withMinVertexConsistency(0.05)
+            .withMinVertexAffiliation(0.05)
             .withMinAncestorSimilarity(0.65)
             .build();
     Graph graph = loadGraph("medium_graph.tsv");
@@ -124,7 +124,7 @@ public class RecursiveClusteringTest {
             .add(10, 9, 1)
             .build();
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinVertexConsistency(0.5)
+            .withMinVertexAffiliation(0.5)
             .withMinClusterSize(1)
             .withDigestRanking(COMBINED_RANKING.apply(1.75))
             .build();

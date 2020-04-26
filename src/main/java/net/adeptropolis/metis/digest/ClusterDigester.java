@@ -7,7 +7,7 @@ package net.adeptropolis.metis.digest;
 
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
+import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 import net.adeptropolis.metis.helpers.Arr;
@@ -20,7 +20,7 @@ import net.adeptropolis.metis.helpers.Arr;
 
 public class ClusterDigester {
 
-  private final ConsistencyMetric metric;
+  private final VertexAffiliationMetric metric;
   private final int maxSize;
   private final boolean aggregate;
   private final DigestRanking ranking;
@@ -32,7 +32,7 @@ public class ClusterDigester {
    */
 
   public ClusterDigester(ClusteringSettings settings) {
-    this.metric = settings.getConsistencyMetric();
+    this.metric = settings.getVertexAffiliationMetric();
     this.maxSize = settings.getMaxDigestSize();
     this.aggregate = settings.isAggregateDigests();
     this.ranking = settings.getDigestRanking();
@@ -60,13 +60,13 @@ public class ClusterDigester {
     Graph aggregateGraph = cluster.aggregateGraph();
     int[] vertices = aggregateGraph.collectVertices();
     double[] weights = aggregateGraph.weights();
-    double[] consistencyScores = metric.compute(cluster.rootGraph(), aggregateGraph);
-    return finalizeDigest(vertices, weights, consistencyScores);
+    double[] affiliationScores = metric.compute(cluster.rootGraph(), aggregateGraph);
+    return finalizeDigest(vertices, weights, affiliationScores);
   }
 
   /**
    * Create a new digest, considering only a cluster's remainder.
-   * <p>Note: Vertex weights and consistency scores still refer to the aggregate graph of the cluster.</p>
+   * <p>Note: Vertex weights and affiliation scores still refer to the aggregate graph of the cluster.</p>
    *
    * @param cluster Cluster from which to create the new digest
    * @return New digest instance.
@@ -77,8 +77,8 @@ public class ClusterDigester {
     Graph remainderGraph = cluster.remainderGraph();
     int[] vertices = remainderGraph.collectVertices();
     double[] weights = restrictedWeights(aggregateGraph, remainderGraph);
-    double[] consistencyScores = metric.compute(cluster.rootGraph(), aggregateGraph, remainderGraph);
-    return finalizeDigest(vertices, weights, consistencyScores);
+    double[] affiliationScores = metric.compute(cluster.rootGraph(), aggregateGraph, remainderGraph);
+    return finalizeDigest(vertices, weights, affiliationScores);
   }
 
   /**
@@ -86,16 +86,16 @@ public class ClusterDigester {
    *
    * @param vertices          Digest vertices
    * @param weights           Digest weights
-   * @param consistencyScores Digest consistency scores
+   * @param affiliationScores Digest vertex affiliation scores
    * @return New digest instance
    */
 
-  private Digest finalizeDigest(int[] vertices, double[] weights, double[] consistencyScores) {
-    MemberSortOps.sort(vertices, weights, consistencyScores, ranking);
+  private Digest finalizeDigest(int[] vertices, double[] weights, double[] affiliationScores) {
+    MemberSortOps.sort(vertices, weights, affiliationScores, ranking);
     if (maxSize > 0) {
-      return subsetDigest(vertices, weights, consistencyScores, vertices.length);
+      return subsetDigest(vertices, weights, affiliationScores, vertices.length);
     }
-    return new Digest(vertices, weights, consistencyScores, vertices.length);
+    return new Digest(vertices, weights, affiliationScores, vertices.length);
   }
 
   /**
@@ -103,16 +103,16 @@ public class ClusterDigester {
    *
    * @param vertices          Cluster vertices
    * @param weights           Vertex weights
-   * @param consistencyScores Vertex consistency scores
+   * @param affiliationScores Vertex affiliation scores
    * @param totalSize         Total cluster size
    * @return New cluster digest
    */
 
-  private Digest subsetDigest(int[] vertices, double[] weights, double[] consistencyScores, int totalSize) {
+  private Digest subsetDigest(int[] vertices, double[] weights, double[] affiliationScores, int totalSize) {
     return new Digest(
             Arr.shrink(vertices, maxSize),
             Arr.shrink(weights, maxSize),
-            Arr.shrink(consistencyScores, maxSize),
+            Arr.shrink(affiliationScores, maxSize),
             totalSize);
   }
 

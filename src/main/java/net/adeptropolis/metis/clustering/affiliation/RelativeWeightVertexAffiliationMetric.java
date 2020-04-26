@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.consistency;
+package net.adeptropolis.metis.clustering.affiliation;
 
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
 /**
- * Relative weight consistency metric
+ * Relative weight vertex affiliation metric
  */
 
-public class RelativeWeightConsistencyMetric implements ConsistencyMetric {
+public class RelativeWeightVertexAffiliationMetric implements VertexAffiliationMetric {
 
   /**
-   * Compute a the relative weight consistency score for all vertices of a subgraph with respect to one of its supergraphs
+   * Compute a the relative weight affiliation score for all vertices of a subgraph with respect to one of its supergraphs
    * That is, return the fraction of subgraph vertex weights compared to those of the same vertex set embedded in the supergraph.
    *
    * @param supergraph A graph
    * @param subgraph   A subgraph of supergraph
-   * @return Array of consistency scores for all vertices of the subgraph
+   * @return Array of affiliation scores for all vertices of the subgraph
    */
 
   @Override
@@ -35,14 +35,14 @@ public class RelativeWeightConsistencyMetric implements ConsistencyMetric {
   }
 
   /**
-   * Compute a the relative weight consistency score for all vertices of a subgraph with respect to one of its supergraphs,
+   * Compute a the relative weight affiliation score for all vertices of a subgraph with respect to one of its supergraphs,
    * restricted to a sub-subgraph of the supergraph.
    * That is, return the fraction of subgraph vertex weights compared to those of the same vertex set embedded in the supergraph.
    *
    * @param supergraph  A graph
    * @param subgraph    A subgraph of supergraph
    * @param subsubgraph A subgraph of subgraph
-   * @return Array of consistency scores for all vertices of the subgraph, restricted to the sub-subgraph
+   * @return Array of affiliation scores for all vertices of the subgraph, restricted to the sub-subgraph
    */
 
   @Override

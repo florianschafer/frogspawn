@@ -27,12 +27,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * it is actually the case. As a very benign side effect, the artificial restriction to binary cluster trees is also
  * lifted.
  * </p>
- * <p><b>NOTE:</b>After applying this postprocessor to the full cluster tree, the consistency guard <b>must</b> be re-applied too!
- * Otherwise, the consistency of clusters that have been lept over during the "shift up" phase is undefined and may even
+ * <p><b>NOTE:</b>After applying this postprocessor to the full cluster tree, the affiliation guard <b>must</b> be re-applied too!
+ * Otherwise, the vertex affiliation of clusters that have been lept over during the "shift up" phase is undefined and may even
  * cause null pointer exceptions.
  * </p>
  *
- * @see ConsistencyGuardingPostprocessor
+ * @see VertexAffiliationGuardingPostprocessor
  */
 
 class ParentSimilarityPostprocessor implements Postprocessor {

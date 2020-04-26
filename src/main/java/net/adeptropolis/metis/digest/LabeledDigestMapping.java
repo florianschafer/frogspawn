@@ -20,7 +20,7 @@ interface LabeledDigestMapping<V, T> {
   /**
    * @param vertexLabel Vertex label
    * @param weight      Vertex weight
-   * @param score       Vertex consistency score
+   * @param score       Vertex affiliation score
    * @return Custom cluster member object
    */
   T map(V vertexLabel, double weight, double score);

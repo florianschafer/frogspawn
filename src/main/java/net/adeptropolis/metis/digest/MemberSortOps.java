@@ -11,7 +11,7 @@ import it.unimi.dsi.fastutil.ints.IntComparator;
 import net.adeptropolis.metis.helpers.Arr;
 
 /**
- * Helper class for sorting aligned lists of vertices, weights and consistency scores by weight
+ * Helper class for sorting aligned lists of vertices, weights and affiliation scores by weight
  */
 
 class MemberSortOps implements IntComparator, Swapper {
@@ -26,7 +26,7 @@ class MemberSortOps implements IntComparator, Swapper {
    *
    * @param vertices Vertices
    * @param weights  Vertex weights
-   * @param scores   Vertex consistency scores
+   * @param scores   Vertex affiliation scores
    * @param ranking  Intra-cluster vertex ranking function
    */
 

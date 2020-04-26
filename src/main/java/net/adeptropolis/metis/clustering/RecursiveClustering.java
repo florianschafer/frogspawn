@@ -7,7 +7,7 @@ package net.adeptropolis.metis.clustering;
 
 import com.google.common.base.Preconditions;
 import net.adeptropolis.metis.ClusteringSettings;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
+import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationGuard;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * <p>Recursive clustering</p>
- * <p>Take a given graph and return a hierarchy of semantically consistent clusters</p>
+ * <p>Take a given graph and return a hierarchy of clusters</p>
  */
 
 public class RecursiveClustering {
@@ -32,11 +32,11 @@ public class RecursiveClustering {
   private final Graph graph;
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
-  private final ConsistencyGuard consistencyGuard;
+  private final VertexAffiliationGuard vertexAffiliationGuard;
   private final RandomInitialVectorsSource ivSource;
 
   // NOTE: By construction, this type of queue induces the top-town ordering required for determinism
-  // and ensures the correct behaviour of consistency guards
+  // and ensures the correct behaviour of vertex affiliation guards
   private final ConcurrentLinkedQueue<Protocluster> queue;
 
   /**
@@ -51,7 +51,7 @@ public class RecursiveClustering {
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
     this.queue = new ConcurrentLinkedQueue<>();
-    this.consistencyGuard = new ConsistencyGuard(settings.getConsistencyMetric(), graph, settings.getMinClusterSize(), settings.getMinVertexConsistency());
+    this.vertexAffiliationGuard = new VertexAffiliationGuard(settings.getVertexAffiliationMetric(), graph, settings.getMinClusterSize(), settings.getMinVertexAffiliation());
     this.ivSource = new RandomInitialVectorsSource(settings.getRandomSeed());
   }
 
@@ -121,10 +121,10 @@ public class RecursiveClustering {
    *   input graph (which hints an iteration excess or an error). In that case, add its vertices to the cluster's remainder
    *   and terminate</li>
    *   <li>
-   *     Ensure consistency of the resulting subgraph vertices and add all non-compliant vertices to the cluster remainder.
+   *     Ensure affiliation of the resulting subgraph vertices and add all non-compliant vertices to the cluster remainder.
    *     For the remaining subgraph, one of two conditions may apply:
    *     <ol>
-   *       <li>The remaining consistent subgraph is smaller than the allowed minimum cluster
+   *       <li>The remaining subgraph is smaller than the allowed minimum cluster
    *       size → Add its vertices to the cluster's remainder and terminate</li>
    *       <li>Else: Create a new protocluster with graph type <code>SPECTRAL</code> and add it to the queue
    *       (unless it's exactly as large as the minimum cluster size, in which case a new child cluster is created).</li>
@@ -140,28 +140,28 @@ public class RecursiveClustering {
     if (partition.order() < settings.getMinClusterSize() || partition.order() == protocluster.getGraph().order()) {
       protocluster.getCluster().addToRemainder(partition);
     } else {
-      Graph consistentSubgraph = consistencyGuard.ensure(protocluster.getCluster(), partition);
-      if (consistentSubgraph != null) {
-        processConsistentSubgraph(protocluster, consistentSubgraph);
+      Graph guaranteedAffiliationSubgraph = vertexAffiliationGuard.ensure(protocluster.getCluster(), partition);
+      if (guaranteedAffiliationSubgraph != null) {
+        processGuaranteedAffiliationSubgraph(protocluster, guaranteedAffiliationSubgraph);
       }
     }
   }
 
   /**
-   * <p>Process a subgraph returned by a consistency guard.</p>
+   * <p>Process a subgraph returned by a affiliation guard.</p>
    * <p>If the graph is larger than the minimum cluster size, put it back into the processing queue.
    * Otherwise, create a child cluster from its vertices and terminate here.</p>
    *
-   * @param protocluster       Protocluster
-   * @param consistentSubgraph Subgraph whose vertices are fully self-consistent wrt. to the graph
+   * @param protocluster                  Protocluster
+   * @param guaranteedAffiliationSubgraph Subgraph whose vertices fulfil the min affiliation metric wrt. to the graph
    */
 
-  private void processConsistentSubgraph(Protocluster protocluster, Graph consistentSubgraph) {
-    if (consistentSubgraph.size() > settings.getMinClusterSize()) {
-      enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), consistentSubgraph);
+  private void processGuaranteedAffiliationSubgraph(Protocluster protocluster, Graph guaranteedAffiliationSubgraph) {
+    if (guaranteedAffiliationSubgraph.size() > settings.getMinClusterSize()) {
+      enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), guaranteedAffiliationSubgraph);
     } else {
-      Preconditions.checkState(consistentSubgraph.size() == settings.getMinClusterSize());
-      addTerminalChild(protocluster, consistentSubgraph);
+      Preconditions.checkState(guaranteedAffiliationSubgraph.size() == settings.getMinClusterSize());
+      addTerminalChild(protocluster, guaranteedAffiliationSubgraph);
     }
   }
 

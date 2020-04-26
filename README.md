@@ -17,9 +17,9 @@ the graph. This process is then applied in a recursive manner until some termina
 effectively creating a binary tree with the clusters at its leafs.
 
 Here, this procedure is augmented in two important ways: Firstly, instead of indiscriminately applying recursion to the
-partitions from former steps, a vertex consistency score is computed for every vertex with respect to every potentially
+partitions from former steps, a vertex affiliation score is computed for every vertex with respect to every potentially
 new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
-to the last cluster tree node where they satisfy the consistency criterion (hence the "sieve"). The same goes for all
+to the last cluster tree node where they satisfy the min-affiliation criterion (hence the "sieve"). The same goes for all
 vertices of partitions falling short of a certain minimal size. This approach not only yields an enormous benefit to
 both cluster quality and overall speed, but also introduces a straightforward and comprehensive parameter that puts a
 strict condition on the desired clustering outcome that is inherent to the graph itself.
@@ -105,18 +105,18 @@ in the example below (using the defaults):
 ```java
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)          // Min cluster size
-  .withVertexConsistency(0.1)      // Min consistency score that a vertex may yield with respect to its cluster
+  .withMinVertexAffiliation(0.1)      // Min affiliation score that a vertex may yield with respect to its cluster
   .withMinAncestorSimilarity(0.55) // Min similarity score that a cluster may yield with respect to its parent
   .build();
 ```
 
-Using the default consistency metric, the vertex score is computed as the fraction of the intra-cluster
+Using the default affiliation metric, the vertex score is computed as the fraction of the intra-cluster
 weight of the vertex (also counting descendant clusters) compared to its global weight.
 Similarly, the ancestor similarity is computed as the sum of all intra-cluster weights of its members compared
 to the intra-cluster weight of those vertices within an ancestor cluster.
 
-Note that the consistency and similarity settings are always guaranteed to be satisfied: Any cluster will only
-contain vertices whose intra-cluster score satisfies at least the min consistency criterion. Likewise,
+Note that the affiliation and similarity settings are always guaranteed to be satisfied: Any cluster will only
+contain vertices whose intra-cluster score satisfies at least the min affiliation criterion. Likewise,
 all parent-child relationships are guaranteed to satisfy the similarity criterion.    
 
 For further details and additional options, please refer to the javadocs.
@@ -144,7 +144,7 @@ very easy to create custom ones, namely `ClusterDigester`, `Digest`, `DigestMapp
 ##### Digests and Mappings
 
 In this context, a digest is an output-ready representation of a cluster. Digests store all vertices, weights
-and consistency scores, sorted by custom or predefined ranking function. Moreover, depending on the configuration,
+and affiliation scores, sorted by custom or predefined ranking function. Moreover, depending on the configuration,
 it may not just encompass the cluster vertices but also aggregate those of all of its descendants.
 
 Currently, there may be only one digest per clustering, which is configured as part of the general settings:
@@ -154,7 +154,7 @@ ClusteringSettings settings = ClusteringSettings.builder()
   ...
   .withMaxDigestSize(0)                             # Return all vertices
   .withAggregateDigests(false)                      # Only return the vertices of the cluster itself
-  .withDigestRanking(COMBINED_RANKING.apply(1.75))  # Predefined ranking function: weight^1.75 * consistencyScore
+  .withDigestRanking(COMBINED_RANKING.apply(1.75))  # Predefined ranking function: weight^1.75 * affiliationScore
   .build();
 
 ClusterDigester digester = new ClusterDigester(settings);
@@ -164,7 +164,7 @@ Please refer to the `DigestRanking` interface on how to create custom ranking fu
 predefined options:
 
  - `WEIGHT_RANKING`: Sort by vertex weight (descending)
- - `SCORE_RANKING`: Sort by vertex consistency score (descending)
+ - `SCORE_RANKING`: Sort by vertex affiliation score (descending)
  - `COMBINED_RANKING`: Sort by both vertex weight and score, balancing their impact using an exponent on the weighs 
 
 Digests are not intended to be used directly for output. Instead, one should supply a digest mapping function

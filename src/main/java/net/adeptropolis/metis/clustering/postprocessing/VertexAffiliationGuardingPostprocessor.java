@@ -8,44 +8,44 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyGuard;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
+import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationGuard;
+import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.VertexIterator;
 
 /**
- * <p>Ensures the consistency of a cluster after postprocessing, namely after the ancestor similarity step.</p>
+ * <p>Ensures the cluster affiliation of individual vertices after postprocessing, namely after the ancestor similarity step.</p>
  * <p>
- * This is very much akin to the in-flight consistency guard, but guarantees that only vertices from the
+ * This is very much akin to the in-flight affiliation guard, but guarantees that only vertices from the
  * cluster's remainder are shifted upwards. For this reason, this postprocessor must always be applied bottom-up.
  * </p>
  *
- * @see ConsistencyGuard
+ * @see VertexAffiliationGuard
  */
 
 
-class ConsistencyGuardingPostprocessor implements Postprocessor {
+class VertexAffiliationGuardingPostprocessor implements Postprocessor {
 
-  private final ConsistencyMetric consistencyMetric;
+  private final VertexAffiliationMetric vertexAffiliationMetric;
   private final int minClusterSize;
-  private final double minVertexConsistency;
+  private final double minVertexAffiliation;
 
   /**
    * Constructor
    *
-   * @param consistencyMetric    Consistency metric to be used
-   * @param minClusterSize       Minimum cluster size
-   * @param minVertexConsistency Minimum vertex consistency wrt. to a cluster
+   * @param vertexAffiliationMetric Affiliation metric to be used
+   * @param minClusterSize          Minimum cluster size
+   * @param minVertexAffiliation    Minimum vertex affiliation wrt. to a cluster
    */
 
-  public ConsistencyGuardingPostprocessor(ConsistencyMetric consistencyMetric, int minClusterSize, double minVertexConsistency) {
-    this.consistencyMetric = consistencyMetric;
+  public VertexAffiliationGuardingPostprocessor(VertexAffiliationMetric vertexAffiliationMetric, int minClusterSize, double minVertexAffiliation) {
+    this.vertexAffiliationMetric = vertexAffiliationMetric;
     this.minClusterSize = minClusterSize;
-    this.minVertexConsistency = minVertexConsistency;
+    this.minVertexAffiliation = minVertexAffiliation;
   }
 
   /**
-   * Ensure that all remainder vertices of a cluster fulfil the <code>minVertexConsistency</code> criterion.
+   * Ensure that all remainder vertices of a cluster fulfil the <code>minVertexAffiliation</code> criterion.
    *
    * @param cluster A cluster. Not necessarily root.
    * @return true if the cluster has been modified. Otherwise false.
@@ -64,7 +64,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
     IntRBTreeSet survivors = new IntRBTreeSet(clusterGraph.globalVertexIdIterator());
     for (Graph subgraph = clusterGraph; true; subgraph = cluster.rootGraph().inducedSubgraph(survivors.iterator())) {
       int prevSize = clusterVertices.size();
-      shiftInconsistentVertices(clusterVertices, parent, survivors, subgraph);
+      shiftUnaffiliatedVertices(clusterVertices, parent, survivors, subgraph);
       if (clusterVertices.size() < minClusterSize) {
         parent.addToRemainder(clusterVertices.iterator());
         parent.assimilateChild(cluster, false);
@@ -84,7 +84,7 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
   }
 
   /**
-   * Shift inconsistent vertices upwards into the parent's remainder
+   * Shift non-affiliated vertices upwards into the parent's remainder
    *
    * @param clusterVertices All original vertices of the cluster
    * @param parent          The cluster's parent
@@ -92,11 +92,11 @@ class ConsistencyGuardingPostprocessor implements Postprocessor {
    * @param subgraph        The subgraph created from the survivors
    */
 
-  private void shiftInconsistentVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
-    double[] consistencyScores = consistencyMetric.compute(parent.rootGraph(), subgraph);
+  private void shiftUnaffiliatedVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
+    double[] affiliationScores = vertexAffiliationMetric.compute(parent.rootGraph(), subgraph);
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
-      if (consistencyScores[it.localId()] < minVertexConsistency) {
+      if (affiliationScores[it.localId()] < minVertexAffiliation) {
         if (clusterVertices.contains(it.globalId())) {
           parent.addToRemainder(it.globalId());
           clusterVertices.remove(it.globalId());

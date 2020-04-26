@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 /**
  * A cluster
  * <p>From a user perspective, instances of this class hold the remainder (i.e. those vertices that couldn't be
- * clustered any further according to some consistency metric) and a set of child clusters.</p>
+ * clustered any further according to some affiliation metric) and a set of child clusters.</p>
  * <p>From an internal-use point of view, this class also provides all methods necessary to manipulate the cluster hierarchy.</p>
  */
 

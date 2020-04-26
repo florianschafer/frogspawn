@@ -6,8 +6,8 @@
 package net.adeptropolis.metis;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
-import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
+import net.adeptropolis.metis.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.metis.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.metis.digest.DigestRanking;
 import net.adeptropolis.metis.graphs.Graph;
@@ -29,11 +29,11 @@ import static net.adeptropolis.metis.digest.DigestRankings.COMBINED_RANKING;
 public class ClusteringSettings {
 
   private final List<Postprocessor> customPostprocessors;
-  private final ConsistencyMetric consistencyMetric;
+  private final VertexAffiliationMetric vertexAffiliationMetric;
 
   private final GraphSimilarityMetric similarityMetric;
   private final int minClusterSize;
-  private final double minVertexConsistency;
+  private final double minVertexAffiliation;
   private final double minAncestorSimilarity;
   private final int parentSearchStepSize;
 
@@ -51,32 +51,32 @@ public class ClusteringSettings {
   /**
    * Constructor
    *
-   * @param consistencyMetric     Vertex/cluster consistency metric to be used
-   * @param similarityMetric      Graph similarity metric
-   * @param minClusterSize        Minimum cluster size
-   * @param minVertexConsistency  Minimum consistency score of a vertex wrt. to a cluster
-   * @param minAncestorSimilarity Minimum similarity between a child cluster and one of its ancestors
-   * @param parentSearchStepSize  Step size of parent search
-   * @param trailSize             Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
-   * @param convergenceThreshold  Fraction of converged vertices
-   * @param maxIterations         Maximum number of iterations
-   * @param randomSeed            Seed value for random initial value generation
-   * @param customPostprocessors  List of custom postprocessors to be executed at the end of the default pipeline
-   * @param maxDigestSize         Maximum size of cluster digests
-   * @param aggregateDigests      Whether the digester should aggregate descendant clusters
-   * @param digestRanking         Vertex ranking function for cluster digests
+   * @param vertexAffiliationMetric Vertex/cluster affiliation metric to be used
+   * @param similarityMetric        Graph similarity metric
+   * @param minClusterSize          Minimum cluster size
+   * @param minVertexAffiliation    Minimum affiliation score of a vertex wrt. to a cluster
+   * @param minAncestorSimilarity   Minimum similarity between a child cluster and one of its ancestors
+   * @param parentSearchStepSize    Step size of parent search
+   * @param trailSize               Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
+   * @param convergenceThreshold    Fraction of converged vertices
+   * @param maxIterations           Maximum number of iterations
+   * @param randomSeed              Seed value for random initial value generation
+   * @param customPostprocessors    List of custom postprocessors to be executed at the end of the default pipeline
+   * @param maxDigestSize           Maximum size of cluster digests
+   * @param aggregateDigests        Whether the digester should aggregate descendant clusters
+   * @param digestRanking           Vertex ranking function for cluster digests
    */
 
   @SuppressWarnings("squid:S00107")
-  private ClusteringSettings(ConsistencyMetric consistencyMetric, GraphSimilarityMetric similarityMetric, int minClusterSize, double minVertexConsistency,
+  private ClusteringSettings(VertexAffiliationMetric vertexAffiliationMetric, GraphSimilarityMetric similarityMetric, int minClusterSize, double minVertexAffiliation,
                              double minAncestorSimilarity, int parentSearchStepSize, int trailSize,
                              double convergenceThreshold, int maxIterations, long randomSeed,
                              List<Postprocessor> customPostprocessors, int maxDigestSize, boolean aggregateDigests,
                              DigestRanking digestRanking) {
-    this.consistencyMetric = consistencyMetric;
+    this.vertexAffiliationMetric = vertexAffiliationMetric;
     this.similarityMetric = similarityMetric;
     this.minClusterSize = minClusterSize;
-    this.minVertexConsistency = minVertexConsistency;
+    this.minVertexAffiliation = minVertexAffiliation;
     this.minAncestorSimilarity = minAncestorSimilarity;
     this.parentSearchStepSize = parentSearchStepSize;
     this.trailSize = trailSize;
@@ -108,11 +108,11 @@ public class ClusteringSettings {
   }
 
   /**
-   * @return Minimum consistency of a vertex wrt. to a cluster
+   * @return Minimum affiliation of a vertex wrt. to a cluster
    */
 
-  public double getMinVertexConsistency() {
-    return minVertexConsistency;
+  public double getMinVertexAffiliation() {
+    return minVertexAffiliation;
   }
 
   /**
@@ -160,11 +160,11 @@ public class ClusteringSettings {
   }
 
   /**
-   * @return Currently used consistency metric
+   * @return Currently used vertex affiliation metric
    */
 
-  public ConsistencyMetric getConsistencyMetric() {
-    return consistencyMetric;
+  public VertexAffiliationMetric getVertexAffiliationMetric() {
+    return vertexAffiliationMetric;
   }
 
   /**
@@ -214,9 +214,9 @@ public class ClusteringSettings {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-            .append("consistencyMetric", consistencyMetric)
+            .append("affiliationMetric", vertexAffiliationMetric)
             .append("minClusterSize", minClusterSize)
-            .append("minVertexConsistency", minVertexConsistency)
+            .append("minVertexAffiliation", minVertexAffiliation)
             .append("minAncestorSimilarity", minAncestorSimilarity)
             .append("parentSearchStepSize", parentSearchStepSize)
             .append("trailSize", trailSize)
@@ -233,10 +233,10 @@ public class ClusteringSettings {
   public static class Builder {
 
     private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
-    private ConsistencyMetric consistencyMetric = new RelativeWeightConsistencyMetric();
+    private VertexAffiliationMetric vertexAffiliationMetric = new RelativeWeightVertexAffiliationMetric();
     private GraphSimilarityMetric similarityMetric = new OverlapGraphSimilarityMetric();
     private int minClusterSize = 50;
-    private double minVertexConsistency = 0.1;
+    private double minVertexAffiliation = 0.1;
     private double minAncestorSimilarity = 0.55;
     private int parentSearchStepSize = 32;
 
@@ -252,14 +252,14 @@ public class ClusteringSettings {
     private DigestRanking digestRanking = COMBINED_RANKING.apply(1.75);
 
     /**
-     * Set consistency metric. Default is <code>RelativeWeightConsistencyMetric</code>
+     * Set vertex affiliation metric. Default is <code>RelativeWeightVertexAffiliationMetric</code>
      *
      * @param metric Metric
      * @return this
      */
 
-    public Builder withConsistencyMetric(ConsistencyMetric metric) {
-      this.consistencyMetric = metric;
+    public Builder withVertexAffiliationMetric(VertexAffiliationMetric metric) {
+      this.vertexAffiliationMetric = metric;
       return this;
     }
 
@@ -288,14 +288,14 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set minimum vertex consistency score. Default is 0.1
+     * Set minimum vertex affiliation score. Default is 0.1
      *
-     * @param minVertexConsistency Minimum consistency score
+     * @param minVertexAffiliation Minimum affiliation score
      * @return this
      */
 
-    public Builder withMinVertexConsistency(double minVertexConsistency) {
-      this.minVertexConsistency = minVertexConsistency;
+    public Builder withMinVertexAffiliation(double minVertexAffiliation) {
+      this.minVertexAffiliation = minVertexAffiliation;
       return this;
     }
 
@@ -385,7 +385,7 @@ public class ClusteringSettings {
 
     /**
      * Configure the vertex ranking function for cluster digests. All vertices will be sorted accordingly.
-     * Default is <code>COMBINED_RANKING.apply(1.75)</code> (i.e. weight^1.75 * consistency score)
+     * Default is <code>COMBINED_RANKING.apply(1.75)</code> (i.e. weight^1.75 * affiliation score)
      *
      * @param digestRanking Ranking function for cluster digests
      * @return this
@@ -426,7 +426,7 @@ public class ClusteringSettings {
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(consistencyMetric, similarityMetric, minClusterSize, minVertexConsistency,
+      return new ClusteringSettings(vertexAffiliationMetric, similarityMetric, minClusterSize, minVertexAffiliation,
               minAncestorSimilarity, parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed,
               customPostprocessors, maxDigestSize, aggregateDigests, digestRanking);
     }

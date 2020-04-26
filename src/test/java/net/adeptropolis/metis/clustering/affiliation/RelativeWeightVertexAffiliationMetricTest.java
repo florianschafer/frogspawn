@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.metis.clustering.consistency;
+package net.adeptropolis.metis.clustering.affiliation;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.graphs.Graph;
@@ -15,15 +15,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
-public class RelativeWeightConsistencyMetricTest {
+public class RelativeWeightVertexAffiliationMetricTest {
 
   private Graph graph;
   private Graph subgraph;
-  private RelativeWeightConsistencyMetric metric;
+  private RelativeWeightVertexAffiliationMetric metric;
 
   @Before
   public void setup() {
-    metric = new RelativeWeightConsistencyMetric();
+    metric = new RelativeWeightVertexAffiliationMetric();
     graph = new CompressedSparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)

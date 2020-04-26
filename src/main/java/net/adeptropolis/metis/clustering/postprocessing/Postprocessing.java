@@ -50,15 +50,15 @@ public class Postprocessing {
     RemainderSizePostprocessor remainderSize = new RemainderSizePostprocessor(settings.getMinClusterSize());
     ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(
             settings.getSimilarityMetric(), settings.getMinAncestorSimilarity(), settings.getParentSearchStepSize());
-    ConsistencyGuardingPostprocessor consistency = new ConsistencyGuardingPostprocessor(
-            settings.getConsistencyMetric(), settings.getMinClusterSize(), settings.getMinVertexConsistency());
+    VertexAffiliationGuardingPostprocessor affiliation = new VertexAffiliationGuardingPostprocessor(
+            settings.getVertexAffiliationMetric(), settings.getMinClusterSize(), settings.getMinVertexAffiliation());
     SingletonCollapsingPostprocessor singletons = new SingletonCollapsingPostprocessor();
     List<Postprocessor> pipeline = Lists.newArrayList(
             remainderSize,
             singletons,
             ancestorSimilarity,
             singletons,
-            consistency,
+            affiliation,
             singletons
     );
     pipeline.addAll(settings.getCustomPostprocessors());

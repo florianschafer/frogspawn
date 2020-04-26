@@ -8,8 +8,8 @@ package net.adeptropolis.metis.clustering.postprocessing;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.clustering.Cluster;
-import net.adeptropolis.metis.clustering.consistency.ConsistencyMetric;
-import net.adeptropolis.metis.clustering.consistency.RelativeWeightConsistencyMetric;
+import net.adeptropolis.metis.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.Before;
@@ -19,11 +19,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
-public class ConsistencyGuardingPostprocessorTest {
+public class VertexAffiliationGuardingPostprocessorTest {
 
   private Graph graph;
-  private ConsistencyGuardingPostprocessor postprocessor;
-  private ConsistencyMetric metric;
+  private VertexAffiliationGuardingPostprocessor postprocessor;
+  private VertexAffiliationMetric metric;
 
   private Cluster c0;
   private Cluster c1;
@@ -36,7 +36,7 @@ public class ConsistencyGuardingPostprocessorTest {
 
   @Before
   public void setUp() {
-    metric = new RelativeWeightConsistencyMetric();
+    metric = new RelativeWeightVertexAffiliationMetric();
     graph = new CompressedSparseGraphBuilder(0)
             .add(0, 1, 1)
             .add(0, 2, 1)
@@ -79,13 +79,13 @@ public class ConsistencyGuardingPostprocessorTest {
 
   @Test
   public void ignoreRootCluster() {
-    postprocessor = new ConsistencyGuardingPostprocessor(metric, 10, 0.5);
+    postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 10, 0.5);
     assertThat(postprocessor.apply(c0), is(false));
   }
 
   @Test
-  public void allVerticesAreInconsistent() {
-    postprocessor = new ConsistencyGuardingPostprocessor(metric, 10000, 1.0);
+  public void noVertexFulfilsAffiliationCriterion() {
+    postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 10000, 1.0);
     assertThat(postprocessor.apply(c678), is(true));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c5.getParent(), is(c4));
@@ -93,16 +93,16 @@ public class ConsistencyGuardingPostprocessorTest {
   }
 
   @Test
-  public void allVerticesAreConsistent() {
-    postprocessor = new ConsistencyGuardingPostprocessor(metric, 1, 0.0);
+  public void allVerticesFulfilAffiliationCriterion() {
+    postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 1, 0.0);
     assertThat(postprocessor.apply(c678), is(false));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4));
   }
 
   @Test
-  public void someVerticesAreConsistent() {
-    postprocessor = new ConsistencyGuardingPostprocessor(metric, 1, 0.27);
+  public void someVerticesFallBelowAffiliationScore() {
+    postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 1, 0.27);
     assertThat(postprocessor.apply(c678), is(true));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6));
@@ -110,8 +110,8 @@ public class ConsistencyGuardingPostprocessorTest {
   }
 
   @Test
-  public void numberOfConsistentVerticesBelowMinClusterSize() {
-    postprocessor = new ConsistencyGuardingPostprocessor(metric, 3, 0.27);
+  public void numberOfVerticesFulfillingAffiliationScoreBelowMinClusterSize() {
+    postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 3, 0.27);
     assertThat(postprocessor.apply(c678), is(true));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));

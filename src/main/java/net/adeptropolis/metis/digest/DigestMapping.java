@@ -17,7 +17,7 @@ public interface DigestMapping<T> {
   /**
    * @param vertexId Vertex id
    * @param weight   Vertex weight
-   * @param score    Vertex consistency score
+   * @param score    Vertex affiliation score
    * @return Custom cluster member object
    */
   T map(int vertexId, double weight, double score);
