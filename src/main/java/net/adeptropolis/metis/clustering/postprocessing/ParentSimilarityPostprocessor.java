@@ -90,9 +90,10 @@ class ParentSimilarityPostprocessor implements Postprocessor {
   private Cluster nearestAncestorSatisfyingSimilarity(Cluster cluster) {
     Cluster parent = cluster.getParent();
     AtomicInteger predicateChecks = new AtomicInteger();
+    Graph clusterAggregateGraph = cluster.aggregateGraph();
     Cluster first = SequencePredicates.findFirst(parent, searchStepSize, Cluster.class, Cluster::getParent, ancestor -> {
       predicateChecks.getAndIncrement();
-      return similarity(cluster, ancestor) >= minSimilarity;
+      return similarity(clusterAggregateGraph, ancestor) >= minSimilarity;
     });
     LOGGER.trace("Finished after taking {} samples", predicateChecks.get());
     return first;
@@ -101,15 +102,13 @@ class ParentSimilarityPostprocessor implements Postprocessor {
   /**
    * Compute the similarity score between a cluster and one of its ancestors
    *
-   * @param cluster  The cluster
-   * @param ancestor The cluster's ancestor
+   * @param clusterAggregateGraph Aggregate graph of the cluster
+   * @param ancestor              The cluster's ancestor
    * @return Similarity between the cluster and its ancestor
    */
 
-  private double similarity(Cluster cluster, Cluster ancestor) {
-    Graph clusterGraph = cluster.aggregateGraph();
-    Graph ancestorGraph = ancestor.aggregateGraph();
-    return metric.compute(ancestorGraph, clusterGraph);
+  private double similarity(Graph clusterAggregateGraph, Cluster ancestor) {
+    return metric.compute(ancestor.aggregateGraph(), clusterAggregateGraph);
   }
 
 }
