@@ -209,6 +209,14 @@ public class Cluster {
   }
 
   /**
+   * @return Size of this cluster's remainder
+   */
+
+  public int remainderSize() {
+    return remainder.size();
+  }
+
+  /**
    * @return The root cluster
    */
 

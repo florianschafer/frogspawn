@@ -34,8 +34,7 @@ public class ClusteringSettings {
   private final GraphSimilarityMetric similarityMetric;
   private final int minClusterSize;
   private final double minVertexAffiliation;
-  private final double minAncestorSimilarity;
-  private final int parentSearchStepSize;
+  private final int minChildren;
 
   // Power iteration
   private final int trailSize;
@@ -55,8 +54,7 @@ public class ClusteringSettings {
    * @param similarityMetric        Graph similarity metric
    * @param minClusterSize          Minimum cluster size
    * @param minVertexAffiliation    Minimum affiliation score of a vertex wrt. to a cluster
-   * @param minAncestorSimilarity   Minimum similarity between a child cluster and one of its ancestors
-   * @param parentSearchStepSize    Step size of parent search
+   * @param minChildren             Minimum number of children for each cluster
    * @param trailSize               Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold    Fraction of converged vertices
    * @param maxIterations           Maximum number of iterations
@@ -68,8 +66,8 @@ public class ClusteringSettings {
    */
 
   @SuppressWarnings("squid:S00107")
-  private ClusteringSettings(VertexAffiliationMetric vertexAffiliationMetric, GraphSimilarityMetric similarityMetric, int minClusterSize, double minVertexAffiliation,
-                             double minAncestorSimilarity, int parentSearchStepSize, int trailSize,
+  private ClusteringSettings(VertexAffiliationMetric vertexAffiliationMetric, GraphSimilarityMetric similarityMetric,
+                             int minClusterSize, double minVertexAffiliation, int minChildren, int trailSize,
                              double convergenceThreshold, int maxIterations, long randomSeed,
                              List<Postprocessor> customPostprocessors, int maxDigestSize, boolean aggregateDigests,
                              DigestRanking digestRanking) {
@@ -77,8 +75,7 @@ public class ClusteringSettings {
     this.similarityMetric = similarityMetric;
     this.minClusterSize = minClusterSize;
     this.minVertexAffiliation = minVertexAffiliation;
-    this.minAncestorSimilarity = minAncestorSimilarity;
-    this.parentSearchStepSize = parentSearchStepSize;
+    this.minChildren = minChildren;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
     this.maxIterations = maxIterations;
@@ -144,19 +141,11 @@ public class ClusteringSettings {
   }
 
   /**
-   * @return Minimum similarity of a child cluster node wrt. to one of its ancestors
+   * @return Minimum number of children for each cluster
    */
 
-  public double getMinAncestorSimilarity() {
-    return minAncestorSimilarity;
-  }
-
-  /**
-   * @return Step size of parent search
-   */
-
-  public int getParentSearchStepSize() {
-    return parentSearchStepSize;
+  public int getMinChildren() {
+    return minChildren;
   }
 
   /**
@@ -217,8 +206,7 @@ public class ClusteringSettings {
             .append("affiliationMetric", vertexAffiliationMetric)
             .append("minClusterSize", minClusterSize)
             .append("minVertexAffiliation", minVertexAffiliation)
-            .append("minAncestorSimilarity", minAncestorSimilarity)
-            .append("parentSearchStepSize", parentSearchStepSize)
+            .append("minChildren", minChildren)
             .append("trailSize", trailSize)
             .append("convergenceThreshold", convergenceThreshold)
             .append("maxIterations", convergenceThreshold)
@@ -237,8 +225,7 @@ public class ClusteringSettings {
     private GraphSimilarityMetric similarityMetric = new OverlapGraphSimilarityMetric();
     private int minClusterSize = 50;
     private double minVertexAffiliation = 0.1;
-    private double minAncestorSimilarity = 0.55;
-    private int parentSearchStepSize = 32;
+    private int minChildren = 10;
 
     // Power iteration
     private int trailSize = 20;
@@ -300,26 +287,14 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set Minimum ancestor similarity. Default is 0.55
+     * Set Minimum number of children for each cluster. Default is 10
      *
-     * @param minAncestorSimilarity Minimum ancestor similarity
+     * @param minChildren Minimum number of children
      * @return this
      */
 
-    public Builder withMinAncestorSimilarity(double minAncestorSimilarity) {
-      this.minAncestorSimilarity = minAncestorSimilarity;
-      return this;
-    }
-
-    /**
-     * Set parent search step size. Default is 32
-     *
-     * @param stepSize Parent search step size
-     * @return this
-     */
-
-    public Builder withParentSearchStepSize(int stepSize) {
-      this.parentSearchStepSize = stepSize;
+    public Builder withMinChildren(int minChildren) {
+      this.minChildren = minChildren;
       return this;
     }
 
@@ -427,8 +402,8 @@ public class ClusteringSettings {
 
     public ClusteringSettings build() {
       return new ClusteringSettings(vertexAffiliationMetric, similarityMetric, minClusterSize, minVertexAffiliation,
-              minAncestorSimilarity, parentSearchStepSize, trailSize, convergenceThreshold, maxIterations, randomSeed,
-              customPostprocessors, maxDigestSize, aggregateDigests, digestRanking);
+              minChildren, trailSize, convergenceThreshold, maxIterations, randomSeed, customPostprocessors,
+              maxDigestSize, aggregateDigests, digestRanking);
     }
 
   }

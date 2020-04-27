@@ -25,8 +25,8 @@ both cluster quality and overall speed, but also introduces a straightforward an
 strict condition on the desired clustering outcome that is inherent to the graph itself.
 
 Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed in such a way that
-every cluster is required to satisfy a certain similarity criterion with regards to its parent. Clusters that do not
-automatically fulfill that condition, are "pushed up" the cluster tree until it is satisfied. This not only
+every cluster is required to yield a certain number of subclusters. In order to do so, large clusters from deeper
+levels within the hierarchy are "pushed up" the cluster tree until that criterion is satisfied. This not only
 counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive bisection
 process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the strictly
 binary nature of the process.
@@ -106,18 +106,15 @@ in the example below (using the defaults):
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)          // Min cluster size
   .withMinVertexAffiliation(0.1)      // Min affiliation score that a vertex may yield with respect to its cluster
-  .withMinAncestorSimilarity(0.55) // Min similarity score that a cluster may yield with respect to its parent
+  .withMinChildren(10) // Minumum number of children for a cluster
   .build();
 ```
 
 Using the default affiliation metric, the vertex score is computed as the fraction of the intra-cluster
 weight of the vertex (also counting descendant clusters) compared to its global weight.
-Similarly, the ancestor similarity is computed as the sum of all intra-cluster weights of its members compared
-to the intra-cluster weight of those vertices within an ancestor cluster.
 
 Note that the affiliation and similarity settings are always guaranteed to be satisfied: Any cluster will only
-contain vertices whose intra-cluster score satisfies at least the min affiliation criterion. Likewise,
-all parent-child relationships are guaranteed to satisfy the similarity criterion.    
+contain vertices whose intra-cluster score satisfies at least the min affiliation criterion.
 
 For further details and additional options, please refer to the javadocs.
 

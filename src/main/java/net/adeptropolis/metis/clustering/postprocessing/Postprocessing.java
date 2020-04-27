@@ -49,17 +49,16 @@ public class Postprocessing {
   private static List<Postprocessor> createPipeline(ClusteringSettings settings) {
     RemainderSizePostprocessor remainderSize = new RemainderSizePostprocessor(settings.getMinClusterSize());
     SingletonRedistributionPostprocessor singletonRedistribution = new SingletonRedistributionPostprocessor();
-    ParentSimilarityPostprocessor ancestorSimilarity = new ParentSimilarityPostprocessor(
-            settings.getSimilarityMetric(), settings.getMinAncestorSimilarity(), settings.getParentSearchStepSize());
     VertexAffiliationGuardingPostprocessor affiliation = new VertexAffiliationGuardingPostprocessor(
             settings.getVertexAffiliationMetric(), settings.getMinClusterSize(), settings.getMinVertexAffiliation());
+    DescendantCollapsingPostprocessor subclusterCount = new DescendantCollapsingPostprocessor(settings.getMinChildren());
     SingletonCollapsingPostprocessor singletons = new SingletonCollapsingPostprocessor();
     List<Postprocessor> pipeline = Lists.newArrayList(
             remainderSize,
             singletonRedistribution,
-            ancestorSimilarity,
-            singletons,
+            subclusterCount,
             affiliation,
+            remainderSize,
             singletons
     );
     pipeline.addAll(settings.getCustomPostprocessors());

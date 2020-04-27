@@ -54,7 +54,7 @@ public class Playground {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(ENTITY_GRAPH_TERMS));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexAffiliation(0.1)
-            .withMinAncestorSimilarity(0.4)
+            .withMinChildren(15)
             .withMinClusterSize(100)
             .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();

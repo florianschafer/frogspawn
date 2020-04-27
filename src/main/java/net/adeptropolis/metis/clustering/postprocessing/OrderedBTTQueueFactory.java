@@ -16,6 +16,11 @@ import java.util.PriorityQueue;
 
 public class OrderedBTTQueueFactory {
 
+  private static final Comparator<Cluster> BTT_COMPARATOR = Comparator.comparingInt(Cluster::depth)
+          .thenComparingInt(Cluster::remainderSize)
+          .thenComparingInt(Cluster::getId)
+          .reversed();
+
   /**
    * Constructor
    */
@@ -28,7 +33,7 @@ public class OrderedBTTQueueFactory {
    */
 
   public static PriorityQueue<Cluster> queue() {
-    return new PriorityQueue<>(Comparator.comparingInt(Cluster::depth).reversed());
+    return new PriorityQueue<>(BTT_COMPARATOR);
   }
 
   /**
