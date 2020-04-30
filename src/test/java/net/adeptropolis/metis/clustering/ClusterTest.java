@@ -10,10 +10,13 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.metis.graphs.labeled.LabeledGraph;
+import net.adeptropolis.metis.graphs.labeled.LabeledGraphBuilder;
 import org.junit.Test;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static it.unimi.dsi.fastutil.ints.IntComparators.NATURAL_COMPARATOR;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -146,6 +149,17 @@ public class ClusterTest {
     assertThat(hash2, is(hash2));
     assertThat(hash1, not(is(hash2)));
     assertThat(hash2, not(is(hash1)));
+  }
+
+  @Test
+  public void remainderLabels() {
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(String.class)
+            .add("A", "B", 3)
+            .add("B", "C", 4)
+            .build();
+    Cluster root = new Cluster(graph.getGraph());
+    root.addToRemainder(IntIterators.wrap(new int[]{1,2}));
+    assertThat(root.remainderLabels(graph.getLabels()).collect(Collectors.joining(", ")), is("B, C"));
   }
 
 }

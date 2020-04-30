@@ -13,6 +13,8 @@ import net.adeptropolis.metis.graphs.VertexIterator;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * A cluster
@@ -103,6 +105,18 @@ public class Cluster {
 
   public IntArrayList getRemainder() {
     return remainder;
+  }
+
+  /**
+   * Map a cluster's remainder to a stream of label objects
+   *
+   * @param labels Graph labels
+   * @param <T>    Label Type
+   * @return Stream of labels
+   */
+
+  public <T> Stream<T> remainderLabels(T[] labels) {
+    return IntStream.range(0, remainder.size()).mapToObj(i -> labels[remainder.getInt(i)]);
   }
 
   /**
