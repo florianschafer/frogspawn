@@ -108,6 +108,16 @@ public class Cluster {
   }
 
   /**
+   * Set the remainder of this cluster
+   *
+   * @param remainder Remainder
+   */
+
+  public void setRemainder(IntArrayList remainder) {
+    this.remainder = remainder;
+  }
+
+  /**
    * Map a cluster's remainder to a stream of label objects
    *
    * @param labels Graph labels
@@ -117,16 +127,6 @@ public class Cluster {
 
   public <T> Stream<T> remainderLabels(T[] labels) {
     return IntStream.range(0, remainder.size()).mapToObj(i -> labels[remainder.getInt(i)]);
-  }
-
-  /**
-   * Set the remainder of this cluster
-   *
-   * @param remainder Remainder
-   */
-
-  public void setRemainder(IntArrayList remainder) {
-    this.remainder = remainder;
   }
 
   /**

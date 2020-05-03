@@ -158,7 +158,7 @@ public class ClusterTest {
             .add("B", "C", 4)
             .build();
     Cluster root = new Cluster(graph.getGraph());
-    root.addToRemainder(IntIterators.wrap(new int[]{1,2}));
+    root.addToRemainder(IntIterators.wrap(new int[]{1, 2}));
     assertThat(root.remainderLabels(graph.getLabels()).collect(Collectors.joining(", ")), is("B, C"));
   }
 

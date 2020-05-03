@@ -5,7 +5,6 @@
 
 package net.adeptropolis.metis.digest;
 
-import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.metis.graphs.Graph;

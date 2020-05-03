@@ -24,13 +24,15 @@ import static org.hamcrest.Matchers.is;
 
 public class ClusterDigesterTest {
 
-  private static final ClusteringSettings aggregate3Settings = ClusteringSettings.builder()
+  private static final ClusteringSettings CLUSTERING_SETTINGS = ClusteringSettings.builder().build();
+
+  private static final DigesterSettings aggregate3Settings = DigesterSettings.builder(CLUSTERING_SETTINGS)
           .withMaxDigestSize(3)
           .withAggregateDigests(true)
           .withDigestRanking(WEIGHT_RANKING)
           .build();
 
-  private static final ClusteringSettings remainder2Settings = ClusteringSettings.builder()
+  private static final DigesterSettings remainder2Settings = DigesterSettings.builder(CLUSTERING_SETTINGS)
           .withMaxDigestSize(2)
           .withAggregateDigests(false)
           .withDigestRanking(WEIGHT_RANKING)
@@ -111,7 +113,7 @@ public class ClusterDigesterTest {
 
   @Test
   public void unlimitedSize() {
-    ClusteringSettings unlimitedSettings = ClusteringSettings.builder()
+    DigesterSettings unlimitedSettings = DigesterSettings.builder(CLUSTERING_SETTINGS)
             .withMaxDigestSize(0)
             .withAggregateDigests(true)
             .withDigestRanking(WEIGHT_RANKING)

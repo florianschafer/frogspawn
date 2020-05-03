@@ -8,8 +8,11 @@ package net.adeptropolis.metis.playground;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.RecursiveClustering;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
+import net.adeptropolis.metis.clustering.postprocessing.PostprocessingSettings;
 import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.Digest;
+import net.adeptropolis.metis.digest.DigesterSettings;
 import net.adeptropolis.metis.digest.LabeledDigestMapping;
 import net.adeptropolis.metis.graphs.labeled.LabeledGraph;
 import net.adeptropolis.metis.graphs.labeled.LabeledGraphSource;
@@ -54,12 +57,20 @@ public class Playground {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(ENTITY_GRAPH_TERMS));
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexAffiliation(0.1)
-            .withMinChildren(15)
             .withMinClusterSize(100)
-            .withDigestRanking(COMBINED_RANKING.apply(1.2))
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
-    ClusterDigester digester = new ClusterDigester(settings);
+
+    PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
+            .withMinChildren(15)
+            .build();
+    Postprocessing.apply(root, postprocessingSettings);
+
+    DigesterSettings digesterSettings = DigesterSettings.builder(settings)
+            .withDigestRanking(COMBINED_RANKING.apply(1.2))
+            .build();
+    ClusterDigester digester = new ClusterDigester(digesterSettings);
+
     LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
     export("/home/florian/tmp/clusters4.txt", labeledGraph, root, digester, mapping);
 

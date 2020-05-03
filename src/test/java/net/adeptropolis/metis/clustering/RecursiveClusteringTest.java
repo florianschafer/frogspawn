@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.Digest;
+import net.adeptropolis.metis.digest.DigesterSettings;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.metis.graphs.implementations.CompressedSparseGraphBuilder;
@@ -38,7 +39,6 @@ public class RecursiveClusteringTest {
     defaultSettings = ClusteringSettings.builder()
             .withMinClusterSize(50)
             .withMinVertexAffiliation(0.1)
-            .withMinChildren(10)
             .build();
     root = RecursiveClustering.run(defaultGraph, defaultSettings);
   }
@@ -102,7 +102,6 @@ public class RecursiveClusteringTest {
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinClusterSize(50)
             .withMinVertexAffiliation(0.05)
-            .withMinChildren(10)
             .build();
     Graph graph = loadGraph("medium_graph.tsv");
     verifyDeterminism(graph, settings, 5);
@@ -126,23 +125,20 @@ public class RecursiveClusteringTest {
     ClusteringSettings settings = ClusteringSettings.builder()
             .withMinVertexAffiliation(0.5)
             .withMinClusterSize(1)
-            .withDigestRanking(COMBINED_RANKING.apply(1.75))
             .build();
     IntOpenHashSet vertices = new IntOpenHashSet();
-    ClusterDigester digester = new ClusterDigester(settings);
     RecursiveClustering.run(graph, settings).traverse(cluster -> {
-      digester.digest(cluster)
+      digester(settings).digest(cluster)
               .map((vertexId, weight, score) -> vertexId)
-              .forEach(vertices::add);
+              .forEach(v -> vertices.add((int) v));
     });
     assertThat(vertices.size(), is(11));
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    ClusterDigester digester = new ClusterDigester(settings);
-    long refFp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester);
+    long refFp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester(settings));
     for (int i = 0; i < rounds - 1; i++) {
-      long fp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester);
+      long fp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester(settings));
       assertThat(fp, is(refFp));
     }
   }
@@ -162,6 +158,13 @@ public class RecursiveClusteringTest {
       fp += Math.round(1000 * (i + 1) * digest.getVertices()[i] * digest.getWeights()[i] * digest.getScores()[i]);
     }
     return fp;
+  }
+
+  private final ClusterDigester digester(ClusteringSettings settings) {
+    DigesterSettings digesterSettings = DigesterSettings.builder(settings)
+            .withDigestRanking(COMBINED_RANKING.apply(1.75)).build();
+    return new ClusterDigester(digesterSettings);
+
   }
 
 }

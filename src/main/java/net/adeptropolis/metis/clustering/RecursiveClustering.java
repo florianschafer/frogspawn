@@ -8,7 +8,6 @@ package net.adeptropolis.metis.clustering;
 import com.google.common.base.Preconditions;
 import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationGuard;
-import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.metis.graphs.Graph;
 import net.adeptropolis.metis.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.metis.graphs.algorithms.SpectralBisector;
@@ -76,7 +75,7 @@ public class RecursiveClustering {
     processQueue();
     stopWatch.stop();
     LOG.info("Finished clustering {} vertices after {}", graph.order(), stopWatch);
-    return new Postprocessing(root, settings).apply();
+    return root;
   }
 
   /**

@@ -6,7 +6,6 @@
 package net.adeptropolis.metis.clustering.postprocessing;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.metis.ClusteringSettings;
 import net.adeptropolis.metis.clustering.Cluster;
 import net.adeptropolis.metis.clustering.postprocessing.postprocessors.*;
 import org.apache.commons.lang3.time.StopWatch;
@@ -34,9 +33,19 @@ public class Postprocessing {
    * @param settings    Clustering settings
    */
 
-  public Postprocessing(Cluster rootCluster, PostprocessingSettings settings) {
+  private Postprocessing(Cluster rootCluster, PostprocessingSettings settings) {
     this.rootCluster = rootCluster;
     this.pipeline = createPipeline(settings);
+  }
+
+  /**
+   * Apply the full postprocessor pipeline
+   *
+   * @return The root cluster
+   */
+
+  public static Cluster apply(Cluster rootCluster, PostprocessingSettings settings) {
+    return new Postprocessing(rootCluster, settings).postprocess();
   }
 
   /**
@@ -66,12 +75,12 @@ public class Postprocessing {
   }
 
   /**
-   * Apply the full postprocessor chain
+   * Apply the full postprocessor pipeline
    *
    * @return The root cluster
    */
 
-  public Cluster apply() {
+  private Cluster postprocess() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     pipeline.forEach(this::applyPostprocessor);

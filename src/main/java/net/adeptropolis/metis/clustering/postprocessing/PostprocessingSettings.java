@@ -42,11 +42,12 @@ public class PostprocessingSettings {
   /**
    * Convenience method
    *
+   * @param clusteringSettings Primary clustering settings
    * @return A new builder
    */
 
-  public static Builder builder() {
-    return new Builder();
+  public static Builder builder(ClusteringSettings clusteringSettings) {
+    return new Builder(clusteringSettings);
   }
 
   /**
@@ -115,21 +116,19 @@ public class PostprocessingSettings {
 
   public static class Builder {
 
-    private GraphSimilarityMetric similarityMetric = new OverlapGraphSimilarityMetric();
+    private final ClusteringSettings clusteringSettings;
     private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
-    private ClusteringSettings clusteringSettings;
+    private GraphSimilarityMetric similarityMetric = new OverlapGraphSimilarityMetric();
     private int minChildren = 10;
 
     /**
-     * Set the primary clustering settings
+     * Constructor
      *
-     * @param clusteringSettings Clustering settings
-     * @return this
+     * @param clusteringSettings Primary clustering settings
      */
 
-    public Builder withClusteringSettings(ClusteringSettings clusteringSettings) {
+    public Builder(ClusteringSettings clusteringSettings) {
       this.clusteringSettings = clusteringSettings;
-      return this;
     }
 
     /**

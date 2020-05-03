@@ -38,11 +38,12 @@ public class DigesterSettings {
   /**
    * Convenience method
    *
+   * @param clusteringSettings Primary clustering settings
    * @return A new builder
    */
 
-  public static Builder builder() {
-    return new Builder();
+  public static Builder builder(ClusteringSettings clusteringSettings) {
+    return new Builder(clusteringSettings);
   }
 
   /**
@@ -93,21 +94,19 @@ public class DigesterSettings {
 
   public static class Builder {
 
-    private ClusteringSettings clusteringSettings;
+    private final ClusteringSettings clusteringSettings;
     private int maxDigestSize = 0;
     private boolean aggregateDigests = false;
     private DigestRanking digestRanking = COMBINED_RANKING.apply(1.75);
 
     /**
-     * Set the primary clustering settings
+     * Constructor
      *
-     * @param clusteringSettings Clustering settings
-     * @return this
+     * @param clusteringSettings Primary clustering settings
      */
 
-    public Builder withClusteringSettings(ClusteringSettings clusteringSettings) {
+    public Builder(ClusteringSettings clusteringSettings) {
       this.clusteringSettings = clusteringSettings;
-      return this;
     }
 
     /**
