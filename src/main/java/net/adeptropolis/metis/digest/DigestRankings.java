@@ -13,6 +13,7 @@ public class DigestRankings {
   public static final DigestRanking SCORE_RANKING = (vertexId, weight, score) -> score;
   public static final Function<Double, DigestRanking> COMBINED_RANKING
           = weightExp -> (vertexId, weight, score) -> Math.pow(weight, weightExp) * score;
+  public static final DigestRanking DEFAULT_COMBINED_RANKING = new DefaultCombinedRanking();
 
   /**
    * Default constructor
@@ -20,6 +21,14 @@ public class DigestRankings {
 
   private DigestRankings() {
 
+  }
+
+  private static class DefaultCombinedRanking implements DigestRanking {
+
+    @Override
+    public double compute(int vertexId, double weight, double score) {
+      return Math.pow(weight, 1.5) * score;
+    }
   }
 
 }

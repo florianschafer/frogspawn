@@ -173,4 +173,21 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
     return constSigTrail[i] >= trailSize - 1;
   }
 
+  /**
+   * @return Currently used minimum constant trail size
+   */
+
+  public int getTrailSize() {
+    return trailSize;
+  }
+
+  /**
+   * @return Currently used convergent vertex threshold
+   */
+
+  public int getThreshold() {
+    return threshold;
+  }
+
+
 }

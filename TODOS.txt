@@ -1,8 +1,6 @@
- - Make postprocessing optional, i.e. add as separate stage that needs to be applied manually
- - Test settings builders and defaults
  - Rename settings getters
  - Make it possible to deactivate some postprocessors (e.g. minChildren == 0)
- - Change documentation
+ - Change documentation (explicit pp, settings classes)
  - Test for postprocessor determinism
  - Postprocessing pipeline configuration
 

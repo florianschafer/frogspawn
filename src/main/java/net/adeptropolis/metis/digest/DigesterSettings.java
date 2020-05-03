@@ -10,7 +10,7 @@ import net.adeptropolis.metis.clustering.affiliation.VertexAffiliationMetric;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-import static net.adeptropolis.metis.digest.DigestRankings.COMBINED_RANKING;
+import static net.adeptropolis.metis.digest.DigestRankings.DEFAULT_COMBINED_RANKING;
 
 public class DigesterSettings {
 
@@ -97,7 +97,7 @@ public class DigesterSettings {
     private final ClusteringSettings clusteringSettings;
     private int maxDigestSize = 0;
     private boolean aggregateDigests = false;
-    private DigestRanking digestRanking = COMBINED_RANKING.apply(1.75);
+    private DigestRanking digestRanking = DEFAULT_COMBINED_RANKING;
 
     /**
      * Constructor
