@@ -34,7 +34,7 @@ public class Postprocessing {
    * @param settings    Clustering settings
    */
 
-  public Postprocessing(Cluster rootCluster, ClusteringSettings settings) {
+  public Postprocessing(Cluster rootCluster, PostprocessingSettings settings) {
     this.rootCluster = rootCluster;
     this.pipeline = createPipeline(settings);
   }
@@ -46,7 +46,7 @@ public class Postprocessing {
    * @return New pipeline
    */
 
-  private static List<Postprocessor> createPipeline(ClusteringSettings settings) {
+  private static List<Postprocessor> createPipeline(PostprocessingSettings settings) {
     RemainderSizePostprocessor remainderSize = new RemainderSizePostprocessor(settings.getMinClusterSize());
     SingletonRedistributionPostprocessor singletonRedistribution = new SingletonRedistributionPostprocessor();
     VertexAffiliationGuardingPostprocessor affiliation = new VertexAffiliationGuardingPostprocessor(

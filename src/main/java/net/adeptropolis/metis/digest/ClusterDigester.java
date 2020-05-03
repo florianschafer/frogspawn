@@ -31,10 +31,10 @@ public class ClusterDigester {
    * @param settings Global clustering settings
    */
 
-  public ClusterDigester(ClusteringSettings settings) {
+  public ClusterDigester(DigesterSettings settings) {
     this.metric = settings.getVertexAffiliationMetric();
     this.maxSize = settings.getMaxDigestSize();
-    this.aggregate = settings.isAggregateDigests();
+    this.aggregate = settings.doAggregateDigests();
     this.ranking = settings.getDigestRanking();
   }
 

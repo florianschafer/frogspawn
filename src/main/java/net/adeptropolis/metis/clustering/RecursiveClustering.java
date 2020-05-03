@@ -51,7 +51,8 @@ public class RecursiveClustering {
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
     this.queue = new ConcurrentLinkedQueue<>();
-    this.vertexAffiliationGuard = new VertexAffiliationGuard(settings.getVertexAffiliationMetric(), graph, settings.getMinClusterSize(), settings.getMinVertexAffiliation());
+    this.vertexAffiliationGuard = new VertexAffiliationGuard(settings.getVertexAffiliationMetric(),
+            graph, settings.getMinClusterSize(), settings.getMinVertexAffiliation());
     this.ivSource = new RandomInitialVectorsSource(settings.getRandomSeed());
   }
 
