@@ -105,8 +105,7 @@ in the example below (using the defaults):
 ```java
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)          // Min cluster size
-  .withMinVertexAffiliation(0.1)      // Min affiliation score that a vertex may yield with respect to its cluster
-  .withMinChildren(10) // Minumum number of children for a cluster
+  .withMinVertexAffiliation(0.1)   // Min affiliation score that a vertex may yield with respect to its cluster
   .build();
 ```
 
@@ -127,10 +126,36 @@ Cluster root = RecursiveClustering.run(graph, settings);
 ```
 
 As mentioned before, when using labeled graphs, the input graph can be retrieved from the labeled
-instance, i.e.
+instance, i.e. ``
 
 ```java
 Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
+```
+
+#### Postprocessing
+
+The above call returns the raw binary tree that results from recursively bisecting the input graph.
+Although there are some cases where this already is the desired clustering outcome, most use cases aim
+for a more balanced and groomed clustering output.
+
+This is where cluster tree postprocessing comes into play. Currently, this refers to a fixed
+pipeline that needs to be applied to the raw cluster hierarchy explicitly and encompasses the following steps:
+
+1) Collapse all clusters with remainders `< minClusterSize` into their parents
+2) Locate all singleton clusters (i.e those without any siblings) and attach them to their grandparents
+3) Starting from the bottom of the hierarchy, merge all clusters into their grandparents until those yield a certain number of children
+4) Fix possible damage from steps 1-3: Revisit all clusters' vertices and ensure that affiliation scores are still above the given threshold. Otherwise, move them to the parent's remainder.
+5) Repeat step 1
+6) Collapse all remaining singleton clusters into their parents' remainders.
+
+Postprocessing is always applied in an in-place fashion. It's configuration follows closely that of clustering
+itself: 
+
+```java
+PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
+  .withMinChildren(10) // Minimum number of children for a cluster
+  .build();
+Postprocessing.apply(root, postprocessingSettings);
 ```
 
 #### Cluster Output Creation
@@ -140,21 +165,19 @@ very easy to create custom ones, namely `ClusterDigester`, `Digest`, `DigestMapp
 
 ##### Digests and Mappings
 
-In this context, a digest is an output-ready representation of a cluster. Digests store all vertices, weights
+In this context, a digest is an ready-for-output representation of a cluster. Digests store all vertices, weights
 and affiliation scores, sorted by custom or predefined ranking function. Moreover, depending on the configuration,
-it may not just encompass the cluster vertices but also aggregate those of all of its descendants.
+it may not just encompass the cluster vertices or also aggregate those of all of its descendants.
 
-Currently, there may be only one digest per clustering, which is configured as part of the general settings:
+Just like clustering and postprocessing, a Digester instance is configured using a convenient builder:
 
 ```java
-ClusteringSettings settings = ClusteringSettings.builder()
-  ...
-  .withMaxDigestSize(0)                             # Return all vertices
-  .withAggregateDigests(false)                      # Only return the vertices of the cluster itself
-  .withDigestRanking(COMBINED_RANKING.apply(1.75))  # Predefined ranking function: weight^1.75 * affiliationScore
+DigesterSettings digesterSettings = DigesterSettings.builder(settings)
+  .withMaxDigestSize(0)                             // Return all vertices
+  .withAggregateDigests(false)                      // Only return the vertices of the cluster itself
+  .withDigestRanking(COMBINED_RANKING.apply(1.75))  // Predefined ranking function: weight^1.75 * affiliationScore
   .build();
-
-ClusterDigester digester = new ClusterDigester(settings);
+ClusterDigester digester = new ClusterDigester(digesterSettings);
 ```
 
 Please refer to the `DigestRanking` interface on how to create custom ranking functions. Currently, there are three
@@ -200,10 +223,13 @@ been imported from a TSV file using default settings.
 LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines("/path/to/edges/in/tsv/format.tsv"));
 
 ClusteringSettings settings = ClusteringSettings.builder().build();
-
 Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
 
-ClusterDigester digester = new ClusterDigester(settings);
+PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings).build();
+Postprocessing.apply(root, postprocessingSettings);
+    
+DigesterSettings digesterSettings = DigesterSettings.builder(settings).build();
+ClusterDigester digester = new ClusterDigester(digesterSettings);
 LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f]", label, weight);
 
 PrintWriter w = new PrintWriter("/output/path.txt");

@@ -7,6 +7,8 @@ package net.adeptropolis.metis.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.metis.ClusteringSettings;
+import net.adeptropolis.metis.clustering.postprocessing.Postprocessing;
+import net.adeptropolis.metis.clustering.postprocessing.PostprocessingSettings;
 import net.adeptropolis.metis.digest.ClusterDigester;
 import net.adeptropolis.metis.digest.Digest;
 import net.adeptropolis.metis.digest.DigesterSettings;
@@ -136,11 +138,17 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    long refFp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester(settings));
+    long refFp = fingerprintWithPostprocessing(graph, settings);
     for (int i = 0; i < rounds - 1; i++) {
-      long fp = hierarchyFingerprint(RecursiveClustering.run(graph, settings), digester(settings));
+      long fp = fingerprintWithPostprocessing(graph, settings);
       assertThat(fp, is(refFp));
     }
+  }
+
+  private long fingerprintWithPostprocessing(Graph graph, ClusteringSettings settings) {
+    Cluster root = RecursiveClustering.run(graph, settings);
+    Cluster postprocessed = Postprocessing.apply(root, PostprocessingSettings.builder(settings).build());
+    return hierarchyFingerprint(postprocessed, digester(settings));
   }
 
   private long hierarchyFingerprint(Cluster cluster, ClusterDigester digester) {

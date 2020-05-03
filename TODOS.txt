@@ -1,7 +1,4 @@
- - Rename settings getters
  - Make it possible to deactivate some postprocessors (e.g. minChildren == 0)
- - Change documentation (explicit pp, settings classes)
- - Test for postprocessor determinism
  - Postprocessing pipeline configuration
 
  - Maybe run some initial iterations before checking sigtrail
