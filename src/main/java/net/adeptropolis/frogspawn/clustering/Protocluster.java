@@ -76,9 +76,9 @@ public class Protocluster {
   /**
    * Type of the cluster candidate graph. Possible values:
    * <ul>
-   *   <li><code>ROOT</code></li>: Root graph
-   *   <li><code>COMPONENT</code></li>: Connected component
-   *   <li><code>SPECTRAL</code></li>: Spectral partition
+   *   <li><code>ROOT</code>: Root graph</li>
+   *   <li><code>COMPONENT</code>: Connected component</li>
+   *   <li><code>SPECTRAL</code>: Spectral partition</li>
    * </ul>
    */
 

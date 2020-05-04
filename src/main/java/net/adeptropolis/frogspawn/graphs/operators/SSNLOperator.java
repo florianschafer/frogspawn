@@ -24,7 +24,6 @@ import net.adeptropolis.frogspawn.helpers.Vectors;
  * </p>
  * <p>This implementation does not validate any of those requirements. Any result stemming from ignoring one of the above
  * is simply undefined.</p>
- * </p>
  */
 
 public class SSNLOperator implements LinearGraphOperator {

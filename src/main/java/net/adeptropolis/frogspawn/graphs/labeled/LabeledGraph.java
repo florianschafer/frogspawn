@@ -14,7 +14,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
  * together with a mapping from int vertex indices to labels.
  * </p>
  *
- * @param <V>
+ * @param <V> Label type
  */
 
 public class LabeledGraph<V> {
@@ -44,6 +44,7 @@ public class LabeledGraph<V> {
 
   /**
    * @return The label for a particular vertex id
+   * @param vertexId Vertex id
    */
 
   public V getLabel(int vertexId) {

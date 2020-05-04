@@ -41,6 +41,8 @@ public class Postprocessing {
   /**
    * Apply the full postprocessor pipeline
    *
+   * @param rootCluster Root cluster
+   * @param settings Postprocessing settings
    * @return The root cluster
    */
 

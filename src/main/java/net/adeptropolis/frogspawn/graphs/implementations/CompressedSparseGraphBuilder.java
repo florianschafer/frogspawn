@@ -36,7 +36,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
   /**
    * Constructor setting a min edge weight
    *
-   * @param minWeight
+   * @param minWeight Minimum edge weight. Weights below this value cause a <code>GraphConstructionException</code>
    */
 
   public CompressedSparseGraphBuilder(double minWeight) {

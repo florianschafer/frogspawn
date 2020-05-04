@@ -15,6 +15,7 @@ public interface PartialConvergenceCriterion extends ConvergenceCriterion {
    * Postprocess a partially converged vector
    *
    * @param v Vector
+   * @throws PartialConvergencePostprocessingException
    */
 
   void postprocess(double[] v) throws PartialConvergencePostprocessingException;

@@ -14,7 +14,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
  * Please note that vertex indices/ids are expected to be zero-offset ascending ints.<br/>
  * <p>
  * Technically, the edges are sorted by (1st) the index of the left and (2nd) the index of the right endpoint.
- * This is internally represented by a data structure consisting of 3 arrays:<br/>
+ * This is internally represented by a data structure consisting of 3 arrays:
  * <ol>
  * <li><code>edges</code> Array containing the right endpoints of all sorted edges</li>
  * <li><code>pointers</code> Array providing a map between vertex ids (taken as left endpoints of an edge) and their

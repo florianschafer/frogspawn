@@ -96,7 +96,8 @@ public class Digest {
    * Provides a stream of custom digest members for a labeled graph
    *
    * @param mapper Mapping between cluster digest vertices and custom cluster member objects
-   * @param <T>    Type of the custom cluster member objects
+   * @param <V>    Type of the custom cluster member objects
+   * @param <T>    Mapping result type
    * @return Custom cluster member object
    */
 
