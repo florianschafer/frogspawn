@@ -16,12 +16,11 @@ import net.adeptropolis.frogspawn.helpers.Vectors;
  * <p>The shifting is performed in such a way that the eigenvector originally belonging to the second-smallest eigenvalue of the
  * normalized laplacian is now assigned to the largest eigenvalue of this new operator</p>
  *
- * <p><b>Important:</b> This operator has two strict requirements:
+ * <b>Important:</b> This operator has two strict requirements:
  * <ul>
  *   <li>The underlying graph is required to be connected, undirected and have non-negative edge weights</li>
  *   <li>Any argument passed to this operator must be normalized, i.e. ||x||<sub>2</sub> == 1</li>
  * </ul>
- * </p>
  * <p>This implementation does not validate any of those requirements. Any result stemming from ignoring one of the above
  * is simply undefined.</p>
  */

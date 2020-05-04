@@ -11,7 +11,7 @@ public class OverlapGraphSimilarityMetric implements GraphSimilarityMetric {
 
   /**
    * Return the fractional total weight of a subgraph relative to its supergraph
-   * <p>Note: The subgraph <b>must be fully contained</b> within the supergraph!</b></p>
+   * <p>Note: The subgraph <b>must be fully contained</b> within the supergraph!</p>
    *
    * @param subgraph   A subgraph
    * @param supergraph Supergraph of graph
