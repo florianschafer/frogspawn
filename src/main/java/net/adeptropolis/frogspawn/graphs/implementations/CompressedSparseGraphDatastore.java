@@ -12,7 +12,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
  * <p>Storage backend for large, sparse graphs</p>
  * <p>More precisely, this class provides a CSR storage representation for adjacency matrices of large sparse graphs.
  * Please note that vertex indices/ids are expected to be zero-offset ascending ints.</p>
- * <p>
+ *
  * Technically, the edges are sorted by (1st) the index of the left and (2nd) the index of the right endpoint.
  * This is internally represented by a data structure consisting of 3 arrays:
  * <ol>
@@ -21,7 +21,6 @@ import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
  * offset pointer within the right endpoints array from (1)</li>
  * <li><code>weights</code> Array containing the edge weights</li>
  * </ol>
- * </p>
  */
 
 public class CompressedSparseGraphDatastore {
