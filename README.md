@@ -1,9 +1,9 @@
-# Metis
-## A Bifurcation Sieve Approach to Spectral Graph Clustering
+# Frogspawn
+## A Fast Recursive Spectral Graph Partitioner
 
 ### Summary
 
-At its core, Metis is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
+At its core, Frogspawn is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
 vertices of the graph in a tree of clusters such that similar vertices end up in the same cluster and similar clusters
 form a parent-child relationship in the resulting cluster tree. For a more technically detailed description, please
 refer to the bottom section.
@@ -31,7 +31,7 @@ counteracts the "shaving" phenomenon, where the resulting tree becomes a mere ar
 process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the strictly
 binary nature of the process.
 
-On the more technical side, Metis' spectral bisector stage is multiple orders of magnitude faster than any naive
+On the more technical side, Frogspawn's spectral bisector stage is multiple orders of magnitude faster than any naive
 implementation using standard eigensolvers. This is mostly achieved by a two-pronged approach: On the one hand, it
 is possible to exploit known properties of some of the involved eigensystems and using that information to apply a
 custom variant of spectral shifting in order to transform the eigenproblem at hand into one that can be solved much
