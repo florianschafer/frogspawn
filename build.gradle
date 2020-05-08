@@ -28,7 +28,11 @@ test {
     maxHeapSize = "1G"
 }
 
-if (!project.hasProperty("skipOssPublishing") || !project.property("skipOssPublishing")) {
+def allowOssPublishing() {
+    !project.hasProperty("skipOssPublishing") || !project.property("skipOssPublishing")
+}
+
+if (allowOssPublishing()) {
     publishing {
         publications {
             maven(MavenPublication) {
@@ -88,9 +92,11 @@ if (!project.hasProperty("skipOssPublishing") || !project.property("skipOssPubli
     }
 }
 
-signing {
-    sign publishing.publications.maven
-    useGpgCmd()
+if (allowOssPublishing()) {
+    signing {
+        sign publishing.publications.maven
+        useGpgCmd()
+    }
 }
 
 javadoc {
