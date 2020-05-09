@@ -1,3 +1,6 @@
+ - Update documentation: parent similarity metric, new numChildren default 0
+
+ - Unify postprocessor using subclasses instead of the interface
  - Make it possible to deactivate some postprocessors (e.g. minChildren == 0)
  - Postprocessing pipeline configuration
 
