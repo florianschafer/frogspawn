@@ -42,7 +42,7 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   }
 
   /**
-   * Locate all leaf nodes in a cluster tree and enqueue all leafs
+   * Locate all leaf nodes in a cluster tree and enqueue them
    */
 
   private static void enqueueLeafs(Cluster root, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {

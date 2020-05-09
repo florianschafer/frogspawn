@@ -8,8 +8,8 @@ package net.adeptropolis.frogspawn.clustering.postprocessing;
 import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
-import net.adeptropolis.frogspawn.graphs.similarity.OverlapGraphSimilarityMetric;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -19,22 +19,25 @@ public class PostprocessingSettings {
 
   private final ClusteringSettings clusteringSettings;
   private final GraphSimilarityMetric similarityMetric;
+
+  private final double minParentSimilarity;
   private final int minChildren;
   private final List<Postprocessor> customPostprocessors;
 
   /**
    * Constructor
-   *
-   * @param clusteringSettings   Primary clustering settings
+   *  @param clusteringSettings   Primary clustering settings
    * @param similarityMetric     Graph similarity metric
+   * @param minParentSimilarity  Minimum parent similarity wrt. to the given similarity metric
    * @param minChildren          Minimum number of children for each cluster
    * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
    */
 
   private PostprocessingSettings(ClusteringSettings clusteringSettings, GraphSimilarityMetric similarityMetric,
-                                 int minChildren, List<Postprocessor> customPostprocessors) {
+                                 double minParentSimilarity, int minChildren, List<Postprocessor> customPostprocessors) {
     this.clusteringSettings = clusteringSettings;
     this.similarityMetric = similarityMetric;
+    this.minParentSimilarity = minParentSimilarity;
     this.minChildren = minChildren;
     this.customPostprocessors = customPostprocessors;
   }
@@ -64,6 +67,14 @@ public class PostprocessingSettings {
 
   public GraphSimilarityMetric getSimilarityMetric() {
     return similarityMetric;
+  }
+
+  /**
+   * @return Currently used minimum parent similarity
+   */
+
+  public double getMinParentSimilarity() {
+    return minParentSimilarity;
   }
 
   /**
@@ -118,8 +129,9 @@ public class PostprocessingSettings {
 
     private final ClusteringSettings clusteringSettings;
     private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
-    private GraphSimilarityMetric similarityMetric = new OverlapGraphSimilarityMetric();
-    private int minChildren = 10;
+    private GraphSimilarityMetric similarityMetric = new NormalizedCutMetric();
+    private double minParentSimilarity = 0.01;
+    private int minChildren = 0;
 
     /**
      * Constructor
@@ -144,7 +156,19 @@ public class PostprocessingSettings {
     }
 
     /**
-     * Set Minimum number of children for each cluster. Default is 10
+     * Set the graph similarity metric. Default is <code>OverlapGraphSimilarityMetric</code>
+     *
+     * @param minParentSimilarity Minimum similarity between a cluster and its parent wrt. to the similarity metric
+     * @return this
+     */
+
+    public Builder withMinParentSimilarity(double minParentSimilarity) {
+      this.minParentSimilarity = minParentSimilarity;
+      return this;
+    }
+
+    /**
+     * Set Minimum number of children for each cluster. Default is 0
      *
      * @param minChildren Minimum number of children
      * @return this
@@ -174,9 +198,8 @@ public class PostprocessingSettings {
      */
 
     public PostprocessingSettings build() {
-      return new PostprocessingSettings(clusteringSettings, similarityMetric, minChildren, customPostprocessors);
+      return new PostprocessingSettings(clusteringSettings, similarityMetric, minParentSimilarity, minChildren, customPostprocessors);
     }
-
 
   }
 

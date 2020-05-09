@@ -10,9 +10,8 @@ import net.adeptropolis.frogspawn.SettingsTestBase;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.similarity.CutVariantSimilarityMetric;
+import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
-import net.adeptropolis.frogspawn.graphs.similarity.OverlapGraphSimilarityMetric;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +38,7 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
     PostprocessingSettings defaultSettings = PostprocessingSettings.builder(defaultClusteringSettings).build();
     assertThat(defaultSettings.getVertexAffiliationMetric(), instanceOf(RelativeWeightVertexAffiliationMetric.class));
     assertThat(defaultSettings.getMinVertexAffiliation(), closeTo(0.1, 1E-6));
-    assertThat(defaultSettings.getSimilarityMetric(), instanceOf(CutVariantSimilarityMetric.class));
+    assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));
     assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.01, 1E-9));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMinChildren(), is(0));
