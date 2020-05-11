@@ -79,6 +79,16 @@ public class PostprocessingTraversalTest {
       return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
     }
 
+    @Override
+    public boolean compromisesVertexAffinity() {
+      return false;
+    }
+
+    @Override
+    public boolean requiresIdempotency() {
+      return false;
+    }
+
     List<Cluster> getClusters() {
       return clusters;
     }
@@ -104,6 +114,16 @@ public class PostprocessingTraversalTest {
     @Override
     public TreeTraversalMode traversalMode() {
       return TreeTraversalMode.GLOBAL_CUSTOM;
+    }
+
+    @Override
+    public boolean compromisesVertexAffinity() {
+      return false;
+    }
+
+    @Override
+    public boolean requiresIdempotency() {
+      return false;
     }
 
     List<Cluster> getClusters() {

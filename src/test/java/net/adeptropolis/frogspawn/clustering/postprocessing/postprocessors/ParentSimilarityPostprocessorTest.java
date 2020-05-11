@@ -24,14 +24,21 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
   @Before
   public void setup() {
     MockSimilarityMetric metric = new MockSimilarityMetric();
-    pp = new ParentSimilarityPostprocessor(metric, 0.5);
-    root = new Cluster(completeGraph(213)); root.addToRemainder(IntIterators.wrap(new int[]{0}));
-    c1 = new Cluster(root); c1.addToRemainder(IntIterators.wrap(new int[]{1}));
-    c2 = new Cluster(root); c2.addToRemainder(IntIterators.wrap(new int[]{2}));
-    c21 = new Cluster(c2); c21.addToRemainder(IntIterators.wrap(new int[]{21}));
-    c22 = new Cluster(c2); c22.addToRemainder(IntIterators.wrap(new int[]{22}));
-    c211 = new Cluster(c21); c211.addToRemainder(IntIterators.wrap(new int[]{211}));
-    c212 = new Cluster(c21); c212.addToRemainder(IntIterators.wrap(new int[]{212}));
+    pp = new ParentSimilarityPostprocessor(metric, 0.5, 2);
+    root = new Cluster(completeGraph(213));
+    root.addToRemainder(IntIterators.wrap(new int[]{0}));
+    c1 = new Cluster(root);
+    c1.addToRemainder(IntIterators.wrap(new int[]{1}));
+    c2 = new Cluster(root);
+    c2.addToRemainder(IntIterators.wrap(new int[]{2}));
+    c21 = new Cluster(c2);
+    c21.addToRemainder(IntIterators.wrap(new int[]{21}));
+    c22 = new Cluster(c2);
+    c22.addToRemainder(IntIterators.wrap(new int[]{22}));
+    c211 = new Cluster(c21);
+    c211.addToRemainder(IntIterators.wrap(new int[]{211}));
+    c212 = new Cluster(c21);
+    c212.addToRemainder(IntIterators.wrap(new int[]{212}));
     pp.apply(root);
   }
 

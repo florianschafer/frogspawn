@@ -19,7 +19,8 @@ import java.util.PriorityQueue;
  * This postprocessor uses a given graph similarity metric to compute the similarity between the aggregate graphs of
  * a given cluster and its parent. If the relationship of both graphs does not meet the given <code>minSimilarity</code>
  * threshold, the cluster assigned to its grandparent and re-added to the queue, which traverses the cluster tree
- * from bottom to top.
+ * from bottom to top. Similarly, clusters that exceed the <code>maxSimilarity</code> threshold, will be assimilated
+ * into their parents.
  * <p>
  * This prevents the "shaving" phenomenon, where (due to the fact that per recursion step only a single cluster is being split off)
  * the position of semantically unrelated clusters within the hierarchy suggests a much higher similarity and specificity than
@@ -36,17 +37,20 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
 
   private final GraphSimilarityMetric metric;
   private final double minSimilarity;
+  private final double maxSimilarity;
 
   /**
    * Constructor
    *
    * @param metric        Graph similarity metric
    * @param minSimilarity Minimum similarity between a cluster and its parent
+   * @param maxSimilarity Maximum similarity between a cluster and its parent
    */
 
-  public ParentSimilarityPostprocessor(GraphSimilarityMetric metric, double minSimilarity) {
+  public ParentSimilarityPostprocessor(GraphSimilarityMetric metric, double minSimilarity, double maxSimilarity) {
     this.metric = metric;
     this.minSimilarity = minSimilarity;
+    this.maxSimilarity = maxSimilarity;
   }
 
   @Override
@@ -65,10 +69,13 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
     if (cluster.getParent() == null || cluster.getParent().getParent() == null) {
       return false;
     }
-    if (similarity(cluster.getParent(), cluster) < minSimilarity) {
+    double similarity = similarity(cluster.getParent(), cluster);
+    if (similarity < minSimilarity) {
       cluster.getParent().getParent().annex(cluster);
       queue.add(cluster);
       return true;
+    } else if (similarity > maxSimilarity) {
+      cluster.getParent().assimilateChild(cluster, true);
     }
     return false;
   }
@@ -80,6 +87,29 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
   @Override
   public TreeTraversalMode traversalMode() {
     return TreeTraversalMode.GLOBAL_CUSTOM;
+  }
+
+  /**
+   * This postprocessor may compromise cluster vertex affinity scores by relocating clusters within
+   * the hierarchy
+   *
+   * @return <code>true</code>
+   */
+
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return true;
+  }
+
+  /**
+   * This kind of postprocessor does require checking for idempotency
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean requiresIdempotency() {
+    return true;
   }
 
   /**

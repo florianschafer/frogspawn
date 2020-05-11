@@ -61,4 +61,28 @@ public class DescendantCollapsingPostprocessor implements Postprocessor {
   public TreeTraversalMode traversalMode() {
     return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
   }
+
+  /**
+   * This postprocessor may compromise cluster vertex affinity scores by relocating clusters within
+   * the hierarchy
+   *
+   * @return <code>true</code>
+   */
+
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return true;
+  }
+
+  /**
+   * This kind of postprocessor does require checking for idempotency
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean requiresIdempotency() {
+    return true;
+  }
+
 }

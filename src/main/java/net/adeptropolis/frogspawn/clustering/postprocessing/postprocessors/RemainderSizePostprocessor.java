@@ -47,4 +47,26 @@ public class RemainderSizePostprocessor implements Postprocessor {
     return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
   }
 
+  /**
+   * This postprocessor cannot compromise any vertex affinity scores
+   *
+   * @return <code>false</code>
+   */
+
+  /**
+   * This kind of postprocessor does not require checking for idempotency
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean requiresIdempotency() {
+    return false;
+  }
+
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return false;
+  }
+
 }

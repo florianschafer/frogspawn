@@ -43,8 +43,8 @@ public class LabeledGraph<V> {
   }
 
   /**
-   * @return The label for a particular vertex id
    * @param vertexId Vertex id
+   * @return The label for a particular vertex id
    */
 
   public V getLabel(int vertexId) {

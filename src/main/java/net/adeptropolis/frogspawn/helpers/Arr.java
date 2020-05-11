@@ -80,6 +80,7 @@ public class Arr {
 
   /**
    * Sum over the elements of an array
+   *
    * @param arr An array
    * @return Sum over all elements of <code>arr</code>
    */

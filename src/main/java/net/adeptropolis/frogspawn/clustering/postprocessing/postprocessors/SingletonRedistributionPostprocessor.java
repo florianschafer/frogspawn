@@ -153,4 +153,28 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
     return TreeTraversalMode.GLOBAL_CUSTOM;
   }
 
+  /**
+   * This postprocessor may compromise cluster vertex affinity scores by relocating clusters within
+   * the hierarchy
+   *
+   * @return <code>true</code>
+   */
+
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return true;
+  }
+
+  /**
+   * This kind of postprocessor does not require checking for idempotency
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean requiresIdempotency() {
+    return false;
+  }
+
+
 }

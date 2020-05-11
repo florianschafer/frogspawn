@@ -95,6 +95,28 @@ public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
   }
 
   /**
+   * This postprocessor guarantees that all vertex affinity scores are consistent.
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return false;
+  }
+
+  /**
+   * This kind of postprocessor does not require checking for idempotency
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean requiresIdempotency() {
+    return false;
+  }
+
+  /**
    * Shift non-affiliated vertices upwards into the parent's remainder
    *
    * @param clusterVertices All original vertices of the cluster
