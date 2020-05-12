@@ -43,6 +43,9 @@ public interface Postprocessor {
    * @return <code>true</code> if this postprocessor modifies the cluster vertices. <code>false</code> otherwise.
    */
 
+  // TODO: It might help to intruduce a second return flag to all postprocessors that signals
+  // whether the cluster hierarchy has actually changed or whether just some child\
+  // nodes were assimilated by their parents, which doesn't negatively affect affinity
   boolean compromisesVertexAffinity();
 
   /**

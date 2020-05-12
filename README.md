@@ -5,8 +5,7 @@
 
 At its core, Frogspawn is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
 vertices of the graph in a tree of clusters such that similar vertices end up in the same cluster and similar clusters
-form a parent-child relationship in the resulting cluster tree. For a more technically detailed description, please
-refer to the bottom section.
+form a parent-child relationship in the resulting cluster tree.
 
 ### Details
 
@@ -24,12 +23,12 @@ vertices of partitions falling short of a certain minimal size. This approach no
 both cluster quality and overall speed, but also introduces a straightforward and comprehensive parameter that puts a
 strict condition on the desired clustering outcome that is inherent to the graph itself.
 
-Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed in such a way that
-every cluster is required to yield a certain number of subclusters. In order to do so, large clusters from deeper
-levels within the hierarchy are "pushed up" the cluster tree until that criterion is satisfied. This not only
-counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive bisection
-process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the strictly
-binary nature of the process.
+Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed to meet additional
+criteria such as clusters being required to obey certain min-cut ranges with respect to their parents where
+non-compliant clusters are either attached to an ancestor with higher similarity or assimilated by their parents.
+This not only counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive
+bisection process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the
+strictly binary nature of the process.
 
 On the more technical side, Frogspawn's spectral bisector stage is multiple orders of magnitude faster than any naive
 implementation using standard eigensolvers. This is mostly achieved by a two-pronged approach: On the one hand, it
@@ -47,9 +46,9 @@ memory-efficient sparse graph representation that allows for the creation of ind
 ##### Building Labeled Graphs
 
 Internally, graphs are efficiently stored in a compressed sparse format with integers as vertex ids. Since
-most of the time graphs are labeled, i.e. their vertices represent some business objects or just plain
-strings, there are a couple of convenience classes that automatically provide a mapping between internal
-vertex ids and those objects. In these cases, it is recommended to use the supplied `LabeledGraphBuilder`
+the average use case deals with labeled graph (i.e. graphs whose vertices represent some business objects or just plain
+strings), there are a couple of convenience classes that automatically provide a mapping between internal
+vertex ids and those objects. In these cases, it is strongly recommended to use the supplied `LabeledGraphBuilder`
 for building graphs:
 
 ```java
@@ -72,7 +71,7 @@ LabeledGraph<String> = builder.build();
 
 Note that instances of `LabeledGraph` are merely a thin wrapper around the internal graph API (see below)
 that store the graph itself together with a mapping between vertex ids and label objects. Most methods
-relevant to clustering expect simple `Graph` objects, which can be retrieved via `LabeledGraph#getGraph`.
+relevant to clustering expect simple `Graph` objects that can be retrieved via `LabeledGraph#getGraph`.
 
 For a more practical example on how to use the builder, please refer to `LabeledGraphSource#fromTSV`. 
 
@@ -96,6 +95,7 @@ For more information on how to use the low-level Graph API, please refer to the 
  - Edge weights **must** be ≥ 1 when used for clustering.
  - By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
  - To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
+ - The task of assigning sensible edge weights is completely up to the user. For document-term clusters, simple TfIdf-weighting has proven to be very successful.
 
 #### Configuration
 
@@ -112,12 +112,12 @@ ClusteringSettings settings = ClusteringSettings.builder()
 Using the default affiliation metric, the vertex score is computed as the fraction of the intra-cluster
 weight of the vertex (also counting descendant clusters) compared to its global weight.
 
-Note that the affiliation and similarity settings are always guaranteed to be satisfied: Any cluster will only
+Note that all affiliation and similarity settings are always guaranteed to be satisfied: Any cluster will only
 contain vertices whose intra-cluster score satisfies at least the min affiliation criterion.
 
 For further details and additional options, please refer to the javadocs.
 
-#### Start the Clustering
+#### Starting the clustering process
 
 The following method will start the actual clustering and return the root node of the resulting cluster tree:
 
@@ -126,7 +126,7 @@ Cluster root = RecursiveClustering.run(graph, settings);
 ```
 
 As mentioned before, when using labeled graphs, the input graph can be retrieved from the labeled
-instance, i.e. ``
+instance, i.e.
 
 ```java
 Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
@@ -138,22 +138,25 @@ The above call returns the raw binary tree that results from recursively bisecti
 Although there are some cases where this already is the desired clustering outcome, most use cases aim
 for a more balanced and groomed clustering output.
 
-This is where cluster tree postprocessing comes into play. Currently, this refers to a fixed
-pipeline that needs to be applied to the raw cluster hierarchy explicitly and encompasses the following steps:
+This is where cluster tree postprocessing comes into play. Leaving internal postprocessors aside, there
+are currently 3 active components that restructure the shape of the cluster tree:
 
-1) Collapse all clusters with remainders `< minClusterSize` into their parents
-2) Locate all singleton clusters (i.e those without any siblings) and attach them to their grandparents
-3) Starting from the bottom of the hierarchy, merge all clusters into their grandparents until those yield a certain number of children
-4) Fix possible damage from steps 1-3: Revisit all clusters' vertices and ensure that affiliation scores are still above the given threshold. Otherwise, move them to the parent's remainder.
-5) Repeat step 1
-6) Collapse all remaining singleton clusters into their parents' remainders.
+- Parent Similarity: Ensures that the normalized cuts (as a proxy for similarity) between clusters and their parents\\
+  lie within a certain range. Too dissimilar clusters are assigned to an ancestor with higher similarity while\\
+  clusters with very high similarity are assimilated into their parents.
+- Singletons: Depending on the configuration, singleton clusters are either assimilated into their parents or pushed\\
+  up the cluster tree.
+- Subcluster count: Starting from the bottom of the hierarchy, merge all clusters into their grandparents until those\\
+  yield a certain number of children. This postprocessor is deactivated by default.
 
 Postprocessing is always applied in an in-place fashion. It's configuration follows closely that of clustering
 itself: 
 
 ```java
 PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
-  .withMinChildren(10) // Minimum number of children for a cluster
+  .withMinParentSimilarity(0.075)
+  .withMaxParentSimilarity(0.35)
+  .withSingletonMode(SingletonMode.ASSIMILATE)
   .build();
 Postprocessing.apply(root, postprocessingSettings);
 ```

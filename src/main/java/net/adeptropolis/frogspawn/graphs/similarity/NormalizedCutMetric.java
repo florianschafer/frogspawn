@@ -72,4 +72,12 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
 
   }
 
+  /**
+   * @return Just the simple name
+   */
+
+  @Override
+  public String toString() {
+    return this.getClass().getSimpleName();
+  }
 }
