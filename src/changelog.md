@@ -1,6 +1,6 @@
 # Frogspawn Changelog
 
-## v1.0.0
+## v1.1.0
 
     - NCut graph similarity metric
     - Introduce postfiltering based on parent-child cluster similarity
