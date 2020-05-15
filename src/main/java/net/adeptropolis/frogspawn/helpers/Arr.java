@@ -78,4 +78,19 @@ public class Arr {
     return shrunk;
   }
 
+  /**
+   * Sum over the elements of an array
+   *
+   * @param arr An array
+   * @return Sum over all elements of <code>arr</code>
+   */
+
+  public static double sum(double[] arr) {
+    double sum = 0;
+    for (int i = 0; i < arr.length; i++) {
+      sum += arr[i];
+    }
+    return sum;
+  }
+
 }

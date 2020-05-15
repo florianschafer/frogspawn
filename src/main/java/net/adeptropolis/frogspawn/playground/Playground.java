@@ -10,12 +10,16 @@ import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.RecursiveClustering;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.frogspawn.clustering.postprocessing.PostprocessingSettings;
+import net.adeptropolis.frogspawn.clustering.postprocessing.SingletonMode;
 import net.adeptropolis.frogspawn.digest.ClusterDigester;
 import net.adeptropolis.frogspawn.digest.Digest;
 import net.adeptropolis.frogspawn.digest.DigesterSettings;
 import net.adeptropolis.frogspawn.digest.LabeledDigestMapping;
+import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphSource;
+import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
+import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -29,7 +33,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-import static net.adeptropolis.frogspawn.digest.DigestRankings.COMBINED_RANKING;
+import static net.adeptropolis.frogspawn.digest.DigestRankings.WEIGHT_RANKING;
 
 /**
  * !!!
@@ -50,52 +54,35 @@ public class Playground {
   private static final Path NAMES_20M = Paths.get("/home/florian/Datasets/Workbench/fb_names.20M.tsv");
 
   public static void main(String[] args) throws IOException {
-//    new Playground().standardClustering();
-    new Playground().namesTest();
-  }
-
-  private void namesTest() throws IOException {
-    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(NAMES_20M));
-    ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinVertexAffiliation(0.1)
-            .withMinClusterSize(100)
-            .build();
-    Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
-
-    DigesterSettings digesterSettings = DigesterSettings.builder(settings)
-            .withDigestRanking(COMBINED_RANKING.apply(0.5))
-            .build();
-    ClusterDigester digester = new ClusterDigester(digesterSettings);
-
-    LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
-    export("/home/florian/tmp/clusters5.txt", labeledGraph, root, digester, mapping);
-
+    new Playground().standardClustering();
   }
 
   private void standardClustering() throws IOException {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(ENTITY_GRAPH_TERMS));
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinVertexAffiliation(0.1)
+            .withMinVertexAffiliation(0.075)
             .withMinClusterSize(100)
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
 
     PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
-            .withMinChildren(15)
+            .withMinParentSimilarity(0.15)
+            .withMaxParentSimilarity(0.35)
             .build();
     Postprocessing.apply(root, postprocessingSettings);
 
     DigesterSettings digesterSettings = DigesterSettings.builder(settings)
-            .withDigestRanking(COMBINED_RANKING.apply(1.2))
+            .withDigestRanking(WEIGHT_RANKING)
             .build();
     ClusterDigester digester = new ClusterDigester(digesterSettings);
 
     LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
-    export("/home/florian/tmp/clusters4.txt", labeledGraph, root, digester, mapping);
+    export("/home/florian/tmp/clusters7.txt", labeledGraph, root, digester, mapping, labeledGraph.getGraph());
 
   }
 
-  private void export(String path, LabeledGraph<String> labeledGraph, Cluster root, ClusterDigester digester, LabeledDigestMapping<String, String> mapping) throws FileNotFoundException {
+  private void export(String path, LabeledGraph<String> labeledGraph, Cluster root, ClusterDigester digester, LabeledDigestMapping<String, String> mapping, Graph rootGraph) throws FileNotFoundException {
+    GraphSimilarityMetric metric = new NormalizedCutMetric();
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     PrintWriter w = new PrintWriter(path);
@@ -104,8 +91,8 @@ public class Playground {
       String vertices = digest.map(mapping, labeledGraph.getLabels())
               .collect(Collectors.joining(", "));
       String prefix = StringUtils.repeat("==", cluster.depth());
-      double totalWeight = cluster.aggregateGraph().totalWeight();
-      w.printf("%s> %d / %.3f: %s\n", prefix, digest.totalSize(), totalWeight, vertices);
+      double cut = (cluster.getParent() != null) ? metric.compute(cluster.getParent().aggregateGraph(), cluster.aggregateGraph()) : 0;
+      w.printf("%s>: %.3f : %d : %s\n", prefix, cut, digest.totalSize(), vertices);
     });
     w.close();
     stopWatch.stop();

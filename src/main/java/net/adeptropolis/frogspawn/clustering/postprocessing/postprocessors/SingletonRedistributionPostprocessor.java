@@ -42,7 +42,7 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   }
 
   /**
-   * Locate all leaf nodes in a cluster tree and enqueue all leafs
+   * Locate all leaf nodes in a cluster tree and enqueue them
    */
 
   private static void enqueueLeafs(Cluster root, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
@@ -152,5 +152,29 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   public TreeTraversalMode traversalMode() {
     return TreeTraversalMode.GLOBAL_CUSTOM;
   }
+
+  /**
+   * This postprocessor may compromise cluster vertex affinity scores by relocating clusters within
+   * the hierarchy
+   *
+   * @return <code>true</code>
+   */
+
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return true;
+  }
+
+  /**
+   * This kind of postprocessor does not require checking for idempotency
+   *
+   * @return <code>false</code>
+   */
+
+  @Override
+  public boolean requiresIdempotency() {
+    return false;
+  }
+
 
 }

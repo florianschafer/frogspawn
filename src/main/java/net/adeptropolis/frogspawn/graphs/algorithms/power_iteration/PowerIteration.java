@@ -32,8 +32,8 @@ public class PowerIteration {
    * @param maxIterations             Maximum number of iterations.
    * @param expectNegativeEigenvalues Whether to expect any negative eigenvalues.
    * @return Either the converged eigenvector or <code>null</code> if the number of allowed iterations has been exhausted.
-   * @see ConvergenceCriterion
    * @throws MaxIterationsExceededException If the maximum number of iterations has been exceeded
+   * @see ConvergenceCriterion
    */
 
   public static double[] apply(LinearGraphOperator op, ConvergenceCriterion convergenceCriterion,
