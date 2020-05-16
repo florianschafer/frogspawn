@@ -5,6 +5,8 @@
 
 package net.adeptropolis.frogspawn.graphs.implementations.arrays;
 
+import com.esotericsoftware.kryo.serializers.DefaultArraySerializers.ObjectArraySerializer;
+import com.esotericsoftware.kryo.serializers.FieldSerializer.Bind;
 import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
@@ -19,12 +21,23 @@ import java.util.stream.LongStream;
 
 public class BigInts implements LongComparator, BigSwapper {
 
-  static final int BIN_BITS = 17;
+  public static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
   private static final long GROWTH_FACTOR = 2L;
 
-  private int[][] data = null;
+  @Bind(serializer = ObjectArraySerializer.class, valueClass = int[][].class)
+  private int[][] data;
+
+  @Bind
   private long size = 0;
+
+  /**
+   * No-args constructor for Kryo
+   */
+
+  private BigInts() {
+
+  }
 
   /**
    * Constructor
@@ -134,7 +147,6 @@ public class BigInts implements LongComparator, BigSwapper {
   public int compare(long idx1, long idx2) {
     return Integer.compare(get(idx1), get(idx2));
   }
-
 
   /**
    * Swap values between two indices
