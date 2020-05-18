@@ -10,7 +10,12 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
 
-import java.util.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -25,10 +30,9 @@ import java.util.stream.Stream;
 
 // TODO: This class is by far the most messy part of the whole project. Find a way to unravel all the mixed concerns here
 //  and expose much less internal methods!
-public class Cluster {
+public class Cluster implements Comparable<Cluster>, Serializable {
 
   private static final AtomicInteger CURR_ID = new AtomicInteger(Integer.MIN_VALUE);
-  private static final Comparator<Cluster> DETERMINISTIC_CHILD_COMPARATOR = Comparator.comparingInt(Cluster::getId);
   private static final long HASH_MULTIPLIER_PRIME = 8388581L;
   private static final long HASH_MOD_PRIME = 2147483647L;
 
@@ -47,7 +51,7 @@ public class Cluster {
   public Cluster(Graph rootGraph) {
     this.root = new Root(this, rootGraph);
     this.parent = null;
-    this.children = new TreeSet<>(DETERMINISTIC_CHILD_COMPARATOR);
+    this.children = new TreeSet<>();
     this.remainder = new IntArrayList();
     this.id = CURR_ID.getAndIncrement();
   }
@@ -62,7 +66,7 @@ public class Cluster {
     this.parent = parent;
     this.parent.children.add(this);
     this.root = parent.root;
-    this.children = new TreeSet<>(DETERMINISTIC_CHILD_COMPARATOR);
+    this.children = new TreeSet<>();
     this.remainder = new IntArrayList();
     this.id = CURR_ID.getAndIncrement();
   }
@@ -312,10 +316,37 @@ public class Cluster {
   }
 
   /**
+   * This compare is just here for stable sorting in the tree map
+   *
+   * @param other Other cluster
+   * @return 0, -1 or 1
+   */
+
+  @Override
+  public int compareTo(Cluster other) {
+    return Integer.compare(getId(), other.getId());
+  }
+
+  /**
+   * Post-deserialization actions: Make sure that the static field <code>CURR_ID</code> is updated properly
+   *
+   * @param in Object input stream
+   * @throws IOException            IOException
+   * @throws ClassNotFoundException ClassNotFoundException
+   */
+
+  private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    if (CURR_ID.get() < getId() + 1) {
+      CURR_ID.set(getId() + 1);
+    }
+  }
+
+  /**
    * Simple storage class for the root cluster and graph
    */
 
-  private static class Root {
+  private static class Root implements Serializable {
 
     private final Cluster cluster;
     private final Graph graph;
@@ -323,6 +354,11 @@ public class Cluster {
     private Root(Cluster cluster, Graph graph) {
       this.cluster = cluster;
       this.graph = graph;
+    }
+
+    private Root() {
+      cluster = null;
+      graph = null;
     }
 
   }

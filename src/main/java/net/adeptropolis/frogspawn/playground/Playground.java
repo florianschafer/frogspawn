@@ -10,7 +10,6 @@ import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.RecursiveClustering;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.frogspawn.clustering.postprocessing.PostprocessingSettings;
-import net.adeptropolis.frogspawn.clustering.postprocessing.SingletonMode;
 import net.adeptropolis.frogspawn.digest.ClusterDigester;
 import net.adeptropolis.frogspawn.digest.Digest;
 import net.adeptropolis.frogspawn.digest.DigesterSettings;
@@ -20,11 +19,13 @@ import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphSource;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
+import net.adeptropolis.frogspawn.persistence.Snapshot;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -65,11 +66,15 @@ public class Playground {
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
 
+    Snapshot.save(new File("/home/florian/tmp/entity-terms-snapshot-raw.bin"), root, labeledGraph);
+
     PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
             .withMinParentSimilarity(0.15)
             .withMaxParentSimilarity(0.35)
             .build();
     Postprocessing.apply(root, postprocessingSettings);
+
+    Snapshot.save(new File("/home/florian/tmp/entity-terms-postprocessed.bin"), root, labeledGraph);
 
     DigesterSettings digesterSettings = DigesterSettings.builder(settings)
             .withDigestRanking(WEIGHT_RANKING)

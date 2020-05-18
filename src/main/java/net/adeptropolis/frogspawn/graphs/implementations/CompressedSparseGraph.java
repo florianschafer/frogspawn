@@ -12,6 +12,8 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
 
+import java.io.Serializable;
+
 /**
  * A compressed sparse graph
  * <p><b>Note: </b> The vertex set of this type of graph always consists of
@@ -19,7 +21,7 @@ import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
  * the vertex set will be <code>{0...n}</code></p>
  */
 
-public class CompressedSparseGraph extends Graph {
+public class CompressedSparseGraph extends Graph implements Serializable {
 
   private final CompressedSparseGraphDatastore datastore;
 

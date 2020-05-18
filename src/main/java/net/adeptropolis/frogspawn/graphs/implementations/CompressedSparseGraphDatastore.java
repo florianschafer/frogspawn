@@ -8,6 +8,8 @@ package net.adeptropolis.frogspawn.graphs.implementations;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
 
+import java.io.Serializable;
+
 /**
  * <p>Storage backend for large, sparse graphs</p>
  * <p>More precisely, this class provides a CSR storage representation for adjacency matrices of large sparse graphs.
@@ -23,7 +25,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
  * </ol>
  */
 
-public class CompressedSparseGraphDatastore {
+public class CompressedSparseGraphDatastore implements Serializable {
 
   public final long[] pointers;
   public final BigInts edges;

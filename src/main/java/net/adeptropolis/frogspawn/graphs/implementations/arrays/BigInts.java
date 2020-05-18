@@ -5,13 +5,12 @@
 
 package net.adeptropolis.frogspawn.graphs.implementations.arrays;
 
-import com.esotericsoftware.kryo.serializers.DefaultArraySerializers.ObjectArraySerializer;
-import com.esotericsoftware.kryo.serializers.FieldSerializer.Bind;
 import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -19,25 +18,14 @@ import java.util.stream.LongStream;
  * A big (i.e. long-indexed) array of ints.
  */
 
-public class BigInts implements LongComparator, BigSwapper {
+public class BigInts implements LongComparator, BigSwapper, Serializable {
 
   public static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
   private static final long GROWTH_FACTOR = 2L;
 
-  @Bind(serializer = ObjectArraySerializer.class, valueClass = int[][].class)
   private int[][] data;
-
-  @Bind
   private long size = 0;
-
-  /**
-   * No-args constructor for Kryo
-   */
-
-  private BigInts() {
-
-  }
 
   /**
    * Constructor
