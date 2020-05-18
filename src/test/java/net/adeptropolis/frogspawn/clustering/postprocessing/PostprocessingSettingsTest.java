@@ -43,8 +43,8 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
     assertThat(defaultSettings.getVertexAffiliationMetric(), instanceOf(RelativeWeightVertexAffiliationMetric.class));
     assertThat(defaultSettings.getMinVertexAffiliation(), closeTo(0.1, 1E-6));
     assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));
-    assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.075, 1E-9));
-    assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.35, 1E-9));
+    assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.1, 1E-9));
+    assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.4, 1E-9));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMinChildren(), is(0));
     assertThat(defaultSettings.getSingletonMode(), is(ASSIMILATE));

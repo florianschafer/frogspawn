@@ -13,6 +13,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.arrays.InterpolationSea
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,7 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * The edge set is restricted to those edges where both endpoints are members of the given vertex set.</p>
  */
 
-public class CompressedInducedSparseSubgraph extends Graph {
+public class CompressedInducedSparseSubgraph extends Graph implements Serializable {
 
   private final CompressedSparseGraphDatastore datastore;
   private final int[] vertices;
