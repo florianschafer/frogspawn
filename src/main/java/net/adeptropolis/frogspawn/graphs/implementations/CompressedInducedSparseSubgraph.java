@@ -25,6 +25,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class CompressedInducedSparseSubgraph extends Graph implements Serializable {
 
+  static final long serialVersionUID = 1332295543424708677L;
+
   private final CompressedSparseGraphDatastore datastore;
   private final int[] vertices;
   private long cachedNumEdges = -1L;

@@ -19,6 +19,8 @@ import java.io.Serializable;
 
 public class Snapshot<V extends Serializable> implements Serializable {
 
+  static final long serialVersionUID = 322198804270556255L;
+
   private final Cluster root;
   private final LabeledGraph<V> graph;
 

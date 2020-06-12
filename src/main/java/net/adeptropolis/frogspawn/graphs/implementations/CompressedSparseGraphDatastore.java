@@ -27,6 +27,8 @@ import java.io.Serializable;
 
 public class CompressedSparseGraphDatastore implements Serializable {
 
+  static final long serialVersionUID = 5572670833943799413L;
+
   public final long[] pointers;
   public final BigInts edges;
   public final BigDoubles weights;

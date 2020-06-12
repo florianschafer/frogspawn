@@ -21,6 +21,8 @@ import java.io.Serializable;
 
 public class LabeledGraph<V extends Serializable> implements Serializable {
 
+  static final long serialVersionUID = 7802023886873266825L;
+
   private final CompressedSparseGraph graph;
   private final V[] labels;
 

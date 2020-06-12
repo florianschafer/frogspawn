@@ -1,3 +1,6 @@
+ - Vertex affiliation postprocessing is suspiciously fast. Check if it aggregates
+ - Check whether fast predicate checking in parent similarity transformer might work (i.e. similarity is monotonous)
+ - Better serialization
  - Maybe run some initial iterations before checking sigtrail
  - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
  - Write some proper math documentation

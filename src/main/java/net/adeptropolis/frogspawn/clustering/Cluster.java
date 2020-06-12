@@ -348,6 +348,8 @@ public class Cluster implements Comparable<Cluster>, Serializable {
 
   private static class Root implements Serializable {
 
+    static final long serialVersionUID = 577784202545623995L;
+
     private final Cluster cluster;
     private final Graph graph;
 

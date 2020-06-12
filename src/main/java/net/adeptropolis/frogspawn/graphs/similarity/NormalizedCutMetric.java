@@ -29,7 +29,7 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
       return 0d;
     }
 
-    // TODO: This goesa long way just to avoid high-congestion atomics. Revisit/benchmark!
+    // TODO: This goes a long way just to avoid high-congestion atomics. Revisit/benchmark!
     double[] embeddedSubgraphWeights = new double[subgraph.order()];
     double[] embeddedComplementWeights = new double[supergraph.order()];
     double[] cuts = new double[subgraph.order()];

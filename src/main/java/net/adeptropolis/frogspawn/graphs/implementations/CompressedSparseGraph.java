@@ -23,6 +23,8 @@ import java.io.Serializable;
 
 public class CompressedSparseGraph extends Graph implements Serializable {
 
+  static final long serialVersionUID = 3908340146557361096L;
+
   private final CompressedSparseGraphDatastore datastore;
 
   /**
