@@ -27,13 +27,25 @@ public class LabeledGraphBuilder<V> {
    * Constructor
    *
    * @param labelClass Label class
+   * @param initialCapacity Initial capacity for the edge buffer
+   */
+
+  public LabeledGraphBuilder(Class<V> labelClass, long initialCapacity) {
+    this.labelClass = labelClass;
+    this.vertexMap = new Object2IntOpenHashMap<>();
+    this.builder = (initialCapacity >= 0) ? new CompressedSparseGraphBuilder(initialCapacity, 1d) : new CompressedSparseGraphBuilder(1d);
+  }
+
+  /**
+   * Constructor
+   *
+   * @param labelClass Label class
    */
 
   public LabeledGraphBuilder(Class<V> labelClass) {
-    this.labelClass = labelClass;
-    this.vertexMap = new Object2IntOpenHashMap<>();
-    this.builder = new CompressedSparseGraphBuilder();
+    this(labelClass, -1);
   }
+
 
   /**
    * Add a new undirected edge to the graph.

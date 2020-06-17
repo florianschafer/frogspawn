@@ -25,21 +25,24 @@ import org.slf4j.LoggerFactory;
 public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   private static final Logger LOG = LoggerFactory.getLogger(CompressedSparseGraphBuilder.class.getSimpleName());
-  private static final long INITIAL_SIZE = 1 << 24;
+  private static final long DEFAULT_INITIAL_CAPACITY = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
   private final double minWeight;
-  private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
-  private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
-  private long size = INITIAL_SIZE;
+  private final BigInts[] edges;
+  private final BigDoubles weights;
+  private long capacity;
   private long ptr = 0L;
 
   /**
-   * Constructor setting a min edge weight
+   * Constructor setting the initial capacity and a min edge weight
    *
    * @param minWeight Minimum edge weight. Weights below this value cause a <code>GraphConstructionException</code>
    */
 
-  public CompressedSparseGraphBuilder(double minWeight) {
+  public CompressedSparseGraphBuilder(long initialCapacity, double minWeight) {
+    this.edges = new BigInts[]{ new BigInts(initialCapacity), new BigInts(initialCapacity) };
+    this.weights = new BigDoubles(initialCapacity);
+    this.capacity = initialCapacity;
     this.minWeight = minWeight;
   }
 
@@ -48,7 +51,15 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    */
 
   public CompressedSparseGraphBuilder() {
-    this(1d);
+    this(DEFAULT_INITIAL_CAPACITY,1d);
+  }
+
+  /**
+   * Constructor for setting minWeight, but using the default initial capacity
+   */
+
+  public CompressedSparseGraphBuilder(double minWeight) {
+    this(DEFAULT_INITIAL_CAPACITY, minWeight);
   }
 
   /**
@@ -96,7 +107,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    */
 
   private void set(long idx, int u, int v, double weight) {
-    if (idx >= size) resize(size + GROW_SIZE);
+    if (idx >= capacity) resize(capacity + GROW_SIZE);
     edges[0].set(idx, u);
     edges[1].set(idx, v);
     weights.set(idx, weight);
@@ -109,7 +120,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    */
 
   private void resize(long newSize) {
-    size = newSize;
+    capacity = newSize;
     edges[0].resize(newSize);
     edges[1].resize(newSize);
     weights.resize(newSize);
