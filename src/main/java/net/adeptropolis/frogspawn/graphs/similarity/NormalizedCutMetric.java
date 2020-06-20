@@ -31,25 +31,21 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
       return 0d;
     }
 
-    // TODO: This goes a long way just to avoid high-congestion atomics. Revisit/benchmark!
     double[] embeddedSubgraphWeights = new double[subgraph.order()];
     double[] embeddedComplementWeights = new double[supergraph.order()];
     double[] cuts = new double[subgraph.order()];
-
-    int[] subgraphLocalIds = mapLocalIds(supergraph, subgraph);
+    int[] idMap = mapLocalIds(supergraph, subgraph);
 
     supergraph.traverseParallel((u, v, weight) -> {
-      boolean subgraphContainsU = subgraphLocalIds[u] >= 0;
-      boolean subgraphContainsV = subgraphLocalIds[v] >= 0;
-      if (!subgraphContainsU && !subgraphContainsV) {
+      if (idMap[u] < 0 && idMap[v] < 0) {
         embeddedComplementWeights[u] += weight / 2;
       } else {
-        if (subgraphContainsU && subgraphContainsV) {
-          embeddedSubgraphWeights[subgraphLocalIds[u]] += weight / 2;
-        } else if (subgraphContainsU) {
-          embeddedSubgraphWeights[subgraphLocalIds[u]] += weight;
+        if (idMap[u] >= 0 && idMap[v] >= 0) {
+          embeddedSubgraphWeights[idMap[u]] += weight / 2;
+        } else if (idMap[u] >= 0) {
+          embeddedSubgraphWeights[idMap[u]] += weight;
           embeddedComplementWeights[u] += weight;
-          cuts[subgraphLocalIds[u]] += weight;
+          cuts[idMap[u]] += weight;
         }
       }
     });
@@ -59,7 +55,12 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
   }
 
   /**
-   * Map local vertex ids from the supergraph to local ids of the subgraph
+   * Provides a mapping between local vertex ids from the supergraph and those of the subgraph
+   * <p>
+   *   This mapping is provided through a supergraph local id-indexed array of
+   *   local subgraph ids. An element may be <code>-1</code> in case that vertex
+   *   is not contained in the subgraph.
+   * </p>
    *
    * @param supergraph A graph
    * @param subgraph Subgraph of <code>supergraph</code>
