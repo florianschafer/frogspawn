@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 //  and expose much less internal methods!
 public class Cluster implements Comparable<Cluster>, Serializable {
 
+  static final long serialVersionUID = -1920325521338707901L;
   private static final AtomicInteger CURR_ID = new AtomicInteger(Integer.MIN_VALUE);
   private static final long HASH_MULTIPLIER_PRIME = 8388581L;
   private static final long HASH_MOD_PRIME = 2147483647L;

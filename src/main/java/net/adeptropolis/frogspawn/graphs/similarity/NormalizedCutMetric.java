@@ -8,6 +8,8 @@ package net.adeptropolis.frogspawn.graphs.similarity;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.helpers.Arr;
 
+import java.util.Arrays;
+
 /**
  * Graph similarity metric using the normalized cut
  */
@@ -34,26 +36,42 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
     double[] embeddedComplementWeights = new double[supergraph.order()];
     double[] cuts = new double[subgraph.order()];
 
+    int[] subgraphLocalIds = mapLocalIds(supergraph, subgraph);
+
     supergraph.traverseParallel((u, v, weight) -> {
-      int uGlobalId = supergraph.globalVertexId(u);
-      boolean subgraphContainsU = subgraph.containsVertex(uGlobalId);
-      boolean subgraphContainsV = subgraph.containsVertex(supergraph.globalVertexId(v));
+      boolean subgraphContainsU = subgraphLocalIds[u] >= 0;
+      boolean subgraphContainsV = subgraphLocalIds[v] >= 0;
       if (!subgraphContainsU && !subgraphContainsV) {
         embeddedComplementWeights[u] += weight / 2;
       } else {
-        int subgraphLocalId = subgraph.localVertexId(uGlobalId);
         if (subgraphContainsU && subgraphContainsV) {
-          embeddedSubgraphWeights[subgraphLocalId] += weight / 2;
+          embeddedSubgraphWeights[subgraphLocalIds[u]] += weight / 2;
         } else if (subgraphContainsU) {
-          embeddedSubgraphWeights[subgraphLocalId] += weight;
+          embeddedSubgraphWeights[subgraphLocalIds[u]] += weight;
           embeddedComplementWeights[u] += weight;
-          cuts[subgraphLocalId] += weight;
+          cuts[subgraphLocalIds[u]] += weight;
         }
       }
     });
 
     return computeNcut(embeddedSubgraphWeights, embeddedComplementWeights, cuts) / 2;
 
+  }
+
+  /**
+   * Map local vertex ids from the supergraph to local ids of the subgraph
+   *
+   * @param supergraph A graph
+   * @param subgraph Subgraph of <code>supergraph</code>
+   * @return Array of local subgraph ids
+   */
+
+  private int[] mapLocalIds(Graph supergraph, Graph subgraph) {
+    int[] subgraphLocalIds = new int[supergraph.order()];
+    Arrays.fill(subgraphLocalIds, -1);
+    subgraph.traverseVerticesParallel( u -> subgraphLocalIds[
+            supergraph.localVertexId(subgraph.globalVertexId(u))] = u );
+    return subgraphLocalIds;
   }
 
   private double computeNcut(double[] embeddedSubgraphWeights, double[] embeddedComplementWeights, double[] cuts) {

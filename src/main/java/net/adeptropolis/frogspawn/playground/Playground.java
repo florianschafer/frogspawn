@@ -53,9 +53,41 @@ public class Playground {
   private static final Path ENTITY_GRAPH_TERMS = Paths.get("/home/florian/tmp/wiki_ents_terms_only.norm.tsv");
   private static final Path NAMES_2M = Paths.get("/home/florian/Datasets/Workbench/fb_names.2M.tsv");
   private static final Path NAMES_20M = Paths.get("/home/florian/Datasets/Workbench/fb_names.20M.tsv");
+  private static final Path WIKI_LINKS = Paths.get("/home/florian/tmp/wiki-links.graph");
 
   public static void main(String[] args) throws IOException {
-    new Playground().standardClustering();
+//    new Playground().standardClustering();
+    new Playground().playWithSnapshot();
+//    new Playground().altClustering();
+  }
+
+  private void playWithSnapshot() throws FileNotFoundException {
+    Snapshot<String> snapshot = Snapshot.load(new File("/home/florian/tmp/entity-terms-snapshot-raw.bin"));
+    Cluster root = snapshot.getRoot();
+
+    ClusteringSettings settings = ClusteringSettings.builder()
+            .withMinVertexAffiliation(0.075)
+            .withMinClusterSize(100)
+            .build();
+
+    PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
+            .withMinParentSimilarity(0.1)
+            .withMaxParentSimilarity(0.38)
+            .build();
+
+    Postprocessing.apply(root, postprocessingSettings);
+
+    Snapshot.save(new File("/home/florian/tmp/entity-terms-0.1-0.38-postprocessed-test.bin"), root, snapshot.getGraph());
+
+    DigesterSettings digesterSettings = DigesterSettings.builder(settings)
+            .withDigestRanking(WEIGHT_RANKING)
+            .build();
+    ClusterDigester digester = new ClusterDigester(digesterSettings);
+
+
+    LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
+    export("/home/florian/tmp/clusters1.txt", snapshot.getGraph(), root, digester, mapping, snapshot.getGraph().getGraph());
+
   }
 
   private void standardClustering() throws IOException {
@@ -83,6 +115,35 @@ public class Playground {
 
     LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
     export("/home/florian/tmp/clusters7.txt", labeledGraph, root, digester, mapping, labeledGraph.getGraph());
+
+  }
+
+  private void altClustering() throws IOException {
+    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(WIKI_LINKS));
+    ClusteringSettings settings = ClusteringSettings.builder()
+            .withMinVertexAffiliation(0.3)
+            .withMinClusterSize(10)
+            .build();
+
+    Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
+
+    Snapshot.save(new File("/home/florian/tmp/links-raw.bin"), root, labeledGraph);
+
+    PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
+            .withMinParentSimilarity(0.1)
+            .withMaxParentSimilarity(0.4)
+            .build();
+    Postprocessing.apply(root, postprocessingSettings);
+
+    Snapshot.save(new File("/home/florian/tmp/links-pp.bin"), root, labeledGraph);
+
+    DigesterSettings digesterSettings = DigesterSettings.builder(settings)
+            .withDigestRanking(WEIGHT_RANKING)
+            .build();
+    ClusterDigester digester = new ClusterDigester(digesterSettings);
+
+    LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s <%.1f %.2f>", label, weight, score);
+    export("/home/florian/tmp/links-pp.txt", labeledGraph, root, digester, mapping, labeledGraph.getGraph());
 
   }
 

@@ -24,7 +24,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
   @Before
   public void setup() {
     MockSimilarityMetric metric = new MockSimilarityMetric();
-    pp = new ParentSimilarityPostprocessor(metric, 0.5, 2);
+    pp = new ParentSimilarityPostprocessor(metric, 0.5, 2, 0.2);
     root = new Cluster(completeGraph(213));
     root.addToRemainder(IntIterators.wrap(new int[]{0}));
     c1 = new Cluster(root);

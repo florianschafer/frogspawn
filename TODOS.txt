@@ -1,4 +1,10 @@
- - Vertex affiliation postprocessing is suspiciously fast. Check if it aggregates
+ - Faster NCut:
+   - Lower-triangular traversal
+   - Aggregate graph (weights?) caching (w. invalidation on changes, root -> rootGraph)
+   - Single-pass generation of both graphs ("subgraph" flag in recursion once that one is passed)
+
+
+ - Add possibility to let graph builders know the size in advance
  - Check whether fast predicate checking in parent similarity transformer might work (i.e. similarity is monotonous)
  - Better serialization
  - Maybe run some initial iterations before checking sigtrail

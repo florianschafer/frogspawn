@@ -74,7 +74,7 @@ public class Postprocessing {
     queue.addLast(new RemainderSizePostprocessor(settings.getMinClusterSize()));
 
     if (settings.getMinParentSimilarity() > 0 || settings.getMaxParentSimilarity() < 1) {
-      queue.addLast(new ParentSimilarityPostprocessor(settings.getSimilarityMetric(), settings.getMinParentSimilarity(), settings.getMaxParentSimilarity()));
+      queue.addLast(new ParentSimilarityPostprocessor(settings.getSimilarityMetric(), settings.getMinParentSimilarity(), settings.getMaxParentSimilarity(), settings.getTargetParentSimilarity()));
     }
 
     if (settings.getMinChildren() > 0) {
@@ -131,6 +131,10 @@ public class Postprocessing {
     stopWatch.start();
     boolean didMakeChanges = PostprocessingTraversal.apply(postprocessor, rootCluster);
     stopWatch.stop();
+    if (postprocessor instanceof ParentSimilarityPostprocessor) {
+      ParentSimilarityPostprocessor pp = (ParentSimilarityPostprocessor) postprocessor;
+      LOG.info("Convergence: {}", pp.resetConvergenceStats());
+    }
     LOG.debug("{} finished after {} {} changes", postprocessor.getClass().getSimpleName(), stopWatch, didMakeChanges ? "with" : "without");
     if (didMakeChanges) {
       if (postprocessor.requiresIdempotency()) {
