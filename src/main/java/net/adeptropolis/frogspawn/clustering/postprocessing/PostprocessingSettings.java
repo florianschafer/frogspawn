@@ -170,8 +170,8 @@ public class PostprocessingSettings {
     private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
     private GraphSimilarityMetric similarityMetric = new NormalizedCutMetric();
     private double minParentSimilarity = 0.05;
-    private double maxParentSimilarity = 0.4;
-    private double targetParentSimilarity = 0.2;
+    private double maxParentSimilarity = 0.45;
+    private double targetParentSimilarity = 0.15;
     private int minChildren = 0;
     private SingletonMode singletonMode = SingletonMode.ASSIMILATE;
 
@@ -210,7 +210,7 @@ public class PostprocessingSettings {
     }
 
     /**
-     * Set the maximum graph similarity. Default is 0.4
+     * Set the maximum graph similarity. Default is 0.45
      *
      * @param maxParentSimilarity Minimum similarity between a cluster and its parent wrt. to the similarity metric
      * @return this
@@ -222,7 +222,7 @@ public class PostprocessingSettings {
     }
 
     /**
-     * Set the target parent-child similarity. Default is 0.2
+     * Set the target parent-child similarity. Default is 0.15
      *
      * @param targetParentSimilarity Minimum similarity between relocated clusters and their prospective parents
      * @return this
