@@ -1,3 +1,4 @@
+ - Change traverseParallel signature: traverse(..., boolean parallel,...)
  - Provide (idempotent?) postprocessors with a list of clusters that need to be revisited instead of traversing the full tree.
  - Add possibility to let graph builders know the size in advance
  - Better serialization

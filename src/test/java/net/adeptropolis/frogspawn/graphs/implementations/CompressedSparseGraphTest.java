@@ -12,7 +12,11 @@ import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -102,7 +106,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseById() {
-    defaultGraph.traverseIncidentEdges(defaultGraph.localVertexId(4), consumer);
+    defaultGraph.traverseIncidentEdges(defaultGraph.localVertexId(4), consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(4, 9, 5),
             Edge.of(4, 10, 7),
@@ -111,7 +115,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void traverseNonExistentId() {
-    defaultGraph.traverseIncidentEdges(-1, consumer);
+    defaultGraph.traverseIncidentEdges(-1, consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges().size(), is(0));
   }
 
@@ -119,6 +123,20 @@ public class CompressedSparseGraphTest extends GraphTestBase {
   public void subgraph() {
     Graph subgraph = defaultGraph.inducedSubgraph(IntIterators.wrap(new int[]{4, 11}));
     assertThat(subgraph.order(), is(2));
+  }
+
+  @Test
+  public void lowerTriangularTraversal() {
+    CompressedSparseGraph graph = completeGraph(150);
+    CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
+    graph.traverseParallel(consumer, TraversalMode.LOWER_TRIANGULAR);
+    assertThat(consumer.getEdges(), hasSize(75 * 149));
+    Set<Edge> edges = new HashSet<>(consumer.getEdges());
+    for (int i = 0; i < 150; i++) {
+      for (int j = 0; j < i; j++) {
+        assertThat(edges, hasItem(Edge.of(i, j, 1)));
+      }
+    }
   }
 
 }

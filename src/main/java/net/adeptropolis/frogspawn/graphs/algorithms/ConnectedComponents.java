@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +91,7 @@ public class ConnectedComponents implements EdgeConsumer {
     while (!componentQueue.isEmpty()) {
       int j = componentQueue.removeFirstInt();
       component.add(j);
-      graph.traverseIncidentEdges(j, this);
+      graph.traverseIncidentEdges(j, this, TraversalMode.DEFAULT);
     }
   }
 

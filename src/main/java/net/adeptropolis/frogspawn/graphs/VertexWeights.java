@@ -7,6 +7,7 @@ package net.adeptropolis.frogspawn.graphs;
 
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 /**
  * Compute the vertex weights of a graph
@@ -35,7 +36,7 @@ public class VertexWeights implements EdgeConsumer {
 
   public static double[] compute(Graph graph) {
     VertexWeights weights = new VertexWeights(graph);
-    ParallelEdgeOps.traverse(graph, weights);
+    ParallelEdgeOps.traverse(graph, weights, TraversalMode.DEFAULT);
     return weights.weights;
   }
 

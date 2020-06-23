@@ -10,7 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
-import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
 
@@ -101,16 +101,7 @@ public class CompressedSparseGraph extends Graph implements Serializable {
    */
 
   @Override
-  public void traverseParallel(EdgeConsumer consumer) {
-    ParallelEdgeOps.traverse(this, consumer);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-
-  @Override
-  public void traverseIncidentEdges(int v, EdgeConsumer consumer) {
+  public void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode) {
 
     if (order() == 0 || v < 0) {
       return;
@@ -125,6 +116,9 @@ public class CompressedSparseGraph extends Graph implements Serializable {
     int rightEndpoint;
     for (long ptr = low; ptr < high; ptr++) {
       rightEndpoint = datastore.edges.get(ptr);
+      if (mode == TraversalMode.LOWER_TRIANGULAR && v < rightEndpoint) {
+        break;
+      }
       consumer.accept(v, rightEndpoint, datastore.weights.get(ptr));
       if (rightEndpoint + 1 >= order()) {
         break;

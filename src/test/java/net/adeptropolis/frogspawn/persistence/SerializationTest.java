@@ -16,6 +16,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
@@ -112,7 +113,7 @@ public class SerializationTest extends GraphTestBase {
   private List<Edge> getEdges(Graph graph) {
     CollectingEdgeConsumer graphEdgeConsumer = new CollectingEdgeConsumer();
     for (int i = 0; i < graph.order(); i++) {
-      graph.traverseIncidentEdges(i, graphEdgeConsumer);
+      graph.traverseIncidentEdges(i, graphEdgeConsumer, TraversalMode.DEFAULT);
     }
     return graphEdgeConsumer.getEdges();
   }
