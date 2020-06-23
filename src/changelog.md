@@ -1,5 +1,9 @@
 # Frogspawn Changelog
 
+## v1.1.x
+
+    - Improved parent similarity postfiltering
+
 ## v1.1.0
 
     - NCut graph similarity metric
