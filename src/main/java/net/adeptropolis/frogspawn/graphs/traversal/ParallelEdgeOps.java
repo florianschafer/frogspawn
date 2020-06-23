@@ -16,6 +16,7 @@ import java.util.concurrent.CountDownLatch;
 public final class ParallelEdgeOps extends ParallelOps implements Runnable {
 
   private final EdgeConsumer consumer;
+  private final TraversalMode mode;
 
   /**
    * Constructor
@@ -23,12 +24,14 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
    * @param graph    Graph whose edges should be traversed
    * @param consumer Instance of EdgeConsumer
    * @param slice    Slice (essentially an identifier for the individual thread workload)
+   * @param mode     Selected traversal mode
    * @param latch    Countdown latch
    */
 
-  private ParallelEdgeOps(Graph graph, EdgeConsumer consumer, int slice, CountDownLatch latch) {
+  private ParallelEdgeOps(Graph graph, EdgeConsumer consumer, int slice, TraversalMode mode, CountDownLatch latch) {
     super(graph, slice, latch);
     this.consumer = consumer;
+    this.mode = mode;
   }
 
   /**
@@ -36,14 +39,15 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
    *
    * @param graph    Graph
    * @param consumer Instance of EdgeConsumer
+   * @param mode     Traversal mode
    */
 
-  public static void traverse(Graph graph, EdgeConsumer consumer) {
+  public static void traverse(Graph graph, EdgeConsumer consumer, TraversalMode mode) {
     if (graph.order() >= PARALLELIZATION_THRESHOLD) {
-      traverseParallel(graph, consumer);
+      traverseParallel(graph, mode, consumer);
     } else {
       for (int i = 0; i < graph.order(); i++) {
-        graph.traverseIncidentEdges(i, consumer);
+        graph.traverseIncidentEdges(i, consumer, mode);
       }
     }
   }
@@ -52,13 +56,14 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
    * Parallel traversal over all edges of a given graph
    *
    * @param graph    Graph
+   * @param mode     Traversal mode
    * @param consumer Instance of EdgeConsumer
    */
 
-  private static void traverseParallel(Graph graph, EdgeConsumer consumer) {
+  private static void traverseParallel(Graph graph, TraversalMode mode, EdgeConsumer consumer) {
     CountDownLatch latch = new CountDownLatch(THREAD_POOL_SIZE);
     for (int i = 0; i < THREAD_POOL_SIZE; i++) {
-      EXECUTOR.submit(new ParallelEdgeOps(graph, consumer, i, latch));
+      EXECUTOR.submit(new ParallelEdgeOps(graph, consumer, i, mode, latch));
     }
     try {
       latch.await();
@@ -69,6 +74,27 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
   }
 
   /**
+   * Return the slice a vertex will fall into during traversal.
+   *
+   * @param v Local vertex id
+   * @return Slice index
+   */
+
+  public static int slice(int v) {
+    return v % THREAD_POOL_SIZE;
+  }
+
+  /**
+   * Return the maximum number of slices
+   *
+   * @return Maximum slice index (exclusive)
+   */
+
+  public static int slices() {
+    return THREAD_POOL_SIZE;
+  }
+
+  /**
    * Runnable entry point. Traverse all edges from the current slice and decrease the latch upon completion.
    */
 
@@ -76,7 +102,7 @@ public final class ParallelEdgeOps extends ParallelOps implements Runnable {
   public void run() {
     int v;
     for (int i = 0; (v = i * THREAD_POOL_SIZE + slice) < graph.order(); i++) {
-      graph.traverseIncidentEdges(v, consumer);
+      graph.traverseIncidentEdges(v, consumer, mode);
     }
     latch.countDown();
   }
