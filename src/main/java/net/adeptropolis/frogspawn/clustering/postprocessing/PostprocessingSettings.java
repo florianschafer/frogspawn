@@ -23,6 +23,7 @@ public class PostprocessingSettings {
   private final double minParentSimilarity;
   private final double maxParentSimilarity;
   private final double targetParentSimilarity;
+  private final double parentSimilarityAcceptanceLimit;
   private final int minChildren;
 
   private final SingletonMode singletonMode;
@@ -30,24 +31,27 @@ public class PostprocessingSettings {
 
   /**
    * Constructor
-   *  @param clusteringSettings   Primary clustering settings
+   * @param clusteringSettings   Primary clustering settings
    * @param similarityMetric     Graph similarity metric
    * @param minParentSimilarity  Minimum parent similarity wrt. to the given similarity metric
    * @param maxParentSimilarity  Maximum parent similarity wrt. to the given similarity metric
    * @param targetParentSimilarity Minimum parent similarity for vertical shifting
+   * @param parentSimilarityAcceptanceLimit Minimum fraction of clusters that obey the above similarity boundaries
    * @param minChildren          Minimum number of children for each cluster
    * @param singletonMode        Determine how singleton clusters should be treated
    * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
    */
 
   private PostprocessingSettings(ClusteringSettings clusteringSettings, GraphSimilarityMetric similarityMetric,
-                                 double minParentSimilarity, double maxParentSimilarity, double targetParentSimilarity, int minChildren,
-                                 SingletonMode singletonMode, List<Postprocessor> customPostprocessors) {
+                                 double minParentSimilarity, double maxParentSimilarity, double targetParentSimilarity,
+                                 double parentSimilarityAcceptanceLimit, int minChildren, SingletonMode singletonMode,
+                                 List<Postprocessor> customPostprocessors) {
     this.clusteringSettings = clusteringSettings;
     this.similarityMetric = similarityMetric;
     this.minParentSimilarity = minParentSimilarity;
     this.maxParentSimilarity = maxParentSimilarity;
     this.targetParentSimilarity = targetParentSimilarity;
+    this.parentSimilarityAcceptanceLimit = parentSimilarityAcceptanceLimit;
     this.minChildren = minChildren;
     this.singletonMode = singletonMode;
     this.customPostprocessors = customPostprocessors;
@@ -105,6 +109,14 @@ public class PostprocessingSettings {
   }
 
   /**
+   * @return Parent similarity precision
+   */
+
+  public double getParentSimilarityAcceptanceLimit() {
+    return parentSimilarityAcceptanceLimit;
+  }
+
+  /**
    * @return Minimum affiliation of a vertex wrt. to a cluster
    */
 
@@ -157,6 +169,7 @@ public class PostprocessingSettings {
             .append("minParentSimilarity", getMinParentSimilarity())
             .append("maxParentSimilarity", getMaxParentSimilarity())
             .append("targetParentSimilarity", getTargetParentSimilarity())
+            .append("parentSimilarityAcceptanceLimit", getParentSimilarityAcceptanceLimit())
             .append("minClusterSize", getMinClusterSize())
             .append("minChildren", getMinChildren())
             .append("singletonMode", getSingletonMode())
@@ -172,6 +185,7 @@ public class PostprocessingSettings {
     private double minParentSimilarity = 0.05;
     private double maxParentSimilarity = 0.45;
     private double targetParentSimilarity = 0.15;
+    private double parentSimilarityAcceptanceLimit = 0.99;
     private int minChildren = 0;
     private SingletonMode singletonMode = SingletonMode.ASSIMILATE;
 
@@ -234,6 +248,18 @@ public class PostprocessingSettings {
     }
 
     /**
+     * Set the parent similarity acceptance limit. Default is 0.99
+     *
+     * @param limit Minimum fraction of clusters that obey all similarity boundaries
+     * @return this
+     */
+
+    public Builder withParentSimilarityAcceptanceLimit(double limit) {
+      this.parentSimilarityAcceptanceLimit = limit;
+      return this;
+    }
+
+    /**
      * Set Minimum number of children for each cluster. Default is 0
      *
      * @param minChildren Minimum number of children
@@ -277,7 +303,7 @@ public class PostprocessingSettings {
      */
 
     public PostprocessingSettings build() {
-      return new PostprocessingSettings(clusteringSettings, similarityMetric, minParentSimilarity, maxParentSimilarity, targetParentSimilarity, minChildren, singletonMode, customPostprocessors);
+      return new PostprocessingSettings(clusteringSettings, similarityMetric, minParentSimilarity, maxParentSimilarity, targetParentSimilarity, parentSimilarityAcceptanceLimit, minChildren, singletonMode, customPostprocessors);
     }
 
   }

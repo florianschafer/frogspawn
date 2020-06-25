@@ -24,7 +24,7 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
   @Before
   public void setup() {
     MockSimilarityMetric metric = new MockSimilarityMetric();
-    pp = new ParentSimilarityPostprocessor(metric, 0.5, 2, 0.2);
+    pp = new ParentSimilarityPostprocessor(metric, 0.5, 2, 0.2, 0.99);
     root = new Cluster(completeGraph(213));
     root.addToRemainder(IntIterators.wrap(new int[]{0}));
     c1 = new Cluster(root);
@@ -65,6 +65,8 @@ public class ParentSimilarityPostprocessorTest extends GraphTestBase {
       else if (superId == 21 && subId == 211) return 0.1;
       else if (superId == 21 && subId == 212) return 0.6;
       else if (superId == 2 && subId == 211) return 0.1;
+      else if (superId == 0 && subId == 211) return 0.1;
+      else if (superId == 0 && subId == 21) return 0.1;
       else throw new RuntimeException(String.format("Undefined Cluster pair %d/%d", superId, subId));
     }
 

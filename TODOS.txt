@@ -1,7 +1,10 @@
  - Change traverseParallel signature: traverse(..., boolean parallel,...)
+ - Revisit affiliation scoring from a more (solid) statistical pov
  - Provide (idempotent?) postprocessors with a list of clusters that need to be revisited instead of traversing the full tree.
  - Add possibility to let graph builders know the size in advance
+ - Think about the parallel active self-correcting tree model with in-band "postprocessing"
  - Better serialization
+ - Extend parent similarity test to hops > 1
  - Maybe run some initial iterations before checking sigtrail
  - Write some proper math documentation
  - CUDA
