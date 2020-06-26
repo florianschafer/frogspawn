@@ -26,16 +26,16 @@ public class RemainderSizePostprocessor implements Postprocessor {
    * If so, assign its remainder and children to the parent and remove it.
    *
    * @param cluster A cluster. Not necessarily root.
-   * @return true if the underlying cluster has been modified, else false
+   * @return State after applying this postprocessor
    */
 
   @Override
-  public boolean apply(Cluster cluster) {
+  public PostprocessingState apply(Cluster cluster) {
     if (cluster.getRemainder().size() < minClusterSize && cluster.getParent() != null) {
       cluster.getParent().assimilateChild(cluster, true);
-      return true;
+      return PostprocessingState.CHANGED;
     }
-    return false;
+    return PostprocessingState.UNCHANGED;
   }
 
   /**

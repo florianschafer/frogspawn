@@ -1,3 +1,5 @@
+ - Top-level pruning
+ - Add some more tests to changes around parent processing
  - Change traverseParallel signature: traverse(..., boolean parallel,...)
  - Revisit affiliation scoring from a more (solid) statistical pov
  - Provide (idempotent?) postprocessors with a list of clusters that need to be revisited instead of traversing the full tree.

@@ -19,17 +19,17 @@ public class SingletonCollapsingPostprocessor implements Postprocessor {
    * Check whether a cluster is a singleton. If so, assign its remainder and children to the parent and remove it.
    *
    * @param cluster A cluster. Not necessarily root.
-   * @return true if the underlying cluster has been modified, else false
+   * @return State after applying this postprocessor
    */
 
   @Override
-  public boolean apply(Cluster cluster) {
+  public PostprocessingState apply(Cluster cluster) {
     Cluster parent = cluster.getParent();
     if (parent != null && parent.getChildren().size() == 1) {
       parent.assimilateChild(cluster, true);
-      return true;
+      return PostprocessingState.CHANGED;
     } else {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
   }
 

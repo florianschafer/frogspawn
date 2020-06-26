@@ -33,8 +33,8 @@ public class SingletonCollapsingPostprocessorTest {
     childCluster1.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
     Cluster childCluster2 = new Cluster(rootCluster);
     childCluster2.addToRemainder(IntIterators.wrap(new int[]{4, 5, 6}));
-    boolean modified = shaper.apply(childCluster1);
-    assertThat(modified, is(false));
+    PostprocessingState state = shaper.apply(childCluster1);
+    assertThat(state.madeHierarchyChanges(), is(false));
     assertThat(rootCluster.getChildren().size(), is(2));
     assertThat(rootCluster.getRemainder(), is(IntLists.EMPTY_LIST));
     assertThat(childCluster1.getRemainder(), is(new IntArrayList(new int[]{1, 2, 3})));
@@ -48,8 +48,8 @@ public class SingletonCollapsingPostprocessorTest {
     child.addToRemainder(IntIterators.wrap(new int[]{1, 2, 3}));
     Cluster grandchild1 = new Cluster(child);
     Cluster grandchild2 = new Cluster(child);
-    boolean modified = shaper.apply(child);
-    assertThat(modified, is(true));
+    PostprocessingState state = shaper.apply(child);
+    assertThat(state.madeHierarchyChanges(), is(true));
     assertThat(root.getChildren().size(), is(2));
     assertThat(root.getChildren(), containsInAnyOrder(grandchild1, grandchild2));
     assertThat(grandchild1.getParent(), is(root));

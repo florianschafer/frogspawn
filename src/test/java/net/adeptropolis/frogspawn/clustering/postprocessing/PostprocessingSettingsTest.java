@@ -9,6 +9,7 @@ import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.SettingsTestBase;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
@@ -113,8 +114,8 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
   private static class FakeCustomPostprocessor implements Postprocessor {
 
     @Override
-    public boolean apply(Cluster cluster) {
-      return false;
+    public PostprocessingState apply(Cluster cluster) {
+      return PostprocessingState.UNCHANGED;
     }
 
     @Override

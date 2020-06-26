@@ -32,13 +32,13 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
    * Process the queue
    */
 
-  private static boolean processQueue(PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
-    boolean changed = false;
+  private static PostprocessingState processQueue(PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
+    PostprocessingState state = new PostprocessingState();
     while (!queue.isEmpty()) {
       Cluster cluster = queue.poll();
-      changed |= processCluster(cluster, queue, enqueued);
+      state.update(processCluster(cluster, queue, enqueued));
     }
-    return changed;
+    return state;
   }
 
   /**
@@ -61,26 +61,26 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
    * @param cluster Cluster from which to start
    */
 
-  private static boolean processCluster(Cluster cluster, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
+  private static PostprocessingState processCluster(Cluster cluster, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
 
     if (cluster.getParent() == null) {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
 
     Cluster nearestNonTrivialAncestor = findClosestNonTrivialAncestor(cluster);
 
     if (nearestNonTrivialAncestor == null) {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
 
     enqueue(nearestNonTrivialAncestor, queue, enqueued);
 
     if (nearestNonTrivialAncestor.equals(cluster.getParent())) {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
 
     redistributeChain(cluster, nearestNonTrivialAncestor);
-    return true;
+    return PostprocessingState.CHANGED;
   }
 
   /**
@@ -134,10 +134,10 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   /**
    * Apply postprocessing
    *
-   * @return The original root cluster
+   * @return State after applying this postprocessor
    */
 
-  public boolean apply(Cluster root) {
+  public PostprocessingState apply(Cluster root) {
     PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue();
     Set<Cluster> enqueued = new HashSet<>();
     enqueueLeafs(root, queue, enqueued);

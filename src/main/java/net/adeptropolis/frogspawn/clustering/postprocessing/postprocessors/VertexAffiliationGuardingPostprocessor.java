@@ -50,15 +50,15 @@ public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
    * Ensure that all remainder vertices of a cluster fulfil the <code>minVertexAffiliation</code> criterion.
    *
    * @param cluster A cluster. Not necessarily root.
-   * @return true if the cluster has been modified. Otherwise false.
+   * @return State after applying this postprocessor
    */
 
   @Override
-  public boolean apply(Cluster cluster) {
+  public PostprocessingState apply(Cluster cluster) {
 
     Cluster parent = cluster.getParent();
     if (parent == null) {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
 
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
@@ -70,18 +70,18 @@ public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
       if (clusterVertices.size() < minClusterSize) {
         parent.addToRemainder(clusterVertices.iterator());
         parent.assimilateChild(cluster, false);
-        return true;
+        return PostprocessingState.CHANGED;
       } else if (clusterVertices.size() == prevSize) {
         break;
       }
     }
 
     if (clusterVertices.size() == cluster.getRemainder().size()) {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
 
     cluster.setRemainder(new IntArrayList(clusterVertices));
-    return true;
+    return PostprocessingState.CHANGED;
 
   }
 

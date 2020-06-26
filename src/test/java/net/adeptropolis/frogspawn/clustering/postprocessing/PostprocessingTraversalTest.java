@@ -7,6 +7,7 @@ package net.adeptropolis.frogspawn.clustering.postprocessing;
 
 import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.clustering.Cluster;
+import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,28 +34,28 @@ public class PostprocessingTraversalTest {
   @Test
   public void localBTTPostprocessorsWithoutChange() {
     CollectingLocalBTTPostprocessor pp = new CollectingLocalBTTPostprocessor(false);
-    assertThat(PostprocessingTraversal.apply(pp, root), is(false));
+    assertThat(PostprocessingTraversal.apply(pp, root), is(PostprocessingState.UNCHANGED));
     assertThat(pp.getClusters(), contains(c2, c1, root));
   }
 
   @Test
   public void localBTTPostprocessorsWithChange() {
     CollectingLocalBTTPostprocessor pp = new CollectingLocalBTTPostprocessor(true);
-    assertThat(PostprocessingTraversal.apply(pp, root), is(true));
+    assertThat(PostprocessingTraversal.apply(pp, root), is(PostprocessingState.CHANGED));
     assertThat(pp.getClusters(), contains(c2, c1, root));
   }
 
   @Test
   public void globalCustomTraversalPostprocessorsWithoutChange() {
     CollectingGlobalCustomTraversalPostprocessor pp = new CollectingGlobalCustomTraversalPostprocessor(false);
-    assertThat(PostprocessingTraversal.apply(pp, root), is(false));
+    assertThat(PostprocessingTraversal.apply(pp, root), is(PostprocessingState.UNCHANGED));
     assertThat(pp.getClusters(), contains(root));
   }
 
   @Test
   public void globalCustomTraversalPostprocessorsWithChange() {
     CollectingGlobalCustomTraversalPostprocessor pp = new CollectingGlobalCustomTraversalPostprocessor(true);
-    assertThat(PostprocessingTraversal.apply(pp, root), is(true));
+    assertThat(PostprocessingTraversal.apply(pp, root), is(PostprocessingState.CHANGED));
     assertThat(pp.getClusters(), contains(root));
   }
 
@@ -69,19 +70,19 @@ public class PostprocessingTraversalTest {
     }
 
     @Override
-    public boolean apply(Cluster cluster) {
+    public PostprocessingState apply(Cluster cluster) {
       clusters.add(cluster);
-      return reportChanges;
-    }
-
-    @Override
-    public TreeTraversalMode traversalMode() {
-      return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
+      return new PostprocessingState(reportChanges);
     }
 
     @Override
     public boolean compromisesVertexAffinity() {
       return false;
+    }
+
+    @Override
+    public TreeTraversalMode traversalMode() {
+      return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
     }
 
     @Override
@@ -106,9 +107,9 @@ public class PostprocessingTraversalTest {
     }
 
     @Override
-    public boolean apply(Cluster cluster) {
+    public PostprocessingState apply(Cluster cluster) {
       clusters.add(cluster);
-      return reportChanges;
+      return new PostprocessingState(reportChanges);
     }
 
     @Override

@@ -5,12 +5,18 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors;
 
+import java.util.Objects;
+
 /**
  * Simple storage class for the state of a postprocessor
  *
  */
 
 public class PostprocessingState {
+
+  public static final PostprocessingState CHANGED = new PostprocessingState(true);
+  public static final PostprocessingState UNCHANGED = new PostprocessingState(false);
+  public static final PostprocessingState UNCHANGED_WITH_GUARD = new PostprocessingState(true);
 
   private boolean madeHierarchyChanges;
   private boolean forceQualityGuard;
@@ -73,4 +79,17 @@ public class PostprocessingState {
     return this;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PostprocessingState state = (PostprocessingState) o;
+    return madeHierarchyChanges == state.madeHierarchyChanges &&
+            forceQualityGuard == state.forceQualityGuard;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(madeHierarchyChanges, forceQualityGuard);
+  }
 }

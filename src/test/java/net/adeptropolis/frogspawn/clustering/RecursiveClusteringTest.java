@@ -16,6 +16,7 @@ import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;

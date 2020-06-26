@@ -71,9 +71,9 @@ public class Playground {
             .build();
 
     PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
-//            .withMinParentSimilarity(0.1)
-//            .withMaxParentSimilarity(0.38)
-//            .withParentSimilarityAcceptanceLimit(0.95)
+            .withMinParentSimilarity(0.1)
+            .withMaxParentSimilarity(0.3)
+            .withParentSimilarityAcceptanceLimit(0.98)
             .build();
 
     Postprocessing.apply(root, postprocessingSettings);
