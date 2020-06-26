@@ -1,8 +1,10 @@
 # Frogspawn Changelog
 
-## v1.1.x
+## v1.2.0
 
     - Improved parent similarity postfiltering
+    - New postprocessing setting `parentSimilarityAcceptanceLimit` makes the acceptance threshold accseeible
+    - Much faster ncut similarity metric
 
 ## v1.1.0
 
