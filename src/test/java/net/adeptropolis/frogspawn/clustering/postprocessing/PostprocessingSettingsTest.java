@@ -9,6 +9,7 @@ import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.SettingsTestBase;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
@@ -32,6 +33,8 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
             .withSimilarityMetric(new FakeSimilarityMetric())
             .withMinParentSimilarity(0.2718)
             .withMaxParentSimilarity(3.1415)
+            .withTargetParentSimilarity(1.0 / 3)
+            .withParentSimilarityAcceptanceLimit(1.0 / 8)
             .withSingletonMode(SingletonMode.REDISTRIBUTE)
             .build();
   }
@@ -43,8 +46,10 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
     assertThat(defaultSettings.getVertexAffiliationMetric(), instanceOf(RelativeWeightVertexAffiliationMetric.class));
     assertThat(defaultSettings.getMinVertexAffiliation(), closeTo(0.1, 1E-6));
     assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));
-    assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.075, 1E-9));
-    assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.35, 1E-9));
+    assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.05, 1E-9));
+    assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.45, 1E-9));
+    assertThat(defaultSettings.getTargetParentSimilarity(), closeTo(0.15, 1E-9));
+    assertThat(defaultSettings.getParentSimilarityAcceptanceLimit(), closeTo(0.99, 1E-9));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMinChildren(), is(0));
     assertThat(defaultSettings.getSingletonMode(), is(ASSIMILATE));
@@ -77,6 +82,16 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
   }
 
   @Test
+  public void targetParentSimilarity() {
+    assertThat(postprocessingSettings.getTargetParentSimilarity(), closeTo(1.0 / 3, 1E-9));
+  }
+
+  @Test
+  public void parentSimilarityCompletionThreshold() {
+    assertThat(postprocessingSettings.getParentSimilarityAcceptanceLimit(), closeTo(1.0 / 8, 1E-9));
+  }
+
+  @Test
   public void minClusterSize() {
     assertThat(postprocessingSettings.getMinClusterSize(), is(4242));
   }
@@ -99,8 +114,8 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
   private static class FakeCustomPostprocessor implements Postprocessor {
 
     @Override
-    public boolean apply(Cluster cluster) {
-      return false;
+    public PostprocessingState apply(Cluster cluster) {
+      return PostprocessingState.UNCHANGED;
     }
 
     @Override

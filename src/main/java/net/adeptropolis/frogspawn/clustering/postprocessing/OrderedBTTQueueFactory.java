@@ -41,7 +41,7 @@ public class OrderedBTTQueueFactory {
    * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
    */
 
-  static PriorityQueue<Cluster> queue(Cluster root) {
+  public static PriorityQueue<Cluster> queue(Cluster root) {
     PriorityQueue<Cluster> queue = queue();
     root.traverse(queue::add);
     return queue;

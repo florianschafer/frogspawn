@@ -6,10 +6,7 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
-import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
-import net.adeptropolis.frogspawn.graphs.traversal.ParallelVertexOps;
-import net.adeptropolis.frogspawn.graphs.traversal.VertexConsumer;
+import net.adeptropolis.frogspawn.graphs.traversal.*;
 
 /**
  * <p>A weighted graph supporting all basic operations required in this context, i.e.</p>
@@ -72,9 +69,10 @@ public abstract class Graph {
    *
    * @param v        (Local!) vertex id of the endpoint
    * @param consumer Instance of EdgeConsumer
+   * @param mode     Traversal mode
    */
 
-  public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer);
+  public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode);
 
   /**
    * Parallel traversal over all edges of the graph
@@ -83,7 +81,18 @@ public abstract class Graph {
    */
 
   public void traverseParallel(EdgeConsumer consumer) {
-    ParallelEdgeOps.traverse(this, consumer);
+    traverseParallel(consumer, TraversalMode.DEFAULT);
+  }
+
+  /**
+   * Parallel traversal over all edges of the graph using a given traversal mode
+   *
+   * @param consumer Instance of EdgeConsumer
+   * @param mode     Traversal mode
+   */
+
+  public void traverseParallel(EdgeConsumer consumer, TraversalMode mode) {
+    ParallelEdgeOps.traverse(this, consumer, mode);
   }
 
   /**

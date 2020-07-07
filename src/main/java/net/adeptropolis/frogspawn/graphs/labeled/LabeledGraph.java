@@ -7,6 +7,8 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 
 import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
 
+import java.io.Serializable;
+
 /**
  * A labeled graph.
  * <p>
@@ -17,7 +19,9 @@ import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
  * @param <V> Label type
  */
 
-public class LabeledGraph<V> {
+public class LabeledGraph<V extends Serializable> implements Serializable {
+
+  static final long serialVersionUID = 7802023886873266825L;
 
   private final CompressedSparseGraph graph;
   private final V[] labels;
@@ -29,7 +33,7 @@ public class LabeledGraph<V> {
    * @param labels Array of labels, indexed by vertex id
    */
 
-  public LabeledGraph(CompressedSparseGraph graph, V[] labels) {
+  LabeledGraph(CompressedSparseGraph graph, V[] labels) {
     this.graph = graph;
     this.labels = labels;
   }

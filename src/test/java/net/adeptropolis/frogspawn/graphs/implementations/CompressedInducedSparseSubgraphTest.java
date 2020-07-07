@@ -12,9 +12,12 @@ import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -114,7 +117,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   @Test
   public void traverseBAdjacent() {
     Graph graph = defaultSubgraph(1, 2, 4, 9, 11);
-    graph.traverseIncidentEdges(graph.localVertexId(4), consumer);
+    graph.traverseIncidentEdges(graph.localVertexId(4), consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(graph.localVertexId(4), graph.localVertexId(9), 5),
             Edge.of(graph.localVertexId(4), graph.localVertexId(11), 11)
@@ -131,7 +134,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
             .add(1, 11, 11)
             .build();
     Graph sub = subgraph(graph, 1, 2, 5);
-    sub.traverseIncidentEdges(sub.localVertexId(1), consumer);
+    sub.traverseIncidentEdges(sub.localVertexId(1), consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges(), containsInAnyOrder(
             Edge.of(sub.localVertexId(1), sub.localVertexId(2), 3),
             Edge.of(sub.localVertexId(1), sub.localVertexId(5), 7)
@@ -140,14 +143,14 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
 
   @Test
   public void traverseUndef() {
-    defaultSubgraph(0, 1).traverseIncidentEdges(-1, consumer);
+    defaultSubgraph(0, 1).traverseIncidentEdges(-1, consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges().size(), is(0));
   }
 
   @Test
   public void traverseEmpty() {
     Graph graph = defaultSubgraph(0, 1, 2, 3);
-    graph.traverseIncidentEdges(3, consumer);
+    graph.traverseIncidentEdges(3, consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges().size(), is(0));
   }
 
@@ -169,6 +172,21 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
     assertThat(it.localId(), equalTo(1));
     assertThat(it.globalId(), equalTo(10));
 
+  }
+
+  @Test
+  public void lowerTriangularTraversal() {
+    Graph graph = completeGraph(150)
+            .inducedSubgraph(IntIterators.fromTo(0, 140));
+    CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
+    graph.traverseParallel(consumer, TraversalMode.LOWER_TRIANGULAR);
+    assertThat(consumer.getEdges(), hasSize(70 * 139));
+    Set<Edge> edges = new HashSet<>(consumer.getEdges());
+    for (int i = 0; i < 140; i++) {
+      for (int j = 0; j < i; j++) {
+        assertThat(edges, hasItem(Edge.of(i, j, 1)));
+      }
+    }
   }
 
 }

@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 
 /**
@@ -17,7 +18,7 @@ import java.lang.reflect.Array;
  * @param <V> Label type
  */
 
-public class LabeledGraphBuilder<V> {
+public class LabeledGraphBuilder<V extends Serializable> {
 
   private final Object2IntOpenHashMap<V> vertexMap;
   private final CompressedSparseGraphBuilder builder;

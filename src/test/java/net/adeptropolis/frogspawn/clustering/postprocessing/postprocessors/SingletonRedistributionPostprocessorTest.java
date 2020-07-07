@@ -25,8 +25,9 @@ public class SingletonRedistributionPostprocessorTest {
   public void noNonTrivialClusters() {
     Cluster root = new Cluster((Graph) null);
     Cluster c1 = new Cluster(root);
-    boolean changed = new SingletonRedistributionPostprocessor().apply(root);
-    assertThat(changed, is(false));
+    PostprocessingState state = new SingletonRedistributionPostprocessor().apply(root);
+    assertThat(state.madeHierarchyChanges(), is(false));
+    assertThat(state.forceQualityGuard(), is(false));
     assertThat(root.getChildren(), containsInAnyOrder(c1));
   }
 
@@ -40,8 +41,9 @@ public class SingletonRedistributionPostprocessorTest {
     Cluster c211 = new Cluster(c21);
     Cluster c2111 = new Cluster(c211);
     Cluster c2112 = new Cluster(c211);
-    boolean changed = new SingletonRedistributionPostprocessor().apply(root);
-    assertThat(changed, is(true));
+    PostprocessingState state = new SingletonRedistributionPostprocessor().apply(root);
+    assertThat(state.madeHierarchyChanges(), is(true));
+    assertThat(state.forceQualityGuard(), is(false));
     assertThat(root.getChildren(), containsInAnyOrder(c1, c11, c2, c21, c211));
     assertThat(c1.getChildren(), empty());
     assertThat(c11.getChildren(), empty());

@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.io.Serializable;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -17,13 +18,13 @@ import java.util.stream.LongStream;
  * A big (i.e. long-indexed) array of ints.
  */
 
-public class BigInts implements LongComparator, BigSwapper {
+public class BigInts implements LongComparator, BigSwapper, Serializable {
 
-  static final int BIN_BITS = 17;
+  public static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;
   private static final long GROWTH_FACTOR = 2L;
 
-  private int[][] data = null;
+  private int[][] data;
   private long size = 0;
 
   /**
@@ -134,7 +135,6 @@ public class BigInts implements LongComparator, BigSwapper {
   public int compare(long idx1, long idx2) {
     return Integer.compare(get(idx1), get(idx2));
   }
-
 
   /**
    * Swap values between two indices

@@ -87,13 +87,13 @@ public class VertexAffiliationGuardingPostprocessorTest {
   @Test
   public void ignoreRootCluster() {
     postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 10, 0.5);
-    assertThat(postprocessor.apply(c0), is(false));
+    assertThat(postprocessor.apply(c0), is(PostprocessingState.UNCHANGED));
   }
 
   @Test
   public void noVertexFulfilsAffiliationCriterion() {
     postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 10000, 1.0);
-    assertThat(postprocessor.apply(c678), is(true));
+    assertThat(postprocessor.apply(c678), is(PostprocessingState.CHANGED));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c5.getParent(), is(c4));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
@@ -102,7 +102,7 @@ public class VertexAffiliationGuardingPostprocessorTest {
   @Test
   public void allVerticesFulfilAffiliationCriterion() {
     postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 1, 0.0);
-    assertThat(postprocessor.apply(c678), is(false));
+    assertThat(postprocessor.apply(c678), is(PostprocessingState.UNCHANGED));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4));
   }
@@ -110,7 +110,7 @@ public class VertexAffiliationGuardingPostprocessorTest {
   @Test
   public void someVerticesFallBelowAffiliationScore() {
     postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 1, 0.27);
-    assertThat(postprocessor.apply(c678), is(true));
+    assertThat(postprocessor.apply(c678), is(PostprocessingState.CHANGED));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6));
     assertThat(c678.getRemainder(), containsInAnyOrder(7, 8));
@@ -119,7 +119,7 @@ public class VertexAffiliationGuardingPostprocessorTest {
   @Test
   public void numberOfVerticesFulfillingAffiliationScoreBelowMinClusterSize() {
     postprocessor = new VertexAffiliationGuardingPostprocessor(metric, 3, 0.27);
-    assertThat(postprocessor.apply(c678), is(true));
+    assertThat(postprocessor.apply(c678), is(PostprocessingState.CHANGED));
     assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
   }

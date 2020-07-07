@@ -1,6 +1,14 @@
+ - Top-level pruning
+ - Change traverseParallel signature: traverse(..., boolean parallel,...)
+ - Revisit affiliation scoring from a more (solid) statistical pov
+ - Provide (idempotent?) postprocessors with a list of clusters that need to be revisited instead of traversing the full tree.
+ - Add possibility to let graph builders know the size in advance
+ - Think about the parallel active self-correcting tree model with in-band "postprocessing"
+ - Better serialization
+ - Extend parent similarity test to hops > 1
  - Maybe run some initial iterations before checking sigtrail
- - Explore optimization (early termination) potential w. regards to min size in combination with singleton collapsing
  - Write some proper math documentation
  - CUDA
  - Check whether it makes sense to replace custom big array with fastutil's
  - Measure amount of noise during Power iteration
+ - Add some more tests to changes around parent processing

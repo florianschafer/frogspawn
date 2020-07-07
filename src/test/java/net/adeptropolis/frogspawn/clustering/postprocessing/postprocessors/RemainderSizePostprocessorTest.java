@@ -54,7 +54,7 @@ public class RemainderSizePostprocessorTest extends GraphTestBase {
 
   @Test
   public void lowMinSizeHasNoEffect() {
-    assertThat(new RemainderSizePostprocessor(1).apply(c12), is(false));
+    assertThat(new RemainderSizePostprocessor(1).apply(c12), is(PostprocessingState.UNCHANGED));
     assertThat(c1.getChildren(), containsInAnyOrder(c11, c12));
     assertThat(c1.getRemainder(), is(C1_VERTICES));
     assertThat(c12.getChildren(), containsInAnyOrder(c121));
@@ -63,7 +63,7 @@ public class RemainderSizePostprocessorTest extends GraphTestBase {
 
   @Test
   public void mergeOneCluster() {
-    assertThat(new RemainderSizePostprocessor(3).apply(c12), is(true));
+    assertThat(new RemainderSizePostprocessor(3).apply(c12), is(PostprocessingState.CHANGED));
     assertThat(c1.getChildren(), containsInAnyOrder(c11, c121));
     assertThat(c1.getRemainder(), is(IntArrayList.wrap(new int[]{1, 2, 3, 7, 8})));
   }

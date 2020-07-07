@@ -74,7 +74,12 @@ public class Postprocessing {
     queue.addLast(new RemainderSizePostprocessor(settings.getMinClusterSize()));
 
     if (settings.getMinParentSimilarity() > 0 || settings.getMaxParentSimilarity() < 1) {
-      queue.addLast(new ParentSimilarityPostprocessor(settings.getSimilarityMetric(), settings.getMinParentSimilarity(), settings.getMaxParentSimilarity()));
+      queue.addLast(new ParentSimilarityPostprocessor(
+              settings.getSimilarityMetric(),
+              settings.getMinParentSimilarity(),
+              settings.getMaxParentSimilarity(),
+              settings.getTargetParentSimilarity(),
+              settings.getParentSimilarityAcceptanceLimit()));
     }
 
     if (settings.getMinChildren() > 0) {
@@ -129,18 +134,21 @@ public class Postprocessing {
   private boolean applyPostprocessor(Postprocessor postprocessor) {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    boolean didMakeChanges = PostprocessingTraversal.apply(postprocessor, rootCluster);
+
+    PostprocessingState state = PostprocessingTraversal.apply(postprocessor, rootCluster);
     stopWatch.stop();
-    LOG.debug("{} finished after {} {} changes", postprocessor.getClass().getSimpleName(), stopWatch, didMakeChanges ? "with" : "without");
-    if (didMakeChanges) {
+    LOG.debug("{} finished after {} {} changes", postprocessor.getClass().getSimpleName(), stopWatch, state.madeHierarchyChanges() ? "with" : "without");
+    if (state.madeHierarchyChanges()) {
       if (postprocessor.requiresIdempotency()) {
         queue.addFirst(postprocessor);
       }
       if (postprocessor.compromisesVertexAffinity()) {
         queue.addFirst(affiliationGuardingPostprocessor);
       }
+    } else if (state.forceQualityGuard() /* as in "anyway" */) {
+      queue.addFirst(affiliationGuardingPostprocessor);
     }
-    return didMakeChanges;
+    return state.madeHierarchyChanges();
   }
 
 }

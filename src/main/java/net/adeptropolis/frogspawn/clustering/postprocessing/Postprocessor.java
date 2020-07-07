@@ -6,6 +6,7 @@
 package net.adeptropolis.frogspawn.clustering.postprocessing;
 
 import net.adeptropolis.frogspawn.clustering.Cluster;
+import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 
 /**
  * Cluster hierarchy postprocessor
@@ -18,10 +19,10 @@ public interface Postprocessor {
    * Impose a particular structure upon the current cluster or change its place in the cluster tree
    *
    * @param cluster A cluster. Not necessarily root.
-   * @return true if the underlying cluster has been modified, else false
+   * @return Post-postprocessing state
    */
 
-  boolean apply(Cluster cluster);
+  PostprocessingState apply(Cluster cluster);
 
   /**
    * Return the designated cluster tree traversal mode that this postprocessor is using. Possible values:

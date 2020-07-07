@@ -6,6 +6,7 @@
 package net.adeptropolis.frogspawn.clustering.postprocessing;
 
 import net.adeptropolis.frogspawn.clustering.Cluster;
+import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 
 import java.util.PriorityQueue;
 
@@ -23,10 +24,10 @@ public class PostprocessingTraversal {
    *
    * @param postprocessor Postprocessor to use
    * @param rootCluster   Root cluster
-   * @return <code>true</code> if the cluster hierarchy has been changed. <code>false</code> otherwise.
+   * @return State state after running this postprocessor
    */
 
-  public static boolean apply(Postprocessor postprocessor, Cluster rootCluster) {
+  public static PostprocessingState apply(Postprocessor postprocessor, Cluster rootCluster) {
     switch (postprocessor.traversalMode()) {
       case LOCAL_BOTTOM_TO_TOP:
         return processQueueBTT(postprocessor, rootCluster);
@@ -41,19 +42,17 @@ public class PostprocessingTraversal {
    * Process the cluster queue using a given local postprocessor in bottom-to-top mode
    *
    * @param postprocessor Postprocessor
-   * @return true if the cluster hierarchy has been changed, else false
+   * @return State after running this postprocessor
    */
 
-  private static boolean processQueueBTT(Postprocessor postprocessor, Cluster rootCluster) {
+  private static PostprocessingState processQueueBTT(Postprocessor postprocessor, Cluster rootCluster) {
     PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
-    boolean changed = false;
+    PostprocessingState state = new PostprocessingState();
     while (!queue.isEmpty()) {
       Cluster cluster = queue.poll();
-      if (rootCluster.aggregateClusters().contains(cluster)) {
-        changed |= postprocessor.apply(cluster);
-      }
+      state.update(postprocessor.apply(cluster));
     }
-    return changed;
+    return state;
   }
 
 

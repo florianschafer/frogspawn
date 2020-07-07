@@ -32,24 +32,24 @@ public class DescendantCollapsingPostprocessor implements Postprocessor {
    * yields the min required number of children.
    *
    * @param cluster A cluster. Not necessarily root.
-   * @return true if the underlying cluster has been modified, else false
+   * @return State after applying this postprocessor
    */
 
   @Override
-  public boolean apply(Cluster cluster) {
+  public PostprocessingState apply(Cluster cluster) {
 
     if (cluster.getParent() == null || cluster.getParent().getParent() == null) {
-      return false;
+      return PostprocessingState.UNCHANGED;
     }
 
     Cluster grandparent = cluster.getParent().getParent();
 
     if (grandparent.getChildren().size() < minChildren) {
       grandparent.annex(cluster);
-      return true;
+      return PostprocessingState.CHANGED;
     }
 
-    return false;
+    return PostprocessingState.UNCHANGED;
 
   }
 

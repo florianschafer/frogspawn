@@ -12,7 +12,9 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.InterpolationSearch;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,7 +24,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * The edge set is restricted to those edges where both endpoints are members of the given vertex set.</p>
  */
 
-public class CompressedInducedSparseSubgraph extends Graph {
+public class CompressedInducedSparseSubgraph extends Graph implements Serializable {
+
+  static final long serialVersionUID = 1332295543424708677L;
 
   private final CompressedSparseGraphDatastore datastore;
   private final int[] vertices;
@@ -99,7 +103,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
 
   @Override
   public void traverseParallel(EdgeConsumer consumer) {
-    ParallelEdgeOps.traverse(this, consumer);
+    ParallelEdgeOps.traverse(this, consumer, TraversalMode.DEFAULT);
   }
 
   /**
@@ -107,7 +111,7 @@ public class CompressedInducedSparseSubgraph extends Graph {
    */
 
   @Override
-  public void traverseIncidentEdges(int v, EdgeConsumer consumer) {
+  public void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode) {
 
     if (order() == 0 || v < 0) {
       return;
@@ -123,9 +127,9 @@ public class CompressedInducedSparseSubgraph extends Graph {
     }
 
     if (order() > high - low) {
-      traverseByAdjacent(v, consumer, low, high);
+      traverseByAdjacent(v, consumer, low, high, mode);
     } else {
-      traverseByVertices(v, consumer, low, high);
+      traverseByVertices(v, consumer, low, high, mode);
     }
   }
 
@@ -154,17 +158,27 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * @param consumer     An instance of <code>EdgeConsumer</code>
    * @param low          Initial edge pointer
    * @param high         Maximum edge pointer (exclusive!)
+   * @param mode         Traversal mode
    */
 
-  private void traverseByAdjacent(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {
+  private void traverseByAdjacent(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high, TraversalMode mode) {
+
     int secPtr = 0;
     int rightEndpoint;
+
     for (long ptr = low; ptr < high; ptr++) {
+
       rightEndpoint = InterpolationSearch.search(vertices, datastore.edges.get(ptr), secPtr, order() - 1);
+
+      if (mode == TraversalMode.LOWER_TRIANGULAR && leftEndpoint < rightEndpoint) {
+        break;
+      }
+
       if (rightEndpoint >= 0) {
         consumer.accept(leftEndpoint, rightEndpoint, datastore.weights.get(ptr));
         secPtr = rightEndpoint + 1;
       }
+
       if (secPtr >= order()) break;
     }
   }
@@ -176,17 +190,27 @@ public class CompressedInducedSparseSubgraph extends Graph {
    * @param consumer     An instance of <code>EdgeConsumer</code>
    * @param low          Initial edge pointer
    * @param high         Maximum edge pointer (exclusive!)
+   * @param mode         Traversal mode
    */
 
-  private void traverseByVertices(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high) {
+  private void traverseByVertices(final int leftEndpoint, final EdgeConsumer consumer, final long low, final long high, TraversalMode mode) {
+
     long ptr = low;
     long retrievedIdx;
+
     for (int i = 0; i < order(); i++) {
+
+      if (mode == TraversalMode.LOWER_TRIANGULAR && leftEndpoint < i) {
+        break;
+      }
+
       retrievedIdx = InterpolationSearch.search(datastore.edges, vertices[i], ptr, high - 1);
+
       if (retrievedIdx >= 0 && retrievedIdx < high) {
         consumer.accept(leftEndpoint, i, datastore.weights.get(retrievedIdx));
         ptr = retrievedIdx + 1;
       }
+
       if (ptr >= high) break;
     }
   }

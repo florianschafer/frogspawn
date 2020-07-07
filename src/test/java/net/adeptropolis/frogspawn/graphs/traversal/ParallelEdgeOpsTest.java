@@ -14,6 +14,8 @@ import org.hamcrest.Matchers;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -32,7 +34,7 @@ public class ParallelEdgeOpsTest extends GraphTestBase {
   @Test
   public void emptyGraph() {
     CompressedSparseGraph graph = CompressedSparseGraph.builder().build();
-    ParallelEdgeOps.traverse(graph, consumer);
+    ParallelEdgeOps.traverse(graph, consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges(), is(empty()));
   }
 
@@ -41,7 +43,7 @@ public class ParallelEdgeOpsTest extends GraphTestBase {
     CompressedSparseGraph graph = CompressedSparseGraph.builder()
             .add(2, 3, 3.14)
             .build();
-    ParallelEdgeOps.traverse(graph, consumer);
+    ParallelEdgeOps.traverse(graph, consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges(), hasSize(2));
     MatcherAssert.assertThat(consumer.getEdges(), Matchers.containsInAnyOrder(
             Edge.of(2, 3, 3.14),
@@ -52,6 +54,14 @@ public class ParallelEdgeOpsTest extends GraphTestBase {
   public void largeBandedGraph() {
     Graph graph = bandedGraph(20000, 100);
     assertThat("Fingerprint mismatch", traverseFingerprint(graph), is(bandedGraphFingerprint(20000, 100)));
+  }
+
+  @Test
+  public void lowerTriangularTraversal() {
+    Graph graph = completeGraph(150);
+    AtomicInteger edgeCount = new AtomicInteger();
+    ParallelEdgeOps.traverse(graph, (u, v, weight) -> edgeCount.incrementAndGet(), TraversalMode.LOWER_TRIANGULAR);
+    assertThat(edgeCount.get(), is(75 * 149));
   }
 
 }

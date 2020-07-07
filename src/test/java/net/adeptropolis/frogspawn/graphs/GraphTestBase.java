@@ -10,6 +10,7 @@ import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Before;
 
 import java.util.ArrayList;
@@ -290,7 +291,7 @@ public class GraphTestBase {
   protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
   private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
-  protected static Graph completeGraph(int size) {
+  protected static CompressedSparseGraph completeGraph(int size) {
     CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder(0);
     for (int i = 0; i < size; i++) {
       for (int j = i + 1; j < size; j++) {
@@ -379,7 +380,7 @@ public class GraphTestBase {
   }
 
   protected long traverseFingerprint(Graph graph) {
-    ParallelEdgeOps.traverse(graph, fingerprintingConsumer);
+    ParallelEdgeOps.traverse(graph, fingerprintingConsumer, TraversalMode.DEFAULT);
     return fingerprintingConsumer.getFingerprint();
   }
 
