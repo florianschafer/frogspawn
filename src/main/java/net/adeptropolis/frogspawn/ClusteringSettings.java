@@ -125,7 +125,7 @@ public class ClusteringSettings {
             .append("minClusterSize", minClusterSize)
             .append("trailSize", trailSize)
             .append("convergenceThreshold", convergenceThreshold)
-            .append("maxIterations", convergenceThreshold)
+            .append("maxIterations", maxIterations)
             .append("randomSeed", randomSeed)
             .build();
   }
