@@ -69,7 +69,7 @@ public class ConnectedComponents implements EdgeConsumer {
     while (!remaining.isEmpty()) {
       int i = remaining.removeFirstInt();
       processComponent(i);
-      Graph subgraph = graph.localInducedSubgraph(component.iterator());
+      Graph subgraph = graph.localSubgraph(component.iterator());
       consumer.accept(subgraph);
       comps++;
       remaining.removeAll(component);

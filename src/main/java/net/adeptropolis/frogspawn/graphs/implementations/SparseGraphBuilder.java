@@ -22,9 +22,9 @@ import org.slf4j.LoggerFactory;
  * number of (not necessarily unique or sorted) weighted edge triples.</p>
  */
 
-public class CompressedSparseGraphBuilder implements Graph.Builder {
+public class SparseGraphBuilder implements Graph.Builder {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CompressedSparseGraphBuilder.class.getSimpleName());
+  private static final Logger LOG = LoggerFactory.getLogger(SparseGraphBuilder.class.getSimpleName());
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
   private final double minWeight;
@@ -39,7 +39,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    * @param minWeight Minimum edge weight. Weights below this value cause a <code>GraphConstructionException</code>
    */
 
-  public CompressedSparseGraphBuilder(double minWeight) {
+  public SparseGraphBuilder(double minWeight) {
     this.minWeight = minWeight;
   }
 
@@ -47,7 +47,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    * Default Constructor
    */
 
-  public CompressedSparseGraphBuilder() {
+  public SparseGraphBuilder() {
     this(1d);
   }
 
@@ -62,7 +62,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
 
   @Override
   @SuppressWarnings("squid:S2234")
-  public CompressedSparseGraphBuilder add(int u, int v, double weight) {
+  public SparseGraphBuilder add(int u, int v, double weight) {
     addDirected(u, v, weight);
     if (u != v) addDirected(v, u, weight);
     return this;
@@ -122,9 +122,9 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    */
 
   @Override
-  public CompressedSparseGraph build() {
-    CompressedSparseGraphDatastore datastore = buildDatastore();
-    return new CompressedSparseGraph(datastore);
+  public SparseGraph build() {
+    CSRDatastore datastore = buildDatastore();
+    return new SparseGraph(datastore);
   }
 
   /**
@@ -135,11 +135,11 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
    */
 
   @VisibleForTesting
-  CompressedSparseGraphDatastore buildDatastore() {
+  CSRDatastore buildDatastore() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     if (ptr == 0L) {
-      return new CompressedSparseGraphDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
+      return new CSRDatastore(0, 0, new long[0], new BigInts(0), new BigDoubles(0));
     }
     sort();
     reduce();
@@ -148,7 +148,7 @@ public class CompressedSparseGraphBuilder implements Graph.Builder {
     long[] pointers = computePointers(graphSize);
     stopWatch.stop();
     LOG.info("Finished building graph with {} vertices and {} edges in {}", graphSize, ptr, stopWatch);
-    return new CompressedSparseGraphDatastore(graphSize, ptr, pointers, edges[1], weights);
+    return new CSRDatastore(graphSize, ptr, pointers, edges[1], weights);
   }
 
   /**

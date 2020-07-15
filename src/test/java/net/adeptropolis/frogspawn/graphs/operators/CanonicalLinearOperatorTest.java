@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.graphs.operators;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,7 +26,7 @@ public class CanonicalLinearOperatorTest {
 
   @Test
   public void subset() {
-    double[] y = new CanonicalLinearOperator(defaultGraph().inducedSubgraph(IntIterators.wrap(new int[]{0, 2})))
+    double[] y = new CanonicalLinearOperator(defaultGraph().subgraph(IntIterators.wrap(new int[]{0, 2})))
             .apply(new double[]{29, 31});
     assertThat(y[0], is(213.0));
     assertThat(y[1], is(548.0));
@@ -46,7 +46,7 @@ public class CanonicalLinearOperatorTest {
   }
 
   private Graph defaultGraph() {
-    return new CompressedSparseGraphBuilder()
+    return new SparseGraphBuilder()
             .add(0, 0, 2)
             .add(0, 1, 3)
             .add(0, 2, 5)

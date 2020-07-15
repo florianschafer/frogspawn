@@ -6,14 +6,16 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import com.google.common.collect.Lists;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Before;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
@@ -34,7 +36,7 @@ public class GraphTestBase {
   12138   12481   12119    9832    9538   10501   11600    9946   11297   12258
   15711   13251   14730   13177   11418   12332   14138   11200   12258   16689
 */
-  protected static final CompressedSparseGraph SOME_10_GRAPH = new CompressedSparseGraphBuilder(0)
+  protected static final SparseGraph SOME_10_GRAPH = new SparseGraphBuilder(0)
           .add(0, 0, 17866).add(0, 1, 13573).add(0, 2, 14616).add(0, 3, 14119)
           .add(0, 4, 11685).add(0, 5, 11997).add(0, 6, 11950).add(0, 7, 11850)
           .add(0, 8, 12138).add(0, 9, 15711)
@@ -55,7 +57,7 @@ public class GraphTestBase {
           .add(9, 9, 16689)
           .build();
 
-  protected static final CompressedSparseGraph WEIGHTED_K20 = new CompressedSparseGraphBuilder(0)
+  protected static final SparseGraph WEIGHTED_K20 = new SparseGraphBuilder(0)
           .add(0, 1, 1.369954183236944)
           .add(0, 2, 0.88293973597774766)
           .add(0, 3, 1.2891515898654977)
@@ -248,7 +250,7 @@ public class GraphTestBase {
           .add(18, 19, 0.96629282147179674)
           .build();
 
-  protected final Graph EIGEN_REF_GRAPH = new CompressedSparseGraphBuilder(0)
+  protected final Graph EIGEN_REF_GRAPH = new SparseGraphBuilder(0)
           .add(0, 1, 1)
           .add(0, 4, 1)
           .add(1, 2, 1)
@@ -259,7 +261,7 @@ public class GraphTestBase {
           .add(4, 5, 1)
           .build();
 
-  protected final Graph SOME_BIPARTITE_GRAPH = new CompressedSparseGraphBuilder(0)
+  protected final Graph SOME_BIPARTITE_GRAPH = new SparseGraphBuilder(0)
           .add(0, 1, 2)
           .add(0, 3, 3)
           .add(0, 4, 11)
@@ -268,7 +270,7 @@ public class GraphTestBase {
           .add(2, 5, 13)
           .build();
 
-  protected final Graph K43 = new CompressedSparseGraphBuilder(0)
+  protected final Graph K43 = new SparseGraphBuilder(0)
           .add(0, 1, 5)
           .add(0, 3, 11)
           .add(0, 5, 17)
@@ -283,7 +285,7 @@ public class GraphTestBase {
           .add(5, 6, 83)
           .build();
 
-  protected final Graph K12 = new CompressedSparseGraphBuilder(0)
+  protected final Graph K12 = new SparseGraphBuilder(0)
           .add(0, 1, 2)
           .add(0, 2, 3)
           .build();
@@ -291,8 +293,8 @@ public class GraphTestBase {
   protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
   private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
-  protected static CompressedSparseGraph completeGraph(int size) {
-    CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder(0);
+  protected static SparseGraph completeGraph(int size) {
+    SparseGraphBuilder b = new SparseGraphBuilder(0);
     for (int i = 0; i < size; i++) {
       for (int j = i + 1; j < size; j++) {
         b.add(i, j, 1);
@@ -308,7 +310,7 @@ public class GraphTestBase {
   }
 
   protected Graph bandedGraph(int n, int k) {
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder(0);
+    SparseGraphBuilder builder = new SparseGraphBuilder(0);
     for (int i = 0; i < n; i++) {
       for (int j = i + 1; j < Math.min(i + k, n); j++) {
         builder.add(i, j, 2 * i + 3 * j);
@@ -318,7 +320,7 @@ public class GraphTestBase {
   }
 
   protected Graph butterflyGraph() {
-    return new CompressedSparseGraphBuilder(0)
+    return new SparseGraphBuilder(0)
             .add(0, 1, 1)
             .add(0, 2, 1)
             .add(1, 2, 1)
@@ -331,7 +333,7 @@ public class GraphTestBase {
   }
 
   protected Graph completeBipartiteWithWeakLink() {
-    return new CompressedSparseGraphBuilder(0)
+    return new SparseGraphBuilder(0)
             .add(0, 1, 1)
             .add(0, 2, 1)
             .add(0, 3, 1)
@@ -347,7 +349,7 @@ public class GraphTestBase {
   }
 
   protected Graph triangle() {
-    return new CompressedSparseGraphBuilder(0)
+    return new SparseGraphBuilder(0)
             .add(0, 1, 1)
             .add(1, 2, 1)
             .add(2, 0, 1)
@@ -359,7 +361,7 @@ public class GraphTestBase {
   }
 
   protected Graph largeCircle(int size) {
-    CompressedSparseGraphBuilder b = new CompressedSparseGraphBuilder(0);
+    SparseGraphBuilder b = new SparseGraphBuilder(0);
     for (int i = 0; i < size; i++) {
       b.add(i, i + 1, 1);
     }
@@ -382,6 +384,11 @@ public class GraphTestBase {
   protected long traverseFingerprint(Graph graph) {
     ParallelEdgeOps.traverse(graph, fingerprintingConsumer, TraversalMode.DEFAULT);
     return fingerprintingConsumer.getFingerprint();
+  }
+
+  protected static Graph subgraph(Graph graph, int... globalIds) {
+    Arrays.sort(globalIds);
+    return graph.subgraph(IntIterators.wrap(globalIds));
   }
 
   protected static class SubgraphCollectingConsumer implements Consumer<Graph> {

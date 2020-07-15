@@ -18,13 +18,13 @@ import org.junit.Test;
 import java.util.HashSet;
 import java.util.Set;
 
-import static net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph.builder;
+import static net.adeptropolis.frogspawn.graphs.implementations.SparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class CompressedSparseGraphTest extends GraphTestBase {
+public class SparseGraphTest extends GraphTestBase {
 
-  private static CompressedSparseGraph defaultGraph = builder()
+  private static SparseGraph defaultGraph = builder()
           .add(0, 1, 2)
           .add(1, 2, 3)
           .add(4, 9, 5)
@@ -72,7 +72,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void emptyGraph() {
-    CompressedSparseGraph graph = builder().build();
+    SparseGraph graph = builder().build();
     assertThat(graph.order(), is(0));
     graph.traverseParallel(consumer);
     assertThat(consumer.getEdges().size(), is(0));
@@ -80,7 +80,7 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void fullTraversal() {
-    CompressedSparseGraph graph = builder()
+    SparseGraph graph = builder()
             .add(0, 1, 2)
             .add(1, 3, 3)
             .add(6, 4, 5)
@@ -121,13 +121,13 @@ public class CompressedSparseGraphTest extends GraphTestBase {
 
   @Test
   public void subgraph() {
-    Graph subgraph = defaultGraph.inducedSubgraph(IntIterators.wrap(new int[]{4, 11}));
+    Graph subgraph = defaultGraph.subgraph(IntIterators.wrap(new int[]{4, 11}));
     assertThat(subgraph.order(), is(2));
   }
 
   @Test
   public void lowerTriangularTraversal() {
-    CompressedSparseGraph graph = completeGraph(150);
+    SparseGraph graph = completeGraph(150);
     CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
     graph.traverseParallel(consumer, TraversalMode.LOWER_TRIANGULAR);
     assertThat(consumer.getEdges(), hasSize(75 * 149));

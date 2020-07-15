@@ -15,17 +15,14 @@ import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import java.io.Serializable;
 
 /**
- * A compressed sparse graph
- * <p><b>Note: </b> The vertex set of this type of graph always consists of
- * consecutive integers starting at 0. So, even if adding a single vertex n	&gt; 0,
- * the vertex set will be <code>{0...n}</code></p>
+ * Compressed sparse graph implementation
  */
 
-public class CompressedSparseGraph extends Graph implements Serializable {
+public class SparseGraph extends Graph implements Serializable {
 
   static final long serialVersionUID = 3908340146557361096L;
 
-  private final CompressedSparseGraphDatastore datastore;
+  private final CSRDatastore datastore;
 
   /**
    * Constructor
@@ -33,7 +30,7 @@ public class CompressedSparseGraph extends Graph implements Serializable {
    * @param datastore Graph datastore
    */
 
-  public CompressedSparseGraph(CompressedSparseGraphDatastore datastore) {
+  public SparseGraph(CSRDatastore datastore) {
     this.datastore = datastore;
   }
 
@@ -43,8 +40,8 @@ public class CompressedSparseGraph extends Graph implements Serializable {
    * @return A new builder instance
    */
 
-  public static CompressedSparseGraphBuilder builder() {
-    return new CompressedSparseGraphBuilder();
+  public static SparseGraphBuilder builder() {
+    return new SparseGraphBuilder();
   }
 
   /**
@@ -53,7 +50,7 @@ public class CompressedSparseGraph extends Graph implements Serializable {
 
   @Override
   public int order() {
-    return datastore.size();
+    return datastore.order();
   }
 
   /**
@@ -71,7 +68,7 @@ public class CompressedSparseGraph extends Graph implements Serializable {
 
   @Override
   public VertexIterator vertexIterator() {
-    return new DefaultVertexIterator();
+    return new SparseGraphVertexIterator();
   }
 
   /**
@@ -80,11 +77,7 @@ public class CompressedSparseGraph extends Graph implements Serializable {
 
   @Override
   public int[] collectVertices() {
-    int[] vertices = new int[order()];
-    for (int i = 0; i < order(); i++) {
-      vertices[i] = i;
-    }
-    return vertices;
+    return IntIterators.unwrap(globalVertexIdIterator());
   }
 
   /**
@@ -150,15 +143,15 @@ public class CompressedSparseGraph extends Graph implements Serializable {
    */
 
   @Override
-  public Graph inducedSubgraph(IntIterator vertices) {
-    return new CompressedInducedSparseSubgraph(datastore, vertices);
+  public Graph subgraph(IntIterator vertices) {
+    return new SparseSubgraph(datastore, vertices);
   }
 
   /**
    * Iterator over the vertex set
    */
 
-  public class DefaultVertexIterator implements VertexIterator {
+  public class SparseGraphVertexIterator implements VertexIterator {
 
     int idx = 0;
 

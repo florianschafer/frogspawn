@@ -8,7 +8,7 @@ package net.adeptropolis.frogspawn.graphs.traversal;
 import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Ignore;
@@ -33,14 +33,14 @@ public class ParallelEdgeOpsTest extends GraphTestBase {
 
   @Test
   public void emptyGraph() {
-    CompressedSparseGraph graph = CompressedSparseGraph.builder().build();
+    SparseGraph graph = SparseGraph.builder().build();
     ParallelEdgeOps.traverse(graph, consumer, TraversalMode.DEFAULT);
     assertThat(consumer.getEdges(), is(empty()));
   }
 
   @Test
   public void singleEdgeGraph() {
-    CompressedSparseGraph graph = CompressedSparseGraph.builder()
+    SparseGraph graph = SparseGraph.builder()
             .add(2, 3, 3.14)
             .build();
     ParallelEdgeOps.traverse(graph, consumer, TraversalMode.DEFAULT);

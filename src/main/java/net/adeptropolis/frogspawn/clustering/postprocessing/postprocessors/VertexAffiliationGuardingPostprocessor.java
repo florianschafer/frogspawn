@@ -64,7 +64,7 @@ public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
     IntRBTreeSet clusterVertices = new IntRBTreeSet(cluster.getRemainder());
     Graph clusterGraph = cluster.aggregateGraph();
     IntRBTreeSet survivors = new IntRBTreeSet(clusterGraph.globalVertexIdIterator());
-    for (Graph subgraph = clusterGraph; true; subgraph = cluster.rootGraph().inducedSubgraph(survivors.iterator())) {
+    for (Graph subgraph = clusterGraph; true; subgraph = cluster.rootGraph().subgraph(survivors.iterator())) {
       int prevSize = clusterVertices.size();
       shiftUnaffiliatedVertices(clusterVertices, parent, survivors, subgraph);
       if (clusterVertices.size() < minClusterSize) {

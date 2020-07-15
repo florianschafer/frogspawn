@@ -7,8 +7,8 @@ package net.adeptropolis.frogspawn.graphs.algorithms.power_iteration;
 
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -42,7 +42,7 @@ public class ConstantSigTrailConvergenceTest extends GraphTestBase {
 
   @Test
   public void postprocessing() throws PartialConvergencePostprocessingException {
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+    SparseGraph graph = new SparseGraphBuilder()
             .add(0, 1, 10)
             .add(1, 2, 1)
             .add(2, 3, 10)

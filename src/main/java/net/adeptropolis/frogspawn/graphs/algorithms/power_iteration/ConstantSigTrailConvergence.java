@@ -159,7 +159,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   private Graph extractPostprocessingSubgraph(double[] vec, int selector) {
     IntIterator localIndices = new SignumSelectingIndexIterator(vec, selector, i -> !hasConstantTrail(i));
-    return graph.localInducedSubgraph(localIndices);
+    return graph.localSubgraph(localIndices);
   }
 
   /**

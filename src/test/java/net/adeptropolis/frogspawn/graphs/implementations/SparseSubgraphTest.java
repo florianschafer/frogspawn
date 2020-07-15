@@ -15,18 +15,17 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import static net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph.builder;
+import static net.adeptropolis.frogspawn.graphs.implementations.SparseGraph.builder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 
-public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
+public class SparseSubgraphTest extends GraphTestBase {
 
-  private static CompressedSparseGraph defaultGraph = builder()
+  private static SparseGraph defaultGraph = builder()
           .add(0, 1, 2)
           .add(1, 2, 3)
           .add(4, 9, 5)
@@ -34,18 +33,13 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
           .add(4, 11, 11)
           .build();
 
-  private static Graph subgraph(Graph graph, int... vertices) {
-    Arrays.sort(vertices);
-    return graph.inducedSubgraph(IntIterators.wrap(vertices));
-  }
-
   private static Graph defaultSubgraph(int... vertices) {
     return subgraph(defaultGraph, vertices);
   }
 
   @Test
   public void isDefaultSubgraph() {
-    assertThat(defaultSubgraph(0, 1), instanceOf(CompressedInducedSparseSubgraph.class));
+    assertThat(defaultSubgraph(0, 1), instanceOf(SparseSubgraph.class));
   }
 
   @Test
@@ -156,7 +150,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
 
   @Test
   public void subgraph() {
-    Graph subgraph = defaultSubgraph(4, 10, 11).inducedSubgraph(IntIterators.wrap(new int[]{4, 10}));
+    Graph subgraph = defaultSubgraph(4, 10, 11).subgraph(IntIterators.wrap(new int[]{4, 10}));
     assertThat("Subgraph size", subgraph.order(), is(2));
     subgraph.traverseParallel(consumer);
     assertThat("Subgraph edges", consumer.getEdges(), containsInAnyOrder(
@@ -177,7 +171,7 @@ public class CompressedInducedSparseSubgraphTest extends GraphTestBase {
   @Test
   public void lowerTriangularTraversal() {
     Graph graph = completeGraph(150)
-            .inducedSubgraph(IntIterators.fromTo(0, 140));
+            .subgraph(IntIterators.fromTo(0, 140));
     CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
     graph.traverseParallel(consumer, TraversalMode.LOWER_TRIANGULAR);
     assertThat(consumer.getEdges(), hasSize(70 * 139));

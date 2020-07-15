@@ -52,7 +52,7 @@ public class VertexAffiliationGuard {
 
   public Graph ensure(Cluster parentCluster, Graph candidate) {
     IntRBTreeSet survivors = new IntRBTreeSet(candidate.globalVertexIdIterator());
-    for (Graph subgraph = candidate; true; subgraph = graph.inducedSubgraph(survivors.iterator())) {
+    for (Graph subgraph = candidate; true; subgraph = graph.subgraph(survivors.iterator())) {
       int prevSize = survivors.size();
       shiftUnaffiliatedVertices(subgraph, parentCluster, survivors);
       if (survivors.size() < minClusterSize) {

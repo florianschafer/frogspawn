@@ -19,16 +19,14 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Induced subgraph.
- * <p>That is, a graph whose vertex set is limited to a subset of another graph.
- * The edge set is restricted to those edges where both endpoints are members of the given vertex set.</p>
+ * Compressed sparse subgraph implementation, i.e. a subgraph of {@link SparseGraph}
  */
 
-public class CompressedInducedSparseSubgraph extends Graph implements Serializable {
+public class SparseSubgraph extends Graph implements Serializable {
 
   static final long serialVersionUID = 1332295543424708677L;
 
-  private final CompressedSparseGraphDatastore datastore;
+  private final CSRDatastore datastore;
   private final int[] vertices;
   private long cachedNumEdges = -1L;
 
@@ -39,7 +37,7 @@ public class CompressedInducedSparseSubgraph extends Graph implements Serializab
    * @param vertices  An iterator of global vertex ids
    */
 
-  CompressedInducedSparseSubgraph(CompressedSparseGraphDatastore datastore, IntIterator vertices) {
+  SparseSubgraph(CSRDatastore datastore, IntIterator vertices) {
     this.datastore = datastore;
     this.vertices = IntIterators.unwrap(vertices);
     Arrays.parallelSort(this.vertices, 0, order());
@@ -76,7 +74,7 @@ public class CompressedInducedSparseSubgraph extends Graph implements Serializab
 
   @Override
   public VertexIterator vertexIterator() {
-    return new SubgraphVertexIterator().reset(vertices);
+    return new SparseSubgraphVertexIterator();
   }
 
   /**
@@ -220,8 +218,8 @@ public class CompressedInducedSparseSubgraph extends Graph implements Serializab
    */
 
   @Override
-  public Graph inducedSubgraph(IntIterator vertices) {
-    return new CompressedInducedSparseSubgraph(datastore, vertices);
+  public Graph subgraph(IntIterator vertices) {
+    return new SparseSubgraph(datastore, vertices);
   }
 
   /**
@@ -243,6 +241,48 @@ public class CompressedInducedSparseSubgraph extends Graph implements Serializab
 
     long getCount() {
       return cnt.get();
+    }
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+
+  public class SparseSubgraphVertexIterator implements VertexIterator {
+
+    private int localId;
+    private int globalId;
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public boolean hasNext() {
+      if (vertices == null || localId == vertices.length) {
+        return false;
+      }
+      globalId = vertices[localId++];
+      return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public int localId() {
+      return localId - 1;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+
+    @Override
+    public int globalId() {
+      return globalId;
     }
 
   }

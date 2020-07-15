@@ -256,7 +256,7 @@ public class Cluster implements Comparable<Cluster>, Serializable {
    */
 
   public Graph aggregateGraph() {
-    return root.graph.inducedSubgraph(aggregateVertices().iterator());
+    return root.graph.subgraph(aggregateVertices().iterator());
   }
 
   /**
@@ -264,7 +264,7 @@ public class Cluster implements Comparable<Cluster>, Serializable {
    */
 
   public Graph remainderGraph() {
-    return root.graph.inducedSubgraph(remainder.iterator());
+    return root.graph.subgraph(remainder.iterator());
   }
 
   /**

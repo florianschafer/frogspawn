@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -43,7 +43,7 @@ public class ClusterDigesterTest {
 
   @Before
   public void setup() {
-    graph = new CompressedSparseGraphBuilder()
+    graph = new SparseGraphBuilder()
             .add(0, 1, 1).add(0, 2, 2).add(0, 3, 3).add(0, 4, 4).add(0, 5, 5).add(0, 6, 6)
             .add(1, 2, 7).add(1, 3, 8).add(1, 4, 9).add(1, 5, 10).add(1, 6, 11)
             .add(2, 3, 12)
@@ -65,7 +65,7 @@ public class ClusterDigesterTest {
 
   @Test
   public void aggregateEmptyGraph() {
-    Cluster root = new Cluster(new CompressedSparseGraphBuilder().build());
+    Cluster root = new Cluster(new SparseGraphBuilder().build());
     Digest digest = new ClusterDigester(aggregate3Settings).digest(root);
     assertThat(digest.getVertices().length, is(0));
     assertThat(digest.getWeights().length, is(0));
@@ -91,7 +91,7 @@ public class ClusterDigesterTest {
 
   @Test
   public void remainderEmptyGraph() {
-    Cluster root = new Cluster(new CompressedSparseGraphBuilder().build());
+    Cluster root = new Cluster(new SparseGraphBuilder().build());
     Digest digest = new ClusterDigester(remainder2Settings).digest(root);
     assertThat(digest.getVertices().length, is(0));
     assertThat(digest.getWeights().length, is(0));

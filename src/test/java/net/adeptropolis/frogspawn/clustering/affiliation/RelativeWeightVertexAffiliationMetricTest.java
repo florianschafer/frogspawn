@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.clustering.affiliation;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,14 +24,14 @@ public class RelativeWeightVertexAffiliationMetricTest {
   @Before
   public void setup() {
     metric = new RelativeWeightVertexAffiliationMetric();
-    graph = new CompressedSparseGraphBuilder()
+    graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)
             .add(2, 0, 5)
             .add(1, 3, 6)
             .add(3, 2, 7)
             .build();
-    subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
+    subgraph = graph.subgraph(IntIterators.wrap(new int[]{0, 1, 2}));
   }
 
   @Test
@@ -45,7 +45,7 @@ public class RelativeWeightVertexAffiliationMetricTest {
 
   @Test
   public void restrictedMetric() {
-    Graph subsubgraph = subgraph.inducedSubgraph(IntIterators.wrap(new int[]{1, 2}));
+    Graph subsubgraph = subgraph.subgraph(IntIterators.wrap(new int[]{1, 2}));
     double[] relWeights = metric.compute(graph, subgraph, subsubgraph);
     assertThat(relWeights.length, is(2));
     assertThat(relWeights[0], closeTo(7.0 / 13, 1E-6));

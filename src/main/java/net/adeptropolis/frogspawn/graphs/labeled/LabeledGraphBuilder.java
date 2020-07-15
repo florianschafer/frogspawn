@@ -6,8 +6,8 @@
 package net.adeptropolis.frogspawn.graphs.labeled;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
@@ -21,7 +21,7 @@ import java.lang.reflect.Array;
 public class LabeledGraphBuilder<V extends Serializable> {
 
   private final Object2IntOpenHashMap<V> vertexMap;
-  private final CompressedSparseGraphBuilder builder;
+  private final SparseGraphBuilder builder;
   private final Class<V> labelClass;
 
   /**
@@ -33,7 +33,7 @@ public class LabeledGraphBuilder<V extends Serializable> {
   public LabeledGraphBuilder(Class<V> labelClass) {
     this.labelClass = labelClass;
     this.vertexMap = new Object2IntOpenHashMap<>();
-    this.builder = new CompressedSparseGraphBuilder();
+    this.builder = new SparseGraphBuilder();
   }
 
   /**
@@ -57,7 +57,7 @@ public class LabeledGraphBuilder<V extends Serializable> {
    */
 
   public LabeledGraph<V> build() {
-    CompressedSparseGraph graph = builder.build();
+    SparseGraph graph = builder.build();
     V[] labels = invertLabels();
     return new LabeledGraph<>(graph, labels);
   }

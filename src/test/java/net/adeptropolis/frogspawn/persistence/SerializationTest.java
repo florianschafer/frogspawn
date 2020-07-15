@@ -11,7 +11,7 @@ import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
@@ -57,14 +57,14 @@ public class SerializationTest extends GraphTestBase {
 
   @Test
   public void sparseGraph() throws IOException {
-    CompressedSparseGraph graph = WEIGHTED_K20;
+    SparseGraph graph = WEIGHTED_K20;
     verifyGraph(graph);
   }
 
   @Test
   public void subgraph() throws IOException {
     Graph graph = WEIGHTED_K20
-            .inducedSubgraph(IntIterators.wrap(new int[]{1, 2, 3, 4, 5, 8}));
+            .subgraph(IntIterators.wrap(new int[]{1, 2, 3, 4, 5, 8}));
     verifyGraph(graph);
   }
 

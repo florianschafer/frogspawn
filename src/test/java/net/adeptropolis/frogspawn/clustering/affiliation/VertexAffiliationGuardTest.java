@@ -11,8 +11,8 @@ import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Test;
 
 import static it.unimi.dsi.fastutil.ints.IntComparators.NATURAL_COMPARATOR;
@@ -27,13 +27,13 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
 
   @Test
   public void sizeBelowThreshold() {
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder(0)
+    SparseGraph graph = new SparseGraphBuilder(0)
             .add(50, 51, 1)
             .add(51, 52, 1)
             .add(52, 53, 1)
             .build();
     Cluster cluster = new Cluster(graph);
-    Graph candidate = graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52}));
+    Graph candidate = graph.subgraph(IntIterators.wrap(new int[]{50, 51, 52}));
     VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 10, 0.0);
     Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
     assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
@@ -42,7 +42,7 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
 
   @Test
   public void filteringOutCascade() {
-    CompressedSparseGraph graph = defaultGraph();
+    SparseGraph graph = defaultGraph();
     Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
     VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 0, 0.75);
@@ -61,7 +61,7 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
 
   @Test
   public void sizeFallsShortDuringIteration() {
-    CompressedSparseGraph graph = defaultGraph();
+    SparseGraph graph = defaultGraph();
     Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
     VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 4, 0.75);
@@ -71,8 +71,8 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));
   }
 
-  private CompressedSparseGraph defaultGraph() {
-    return new CompressedSparseGraphBuilder(0)
+  private SparseGraph defaultGraph() {
+    return new SparseGraphBuilder(0)
             .add(50, 51, 10)
             .add(51, 52, 1)
             .add(52, 53, 1)
@@ -80,8 +80,8 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
             .build();
   }
 
-  private Graph defaultCandidate(CompressedSparseGraph graph) {
-    return graph.inducedSubgraph(IntIterators.wrap(new int[]{50, 51, 52, 53}));
+  private Graph defaultCandidate(SparseGraph graph) {
+    return graph.subgraph(IntIterators.wrap(new int[]{50, 51, 52, 53}));
   }
 
 }

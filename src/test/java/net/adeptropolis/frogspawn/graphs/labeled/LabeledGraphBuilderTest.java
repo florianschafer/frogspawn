@@ -8,7 +8,7 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 import com.google.common.collect.ImmutableList;
 import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import org.junit.Test;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class LabeledGraphBuilderTest extends GraphTestBase {
 
   @Test
   public void graph() {
-    CompressedSparseGraph graph = new LabeledGraphBuilder<>(String.class)
+    SparseGraph graph = new LabeledGraphBuilder<>(String.class)
             .add("0", "1", 2)
             .add("1", "2", 3)
             .build()

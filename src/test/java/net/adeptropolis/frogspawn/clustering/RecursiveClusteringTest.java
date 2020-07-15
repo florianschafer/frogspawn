@@ -13,10 +13,9 @@ import net.adeptropolis.frogspawn.digest.ClusterDigester;
 import net.adeptropolis.frogspawn.digest.Digest;
 import net.adeptropolis.frogspawn.digest.DigesterSettings;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -47,7 +46,7 @@ public class RecursiveClusteringTest {
   }
 
   private static Graph loadGraph(String filename) {
-    CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+    SparseGraphBuilder builder = new SparseGraphBuilder();
     try {
       Files.lines(Paths.get(ClassLoader.getSystemResource(filename).toURI()))
               .filter(line -> !COMMENT_PATTERN.matcher(line).matches())
@@ -63,7 +62,7 @@ public class RecursiveClusteringTest {
 
   @Test
   public void emptyGraph() {
-    Graph emptyGraph = new CompressedSparseGraphBuilder().build();
+    Graph emptyGraph = new SparseGraphBuilder().build();
     ClusteringSettings settings = ClusteringSettings.builder().build();
     Cluster root = RecursiveClustering.run(emptyGraph, settings);
     assertThat(root.aggregateClusters(), hasSize(1));
@@ -112,7 +111,7 @@ public class RecursiveClusteringTest {
 
   @Test
   public void problematicSmallGraph() {
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+    SparseGraph graph = new SparseGraphBuilder()
             .add(0, 1, 1)
             .add(1, 2, 1)
             .add(2, 3, 1)

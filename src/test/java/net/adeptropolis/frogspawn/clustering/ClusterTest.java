@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import org.junit.Test;
@@ -57,10 +57,10 @@ public class ClusterTest {
   @Test
   public void addGraphToRemainder() {
     Cluster cluster = new Cluster((Graph) null);
-    Graph graph = new CompressedSparseGraphBuilder()
+    Graph graph = new SparseGraphBuilder()
             .add(42, 73, 3)
             .build()
-            .inducedSubgraph(IntIterators.wrap(new int[]{42, 73}));
+            .subgraph(IntIterators.wrap(new int[]{42, 73}));
     cluster.addToRemainder(graph);
     assertThat(cluster.getRemainder(), is(new IntArrayList(IntIterators.wrap(new int[]{42, 73}))));
   }

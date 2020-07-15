@@ -12,7 +12,7 @@ import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAff
 import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
 import net.adeptropolis.frogspawn.clustering.postprocessing.TreeTraversalMode;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,7 +39,7 @@ public class VertexAffiliationGuardingPostprocessorTest {
   @Before
   public void setUp() {
     metric = new RelativeWeightVertexAffiliationMetric();
-    graph = new CompressedSparseGraphBuilder(0)
+    graph = new SparseGraphBuilder(0)
             .add(0, 1, 1)
             .add(0, 2, 1)
             .add(2, 3, 1)

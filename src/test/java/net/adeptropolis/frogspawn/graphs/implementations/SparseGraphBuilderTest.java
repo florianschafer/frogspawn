@@ -7,45 +7,45 @@ package net.adeptropolis.frogspawn.graphs.implementations;
 
 import org.junit.Test;
 
-import static net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph.builder;
+import static net.adeptropolis.frogspawn.graphs.implementations.SparseGraph.builder;
 import static net.adeptropolis.frogspawn.graphs.implementations.arrays.Helpers.assertEquals;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThrows;
 
-public class CompressedSparseGraphBuilderTest {
+public class SparseGraphBuilderTest {
 
-  private static void assertGraphSizeMatches(CompressedSparseGraphDatastore datastore, int expected) {
-    assertThat("Graph size", datastore.size(), is(expected));
+  private static void assertGraphSizeMatches(CSRDatastore datastore, int expected) {
+    assertThat("Graph size", datastore.order(), is(expected));
   }
 
-  private static void assertEdgeCountMatches(CompressedSparseGraphDatastore datastore, long expected) {
-    assertThat("Number of edges", datastore.edgeCount(), is(expected));
+  private static void assertEdgeCountMatches(CSRDatastore datastore, long expected) {
+    assertThat("Number of edges", datastore.size(), is(expected));
   }
 
-  private static void assertEdgesMatch(CompressedSparseGraphDatastore datastore, int... expected) {
+  private static void assertEdgesMatch(CSRDatastore datastore, int... expected) {
     assertEquals("EdgeOps", datastore.edges, expected);
   }
 
-  private static void assertPointersMatch(CompressedSparseGraphDatastore datastore, long... expected) {
+  private static void assertPointersMatch(CSRDatastore datastore, long... expected) {
     assertEquals("Vertex pointers", datastore.pointers, expected);
   }
 
-  private static void assertWeightsMatch(CompressedSparseGraphDatastore datastore, double... expected) {
+  private static void assertWeightsMatch(CSRDatastore datastore, double... expected) {
     assertEquals("Weights", datastore.weights, expected);
   }
 
   @Test
   public void emptyGraph() {
-    CompressedSparseGraphDatastore datastore = builder().buildDatastore();
+    CSRDatastore datastore = builder().buildDatastore();
     assertGraphSizeMatches(datastore, 0);
     assertEdgeCountMatches(datastore, 0L);
   }
 
   @Test
   public void loopsCountAsSingleEdges() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(0, 0, 1)
             .buildDatastore();
     assertGraphSizeMatches(datastore, 1);
@@ -54,7 +54,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void simpleReduce() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(0, 0, 2)
             .add(0, 0, 3)
             .buildDatastore();
@@ -65,7 +65,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void entrySorting() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(1, 3, 11)
             .add(1, 2, 7)
             .add(0, 6, 2)
@@ -81,7 +81,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void trivialReduce() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(0, 0, 1)
             .add(0, 0, 3)
             .add(0, 0, 5)
@@ -97,7 +97,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void reduceHead() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(0, 0, 1)
             .add(0, 0, 3)
             .add(1, 1, 5)
@@ -114,7 +114,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void reduceTail() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(0, 0, 1)
             .add(1, 1, 3)
             .add(2, 2, 5)
@@ -131,7 +131,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void emptyRows() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(1, 1, 1)
             .add(2, 2, 3)
             .add(2, 2, 5)
@@ -146,7 +146,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void emptyFirstRow() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(1, 1, 1)
             .add(1, 2, 2)
             .add(1, 3, 3)
@@ -160,7 +160,7 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void compactness() {
-    CompressedSparseGraphDatastore datastore = builder()
+    CSRDatastore datastore = builder()
             .add(0, 1, 2)
             .add(1, 2, 3)
             .buildDatastore();
@@ -173,11 +173,11 @@ public class CompressedSparseGraphBuilderTest {
 
   @Test
   public void build() {
-    CompressedSparseGraph graph = builder()
+    SparseGraph graph = builder()
             .add(0, 1, 2)
             .add(1, 2, 3)
             .build();
-    assertThat(graph, instanceOf(CompressedSparseGraph.class));
+    assertThat(graph, instanceOf(SparseGraph.class));
     assertThat(graph.order(), is(3));
   }
 

@@ -35,6 +35,7 @@ public interface VertexAffiliationMetric {
    * @return Array of affiliation scores for all vertices of the subgraph, restricted to those of subsubgraph
    */
 
+  // TODO: Try to get rid of this one!
   double[] compute(Graph supergraph, Graph subgraph, Graph subsubgraph);
 
 }

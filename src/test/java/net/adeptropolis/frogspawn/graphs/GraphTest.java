@@ -6,8 +6,8 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +18,7 @@ public class GraphTest {
 
   @Test
   public void weights() {
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+    SparseGraph graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)
             .add(2, 0, 5)
@@ -32,7 +32,7 @@ public class GraphTest {
 
   @Test
   public void totalWeight() {
-    CompressedSparseGraph graph = new CompressedSparseGraphBuilder()
+    SparseGraph graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)
             .add(2, 0, 5)
@@ -42,11 +42,11 @@ public class GraphTest {
 
   @Test
   public void contains() {
-    Graph graph = new CompressedSparseGraphBuilder()
+    Graph graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)
             .build()
-            .inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
+            .subgraph(IntIterators.wrap(new int[]{0, 1, 2}));
     assertThat(graph.containsVertex(0), is(true));
     assertThat(graph.containsVertex(1), is(true));
     assertThat(graph.containsVertex(2), is(true));
@@ -55,12 +55,12 @@ public class GraphTest {
 
   @Test
   public void weightForGlobalId() {
-    Graph graph = new CompressedSparseGraphBuilder()
+    Graph graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)
             .add(2, 3, 5)
             .build()
-            .inducedSubgraph(IntIterators.wrap(new int[]{1, 2, 3}));
+            .subgraph(IntIterators.wrap(new int[]{1, 2, 3}));
     assertThat(graph.weightForGlobalId(1), closeTo(4.0, 1E-6));
     assertThat(graph.weightForGlobalId(2), closeTo(9.0, 1E-6));
     assertThat(graph.weightForGlobalId(3), closeTo(5.0, 1E-6));

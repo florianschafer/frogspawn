@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.graphs.similarity;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,7 +18,7 @@ public class OverlapGraphSimilarityMetricTest {
   @Test
   public void overlap() {
     OverlapGraphSimilarityMetric metric = new OverlapGraphSimilarityMetric();
-    Graph graph = new CompressedSparseGraphBuilder()
+    Graph graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)
             .add(2, 0, 5)
@@ -27,7 +27,7 @@ public class OverlapGraphSimilarityMetricTest {
             .add(3, 4, 8)
             .build();
     assertThat(metric.compute(graph, graph), closeTo(1.0, 1E-6));
-    Graph subgraph = graph.inducedSubgraph(IntIterators.wrap(new int[]{0, 1, 2}));
+    Graph subgraph = graph.subgraph(IntIterators.wrap(new int[]{0, 1, 2}));
     double overlap = metric.compute(graph, subgraph);
     assertThat(overlap, closeTo(24d / 37d, 1E-6));
   }

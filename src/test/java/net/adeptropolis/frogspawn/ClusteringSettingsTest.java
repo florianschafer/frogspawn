@@ -9,8 +9,8 @@ import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAff
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.CompressedSparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class ClusteringSettingsTest extends SettingsTestBase {
 
   @Before
   public void setup() {
-    CompressedSparseGraphBuilder builder = CompressedSparseGraph.builder();
+    SparseGraphBuilder builder = SparseGraph.builder();
     for (int i = 0; i < 99; i++) {
       builder.add(i, i + 1, i + 1);
     }

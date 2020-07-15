@@ -141,7 +141,7 @@ public abstract class Graph {
    * @return a new subgraph
    */
 
-  public abstract Graph inducedSubgraph(IntIterator vertices);
+  public abstract Graph subgraph(IntIterator vertices);
 
   /**
    * <p>Compute the induced subgraph from a given set of local vertex ids</p>
@@ -150,8 +150,8 @@ public abstract class Graph {
    * @return a new subgraph
    */
 
-  public Graph localInducedSubgraph(IntIterator vertices) {
-    return inducedSubgraph(new VertexMappingIterator(vertices));
+  public Graph localSubgraph(IntIterator vertices) {
+    return subgraph(new VertexMappingIterator(vertices));
   }
 
   /**

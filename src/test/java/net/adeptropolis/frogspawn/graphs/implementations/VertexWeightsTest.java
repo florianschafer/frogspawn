@@ -17,14 +17,14 @@ public class VertexWeightsTest {
 
   @Test
   public void emptyGraph() {
-    Graph graph = CompressedSparseGraph.builder().build();
+    Graph graph = SparseGraph.builder().build();
     double[] weights = VertexWeights.compute(graph);
     assertThat(weights.length, is(0));
   }
 
   @Test
   public void simpleGraphWithGaps() {
-    Graph graph = CompressedSparseGraph.builder()
+    Graph graph = SparseGraph.builder()
             .add(0, 1, 2)
             .add(0, 3, 3)
             .add(2, 1, 5)
