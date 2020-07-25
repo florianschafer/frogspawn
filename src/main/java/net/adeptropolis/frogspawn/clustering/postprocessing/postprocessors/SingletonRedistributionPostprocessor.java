@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors;
 
 import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.clustering.Cluster;
-import net.adeptropolis.frogspawn.clustering.postprocessing.OrderedBTTQueueFactory;
+import net.adeptropolis.frogspawn.clustering.postprocessing.BottomUpQueueFactory;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.frogspawn.clustering.postprocessing.TreeTraversalMode;
 
@@ -138,7 +138,7 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
    */
 
   public PostprocessingState apply(Cluster root) {
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue();
+    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue();
     Set<Cluster> enqueued = new HashSet<>();
     enqueueLeafs(root, queue, enqueued);
     return processQueue(queue, enqueued);

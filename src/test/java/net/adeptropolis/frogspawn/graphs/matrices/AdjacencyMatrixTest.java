@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.frogspawn.graphs.operators;
+package net.adeptropolis.frogspawn.graphs.matrices;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -14,11 +14,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
-public class CanonicalLinearOperatorTest {
+public class AdjacencyMatrixTest {
 
   @Test
   public void simple() {
-    double[] y = new CanonicalLinearOperator(defaultGraph()).apply(new double[]{17, 19, 23});
+    double[] y = new AdjacencyMatrix(defaultGraph()).multiply(new double[]{17, 19, 23});
     assertThat(y[0], is(206.0));
     assertThat(y[1], is(437.0));
     assertThat(y[2], is(593.0));
@@ -26,20 +26,20 @@ public class CanonicalLinearOperatorTest {
 
   @Test
   public void subset() {
-    double[] y = new CanonicalLinearOperator(defaultGraph().subgraph(IntIterators.wrap(new int[]{0, 2})))
-            .apply(new double[]{29, 31});
+    double[] y = new AdjacencyMatrix(defaultGraph().subgraph(IntIterators.wrap(new int[]{0, 2})))
+            .multiply(new double[]{29, 31});
     assertThat(y[0], is(213.0));
     assertThat(y[1], is(548.0));
   }
 
   @Test
   public void reusability() {
-    CanonicalLinearOperator op = new CanonicalLinearOperator(defaultGraph());
-    double[] r1 = op.apply(new double[]{13, 19, 27});
+    AdjacencyMatrix op = new AdjacencyMatrix(defaultGraph());
+    double[] r1 = op.multiply(new double[]{13, 19, 27});
     assertThat(r1[0], closeTo(218, 1E-6));
     assertThat(r1[1], closeTo(469, 1E-6));
     assertThat(r1[2], closeTo(625, 1E-6));
-    double[] r2 = op.apply(new double[]{61, 67, 71});
+    double[] r2 = op.multiply(new double[]{61, 67, 71});
     assertThat(r2[0], closeTo(678, 1E-6));
     assertThat(r2[1], closeTo(1433, 1E-6));
     assertThat(r2[2], closeTo(1965, 1E-6));

@@ -6,8 +6,8 @@
 package net.adeptropolis.frogspawn.graphs.algorithms.power_iteration;
 
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
-import net.adeptropolis.frogspawn.graphs.operators.CanonicalLinearOperator;
-import net.adeptropolis.frogspawn.graphs.operators.SSNLOperator;
+import net.adeptropolis.frogspawn.graphs.matrices.AdjacencyMatrix;
+import net.adeptropolis.frogspawn.graphs.matrices.ShiftedNormalizedLaplacian;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +23,7 @@ public class PowerIterationTest extends GraphTestBase {
   @Test
   public void matrix() throws PowerIteration.MaxIterationsExceededException {
     double[] expected = new double[]{0.35596, 0.33434, 0.34380, 0.30277, 0.27799, 0.29129, 0.32165, 0.27372, 0.29246, 0.35439};
-    CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
+    AdjacencyMatrix op = new AdjacencyMatrix(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-6);
     double[] iv = RANDOM_IV.generate(10);
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000, true);
@@ -35,7 +35,7 @@ public class PowerIterationTest extends GraphTestBase {
 
   @Test
   public void iterationsExcess() {
-    CanonicalLinearOperator op = new CanonicalLinearOperator(SOME_10_GRAPH);
+    AdjacencyMatrix op = new AdjacencyMatrix(SOME_10_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-18);
     double[] iv = RANDOM_IV.generate(10);
     assertThrows(PowerIteration.MaxIterationsExceededException.class, () -> {
@@ -45,7 +45,7 @@ public class PowerIterationTest extends GraphTestBase {
 
   @Test
   public void normalizedLaplacian() throws PowerIteration.MaxIterationsExceededException {
-    SSNLOperator op = new SSNLOperator(EIGEN_REF_GRAPH);
+    ShiftedNormalizedLaplacian op = new ShiftedNormalizedLaplacian(EIGEN_REF_GRAPH);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-9);
     double[] iv = RANDOM_IV.generate(op.size());
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 1000, true);
@@ -60,7 +60,7 @@ public class PowerIterationTest extends GraphTestBase {
 
   @Test
   public void weightedK20NormalizedLaplacian() throws PowerIteration.MaxIterationsExceededException {
-    SSNLOperator op = new SSNLOperator(WEIGHTED_K20);
+    ShiftedNormalizedLaplacian op = new ShiftedNormalizedLaplacian(WEIGHTED_K20);
     ConvergenceCriterion convergenceCriterion = new DeltaNormConvergence(1E-9);
     double[] iv = RANDOM_IV.generate(op.size());
     double[] r = PowerIteration.apply(op, convergenceCriterion, iv, 10000, true);

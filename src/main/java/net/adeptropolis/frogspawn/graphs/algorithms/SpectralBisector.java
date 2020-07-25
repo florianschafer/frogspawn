@@ -11,7 +11,7 @@ import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PartialConve
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PowerIteration;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PowerIterationException;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
-import net.adeptropolis.frogspawn.graphs.operators.SSNLOperator;
+import net.adeptropolis.frogspawn.graphs.matrices.ShiftedNormalizedLaplacian;
 
 import java.util.function.Consumer;
 
@@ -54,7 +54,7 @@ public class SpectralBisector {
 
   public void bisect(Graph graph, int maxIterations, RandomInitialVectorsSource ivSource, Consumer<Graph> consumer) throws PowerIterationException {
     PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
-    SSNLOperator ssnl = new SSNLOperator(graph);
+    ShiftedNormalizedLaplacian ssnl = new ShiftedNormalizedLaplacian(graph);
     double[] iv = ivSource.generate(graph.order());
     double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations, false);
     convergenceCriterion.postprocess(v2);

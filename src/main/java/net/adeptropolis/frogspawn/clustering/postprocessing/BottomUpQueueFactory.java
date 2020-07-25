@@ -14,9 +14,10 @@ import java.util.PriorityQueue;
  * Factory for depth-ordered cluster priority queues
  */
 
-public class OrderedBTTQueueFactory {
+public class BottomUpQueueFactory {
 
-  private static final Comparator<Cluster> BTT_COMPARATOR = Comparator.comparingInt(Cluster::depth)
+  private static final Comparator<Cluster> BTT_COMPARATOR = Comparator
+          .comparingInt(Cluster::depth)
           .thenComparingInt(Cluster::remainderSize)
           .thenComparingInt(Cluster::getId)
           .reversed();
@@ -25,7 +26,7 @@ public class OrderedBTTQueueFactory {
    * Constructor
    */
 
-  private OrderedBTTQueueFactory() {
+  private BottomUpQueueFactory() {
   }
 
   /**
