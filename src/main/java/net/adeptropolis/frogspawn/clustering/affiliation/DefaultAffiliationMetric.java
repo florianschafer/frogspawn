@@ -9,10 +9,10 @@ import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
 
 /**
- * Relative weight vertex affiliation metric
+ * Default affiliation metric
  */
 
-public class RelativeWeightVertexAffiliationMetric implements VertexAffiliationMetric {
+public class DefaultAffiliationMetric implements AffiliationMetric {
 
   /**
    * Compute a the relative weight affiliation score for all vertices of a subgraph with respect to one of its supergraphs

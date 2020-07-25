@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.digest;
 
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.SettingsTestBase;
-import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,14 +34,14 @@ public class DigesterSettingsTest extends SettingsTestBase {
     ClusteringSettings defaultClusteringSettings = ClusteringSettings.builder().build();
     DigesterSettings defaultSettings = DigesterSettings.builder(defaultClusteringSettings).build();
     assertThat(defaultSettings.getMaxDigestSize(), is(0));
-    assertThat(defaultSettings.getVertexAffiliationMetric(), instanceOf(RelativeWeightVertexAffiliationMetric.class));
+    assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
     assertThat(defaultSettings.doAggregateDigests(), is(false));
     assertThat(defaultSettings.getDigestRanking(), instanceOf(DEFAULT_COMBINED_RANKING.getClass()));
   }
 
   @Test
   public void affiliationMetric() {
-    assertThat(digesterSettings.getVertexAffiliationMetric(), instanceOf(FakeAffiliationMetric.class));
+    assertThat(digesterSettings.getAffiliationMetric(), instanceOf(FakeAffiliationMetric.class));
   }
 
   @Test

@@ -21,9 +21,9 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.IsNull.notNullValue;
 
-public class VertexAffiliationGuardTest extends GraphTestBase {
+public class AffiliationGuardTest extends GraphTestBase {
 
-  private static final VertexAffiliationMetric METRIC = new RelativeWeightVertexAffiliationMetric();
+  private static final AffiliationMetric METRIC = new DefaultAffiliationMetric();
 
   @Test
   public void sizeBelowThreshold() {
@@ -34,8 +34,8 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
             .build();
     Cluster cluster = new Cluster(graph);
     Graph candidate = graph.subgraph(IntIterators.wrap(new int[]{50, 51, 52}));
-    VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 10, 0.0);
-    Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
+    AffiliationGuard affiliationGuard = new AffiliationGuard(METRIC, graph, 10, 0.0);
+    Graph subgraphWithGuaranteedAffiliations = affiliationGuard.ensure(cluster, candidate);
     assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52})));
   }
@@ -45,8 +45,8 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
     SparseGraph graph = defaultGraph();
     Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
-    VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 0, 0.75);
-    Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
+    AffiliationGuard affiliationGuard = new AffiliationGuard(METRIC, graph, 0, 0.75);
+    Graph subgraphWithGuaranteedAffiliations = affiliationGuard.ensure(cluster, candidate);
     assertThat(subgraphWithGuaranteedAffiliations, is(notNullValue()));
     cluster.getRemainder().sort(NATURAL_COMPARATOR);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{52, 53})));
@@ -64,8 +64,8 @@ public class VertexAffiliationGuardTest extends GraphTestBase {
     SparseGraph graph = defaultGraph();
     Cluster cluster = new Cluster(graph);
     Graph candidate = defaultCandidate(graph);
-    VertexAffiliationGuard vertexAffiliationGuard = new VertexAffiliationGuard(METRIC, graph, 4, 0.75);
-    Graph subgraphWithGuaranteedAffiliations = vertexAffiliationGuard.ensure(cluster, candidate);
+    AffiliationGuard affiliationGuard = new AffiliationGuard(METRIC, graph, 4, 0.75);
+    Graph subgraphWithGuaranteedAffiliations = affiliationGuard.ensure(cluster, candidate);
     assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
     cluster.getRemainder().sort(NATURAL_COMPARATOR);
     assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));

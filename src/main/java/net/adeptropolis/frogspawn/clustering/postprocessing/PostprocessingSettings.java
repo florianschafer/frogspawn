@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.clustering.postprocessing;
 
 import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.ClusteringSettings;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -72,8 +72,8 @@ public class PostprocessingSettings {
    * @return Currently used vertex affiliation metric
    */
 
-  public VertexAffiliationMetric getVertexAffiliationMetric() {
-    return clusteringSettings.getVertexAffiliationMetric();
+  public AffiliationMetric getAffiliationMetric() {
+    return clusteringSettings.getAffiliationMetric();
   }
 
   /**
@@ -120,8 +120,8 @@ public class PostprocessingSettings {
    * @return Minimum affiliation of a vertex wrt. to a cluster
    */
 
-  public double getMinVertexAffiliation() {
-    return clusteringSettings.getMinVertexAffiliation();
+  public double getMinAffiliation() {
+    return clusteringSettings.getMinAffiliation();
   }
 
   /**
@@ -163,8 +163,8 @@ public class PostprocessingSettings {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-            .append("affiliationMetric", getVertexAffiliationMetric())
-            .append("minVertexAffiliation", getMinVertexAffiliation())
+            .append("affiliationMetric", getAffiliationMetric())
+            .append("minAffiliation", getMinAffiliation())
             .append("similarityMetric", getSimilarityMetric())
             .append("minParentSimilarity", getMinParentSimilarity())
             .append("maxParentSimilarity", getMaxParentSimilarity())

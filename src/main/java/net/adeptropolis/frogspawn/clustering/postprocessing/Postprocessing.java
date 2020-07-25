@@ -30,7 +30,7 @@ public class Postprocessing {
 
   private final Cluster rootCluster;
   private final Deque<Postprocessor> queue;
-  private final VertexAffiliationGuardingPostprocessor affiliationGuardingPostprocessor;
+  private final AffiliationGuardingPostprocessor affiliationGuardingPostprocessor;
 
   /**
    * Constructor
@@ -42,9 +42,9 @@ public class Postprocessing {
   private Postprocessing(Cluster rootCluster, PostprocessingSettings settings) {
     this.rootCluster = rootCluster;
     this.queue = createQueue(settings);
-    this.affiliationGuardingPostprocessor = new VertexAffiliationGuardingPostprocessor(
-            settings.getVertexAffiliationMetric(), settings.getMinClusterSize(),
-            settings.getMinVertexAffiliation());
+    this.affiliationGuardingPostprocessor = new AffiliationGuardingPostprocessor(
+            settings.getAffiliationMetric(), settings.getMinClusterSize(),
+            settings.getMinAffiliation());
   }
 
   /**

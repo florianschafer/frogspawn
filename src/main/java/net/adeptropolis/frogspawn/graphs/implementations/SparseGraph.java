@@ -30,7 +30,7 @@ public class SparseGraph extends Graph implements Serializable {
    * @param datastore Graph datastore
    */
 
-  public SparseGraph(CSRDatastore datastore) {
+  SparseGraph(CSRDatastore datastore) {
     this.datastore = datastore;
   }
 

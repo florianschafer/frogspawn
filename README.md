@@ -105,7 +105,7 @@ in the example below (using the defaults):
 ```java
 ClusteringSettings settings = ClusteringSettings.builder()
   .withMinClusterSize(50)          // Min cluster size
-  .withMinVertexAffiliation(0.1)   // Min affiliation score that a vertex may yield with respect to its cluster
+  .withMinAffiliation(0.1)   // Min affiliation score that a vertex may yield with respect to its cluster
   .build();
 ```
 

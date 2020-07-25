@@ -6,7 +6,7 @@
 package net.adeptropolis.frogspawn.digest;
 
 import net.adeptropolis.frogspawn.ClusteringSettings;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -71,11 +71,11 @@ public class DigesterSettings {
   }
 
   /**
-   * @return Currently used vertex affiliation metric
+   * @return Currently used affiliation metric
    */
 
-  public VertexAffiliationMetric getVertexAffiliationMetric() {
-    return clusteringSettings.getVertexAffiliationMetric();
+  public AffiliationMetric getAffiliationMetric() {
+    return clusteringSettings.getAffiliationMetric();
   }
 
   /**
@@ -85,7 +85,7 @@ public class DigesterSettings {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-            .append("affiliationMetric", getVertexAffiliationMetric())
+            .append("affiliationMetric", getAffiliationMetric())
             .append("maxDigestSize", getMaxDigestSize())
             .append("aggregateDigests", doAggregateDigests())
             .append("digestRanking", getDigestRanking())

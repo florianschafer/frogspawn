@@ -33,7 +33,7 @@ import java.util.PriorityQueue;
  * <b>NOTE:</b>After applying this postprocessor to the full cluster tree, the consistency guard must be re-applied too!
  * Otherwise, the vertex affiliation metric of clusters that have been lept over is undefined.
  *
- * @see VertexAffiliationGuardingPostprocessor
+ * @see AffiliationGuardingPostprocessor
  */
 
 public class ParentSimilarityPostprocessor implements Postprocessor {

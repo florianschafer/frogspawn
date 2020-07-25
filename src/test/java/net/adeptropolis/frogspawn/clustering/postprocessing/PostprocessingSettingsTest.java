@@ -8,7 +8,7 @@ package net.adeptropolis.frogspawn.clustering.postprocessing;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.SettingsTestBase;
 import net.adeptropolis.frogspawn.clustering.Cluster;
-import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
 import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
@@ -43,8 +43,8 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
   public void validateDefaults() {
     ClusteringSettings defaultClusteringSettings = ClusteringSettings.builder().build();
     PostprocessingSettings defaultSettings = PostprocessingSettings.builder(defaultClusteringSettings).build();
-    assertThat(defaultSettings.getVertexAffiliationMetric(), instanceOf(RelativeWeightVertexAffiliationMetric.class));
-    assertThat(defaultSettings.getMinVertexAffiliation(), closeTo(0.1, 1E-6));
+    assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
+    assertThat(defaultSettings.getMinAffiliation(), closeTo(0.1, 1E-6));
     assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));
     assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.05, 1E-9));
     assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.45, 1E-9));
@@ -58,12 +58,12 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
 
   @Test
   public void affiliationMetric() {
-    assertThat(postprocessingSettings.getVertexAffiliationMetric(), instanceOf(FakeAffiliationMetric.class));
+    assertThat(postprocessingSettings.getAffiliationMetric(), instanceOf(FakeAffiliationMetric.class));
   }
 
   @Test
-  public void minVertexAffiliation() {
-    assertThat(postprocessingSettings.getMinVertexAffiliation(), closeTo(0.465, 1E-6));
+  public void minAffiliation() {
+    assertThat(postprocessingSettings.getMinAffiliation(), closeTo(0.465, 1E-6));
   }
 
   @Test

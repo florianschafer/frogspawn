@@ -150,7 +150,7 @@ public class SparseSubgraphTest extends GraphTestBase {
 
   @Test
   public void subgraph() {
-    Graph subgraph = defaultSubgraph(4, 10, 11).subgraph(IntIterators.wrap(new int[]{4, 10}));
+    Graph subgraph = subgraph(defaultSubgraph(4, 10, 11), 4, 10);
     assertThat("Subgraph size", subgraph.order(), is(2));
     subgraph.traverseParallel(consumer);
     assertThat("Subgraph edges", consumer.getEdges(), containsInAnyOrder(

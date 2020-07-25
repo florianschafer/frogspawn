@@ -6,7 +6,7 @@
 package net.adeptropolis.frogspawn.digest;
 
 import net.adeptropolis.frogspawn.clustering.Cluster;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.helpers.Arr;
@@ -19,7 +19,7 @@ import net.adeptropolis.frogspawn.helpers.Arr;
 
 public class ClusterDigester {
 
-  private final VertexAffiliationMetric metric;
+  private final AffiliationMetric metric;
   private final int maxSize;
   private final boolean aggregate;
   private final DigestRanking ranking;
@@ -31,7 +31,7 @@ public class ClusterDigester {
    */
 
   public ClusterDigester(DigesterSettings settings) {
-    this.metric = settings.getVertexAffiliationMetric();
+    this.metric = settings.getAffiliationMetric();
     this.maxSize = settings.getMaxDigestSize();
     this.aggregate = settings.doAggregateDigests();
     this.ranking = settings.getDigestRanking();

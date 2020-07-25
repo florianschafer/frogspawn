@@ -5,7 +5,7 @@
 
 package net.adeptropolis.frogspawn;
 
-import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
@@ -35,8 +35,8 @@ public class ClusteringSettingsTest extends SettingsTestBase {
   @Test
   public void validateDefaults() {
     ClusteringSettings defaultSettings = ClusteringSettings.builder().build();
-    assertThat(defaultSettings.getVertexAffiliationMetric(), instanceOf(RelativeWeightVertexAffiliationMetric.class));
-    assertThat(defaultSettings.getMinVertexAffiliation(), closeTo(0.1, 1E-6));
+    assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
+    assertThat(defaultSettings.getMinAffiliation(), closeTo(0.1, 1E-6));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMaxIterations(), is(540));
     assertThat(defaultSettings.getRandomSeed(), is(42133742L));
@@ -45,13 +45,13 @@ public class ClusteringSettingsTest extends SettingsTestBase {
   }
 
   @Test
-  public void vertexAffiliationMetric() {
-    assertThat(clusteringSettings.getVertexAffiliationMetric(), instanceOf(FakeAffiliationMetric.class));
+  public void AffiliationMetric() {
+    assertThat(clusteringSettings.getAffiliationMetric(), instanceOf(FakeAffiliationMetric.class));
   }
 
   @Test
-  public void minVertexAffiliation() {
-    assertThat(clusteringSettings.getMinVertexAffiliation(), closeTo(0.465, 1E-6));
+  public void minAffiliation() {
+    assertThat(clusteringSettings.getMinAffiliation(), closeTo(0.465, 1E-6));
   }
 
   @Test

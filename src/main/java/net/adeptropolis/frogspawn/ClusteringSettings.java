@@ -5,8 +5,8 @@
 
 package net.adeptropolis.frogspawn;
 
-import net.adeptropolis.frogspawn.clustering.affiliation.RelativeWeightVertexAffiliationMetric;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
@@ -19,8 +19,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class ClusteringSettings {
 
-  private final VertexAffiliationMetric vertexAffiliationMetric;
-  private final double minVertexAffiliation;
+  private final AffiliationMetric affiliationMetric;
+  private final double minAffiliation;
   private final int minClusterSize;
   private final int trailSize;
   private final double convergenceThreshold;
@@ -30,8 +30,8 @@ public class ClusteringSettings {
   /**
    * Constructor
    *
-   * @param vertexAffiliationMetric Vertex/cluster affiliation metric to be used
-   * @param minVertexAffiliation    Minimum affiliation score of a vertex wrt. to a cluster
+   * @param affiliationMetric Vertex/cluster affiliation metric to be used
+   * @param minAffiliation    Minimum affiliation score
    * @param minClusterSize          Minimum cluster size
    * @param trailSize               Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
    * @param convergenceThreshold    Fraction of converged vertices
@@ -39,11 +39,11 @@ public class ClusteringSettings {
    * @param randomSeed              Seed value for random initial value generation
    */
 
-  private ClusteringSettings(VertexAffiliationMetric vertexAffiliationMetric, double minVertexAffiliation,
+  private ClusteringSettings(AffiliationMetric affiliationMetric, double minAffiliation,
                              int minClusterSize, int trailSize, double convergenceThreshold, int maxIterations,
                              long randomSeed) {
-    this.vertexAffiliationMetric = vertexAffiliationMetric;
-    this.minVertexAffiliation = minVertexAffiliation;
+    this.affiliationMetric = affiliationMetric;
+    this.minAffiliation = minAffiliation;
     this.minClusterSize = minClusterSize;
     this.trailSize = trailSize;
     this.convergenceThreshold = convergenceThreshold;
@@ -65,8 +65,8 @@ public class ClusteringSettings {
    * @return Minimum affiliation of a vertex wrt. to a cluster
    */
 
-  public double getMinVertexAffiliation() {
-    return minVertexAffiliation;
+  public double getMinAffiliation() {
+    return minAffiliation;
   }
 
   /**
@@ -109,8 +109,8 @@ public class ClusteringSettings {
    * @return Currently used vertex affiliation metric
    */
 
-  public VertexAffiliationMetric getVertexAffiliationMetric() {
-    return vertexAffiliationMetric;
+  public AffiliationMetric getAffiliationMetric() {
+    return affiliationMetric;
   }
 
   /**
@@ -120,8 +120,8 @@ public class ClusteringSettings {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-            .append("affiliationMetric", vertexAffiliationMetric)
-            .append("minVertexAffiliation", minVertexAffiliation)
+            .append("affiliationMetric", affiliationMetric)
+            .append("minAffiliation", minAffiliation)
             .append("minClusterSize", minClusterSize)
             .append("trailSize", trailSize)
             .append("convergenceThreshold", convergenceThreshold)
@@ -132,8 +132,8 @@ public class ClusteringSettings {
 
   public static class Builder {
 
-    private VertexAffiliationMetric vertexAffiliationMetric = new RelativeWeightVertexAffiliationMetric();
-    private double minVertexAffiliation = 0.1;
+    private AffiliationMetric affiliationMetric = new DefaultAffiliationMetric();
+    private double minAffiliation = 0.1;
     private int minClusterSize = 50;
     private int trailSize = 20;
     private double convergenceThreshold = 0.95; // Note that values <= ~0.75-0.8 actually degrade performance
@@ -141,26 +141,26 @@ public class ClusteringSettings {
     private int maxIterations = 540; // Set as twice the 99.9% quantile of the required iterations on a large sample within a parameter range of 15-35 for trail size and 0.9-0.98 for convergence threshold
 
     /**
-     * Set vertex affiliation metric. Default is <code>RelativeWeightVertexAffiliationMetric</code>
+     * Set affiliation metric. Default is <code>DefaultAffiliationMetric</code>
      *
      * @param metric Metric
      * @return this
      */
 
-    public Builder withVertexAffiliationMetric(VertexAffiliationMetric metric) {
-      this.vertexAffiliationMetric = metric;
+    public Builder withAffiliationMetric(AffiliationMetric metric) {
+      this.affiliationMetric = metric;
       return this;
     }
 
     /**
-     * Set minimum vertex affiliation score. Default is 0.1
+     * Set minimum affiliation score. Default is 0.1
      *
-     * @param minVertexAffiliation Minimum affiliation score
+     * @param minAffiliation Minimum affiliation score
      * @return this
      */
 
-    public Builder withMinVertexAffiliation(double minVertexAffiliation) {
-      this.minVertexAffiliation = minVertexAffiliation;
+    public Builder withMinAffiliation(double minAffiliation) {
+      this.minAffiliation = minAffiliation;
       return this;
     }
 
@@ -229,7 +229,7 @@ public class ClusteringSettings {
      */
 
     public ClusteringSettings build() {
-      return new ClusteringSettings(vertexAffiliationMetric, minVertexAffiliation, minClusterSize, trailSize, convergenceThreshold,
+      return new ClusteringSettings(affiliationMetric, minAffiliation, minClusterSize, trailSize, convergenceThreshold,
               maxIterations, randomSeed);
     }
 

@@ -15,15 +15,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
-public class RelativeWeightVertexAffiliationMetricTest {
+public class DefaultAffiliationMetricTest {
 
   private Graph graph;
   private Graph subgraph;
-  private RelativeWeightVertexAffiliationMetric metric;
+  private DefaultAffiliationMetric metric;
 
   @Before
   public void setup() {
-    metric = new RelativeWeightVertexAffiliationMetric();
+    metric = new DefaultAffiliationMetric();
     graph = new SparseGraphBuilder()
             .add(0, 1, 3)
             .add(1, 2, 4)

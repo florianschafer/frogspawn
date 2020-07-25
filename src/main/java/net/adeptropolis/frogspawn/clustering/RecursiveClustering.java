@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.clustering;
 
 import com.google.common.base.Preconditions;
 import net.adeptropolis.frogspawn.ClusteringSettings;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationGuard;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationGuard;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.frogspawn.graphs.algorithms.SpectralBisector;
@@ -31,7 +31,7 @@ public class RecursiveClustering {
   private final Graph graph;
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
-  private final VertexAffiliationGuard vertexAffiliationGuard;
+  private final AffiliationGuard affiliationGuard;
   private final RandomInitialVectorsSource ivSource;
 
   // NOTE: By construction, this type of queue induces the top-town ordering required for determinism
@@ -50,8 +50,8 @@ public class RecursiveClustering {
     this.settings = settings;
     this.bisector = new SpectralBisector(settings);
     this.queue = new ConcurrentLinkedQueue<>();
-    this.vertexAffiliationGuard = new VertexAffiliationGuard(settings.getVertexAffiliationMetric(),
-            graph, settings.getMinClusterSize(), settings.getMinVertexAffiliation());
+    this.affiliationGuard = new AffiliationGuard(settings.getAffiliationMetric(),
+            graph, settings.getMinClusterSize(), settings.getMinAffiliation());
     this.ivSource = new RandomInitialVectorsSource(settings.getRandomSeed());
   }
 
@@ -140,7 +140,7 @@ public class RecursiveClustering {
     if (partition.order() < settings.getMinClusterSize() || partition.order() == protocluster.getGraph().order()) {
       protocluster.getCluster().addToRemainder(partition);
     } else {
-      Graph guaranteedAffiliationSubgraph = vertexAffiliationGuard.ensure(protocluster.getCluster(), partition);
+      Graph guaranteedAffiliationSubgraph = affiliationGuard.ensure(protocluster.getCluster(), partition);
       if (guaranteedAffiliationSubgraph != null) {
         processGuaranteedAffiliationSubgraph(protocluster, guaranteedAffiliationSubgraph);
       }

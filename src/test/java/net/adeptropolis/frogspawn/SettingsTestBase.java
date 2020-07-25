@@ -5,15 +5,15 @@
 
 package net.adeptropolis.frogspawn;
 
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.Graph;
 
 public class SettingsTestBase {
 
   protected ClusteringSettings clusteringSettings() {
     return ClusteringSettings.builder()
-            .withVertexAffiliationMetric(new FakeAffiliationMetric())
-            .withMinVertexAffiliation(0.465)
+            .withAffiliationMetric(new FakeAffiliationMetric())
+            .withMinAffiliation(0.465)
             .withMinClusterSize(4242)
             .withMaxIterations(42356)
             .withTrailSize(783)
@@ -22,7 +22,7 @@ public class SettingsTestBase {
             .build();
   }
 
-  protected static class FakeAffiliationMetric implements VertexAffiliationMetric {
+  protected static class FakeAffiliationMetric implements AffiliationMetric {
 
     @Override
     public double[] compute(Graph supergraph, Graph subgraph) {

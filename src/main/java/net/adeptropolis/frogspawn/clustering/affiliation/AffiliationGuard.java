@@ -18,9 +18,9 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
  * criterion.
  */
 
-public class VertexAffiliationGuard {
+public class AffiliationGuard {
 
-  private final VertexAffiliationMetric metric;
+  private final AffiliationMetric metric;
   private final Graph graph;
   private final int minClusterSize;
   private final double minAffiliation;
@@ -34,7 +34,7 @@ public class VertexAffiliationGuard {
    * @param minAffiliation Minimum vertex affiliation score
    */
 
-  public VertexAffiliationGuard(VertexAffiliationMetric metric, Graph graph, int minClusterSize, double minAffiliation) {
+  public AffiliationGuard(AffiliationMetric metric, Graph graph, int minClusterSize, double minAffiliation) {
     this.metric = metric;
     this.graph = graph;
     this.minClusterSize = minClusterSize;

@@ -8,8 +8,8 @@ package net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntRBTreeSet;
 import net.adeptropolis.frogspawn.clustering.Cluster;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationGuard;
-import net.adeptropolis.frogspawn.clustering.affiliation.VertexAffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationGuard;
+import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.frogspawn.clustering.postprocessing.TreeTraversalMode;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -22,28 +22,28 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
  * cluster's remainder are shifted upwards. For this reason, this postprocessor must always be applied bottom-up.
  * </p>
  *
- * @see VertexAffiliationGuard
+ * @see AffiliationGuard
  */
 
 
-public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
+public class AffiliationGuardingPostprocessor implements Postprocessor {
 
-  private final VertexAffiliationMetric vertexAffiliationMetric;
+  private final AffiliationMetric affiliationMetric;
   private final int minClusterSize;
-  private final double minVertexAffiliation;
+  private final double minAffiliation;
 
   /**
    * Constructor
    *
-   * @param vertexAffiliationMetric Affiliation metric to be used
+   * @param affiliationMetric Affiliation metric to be used
    * @param minClusterSize          Minimum cluster size
-   * @param minVertexAffiliation    Minimum vertex affiliation wrt. to a cluster
+   * @param minAffiliation    Minimum affiliation wrt. to a cluster
    */
 
-  public VertexAffiliationGuardingPostprocessor(VertexAffiliationMetric vertexAffiliationMetric, int minClusterSize, double minVertexAffiliation) {
-    this.vertexAffiliationMetric = vertexAffiliationMetric;
+  public AffiliationGuardingPostprocessor(AffiliationMetric affiliationMetric, int minClusterSize, double minAffiliation) {
+    this.affiliationMetric = affiliationMetric;
     this.minClusterSize = minClusterSize;
-    this.minVertexAffiliation = minVertexAffiliation;
+    this.minAffiliation = minAffiliation;
   }
 
   /**
@@ -126,10 +126,10 @@ public class VertexAffiliationGuardingPostprocessor implements Postprocessor {
    */
 
   private void shiftUnaffiliatedVertices(IntRBTreeSet clusterVertices, Cluster parent, IntRBTreeSet survivors, Graph subgraph) {
-    double[] affiliationScores = vertexAffiliationMetric.compute(parent.rootGraph(), subgraph);
+    double[] affiliationScores = affiliationMetric.compute(parent.rootGraph(), subgraph);
     VertexIterator it = subgraph.vertexIterator();
     while (it.hasNext()) {
-      if (affiliationScores[it.localId()] < minVertexAffiliation) {
+      if (affiliationScores[it.localId()] < minAffiliation) {
         if (clusterVertices.contains(it.globalId())) {
           parent.addToRemainder(it.globalId());
           clusterVertices.remove(it.globalId());

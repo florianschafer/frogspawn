@@ -10,10 +10,10 @@ import net.adeptropolis.frogspawn.graphs.Graph;
 /**
  * Vertex affiliation metric: Compute a score for how well a vertex fits into a cluster
  *
- * @see VertexAffiliationGuard
+ * @see AffiliationGuard
  */
 
-public interface VertexAffiliationMetric {
+public interface AffiliationMetric {
 
   /**
    * Compute an affiliation score for all vertices of a subgraph with respect to one of its supergraphs
