@@ -185,7 +185,7 @@ public class PostprocessingSettings {
     private double minParentSimilarity = 0.05;
     private double maxParentSimilarity = 0.45;
     private double targetParentSimilarity = 0.15;
-    private double parentSimilarityAcceptanceLimit = 0.99;
+    private double parentSimilarityAcceptanceLimit = 0.98;
     private int minChildren = 0;
     private SingletonMode singletonMode = SingletonMode.ASSIMILATE;
 

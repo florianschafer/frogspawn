@@ -19,7 +19,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
 
-public class OrderedBTTQueueFactoryTest extends GraphTestBase {
+public class BottomUpQueueFactoryTest extends GraphTestBase {
 
   @Test
   public void checkOrder() {
@@ -37,7 +37,7 @@ public class OrderedBTTQueueFactoryTest extends GraphTestBase {
     Cluster c41 = new Cluster(c4);
     c41.addToRemainder(IntIterators.wrap(new int[]{20}));
     ArrayList<Object> collected = Lists.newArrayList();
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(root);
+    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue(root);
     while (!queue.isEmpty()) {
       collected.add(queue.poll());
     }
@@ -54,7 +54,7 @@ public class OrderedBTTQueueFactoryTest extends GraphTestBase {
     Cluster child21 = new Cluster(child2);
     Cluster child22 = new Cluster(child2);
     Cluster child221 = new Cluster(child22);
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(root);
+    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue(root);
     assertThat(queue.poll().depth(), is(3));
     assertThat(queue.poll().depth(), is(2));
     assertThat(queue.poll().depth(), is(2));

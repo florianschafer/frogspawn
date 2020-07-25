@@ -46,7 +46,7 @@ public class PostprocessingTraversal {
    */
 
   private static PostprocessingState processQueueBTT(Postprocessor postprocessor, Cluster rootCluster) {
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
+    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue(rootCluster);
     PostprocessingState state = new PostprocessingState();
     while (!queue.isEmpty()) {
       Cluster cluster = queue.poll();

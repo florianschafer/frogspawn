@@ -7,7 +7,7 @@ package net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors;
 
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.adeptropolis.frogspawn.clustering.Cluster;
-import net.adeptropolis.frogspawn.clustering.postprocessing.OrderedBTTQueueFactory;
+import net.adeptropolis.frogspawn.clustering.postprocessing.BottomUpQueueFactory;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.frogspawn.clustering.postprocessing.TreeTraversalMode;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -72,7 +72,7 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
   @Override
   public PostprocessingState apply(Cluster rootCluster) {
 
-    PriorityQueue<Cluster> queue = OrderedBTTQueueFactory.queue(rootCluster);
+    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue(rootCluster);
 
     boolean changed = false;
     Stats stats = new Stats();

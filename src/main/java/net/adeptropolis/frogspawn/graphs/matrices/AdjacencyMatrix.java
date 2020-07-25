@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.frogspawn.graphs.operators;
+package net.adeptropolis.frogspawn.graphs.matrices;
 
 import com.google.common.base.Preconditions;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -12,39 +12,42 @@ import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import java.util.Arrays;
 
 /**
- * <p>The canonical linear graph operator</p>
- * <p>Multiplies the adjacency matrix with an argument from the vertex space.</p>
+ * <p>Adjacency matrix of a graph</p>
  */
 
-public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsumer {
+public class AdjacencyMatrix implements SquareMatrix, EdgeConsumer {
 
   private final Graph graph;
   private final double[] result;
   private double[] argument;
 
   /**
-   * Constructor for a new operator instance
+   * Constructor
    *
-   * @param graph The underlying graph
+   * @param graph Graph
    */
 
-  public CanonicalLinearOperator(Graph graph) {
+  public AdjacencyMatrix(Graph graph) {
     this.graph = graph;
     this.result = new double[graph.order()];
   }
 
   /**
-   * @param argument A vertex-indexed vector
-   * @return The product Av, with A being the adjacency matrix of the graph and v the argument.
+   * @param argument Vertex-indexed vector
+   * @return The product Av, with A being this instance and v the argument.
    */
 
-  public double[] apply(double[] argument) {
+  public double[] multiply(double[] argument) {
     Arrays.fill(result, 0);
     Preconditions.checkArgument(argument.length == graph.order(), "Argument length mismatch");
     this.argument = argument;
     graph.traverseParallel(this);
     return result;
   }
+
+  /**
+   * {@inheritDoc}
+   */
 
   @Override
   public int size() {
@@ -54,14 +57,14 @@ public class CanonicalLinearOperator implements LinearGraphOperator, EdgeConsume
   /**
    * Internal: Callback for graph traversal
    *
-   * @param u      Left vertex
-   * @param v      Right vertex
-   * @param weight Edge weight
+   * @param i      row
+   * @param j      column
+   * @param v value
    */
 
   @Override
-  public void accept(int u, int v, double weight) {
-    result[u] += weight * argument[v];
+  public void accept(int i, int j, double v) {
+    result[i] += v * argument[j];
   }
 
 }

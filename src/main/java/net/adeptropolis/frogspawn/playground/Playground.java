@@ -96,7 +96,7 @@ public class Playground {
   private void standardClustering() throws IOException {
     LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(WIKI_TOKENS));
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinAffiliation(0.35)
+            .withMinAffiliation(0.25)
             .withMinClusterSize(50)
             .build();
     Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
@@ -104,9 +104,9 @@ public class Playground {
 //    Snapshot.save(new File("/home/florian/tmp/entity-terms-snapshot-raw.bin"), root, labeledGraph);
 
     PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
-            .withMinParentSimilarity(0.1)
-            .withTargetParentSimilarity(0.1)
-            .withMaxParentSimilarity(0.3)
+            .withMinParentSimilarity(0.05)
+            .withTargetParentSimilarity(0.05)
+            .withMaxParentSimilarity(0.35)
             .build();
     Postprocessing.apply(root, postprocessingSettings);
 
