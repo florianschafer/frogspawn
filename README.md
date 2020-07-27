@@ -82,7 +82,7 @@ requires the vertex ids to be **consecutive integers starting at 0**. Note that 
 requirement will result in undefined behavior.
 
 ```java
-CompressedSparseGraphBuilder builder = new CompressedSparseGraphBuilder();
+SparseGraphBuilder builder = new SparseGraphBuilder();
 builder.add(left, right, weight)
 ...
 builder.add(anotherLeft, anotherRight, anotherWeight)
