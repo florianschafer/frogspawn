@@ -49,7 +49,7 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
     assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.05, 1E-9));
     assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.45, 1E-9));
     assertThat(defaultSettings.getTargetParentSimilarity(), closeTo(0.15, 1E-9));
-    assertThat(defaultSettings.getParentSimilarityAcceptanceLimit(), closeTo(0.99, 1E-9));
+    assertThat(defaultSettings.getParentSimilarityAcceptanceLimit(), closeTo(0.98, 1E-9));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMinChildren(), is(0));
     assertThat(defaultSettings.getSingletonMode(), is(ASSIMILATE));
