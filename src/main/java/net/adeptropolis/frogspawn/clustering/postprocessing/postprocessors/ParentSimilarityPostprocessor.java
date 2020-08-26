@@ -43,24 +43,22 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
   private final GraphSimilarityMetric metric;
   private final double minSimilarity;
   private final double maxSimilarity;
-  private final double targetSimilarity;
   private final double acceptanceLimit;
   private final Object2DoubleOpenHashMap<Cluster> scoreCache;
 
   /**
    * Constructor
-   * @param metric        Graph similarity metric
-   * @param minSimilarity Minimum similarity between a cluster and its parent
-   * @param maxSimilarity Maximum similarity between a cluster and its parent
-   * @param targetSimilarity Target similarity for relocating clusters
+   *
+   * @param metric          Graph similarity metric
+   * @param minSimilarity   Minimum similarity between a cluster and its parent
+   * @param maxSimilarity   Maximum similarity between a cluster and its parent
    * @param acceptanceLimit Lower boundary for the required acceptance limit
    */
 
-  public ParentSimilarityPostprocessor(GraphSimilarityMetric metric, double minSimilarity, double maxSimilarity, double targetSimilarity, double acceptanceLimit) {
+  public ParentSimilarityPostprocessor(GraphSimilarityMetric metric, double minSimilarity, double maxSimilarity, double acceptanceLimit) {
     this.metric = metric;
     this.minSimilarity = minSimilarity;
     this.maxSimilarity = maxSimilarity;
-    this.targetSimilarity = targetSimilarity;
     this.acceptanceLimit = acceptanceLimit;
     this.scoreCache = new Object2DoubleOpenHashMap<>();
   }
@@ -104,7 +102,7 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
    * Process a specific cluster
    *
    * @param cluster Any cluster
-   * @param stats Used for collecting convergence stats
+   * @param stats   Used for collecting convergence stats
    * @return Whether there were any changes made to this cluster or one of its ancestors
    */
 
@@ -135,7 +133,7 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
       for (ancestor = ancestor.getParent(); ancestor != null; ancestor = ancestor.getParent()) {
         similarity = similarity(ancestor, cluster);
 
-        if (similarity >= targetSimilarity) {
+        if (similarity >= minSimilarity) {
           ancestor.annex(cluster);
           return true;
         }

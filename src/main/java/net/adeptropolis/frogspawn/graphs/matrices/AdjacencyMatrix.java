@@ -57,8 +57,8 @@ public class AdjacencyMatrix implements SquareMatrix, EdgeConsumer {
   /**
    * Internal: Callback for graph traversal
    *
-   * @param i      row
-   * @param j      column
+   * @param i row
+   * @param j column
    * @param v value
    */
 

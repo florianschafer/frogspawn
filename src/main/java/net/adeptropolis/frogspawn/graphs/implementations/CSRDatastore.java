@@ -13,12 +13,13 @@ import java.io.Serializable;
 /**
  * Storage class for large, sparse graphs
  * <p>
- *   This class provides a CSR storage representation for adjacency matrices of large sparse graphs
- *   with double-valued weights. For further details, see
- *   <a href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">
- *     Wikipedia: Compressed sparse row (CSR, CRS or Yale format)
- *   </a>
+ * This class provides a CSR storage representation for adjacency matrices of large sparse graphs
+ * with double-valued weights. For further details, see
+ * <a href="https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)">
+ * Wikipedia: Compressed sparse row (CSR, CRS or Yale format)
+ * </a>
  * </p>
+ *
  * @see SparseGraphBuilder
  */
 
@@ -35,11 +36,11 @@ public class CSRDatastore implements Serializable {
   /**
    * Constructor
    *
-   * @param order     Number of vertices
-   * @param size      Number of edges
-   * @param pointers  Vertex pointers
-   * @param edges     Right endpoints of all edges
-   * @param weights   Edge weights
+   * @param order    Number of vertices
+   * @param size     Number of edges
+   * @param pointers Vertex pointers
+   * @param edges    Right endpoints of all edges
+   * @param weights  Edge weights
    */
 
   CSRDatastore(int order, long size, long[] pointers, BigInts edges, BigDoubles weights) {

@@ -17,6 +17,23 @@ import java.util.Arrays;
 public class NormalizedCutMetric implements GraphSimilarityMetric {
 
   /**
+   * Reduce multiple accumulators into a single instance by just adding values
+   *
+   * @param accumulators Array of accumulators
+   * @return Single accumulator with summed up values
+   */
+
+  private static Accumulator reduce(Accumulator[] accumulators) {
+    Accumulator acc = new Accumulator();
+    for (int i = 0; i < ParallelEdgeOps.slices(); i++) {
+      acc.subgraphWeights += accumulators[i].subgraphWeights;
+      acc.complementWeights += accumulators[i].complementWeights;
+      acc.cuts += accumulators[i].cuts;
+    }
+    return acc;
+  }
+
+  /**
    * Computes (half) the normalized cut between a graph and one of its subgraphs.
    *
    * @param supergraph A graph
@@ -118,23 +135,6 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
     }
     return 0;
 
-  }
-
-  /**
-   * Reduce multiple accumulators into a single instance by just adding values
-   *
-   * @param accumulators Array of accumulators
-   * @return Single accumulator with summed up values
-   */
-
-  private static Accumulator reduce(Accumulator[] accumulators) {
-    Accumulator acc = new Accumulator();
-    for (int i = 0; i < ParallelEdgeOps.slices(); i++) {
-      acc.subgraphWeights += accumulators[i].subgraphWeights;
-      acc.complementWeights += accumulators[i].complementWeights;
-      acc.cuts += accumulators[i].cuts;
-    }
-    return acc;
   }
 
   /**

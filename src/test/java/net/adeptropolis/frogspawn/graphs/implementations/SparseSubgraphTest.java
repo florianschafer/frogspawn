@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.*;
 
 public class SparseSubgraphTest extends GraphTestBase {
 
-  private static SparseGraph defaultGraph = builder()
+  private static final SparseGraph defaultGraph = builder()
           .add(0, 1, 2)
           .add(1, 2, 3)
           .add(4, 9, 5)

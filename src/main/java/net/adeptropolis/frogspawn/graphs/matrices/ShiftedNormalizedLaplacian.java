@@ -10,12 +10,10 @@ import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.helpers.Vectors;
 
 /**
- *
  * <p>Provides a spectrally shifted version of the normalized laplacian of an undirected, connected graph</p>
  * <p>The shifting is performed in such a way that the eigenvector originally belonging to the second-smallest
  * eigenvalue of the normalized laplacian is now assigned to the largest eigenvalue of this matrix.
  * All computations are performed on the fly.</p>
- *
  */
 
 public class ShiftedNormalizedLaplacian implements SquareMatrix {

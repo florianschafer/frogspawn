@@ -5,8 +5,8 @@
 
 package net.adeptropolis.frogspawn;
 
-import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
 import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
+import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.ConstantSigTrailConvergence;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
@@ -30,13 +30,13 @@ public class ClusteringSettings {
   /**
    * Constructor
    *
-   * @param affiliationMetric Vertex/cluster affiliation metric to be used
-   * @param minAffiliation    Minimum affiliation score
-   * @param minClusterSize          Minimum cluster size
-   * @param trailSize               Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
-   * @param convergenceThreshold    Fraction of converged vertices
-   * @param maxIterations           Maximum number of iterations
-   * @param randomSeed              Seed value for random initial value generation
+   * @param affiliationMetric    Vertex/cluster affiliation metric to be used
+   * @param minAffiliation       Minimum affiliation score
+   * @param minClusterSize       Minimum cluster size
+   * @param trailSize            Window size for constant trail convergence (Number of iterations where a vertex must not change its sign)
+   * @param convergenceThreshold Fraction of converged vertices
+   * @param maxIterations        Maximum number of iterations
+   * @param randomSeed           Seed value for random initial value generation
    */
 
   private ClusteringSettings(AffiliationMetric affiliationMetric, double minAffiliation,

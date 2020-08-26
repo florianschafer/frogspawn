@@ -291,7 +291,7 @@ public class GraphTestBase {
           .build();
 
   protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
-  private FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
+  private final FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
 
   protected static SparseGraph completeGraph(int size) {
     SparseGraphBuilder b = new SparseGraphBuilder(0);
@@ -301,6 +301,11 @@ public class GraphTestBase {
       }
     }
     return b.build();
+  }
+
+  protected static Graph subgraph(Graph graph, int... globalIds) {
+    Arrays.sort(globalIds);
+    return graph.subgraph(IntIterators.wrap(globalIds));
   }
 
   @Before
@@ -384,11 +389,6 @@ public class GraphTestBase {
   protected long traverseFingerprint(Graph graph) {
     ParallelEdgeOps.traverse(graph, fingerprintingConsumer, TraversalMode.DEFAULT);
     return fingerprintingConsumer.getFingerprint();
-  }
-
-  protected static Graph subgraph(Graph graph, int... globalIds) {
-    Arrays.sort(globalIds);
-    return graph.subgraph(IntIterators.wrap(globalIds));
   }
 
   protected static class SubgraphCollectingConsumer implements Consumer<Graph> {

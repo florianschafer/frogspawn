@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.graphs.implementations;
 
-import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import org.junit.Test;

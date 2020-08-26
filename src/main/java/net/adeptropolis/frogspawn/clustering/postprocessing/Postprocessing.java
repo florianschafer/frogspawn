@@ -78,7 +78,6 @@ public class Postprocessing {
               settings.getSimilarityMetric(),
               settings.getMinParentSimilarity(),
               settings.getMaxParentSimilarity(),
-              settings.getTargetParentSimilarity(),
               settings.getParentSimilarityAcceptanceLimit()));
     }
 

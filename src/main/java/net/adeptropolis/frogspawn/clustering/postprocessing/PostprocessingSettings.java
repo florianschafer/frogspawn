@@ -22,7 +22,6 @@ public class PostprocessingSettings {
 
   private final double minParentSimilarity;
   private final double maxParentSimilarity;
-  private final double targetParentSimilarity;
   private final double parentSimilarityAcceptanceLimit;
   private final int minChildren;
 
@@ -31,26 +30,25 @@ public class PostprocessingSettings {
 
   /**
    * Constructor
-   * @param clusteringSettings   Primary clustering settings
-   * @param similarityMetric     Graph similarity metric
-   * @param minParentSimilarity  Minimum parent similarity wrt. to the given similarity metric
-   * @param maxParentSimilarity  Maximum parent similarity wrt. to the given similarity metric
-   * @param targetParentSimilarity Minimum parent similarity for vertical shifting
+   *
+   * @param clusteringSettings              Primary clustering settings
+   * @param similarityMetric                Graph similarity metric
+   * @param minParentSimilarity             Minimum parent similarity wrt. to the given similarity metric
+   * @param maxParentSimilarity             Maximum parent similarity wrt. to the given similarity metric
    * @param parentSimilarityAcceptanceLimit Minimum fraction of clusters that obey the above similarity boundaries
-   * @param minChildren          Minimum number of children for each cluster
-   * @param singletonMode        Determine how singleton clusters should be treated
-   * @param customPostprocessors List of custom postprocessors to be executed at the end of the default pipeline
+   * @param minChildren                     Minimum number of children for each cluster
+   * @param singletonMode                   Determine how singleton clusters should be treated
+   * @param customPostprocessors            List of custom postprocessors to be executed at the end of the default pipeline
    */
 
   private PostprocessingSettings(ClusteringSettings clusteringSettings, GraphSimilarityMetric similarityMetric,
-                                 double minParentSimilarity, double maxParentSimilarity, double targetParentSimilarity,
+                                 double minParentSimilarity, double maxParentSimilarity,
                                  double parentSimilarityAcceptanceLimit, int minChildren, SingletonMode singletonMode,
                                  List<Postprocessor> customPostprocessors) {
     this.clusteringSettings = clusteringSettings;
     this.similarityMetric = similarityMetric;
     this.minParentSimilarity = minParentSimilarity;
     this.maxParentSimilarity = maxParentSimilarity;
-    this.targetParentSimilarity = targetParentSimilarity;
     this.parentSimilarityAcceptanceLimit = parentSimilarityAcceptanceLimit;
     this.minChildren = minChildren;
     this.singletonMode = singletonMode;
@@ -98,14 +96,6 @@ public class PostprocessingSettings {
 
   public double getMaxParentSimilarity() {
     return maxParentSimilarity;
-  }
-
-  /**
-   * @return Target parent similarity
-   */
-
-  public double getTargetParentSimilarity() {
-    return targetParentSimilarity;
   }
 
   /**
@@ -168,7 +158,6 @@ public class PostprocessingSettings {
             .append("similarityMetric", getSimilarityMetric())
             .append("minParentSimilarity", getMinParentSimilarity())
             .append("maxParentSimilarity", getMaxParentSimilarity())
-            .append("targetParentSimilarity", getTargetParentSimilarity())
             .append("parentSimilarityAcceptanceLimit", getParentSimilarityAcceptanceLimit())
             .append("minClusterSize", getMinClusterSize())
             .append("minChildren", getMinChildren())
@@ -184,7 +173,6 @@ public class PostprocessingSettings {
     private GraphSimilarityMetric similarityMetric = new NormalizedCutMetric();
     private double minParentSimilarity = 0.05;
     private double maxParentSimilarity = 0.45;
-    private double targetParentSimilarity = 0.15;
     private double parentSimilarityAcceptanceLimit = 0.98;
     private int minChildren = 0;
     private SingletonMode singletonMode = SingletonMode.ASSIMILATE;
@@ -232,18 +220,6 @@ public class PostprocessingSettings {
 
     public Builder withMaxParentSimilarity(double maxParentSimilarity) {
       this.maxParentSimilarity = maxParentSimilarity;
-      return this;
-    }
-
-    /**
-     * Set the target parent-child similarity. Default is 0.15
-     *
-     * @param targetParentSimilarity Minimum similarity between relocated clusters and their prospective parents
-     * @return this
-     */
-
-    public Builder withTargetParentSimilarity(double targetParentSimilarity) {
-      this.targetParentSimilarity = targetParentSimilarity;
       return this;
     }
 
@@ -303,7 +279,7 @@ public class PostprocessingSettings {
      */
 
     public PostprocessingSettings build() {
-      return new PostprocessingSettings(clusteringSettings, similarityMetric, minParentSimilarity, maxParentSimilarity, targetParentSimilarity, parentSimilarityAcceptanceLimit, minChildren, singletonMode, customPostprocessors);
+      return new PostprocessingSettings(clusteringSettings, similarityMetric, minParentSimilarity, maxParentSimilarity, parentSimilarityAcceptanceLimit, minChildren, singletonMode, customPostprocessors);
     }
 
   }

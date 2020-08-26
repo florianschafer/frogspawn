@@ -33,7 +33,6 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
             .withSimilarityMetric(new FakeSimilarityMetric())
             .withMinParentSimilarity(0.2718)
             .withMaxParentSimilarity(3.1415)
-            .withTargetParentSimilarity(1.0 / 3)
             .withParentSimilarityAcceptanceLimit(1.0 / 8)
             .withSingletonMode(SingletonMode.REDISTRIBUTE)
             .build();
@@ -48,7 +47,6 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
     assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));
     assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.05, 1E-9));
     assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.45, 1E-9));
-    assertThat(defaultSettings.getTargetParentSimilarity(), closeTo(0.15, 1E-9));
     assertThat(defaultSettings.getParentSimilarityAcceptanceLimit(), closeTo(0.98, 1E-9));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMinChildren(), is(0));
@@ -79,11 +77,6 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
   @Test
   public void maxParentSimilarity() {
     assertThat(postprocessingSettings.getMaxParentSimilarity(), closeTo(3.1415, 1E-9));
-  }
-
-  @Test
-  public void targetParentSimilarity() {
-    assertThat(postprocessingSettings.getTargetParentSimilarity(), closeTo(1.0 / 3, 1E-9));
   }
 
   @Test

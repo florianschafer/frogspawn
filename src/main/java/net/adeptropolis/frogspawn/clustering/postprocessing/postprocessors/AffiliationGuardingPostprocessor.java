@@ -36,7 +36,7 @@ public class AffiliationGuardingPostprocessor implements Postprocessor {
    * Constructor
    *
    * @param affiliationMetric Affiliation metric to be used
-   * @param minClusterSize          Minimum cluster size
+   * @param minClusterSize    Minimum cluster size
    * @param minAffiliation    Minimum affiliation wrt. to a cluster
    */
 

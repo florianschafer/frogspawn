@@ -9,7 +9,6 @@ import java.util.Objects;
 
 /**
  * Simple storage class for the state of a postprocessor
- *
  */
 
 public class PostprocessingState {
@@ -25,7 +24,7 @@ public class PostprocessingState {
    * Constructor
    *
    * @param madeHierarchyChanges Whether the postprocessor made changes to the cluster hierarchy
-   * @param forceQualityGuard Whether to always force running the quality guard afterwards, regardless of what <code>madeHierarchyChanges</code> says.
+   * @param forceQualityGuard    Whether to always force running the quality guard afterwards, regardless of what <code>madeHierarchyChanges</code> says.
    */
 
   public PostprocessingState(boolean madeHierarchyChanges, boolean forceQualityGuard) {
@@ -69,6 +68,7 @@ public class PostprocessingState {
 
   /**
    * Update this state by <code>OR</code>ing all members with another instance of this class
+   *
    * @param other Other instance of this class
    * @return this
    */
