@@ -36,7 +36,7 @@ public class ClusteringSettingsTest extends SettingsTestBase {
   public void validateDefaults() {
     ClusteringSettings defaultSettings = ClusteringSettings.builder().build();
     assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
-    assertThat(defaultSettings.getMinAffiliation(), closeTo(0.1, 1E-6));
+    assertThat(defaultSettings.getMinAffiliation(), closeTo(0.2, 1E-6));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMaxIterations(), is(540));
     assertThat(defaultSettings.getRandomSeed(), is(42133742L));

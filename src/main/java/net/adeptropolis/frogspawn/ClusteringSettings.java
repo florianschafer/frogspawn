@@ -133,7 +133,7 @@ public class ClusteringSettings {
   public static class Builder {
 
     private AffiliationMetric affiliationMetric = new DefaultAffiliationMetric();
-    private double minAffiliation = 0.1;
+    private double minAffiliation = 0.2;
     private int minClusterSize = 50;
     private int trailSize = 20;
     private double convergenceThreshold = 0.95; // Note that values <= ~0.75-0.8 actually degrade performance
@@ -153,7 +153,7 @@ public class ClusteringSettings {
     }
 
     /**
-     * Set minimum affiliation score. Default is 0.1
+     * Set minimum affiliation score. Default is 0.2
      *
      * @param minAffiliation Minimum affiliation score
      * @return this

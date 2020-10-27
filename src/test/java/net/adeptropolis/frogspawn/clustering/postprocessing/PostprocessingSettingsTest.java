@@ -43,10 +43,10 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
     ClusteringSettings defaultClusteringSettings = ClusteringSettings.builder().build();
     PostprocessingSettings defaultSettings = PostprocessingSettings.builder(defaultClusteringSettings).build();
     assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
-    assertThat(defaultSettings.getMinAffiliation(), closeTo(0.1, 1E-6));
+    assertThat(defaultSettings.getMinAffiliation(), closeTo(0.2, 1E-6));
     assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));
-    assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.05, 1E-9));
-    assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.45, 1E-9));
+    assertThat(defaultSettings.getMinParentSimilarity(), closeTo(0.09, 1E-9));
+    assertThat(defaultSettings.getMaxParentSimilarity(), closeTo(0.60, 1E-9));
     assertThat(defaultSettings.getParentSimilarityAcceptanceLimit(), closeTo(0.98, 1E-9));
     assertThat(defaultSettings.getMinClusterSize(), is(50));
     assertThat(defaultSettings.getMinChildren(), is(0));
