@@ -1,5 +1,10 @@
 # Frogspawn Changelog
 
+## v1.2.1
+
+    - LabeledGraphBuilder::add is now thread safe
+    - Provide better defaults
+        
 ## v1.2.0
 
     - Improved parent similarity postfiltering
