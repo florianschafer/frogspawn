@@ -1,3 +1,4 @@
+ - Equip affilitation metric with a "passed" function and remove minAffiliation to allow for arbitrary scores
  - Split up graph test base
  - Simplify API
  - Top-level pruning

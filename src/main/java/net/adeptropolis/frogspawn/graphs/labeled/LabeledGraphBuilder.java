@@ -45,7 +45,7 @@ public class LabeledGraphBuilder<V extends Serializable> {
    * @return this
    */
 
-  public LabeledGraphBuilder<V> add(V left, V right, double weight) {
+  public synchronized LabeledGraphBuilder<V> add(V left, V right, double weight) {
     builder.add(vertexId(left), vertexId(right), weight);
     return this;
   }
