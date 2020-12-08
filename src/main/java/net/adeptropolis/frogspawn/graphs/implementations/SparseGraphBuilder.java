@@ -27,28 +27,17 @@ public class SparseGraphBuilder implements Graph.Builder {
   private static final Logger LOG = LoggerFactory.getLogger(SparseGraphBuilder.class.getSimpleName());
   private static final long INITIAL_SIZE = 1 << 24;
   private static final long GROW_SIZE = 1 << 24;
-  private final double minWeight;
   private final BigInts[] edges = {new BigInts(INITIAL_SIZE), new BigInts(INITIAL_SIZE)};
   private final BigDoubles weights = new BigDoubles(INITIAL_SIZE);
   private long size = INITIAL_SIZE;
   private long ptr = 0L;
 
   /**
-   * Constructor setting a min edge weight
-   *
-   * @param minWeight Minimum edge weight. Weights below this value cause a <code>GraphConstructionException</code>
-   */
-
-  public SparseGraphBuilder(double minWeight) {
-    this.minWeight = minWeight;
-  }
-
-  /**
    * Default Constructor
    */
 
   public SparseGraphBuilder() {
-    this(1d);
+
   }
 
   /**
@@ -79,8 +68,8 @@ public class SparseGraphBuilder implements Graph.Builder {
 
   @Override
   public Graph.Builder addDirected(int u, int v, double weight) {
-    if (weight < minWeight) {
-      throw new GraphConstructionException(String.format("Tried to add an edge with weight < %.3f", minWeight));
+    if (weight < 0) {
+      throw new GraphConstructionException("Tried to add an edge with negative weight");
     }
     set(ptr++, u, v, weight);
     return this;

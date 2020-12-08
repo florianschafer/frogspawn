@@ -182,9 +182,9 @@ public class SparseGraphBuilderTest {
   }
 
   @Test
-  public void edgeWeightBelowMinThrows() {
+  public void negativeEdgeWeightsThrow() {
     assertThrows(GraphConstructionException.class, () -> {
-      builder().add(0, 1, 1.0 - 1E-9);
+      builder().add(0, 1, -1E-9);
     });
   }
 

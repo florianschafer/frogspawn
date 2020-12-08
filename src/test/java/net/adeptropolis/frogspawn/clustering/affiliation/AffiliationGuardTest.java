@@ -27,7 +27,7 @@ public class AffiliationGuardTest extends GraphTestBase {
 
   @Test
   public void sizeBelowThreshold() {
-    SparseGraph graph = new SparseGraphBuilder(0)
+    SparseGraph graph = new SparseGraphBuilder()
             .add(50, 51, 1)
             .add(51, 52, 1)
             .add(52, 53, 1)
@@ -72,7 +72,7 @@ public class AffiliationGuardTest extends GraphTestBase {
   }
 
   private SparseGraph defaultGraph() {
-    return new SparseGraphBuilder(0)
+    return new SparseGraphBuilder()
             .add(50, 51, 10)
             .add(51, 52, 1)
             .add(52, 53, 1)

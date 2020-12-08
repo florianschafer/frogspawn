@@ -4,6 +4,7 @@
 
     - LabeledGraphBuilder::add is now thread safe
     - Provide better defaults
+    - Remove min weight checks in builder. Using negative weights < 0 still throws!
         
 ## v1.2.0
 
