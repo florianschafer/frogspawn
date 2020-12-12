@@ -4,7 +4,9 @@
 
     - LabeledGraphBuilder::add is now thread safe
     - Provide better defaults
-    - Remove min weight checks in builder. Using negative weights < 0 still throws!
+    - Remove min weight checks in builder.
+    - Fix an int overflow issue in the interpolation search on big arrays
+    
         
 ## v1.2.0
 

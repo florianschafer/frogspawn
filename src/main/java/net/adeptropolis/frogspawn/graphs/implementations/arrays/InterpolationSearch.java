@@ -37,7 +37,7 @@ public class InterpolationSearch {
 
     while (key >= lowVal && key <= highVal) {
 
-      long mid = (int) (low + (((key - lowVal) * (high - low)) / (highVal - lowVal)));
+      long mid = low + (key - lowVal) * (high - low) / (highVal - lowVal);
       int midVal = ints.get(mid);
 
       if (key > midVal) {
