@@ -8,7 +8,6 @@ package net.adeptropolis.frogspawn.graphs.algorithms;
 import it.unimi.dsi.fastutil.ints.IntLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
@@ -20,14 +19,11 @@ import java.util.function.Consumer;
  * <p>Compute the connected components of a graph using DFS</p>
  */
 
-public class ConnectedComponents implements EdgeConsumer {
+public class ConnectedComponents {
 
   private static final Logger LOG = LoggerFactory.getLogger(ConnectedComponents.class.getSimpleName());
 
   private final Graph graph;
-  private final IntLinkedOpenHashSet remaining;
-  private final IntLinkedOpenHashSet componentQueue;
-  private IntOpenHashSet component;
 
   /**
    * Create a new ConnectedComponents instance
@@ -37,9 +33,6 @@ public class ConnectedComponents implements EdgeConsumer {
 
   private ConnectedComponents(Graph graph) {
     this.graph = graph;
-    this.remaining = new IntLinkedOpenHashSet();
-    this.componentQueue = new IntLinkedOpenHashSet();
-    this.component = new IntOpenHashSet();
   }
 
   /**
@@ -63,12 +56,12 @@ public class ConnectedComponents implements EdgeConsumer {
   private void find(Consumer<Graph> consumer) {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
-    remaining.clear();
+    IntLinkedOpenHashSet remaining = new IntLinkedOpenHashSet();
     for (int i = 0; i < graph.order(); i++) remaining.add(i);
     int comps = 0;
     while (!remaining.isEmpty()) {
       int i = remaining.removeFirstInt();
-      processComponent(i);
+      IntOpenHashSet component = processComponent(i);
       Graph subgraph = graph.localSubgraph(component.iterator());
       consumer.accept(subgraph);
       comps++;
@@ -82,30 +75,23 @@ public class ConnectedComponents implements EdgeConsumer {
    * Process the current connected component
    *
    * @param i First member vertex of the component
+   * @return List of vertices that belong to the same connected component that i does
    */
 
-  private void processComponent(int i) {
-    component = new IntOpenHashSet(); // Much much faster than IntOpenHashSet::clear() :O
-    componentQueue.clear();
-    componentQueue.add(i);
-    while (!componentQueue.isEmpty()) {
-      int j = componentQueue.removeFirstInt();
+  private IntOpenHashSet processComponent(int i) {
+    IntOpenHashSet component = new IntOpenHashSet();
+    IntLinkedOpenHashSet queue = new IntLinkedOpenHashSet();
+    queue.add(i);
+    while (!queue.isEmpty()) {
+      int j = queue.removeFirstInt();
       component.add(j);
-      graph.traverseIncidentEdges(j, this, TraversalMode.DEFAULT);
+      graph.traverseIncidentEdges(j, (u, v, weight) -> {
+        if (!queue.contains(v) && !component.contains(v)) {
+          queue.add(v);
+        }
+      }, TraversalMode.DEFAULT);
     }
-  }
-
-  /**
-   * Internal: Callback for graph traversal
-   *
-   * @param u      Left vertex
-   * @param v      Right vertex
-   * @param weight Edge weight
-   */
-
-  @Override
-  public void accept(int u, int v, double weight) {
-    if (!componentQueue.contains(v) && !component.contains(v)) componentQueue.add(v);
+    return component;
   }
 
 }
