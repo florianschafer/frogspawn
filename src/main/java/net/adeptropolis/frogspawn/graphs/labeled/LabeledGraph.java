@@ -5,7 +5,9 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
 
@@ -25,17 +27,21 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
 
   private final SparseGraph graph;
   private final V[] labels;
+  private final Class<V> labelClass;
+  private Object2IntOpenHashMap<V> inverseLabelsCache;
 
   /**
    * Constructor
-   *
-   * @param graph  A graph
+   *  @param graph  A graph
    * @param labels Array of labels, indexed by vertex id
+   * @param labelClass Label class
    */
 
-  LabeledGraph(SparseGraph graph, V[] labels) {
+  LabeledGraph(SparseGraph graph, V[] labels, Class<V> labelClass) {
     this.graph = graph;
     this.labels = labels;
+    this.labelClass = labelClass;
+    this.inverseLabelsCache = null;
   }
 
   /**
@@ -62,4 +68,71 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   public V[] getLabels() {
     return labels;
   }
+
+  /**
+   * Traverse all edges of the graph using the vertex labels
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(LabeledEdgeConsumer<V> consumer) {
+    traverse(consumer, TraversalMode.DEFAULT);
+  }
+
+  /**
+   * Traverse all edges adjacent to a given endpoint
+   *
+   * @param label        Endpoint label
+   * @param consumer Instance of LabeledEdgeConsumer
+   * @param mode     Traversal mode
+   */
+
+  // TODO: Test
+  public void traverseIncidentEdges(V label, LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
+    int i = inverseLabels().getOrDefault(label, -1);
+    if (i < 0) {
+      return;
+    }
+    graph.traverseIncidentEdges(graph.localVertexId(i), (u,v,weight) -> {
+      consumer.accept(labels[graph.globalVertexId(u)], labels[graph.globalVertexId(v)], weight);
+    }, mode);
+  }
+
+  /**
+   * Traverse all edges of the graph using the vertex labels
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   * @param mode Traversal mode
+   */
+
+  public void traverse(LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
+    for (int i = 0 ; i < graph.order(); i++) {
+      graph.traverseIncidentEdges(i, (v, w, weight) -> consumer.accept(labels[graph.globalVertexId(v)], labels[graph.globalVertexId(w)], weight), mode);
+    }
+  }
+
+  /**
+   * Note: This method creates a new map on every invocation!
+   *
+   * @return A new map label -> vertex id
+   */
+
+  // TODO: Test
+  public Object2IntOpenHashMap<V> inverseLabels() {
+    if (inverseLabelsCache != null) {
+      return inverseLabelsCache;
+    }
+    Object2IntOpenHashMap<V> map = new Object2IntOpenHashMap<V>();
+    for (int v = 0; v < labels.length; v++) {
+      map.put(labels[v], v);
+    }
+    inverseLabelsCache = map;
+    return map;
+
+  }
+
+  public Class<V> getLabelClass() {
+    return labelClass;
+  }
+
 }

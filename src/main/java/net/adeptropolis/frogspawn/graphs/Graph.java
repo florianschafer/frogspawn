@@ -75,6 +75,41 @@ public abstract class Graph {
   public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode);
 
   /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of EdgeConsumer
+   */
+
+  // TODO: Test
+  public void traverse(EdgeConsumer consumer, TraversalMode mode) {
+    for (int i = 0; i < order(); i++) {
+      traverseIncidentEdges(i, consumer, mode);
+    }
+  }
+
+  /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of EdgeConsumer
+   */
+
+  // TODO: Test
+  public void traverse(EdgeConsumer consumer) {
+    this.traverse(consumer, TraversalMode.DEFAULT);
+  }
+
+  /**
+   * Sequential traversal over all edges of the graph using global vertex ids
+   *
+   * @param consumer Instance of EdgeConsumer
+   */
+
+  // TODO: Test
+  public void traverseGlobal(EdgeConsumer consumer, TraversalMode mode) {
+    this.traverse( (u, v, weight) -> consumer.accept(globalVertexId(u), globalVertexId(v), weight), mode);
+  }
+
+  /**
    * Parallel traversal over all edges of the graph
    *
    * @param consumer Instance of EdgeConsumer
