@@ -6,15 +6,21 @@
 package net.adeptropolis.frogspawn.graphs.algorithms;
 
 import net.adeptropolis.frogspawn.graphs.Graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MinDegreeFilter {
 
+  private static final Logger LOG = LoggerFactory.getLogger(MinDegreeFilter.class.getSimpleName());
+
   public static Graph apply(Graph graph, int minDegree) {
-    int prevOrder = -1;
+    int originalOrder = graph.order();
+    int prevOrder = graph.order();
     while (true) {
       int[] degrees = Degrees.of(graph);
       graph = graph.subgraph(v -> degrees[v] >= minDegree);
-      if (graph.order() == prevOrder) {
+      if (prevOrder - graph.order() < 2) {
+        LOG.debug("Reduced graph from {} to {}", originalOrder, graph.order());
         return graph;
       }
       prevOrder = graph.order();

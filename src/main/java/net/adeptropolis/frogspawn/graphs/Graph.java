@@ -6,7 +6,6 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
-import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.traversal.*;
 
 import java.util.function.IntPredicate;
@@ -183,7 +182,7 @@ public abstract class Graph {
 
   // TODO: Test, Comment!
   public Graph subgraph(IntPredicate predicate) {
-    return subgraph(new PredicateIterator(order(), predicate));
+    return subgraph(new PredicateVertexIterator(this, predicate));
   }
 
   /**

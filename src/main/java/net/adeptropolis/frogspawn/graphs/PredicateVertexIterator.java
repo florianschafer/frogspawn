@@ -10,15 +10,17 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.function.IntPredicate;
 
 // TODO: Test!
-public class PredicateIterator implements IntIterator {
+// Note: returns global ids!
+public class PredicateVertexIterator implements IntIterator {
 
-  private final int N;
+  private final Graph graph;
+
   private final IntPredicate predicate;
   private int ptr;
   private int next;
 
-  public PredicateIterator(int n, IntPredicate predicate) {
-    this.N = n;
+  public PredicateVertexIterator(Graph graph, IntPredicate predicate) {
+    this.graph = graph;
     this.predicate = predicate;
     this.ptr = 0;
     this.next = seekNext();
@@ -26,18 +28,18 @@ public class PredicateIterator implements IntIterator {
 
   @Override
   public int nextInt() {
-    int nextInt = next;
+    int nextInt = graph.globalVertexId(next);
     next = seekNext();
     return nextInt;
   }
 
   @Override
   public boolean hasNext() {
-    return ptr < N && next >= 0;
+    return ptr < graph.order() && next >= 0;
   }
 
   private int seekNext() {
-    for (; ptr < N; ptr++) {
+    for (; ptr < graph.order(); ptr++) {
       if (predicate.test(ptr)) {
         return ptr++;
       }

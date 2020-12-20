@@ -36,10 +36,6 @@ public class LabeledGraphBuilder<V extends Serializable> {
     this.builder = new SparseGraphBuilder();
   }
 
-  public LabeledGraphBuilder() {
-
-  }
-
   /**
    * Add a new undirected edge to the graph.
    *

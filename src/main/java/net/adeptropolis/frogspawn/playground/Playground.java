@@ -15,10 +15,13 @@ import net.adeptropolis.frogspawn.digest.Digest;
 import net.adeptropolis.frogspawn.digest.DigesterSettings;
 import net.adeptropolis.frogspawn.digest.LabeledDigestMapping;
 import net.adeptropolis.frogspawn.graphs.Graph;
+import net.adeptropolis.frogspawn.graphs.algorithms.MinDegreeFilter;
+import net.adeptropolis.frogspawn.graphs.labeled.GraphSupplementer;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphSource;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
+import net.adeptropolis.frogspawn.persistence.Serialization;
 import net.adeptropolis.frogspawn.persistence.Snapshot;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.StopWatch;
@@ -57,10 +60,32 @@ public class Playground {
   private static final Path WIKI_TOKENS = Paths.get("/home/florian/Datasets/Workbench/wiki_tokens.graph");
 
   public static void main(String[] args) throws IOException {
-    new Playground().standardClustering();
+
+    new Playground().graphStuff();
+
+    //    new Playground().standardClustering();
 //    new Playground().playWithSnapshot();
 //    new Playground().altClustering();
   }
+
+
+  private void graphStuff() {
+
+    LabeledGraph<String> wikiLinks = Serialization.load(new File("/home/florian/tmp/link_graph.filtered.graph"));
+    LabeledGraph<String> hospitalist = Serialization.load(new File("/home/florian/tmp/hospitalist-v20201207-keywords-lm.graph"));
+    LabeledGraph<String> supplemented = GraphSupplementer.extend(hospitalist, wikiLinks, 1, 0.05, String.class);
+//    LabeledGraph<String> supplemented = GraphSupplementer.extend(hospitalist, wikiLinks, 1, 10, String.class);
+
+    Serialization.save(supplemented, new File("/home/florian/tmp/one_try.supp.graph"));
+//    LabeledGraph<String> supplemented = Serialization.load(new File("/home/florian/tmp/one_try.supp.graph"));
+
+    LabeledGraph<String> filtered = supplemented.minDegreeFilter(2);
+
+    Serialization.save(filtered, new File("/home/florian/tmp/one_try.graph"));
+
+
+  }
+
 
   private void playWithSnapshot() throws FileNotFoundException {
     Snapshot<String> snapshot = Snapshot.load(new File("/home/florian/tmp/entity-terms-snapshot-raw.bin"));
