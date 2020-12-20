@@ -6,6 +6,8 @@
     - Provide better defaults
     - Remove min weight checks in builder.
     - Fix an int overflow issue in the interpolation search on big arrays
+    - Added option for subgraph creation from vertex id predicates
+    - Added convenience methods for sequential graph traversal
     
         
 ## v1.2.0
