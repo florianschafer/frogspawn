@@ -6,6 +6,8 @@
 package net.adeptropolis.frogspawn.graphs.labeled;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.adeptropolis.frogspawn.graphs.Graph;
+import net.adeptropolis.frogspawn.graphs.algorithms.MinDegreeFilter;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
@@ -109,6 +111,15 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
     for (int i = 0 ; i < graph.order(); i++) {
       graph.traverseIncidentEdges(i, (v, w, weight) -> consumer.accept(labels[graph.globalVertexId(v)], labels[graph.globalVertexId(w)], weight), mode);
     }
+  }
+
+  // TODO: Test, comment
+  // NOTE: Creates new instance
+  public LabeledGraph<V> minDegreeFilter(int minDegree) {
+    Graph filtered = MinDegreeFilter.apply(graph, minDegree);
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(getLabelClass());
+    filtered.traverse((u, v, weight) -> builder.add(labels[filtered.globalVertexId(u)], labels[filtered.globalVertexId(v)], weight), TraversalMode.LOWER_TRIANGULAR);
+    return builder.build();
   }
 
   /**

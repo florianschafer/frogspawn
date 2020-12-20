@@ -6,7 +6,10 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.traversal.*;
+
+import java.util.function.IntPredicate;
 
 /**
  * <p>A weighted graph supporting all basic operations required in this context, i.e.</p>
@@ -177,6 +180,11 @@ public abstract class Graph {
    */
 
   public abstract Graph subgraph(IntIterator vertices);
+
+  // TODO: Test, Comment!
+  public Graph subgraph(IntPredicate predicate) {
+    return subgraph(new PredicateIterator(order(), predicate));
+  }
 
   /**
    * <p>Compute the induced subgraph from a given set of local vertex ids</p>

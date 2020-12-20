@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class GraphMerger {
+// TODO: Test
+public class GraphSupplementer {
 
-  public static <V extends Serializable> LabeledGraph<V> extend(LabeledGraph<V> graph, LabeledGraph<V> supplement, int maxDist, int minDegree) {
-    Set<V> vertices = ensureDegrees(graph, supplement, selectVertices(graph, supplement, maxDist), minDegree);
+  public static <V extends Serializable> LabeledGraph<V> extend(LabeledGraph<V> graph, LabeledGraph<V> supplement, int maxDist) {
+    Set<V> vertices = selectVertices(graph, supplement, maxDist);
     LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(graph.getLabelClass());
     addEdges(graph, vertices, builder);
     addEdges(supplement, vertices, builder);
@@ -33,27 +34,6 @@ public class GraphMerger {
     }, TraversalMode.LOWER_TRIANGULAR);
   }
 
-
-  private static <V extends Serializable> Set<V> ensureDegrees(LabeledGraph<V> graph, LabeledGraph<V> supplement, Set<V> vertices, int minDegree) {
-    while (true) {
-      DegreeCounter<V> degrees = degrees(graph, supplement, vertices);
-      List<V> rejects = vertices.stream().filter(v -> degrees.get(v) < minDegree).collect(Collectors.toList());
-      if (rejects.isEmpty()) {
-        return vertices;
-      }
-      vertices.removeAll(rejects);
-    }
-  }
-
-  private static <V extends Serializable> DegreeCounter<V> degrees(LabeledGraph<V> graph, LabeledGraph<V> supplement, Set<V> vertices) {
-    DegreeCounter<V> degrees = new DegreeCounter<>();
-    vertices.forEach(label -> {
-      graph.traverseIncidentEdges(label, degrees, TraversalMode.DEFAULT);
-      supplement.traverseIncidentEdges(label, degrees, TraversalMode.DEFAULT);
-    });
-    return degrees;
-  }
-
   private static <V extends Serializable> Set<V> selectVertices(LabeledGraph<V> graph, LabeledGraph<V> supplement, int maxDist) {
     Set<V> selected = new HashSet<>(Arrays.asList(graph.getLabels()));
     for (int i = 1; i <= maxDist; i++) {
@@ -61,7 +41,6 @@ public class GraphMerger {
     }
     return selected;
   }
-
 
   private static <V extends Serializable> Set<V> grow(LabeledGraph<V> supplement, Set<V> selected) {
     Set<V> additions = new HashSet<>();
