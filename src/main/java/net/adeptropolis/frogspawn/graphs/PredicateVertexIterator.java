@@ -9,8 +9,6 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 
 import java.util.function.IntPredicate;
 
-// TODO: Test!
-// Note: returns global ids!
 public class PredicateVertexIterator implements IntIterator {
 
   private final Graph graph;
@@ -35,7 +33,7 @@ public class PredicateVertexIterator implements IntIterator {
 
   @Override
   public boolean hasNext() {
-    return ptr < graph.order() && next >= 0;
+    return next >= 0;
   }
 
   private int seekNext() {

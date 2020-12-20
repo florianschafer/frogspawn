@@ -8,13 +8,15 @@ package net.adeptropolis.frogspawn.graphs;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.is;
+import java.util.Arrays;
 
-public class GraphTest {
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
+public class GraphTest extends GraphTestBase {
 
   @Test
   public void weights() {
@@ -64,6 +66,34 @@ public class GraphTest {
     assertThat(graph.weightForGlobalId(1), closeTo(4.0, 1E-6));
     assertThat(graph.weightForGlobalId(2), closeTo(9.0, 1E-6));
     assertThat(graph.weightForGlobalId(3), closeTo(5.0, 1E-6));
+  }
+
+  @Test
+  public void subgraphFromPredicate() {
+    int[] filteredGlobalIds = subgraph(completeGraph(10), 1, 3, 5, 7, 9)
+            .subgraph(i -> i % 2 == 0)
+            .collectVertices();
+    assertThat(filteredGlobalIds, is(new int[]{1, 5, 9}));
+  }
+
+  @Test
+  public void sequentialTraversal() {
+    CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
+    completeGraph(4).traverse(consumer, TraversalMode.LOWER_TRIANGULAR);
+    assertThat(consumer.getEdges(), containsInAnyOrder(
+            Edge.of(1, 0, 1),
+            Edge.of(2, 0, 1),
+            Edge.of(3, 0, 1),
+            Edge.of(2, 1, 1),
+            Edge.of(3, 1, 1),
+            Edge.of(3, 2, 1)));
+  }
+
+  @Test
+  public void sequentialStandardTraversal() {
+    CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
+    completeGraph(2).traverse(consumer);
+    assertThat(consumer.getEdges(), containsInAnyOrder(Edge.of(1, 0, 1), Edge.of(0, 1, 1)));
   }
 
 }

@@ -82,7 +82,6 @@ public abstract class Graph {
    * @param consumer Instance of EdgeConsumer
    */
 
-  // TODO: Test
   public void traverse(EdgeConsumer consumer, TraversalMode mode) {
     for (int i = 0; i < order(); i++) {
       traverseIncidentEdges(i, consumer, mode);
@@ -95,20 +94,8 @@ public abstract class Graph {
    * @param consumer Instance of EdgeConsumer
    */
 
-  // TODO: Test
   public void traverse(EdgeConsumer consumer) {
     this.traverse(consumer, TraversalMode.DEFAULT);
-  }
-
-  /**
-   * Sequential traversal over all edges of the graph using global vertex ids
-   *
-   * @param consumer Instance of EdgeConsumer
-   */
-
-  // TODO: Test
-  public void traverseGlobal(EdgeConsumer consumer, TraversalMode mode) {
-    this.traverse( (u, v, weight) -> consumer.accept(globalVertexId(u), globalVertexId(v), weight), mode);
   }
 
   /**
@@ -180,7 +167,13 @@ public abstract class Graph {
 
   public abstract Graph subgraph(IntIterator vertices);
 
-  // TODO: Test, Comment!
+  /**
+   * <p>Compute the induced subgraph from a local vertex id predicate</p>
+   *
+   * @param predicate Predicate on local(!) vertex ids of the graph
+   * @return a new subgraph
+   */
+
   public Graph subgraph(IntPredicate predicate) {
     return subgraph(new PredicateVertexIterator(this, predicate));
   }
