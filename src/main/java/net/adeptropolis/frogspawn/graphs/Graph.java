@@ -8,6 +8,8 @@ package net.adeptropolis.frogspawn.graphs;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.traversal.*;
 
+import java.util.function.IntPredicate;
+
 /**
  * <p>A weighted graph supporting all basic operations required in this context, i.e.</p>
  * <ul>
@@ -73,6 +75,28 @@ public abstract class Graph {
    */
 
   public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode);
+
+  /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of EdgeConsumer
+   */
+
+  public void traverse(EdgeConsumer consumer, TraversalMode mode) {
+    for (int i = 0; i < order(); i++) {
+      traverseIncidentEdges(i, consumer, mode);
+    }
+  }
+
+  /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of EdgeConsumer
+   */
+
+  public void traverse(EdgeConsumer consumer) {
+    this.traverse(consumer, TraversalMode.DEFAULT);
+  }
 
   /**
    * Parallel traversal over all edges of the graph
@@ -142,6 +166,17 @@ public abstract class Graph {
    */
 
   public abstract Graph subgraph(IntIterator vertices);
+
+  /**
+   * <p>Compute the induced subgraph from a local vertex id predicate</p>
+   *
+   * @param predicate Predicate on local(!) vertex ids of the graph
+   * @return a new subgraph
+   */
+
+  public Graph subgraph(IntPredicate predicate) {
+    return subgraph(new PredicateVertexIterator(this, predicate));
+  }
 
   /**
    * <p>Compute the induced subgraph from a given set of local vertex ids</p>
