@@ -6,6 +6,7 @@
 package net.adeptropolis.frogspawn.persistence;
 
 import java.io.*;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -17,7 +18,9 @@ public class Serialization {
 
   public static void save(Object object, File outputFile) {
     try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-      try (GZIPOutputStream gos = new GZIPOutputStream(fos)) {
+      try (GZIPOutputStream gos = new GZIPOutputStream(fos) {{
+        def.setLevel(Deflater.BEST_SPEED);
+      }}) {
         try (ObjectOutputStream oos = new ObjectOutputStream(gos)) {
           oos.writeObject(object);
         }
