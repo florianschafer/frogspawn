@@ -8,8 +8,8 @@
     - Fix an int overflow issue in the interpolation search on big arrays
     - Added option for subgraph creation from vertex id predicates
     - Added convenience methods for sequential graph traversal
-    
-        
+    - Considerable speed boost when building large graphs
+            
 ## v1.2.0
 
     - Improved parent similarity postfiltering
