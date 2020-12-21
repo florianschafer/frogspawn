@@ -9,6 +9,7 @@
     - Added option for subgraph creation from vertex id predicates
     - Added convenience methods for sequential graph traversal
     - Considerable speed boost when building large graphs
+    - Faster graph serialization
             
 ## v1.2.0
 
