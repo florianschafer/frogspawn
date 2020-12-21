@@ -146,7 +146,7 @@ public class SparseGraphBuilder implements Graph.Builder {
 
   private void sort() {
     EdgeSortOps ops = new EdgeSortOps();
-    BigArrays.mergeSort(0, ptr, ops, ops);
+    BigArrays.quickSort(0, ptr, ops, ops);
   }
 
   /**
