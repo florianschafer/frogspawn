@@ -29,20 +29,17 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
 
   private final SparseGraph graph;
   private final V[] labels;
-  private final Class<V> labelClass;
   private Object2IntOpenHashMap<V> inverseLabelsCache;
 
   /**
    * Constructor
    *  @param graph  A graph
    * @param labels Array of labels, indexed by vertex id
-   * @param labelClass Label class
    */
 
-  LabeledGraph(SparseGraph graph, V[] labels, Class<V> labelClass) {
+  LabeledGraph(SparseGraph graph, V[] labels) {
     this.graph = graph;
     this.labels = labels;
-    this.labelClass = labelClass;
     this.inverseLabelsCache = null;
   }
 
@@ -115,9 +112,9 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
 
   // TODO: Test, comment
   // NOTE: Creates new instance
-  public LabeledGraph<V> minDegreeFilter(int minDegree) {
+  public LabeledGraph<V> minDegreeFilter(int minDegree, Class<V> labelsClass) {
     Graph filtered = MinDegreeFilter.apply(graph, minDegree);
-    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(getLabelClass());
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(labelsClass);
     filtered.traverse((u, v, weight) -> builder.add(labels[filtered.globalVertexId(u)], labels[filtered.globalVertexId(v)], weight), TraversalMode.LOWER_TRIANGULAR);
     return builder.build();
   }
@@ -140,10 +137,6 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
     inverseLabelsCache = map;
     return map;
 
-  }
-
-  public Class<V> getLabelClass() {
-    return labelClass;
   }
 
 }

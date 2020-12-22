@@ -59,7 +59,7 @@ public class LabeledGraphBuilder<V extends Serializable> {
   public LabeledGraph<V> build() {
     SparseGraph graph = builder.build();
     V[] labels = invertLabels();
-    return new LabeledGraph<>(graph, labels, labelClass);
+    return new LabeledGraph<>(graph, labels);
   }
 
   /**
