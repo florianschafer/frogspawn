@@ -10,6 +10,7 @@ import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabelling;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -134,12 +135,13 @@ public class ClusterDigesterTest {
 
   @Test
   public void labeledMapping() {
-    String[] labels = IntStream
-            .range(0, graph.order())
-            .mapToObj(i -> String.format("[%d]", i)).toArray(String[]::new);
+    DefaultLabelling<String> labelling = new DefaultLabelling<>(String.class);
+    for (int i = 0; i < graph.order(); i++) {
+      labelling.index(String.format("[%d]", i));
+    }
     String digestFingerprint = new ClusterDigester(aggregate3Settings)
             .digest(c2)
-            .map((label, weight, score) -> String.format(Locale.US, "%s|%.1f|%.3f", label, weight, score), labels)
+            .map((label, weight, score) -> String.format(Locale.US, "%s|%.1f|%.3f", label, weight, score), labelling)
             .collect(Collectors.joining(","));
     assertThat(digestFingerprint, is("[5]|91.0|0.858,[4]|75.0|0.852,[9]|61.0|1.000"));
   }

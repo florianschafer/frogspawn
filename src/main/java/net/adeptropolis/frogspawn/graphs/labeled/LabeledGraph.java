@@ -5,9 +5,13 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
+import com.google.common.collect.Sets;
+import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 
 import java.io.Serializable;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * A labeled graph.
@@ -24,18 +28,19 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   static final long serialVersionUID = 7802023886873266825L;
 
   private final SparseGraph graph;
-  private final V[] labels;
+
+  private final Labelling<V> labelling;
 
   /**
    * Constructor
    *
-   * @param graph  A graph
-   * @param labels Array of labels, indexed by vertex id
+   * @param graph     A graph
+   * @param labelling Instance of a vertex labelling
    */
 
-  LabeledGraph(SparseGraph graph, V[] labels) {
+  LabeledGraph(SparseGraph graph, Labelling<V> labelling) {
     this.graph = graph;
-    this.labels = labels;
+    this.labelling = labelling;
   }
 
   /**
@@ -52,14 +57,23 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    */
 
   public V getLabel(int vertexId) {
-    return labels[vertexId];
+    return labelling.label(vertexId);
   }
 
   /**
-   * @return All vertex-label mappings
+   * @return Labelling for this graph
    */
 
-  public V[] getLabels() {
-    return labels;
+  public Labelling<V> getLabelling() {
+    return labelling;
   }
+
+  /**
+   * @return Stream of all labels
+   */
+
+  public Stream<V> labels() {
+    return labelling.labels();
+  }
+
 }

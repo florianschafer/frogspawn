@@ -14,6 +14,7 @@ import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
+import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabelling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
@@ -22,10 +23,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles.BIN_BITS;
@@ -70,16 +68,16 @@ public class SerializationTest extends GraphTestBase {
 
   @Test
   public void labeledGraph() throws IOException {
-    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(String.class);
+    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabelling<>(String.class));
     for (int i = 0; i < 200; i++) {
       for (int j = i + 1; j < 200; j++) {
         builder.add(String.valueOf(i), String.valueOf(j), i + j);
       }
     }
     LabeledGraph<String> graph = builder.build();
-    List<String> graphLabels = Arrays.stream(graph.getLabels()).collect(Collectors.toList());
+    Set<String> graphLabels = graph.labels().collect(Collectors.toSet());
     LabeledGraph<String> deserialized = Serialization.load(save(graph));
-    List deserializedLabels = Arrays.stream(deserialized.getLabels()).collect(Collectors.toList());
+    Set deserializedLabels = deserialized.labels().collect(Collectors.toSet());
     assertThat(deserializedLabels, is(graphLabels));
     assertThat(deserialized.getGraph().order(), is(graph.getGraph().order()));
     assertThat(deserialized.getGraph().size(), is(graph.getGraph().size()));

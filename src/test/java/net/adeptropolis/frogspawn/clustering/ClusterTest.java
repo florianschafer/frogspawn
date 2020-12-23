@@ -10,6 +10,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabelling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import org.junit.Test;
@@ -153,13 +154,13 @@ public class ClusterTest {
 
   @Test
   public void remainderLabels() {
-    LabeledGraph<String> graph = new LabeledGraphBuilder<>(String.class)
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabelling<>(String.class))
             .add("A", "B", 3)
             .add("B", "C", 4)
             .build();
     Cluster root = new Cluster(graph.getGraph());
     root.addToRemainder(IntIterators.wrap(new int[]{1, 2}));
-    assertThat(root.remainderLabels(graph.getLabels()).collect(Collectors.joining(", ")), is("B, C"));
+    assertThat(root.remainderLabels(graph.getLabelling()).collect(Collectors.joining(", ")), is("B, C"));
   }
 
 }

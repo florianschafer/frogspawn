@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
+import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabelling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import org.junit.Before;
@@ -86,7 +87,7 @@ public class SnapshotTest extends GraphTestBase {
   }
 
   private void createCompleteGraph() {
-    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(String.class);
+    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabelling<>(String.class));
     for (int i = 0; i < 20; i++) {
       for (int j = i + 1; j < 20; j++) {
         builder.add(String.valueOf(i), String.valueOf(j), i + j);
