@@ -13,12 +13,12 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 /**
- * Default graph labelling using a simple map and and array, Although this implementation allows for
- * very generic usage, please try to use some type-optimized labelling implementation instead.
+ * Default graph labeling using a simple map and and array, Although this implementation allows for
+ * very generic usage, please try to use some type-optimized labeling implementation instead.
  * @param <T> Label type
  */
 
-public class DefaultLabelling<T extends Serializable> implements Labelling<T>, Serializable {
+public class DefaultLabeling<T extends Serializable> implements Labeling<T>, Serializable {
 
   private final Object2IntOpenHashMap<T> indices;
   private T[] labels;
@@ -29,7 +29,7 @@ public class DefaultLabelling<T extends Serializable> implements Labelling<T>, S
    * @param labelClass Class of vertex labels
    */
 
-  public DefaultLabelling(Class<T> labelClass) {
+  public DefaultLabeling(Class<T> labelClass) {
     this.indices = new Object2IntOpenHashMap<>();
     this.labelClass = labelClass;
     this.labels = null;
@@ -57,7 +57,7 @@ public class DefaultLabelling<T extends Serializable> implements Labelling<T>, S
    */
 
   @Override
-  public int index(T label) {
+  public int id(T label) {
 
     if (indices.containsKey(label)) {
       return indices.getInt(label);

@@ -14,7 +14,7 @@ import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
-import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabelling;
+import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
@@ -68,7 +68,7 @@ public class SerializationTest extends GraphTestBase {
 
   @Test
   public void labeledGraph() throws IOException {
-    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabelling<>(String.class));
+    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class));
     for (int i = 0; i < 200; i++) {
       for (int j = i + 1; j < 200; j++) {
         builder.add(String.valueOf(i), String.valueOf(j), i + j);

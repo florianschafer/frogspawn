@@ -1,7 +1,7 @@
 # Frogspawn Changelog
 
 ## Current
-    - Introduce better graph labelling. This breaks compatibility with previously serialized graphs
+    - Introduce better graph labeling. This breaks compatibility with previously serialized graphs
 
 ## v1.2.1
 

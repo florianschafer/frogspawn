@@ -5,11 +5,13 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
-import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -24,29 +26,29 @@ import java.util.stream.Stream;
 
 public class LabeledGraph<V extends Serializable> implements Serializable {
 
-  static final long serialVersionUID = 7802023986873566825L;
+  static final long serialVersionUID = 7842023986873566825L;
 
-  private final SparseGraph graph;
+  private final Graph graph;
 
-  private final Labelling<V> labelling;
+  private final Labeling<V> labeling;
 
   /**
    * Constructor
    *
    * @param graph     A graph
-   * @param labelling Instance of a vertex labelling
+   * @param labeling Instance of a vertex labeling
    */
 
-  LabeledGraph(SparseGraph graph, Labelling<V> labelling) {
+  LabeledGraph(Graph graph, Labeling<V> labeling) {
     this.graph = graph;
-    this.labelling = labelling;
+    this.labeling = labeling;
   }
 
   /**
    * @return The underlying graph
    */
 
-  public SparseGraph getGraph() {
+  public Graph getGraph() {
     return graph;
   }
 
@@ -74,16 +76,42 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   /**
    * Traverse over all adjacent vertices
    *
-   * @param label Vertex label
+   * @param label    Vertex label
    * @param consumer Instance of LabeledEdgeConsumer
    */
 
   public void traverse(V label, LabeledEdgeConsumer<V> consumer) {
-    int localId = graph.localVertexId(labelling.index(label));
+    int localId = graph.localVertexId(labeling.id(label));
     if (localId < 0) {
       return;
     }
     graph.traverseIncidentEdges(localId, asEdgeConsumer(consumer), TraversalMode.DEFAULT);
+  }
+
+  /**
+   * Create a labelled subgraph from a regular subgraph
+   *
+   * @param subgraph Subgraph
+   * @return new labeled subgraph
+   */
+
+  public LabeledGraph<V> subgraph(Graph subgraph) {
+    return new LabeledGraph<>(subgraph, labeling);
+  }
+
+  /**
+   * Create a labelled subgraph from a stream of vertices
+   *
+   * @param vertices Vertices of the new subgraph
+   * @return new labeled subgraph
+   */
+
+  public LabeledGraph<V> subgraph(Stream<V> vertices) {
+    IntStream ids = vertices
+            .mapToInt(labeling::id)
+            .filter(id -> id >= 0);
+    Graph subgraph = graph.subgraph(IntIterators.asIntIterator(ids.iterator()));
+    return new LabeledGraph<>(subgraph, labeling);
   }
 
   /**
@@ -92,15 +120,15 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    */
 
   public V getLabel(int vertexId) {
-    return labelling.label(vertexId);
+    return labeling.label(vertexId);
   }
 
   /**
-   * @return Labelling for this graph
+   * @return Labeling for this graph
    */
 
-  public Labelling<V> getLabelling() {
-    return labelling;
+  public Labeling<V> getLabeling() {
+    return labeling;
   }
 
   /**
@@ -108,7 +136,23 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    */
 
   public Stream<V> labels() {
-    return labelling.labels();
+    return labeling.labels();
+  }
+
+  /**
+   * @return Order of the graph
+   */
+
+  public int order() {
+    return graph.order();
+  }
+
+  /**
+   * @return Size of the graph
+   */
+
+  public long size() {
+    return graph.size();
   }
 
   /**
@@ -120,8 +164,8 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
 
   private EdgeConsumer asEdgeConsumer(LabeledEdgeConsumer<V> consumer) {
     return (u, v, weight) -> consumer.accept(
-            labelling.label(graph.globalVertexId(u)),
-            labelling.label(graph.globalVertexId(v)),
+            labeling.label(graph.globalVertexId(u)),
+            labeling.label(graph.globalVertexId(v)),
             weight);
   }
 

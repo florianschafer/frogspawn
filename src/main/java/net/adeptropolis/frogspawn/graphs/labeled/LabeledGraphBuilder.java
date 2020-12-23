@@ -18,17 +18,17 @@ import java.io.Serializable;
 
 public class LabeledGraphBuilder<V extends Serializable> {
 
-  private final Labelling<V> labelling;
+  private final Labeling<V> labeling;
   private final SparseGraphBuilder builder;
 
   /**
    * Constructor
    *
-   * @param labelling Instance of a vertex labelling
+   * @param labeling Instance of a vertex labeling
    */
 
-  public LabeledGraphBuilder(Labelling<V> labelling) {
-    this.labelling = labelling;
+  public LabeledGraphBuilder(Labeling<V> labeling) {
+    this.labeling = labeling;
     this.builder = new SparseGraphBuilder();
   }
 
@@ -42,7 +42,7 @@ public class LabeledGraphBuilder<V extends Serializable> {
    */
 
   public synchronized LabeledGraphBuilder<V> add(V left, V right, double weight) {
-    builder.add(labelling.index(left), labelling.index(right), weight);
+    builder.add(labeling.id(left), labeling.id(right), weight);
     return this;
   }
 
@@ -54,7 +54,7 @@ public class LabeledGraphBuilder<V extends Serializable> {
 
   public LabeledGraph<V> build() {
     SparseGraph graph = builder.build();
-    return new LabeledGraph<>(graph, labelling);
+    return new LabeledGraph<>(graph, labeling);
   }
 
 }

@@ -10,13 +10,12 @@ import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
-import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabelling;
+import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabeling;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Locale;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static net.adeptropolis.frogspawn.digest.DigestRankings.WEIGHT_RANKING;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -135,13 +134,13 @@ public class ClusterDigesterTest {
 
   @Test
   public void labeledMapping() {
-    DefaultLabelling<String> labelling = new DefaultLabelling<>(String.class);
+    DefaultLabeling<String> labeling = new DefaultLabeling<>(String.class);
     for (int i = 0; i < graph.order(); i++) {
-      labelling.index(String.format("[%d]", i));
+      labeling.id(String.format("[%d]", i));
     }
     String digestFingerprint = new ClusterDigester(aggregate3Settings)
             .digest(c2)
-            .map((label, weight, score) -> String.format(Locale.US, "%s|%.1f|%.3f", label, weight, score), labelling)
+            .map((label, weight, score) -> String.format(Locale.US, "%s|%.1f|%.3f", label, weight, score), labeling)
             .collect(Collectors.joining(","));
     assertThat(digestFingerprint, is("[5]|91.0|0.858,[4]|75.0|0.852,[9]|61.0|1.000"));
   }

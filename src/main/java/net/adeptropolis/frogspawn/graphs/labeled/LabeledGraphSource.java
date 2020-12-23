@@ -34,7 +34,7 @@ public class LabeledGraphSource {
    */
 
   public static LabeledGraph<String> fromTSV(Stream<String> lines) {
-    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabelling<>(String.class));
+    LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class));
     lines.forEach(line -> {
       Matcher matcher = TSVParsePattern.matcher(line);
       if (matcher.find() && matcher.groupCount() == 3) {

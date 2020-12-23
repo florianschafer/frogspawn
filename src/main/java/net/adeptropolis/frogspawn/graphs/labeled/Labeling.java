@@ -9,12 +9,12 @@ import java.io.Serializable;
 import java.util.stream.Stream;
 
 /**
- * A Vertex labelling, providing both the mapping between vertices and labels and its inverse.
+ * A Vertex labeling, providing both the mapping between vertices and labels and its inverse.
  *
  * @param <T> Label type
  */
 
-public interface Labelling<T extends Serializable> {
+public interface Labeling<T extends Serializable> {
 
   /**
    * @param v Global vertex id
@@ -28,7 +28,7 @@ public interface Labelling<T extends Serializable> {
    * @return Global vertex id
    */
 
-  int index(T label);
+  int id(T label);
 
   /**
    * @return Stream of all labels
