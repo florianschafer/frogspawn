@@ -1,5 +1,8 @@
 # Frogspawn Changelog
 
+## Current
+    - Introduce better graph labelling. This breaks compatibility with previously serialized graphs
+
 ## v1.2.1
 
     - LabeledGraphBuilder::add is now thread safe

@@ -5,12 +5,11 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
-import com.google.common.collect.Sets;
-import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
+import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
-import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -25,7 +24,7 @@ import java.util.stream.Stream;
 
 public class LabeledGraph<V extends Serializable> implements Serializable {
 
-  static final long serialVersionUID = 7802023886873266825L;
+  static final long serialVersionUID = 7802023986873566825L;
 
   private final SparseGraph graph;
 
@@ -52,6 +51,42 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   }
 
   /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(LabeledEdgeConsumer<V> consumer) {
+    graph.traverse(asEdgeConsumer(consumer));
+  }
+
+  /**
+   * Parallel traversal over all edges of the graph
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  // TODO: Test
+  public void traverseParallel(LabeledEdgeConsumer<V> consumer) {
+    graph.traverseParallel(asEdgeConsumer(consumer));
+  }
+
+  /**
+   * Traverse over all adjacent vertices
+   *
+   * @param label Vertex label
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(V label, LabeledEdgeConsumer<V> consumer) {
+    int localId = graph.localVertexId(labelling.index(label));
+    if (localId < 0) {
+      return;
+    }
+    graph.traverseIncidentEdges(localId, asEdgeConsumer(consumer), TraversalMode.DEFAULT);
+  }
+
+  /**
    * @param vertexId Vertex id
    * @return The label for a particular vertex id
    */
@@ -75,5 +110,20 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   public Stream<V> labels() {
     return labelling.labels();
   }
+
+  /**
+   * Helper: wrap a labeledEdgeConsumer into an edge consumer
+   *
+   * @param consumer Labeled edge consumer
+   * @return Edge consumer
+   */
+
+  private EdgeConsumer asEdgeConsumer(LabeledEdgeConsumer<V> consumer) {
+    return (u, v, weight) -> consumer.accept(
+            labelling.label(graph.globalVertexId(u)),
+            labelling.label(graph.globalVertexId(v)),
+            weight);
+  }
+
 
 }
