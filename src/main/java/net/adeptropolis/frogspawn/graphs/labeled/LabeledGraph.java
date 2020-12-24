@@ -59,7 +59,7 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    */
 
   public void traverse(LabeledEdgeConsumer<V> consumer) {
-    graph.traverse(asEdgeConsumer(consumer));
+    traverse(consumer, TraversalMode.DEFAULT);
   }
 
   /**
@@ -91,12 +91,24 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    */
 
   public void traverse(V label, LabeledEdgeConsumer<V> consumer) {
+    traverse(label, consumer, TraversalMode.DEFAULT);
+  }
+
+  /**
+   * Traverse over all adjacent vertices
+   *
+   * @param label    Vertex label
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(V label, LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
     int localId = graph.localVertexId(labeling.id(label));
     if (localId < 0) {
       return;
     }
-    graph.traverseIncidentEdges(localId, asEdgeConsumer(consumer), TraversalMode.DEFAULT);
+    graph.traverseIncidentEdges(localId, asEdgeConsumer(consumer), mode);
   }
+
 
   /**
    * Create a labelled subgraph from a regular subgraph

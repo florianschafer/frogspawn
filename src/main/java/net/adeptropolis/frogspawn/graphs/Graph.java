@@ -22,6 +22,7 @@ import java.util.function.IntPredicate;
 public abstract class Graph {
 
   private double[] cachedWeights = null;
+  private long[] cachedDegrees = null;
   private double cachedTotalWeight = -1;
 
   /**
@@ -201,12 +202,32 @@ public abstract class Graph {
   }
 
   /**
+   * @return The vertex degrees of the graph.
+   */
+
+  public long[] degrees() {
+    if (cachedDegrees == null) {
+      cachedDegrees = VertexDegrees.compute(this);
+    }
+    return cachedDegrees;
+  }
+
+  /**
    * @param globalVertexId global vertex id
    * @return Weight for this id
    */
 
   public double weightForGlobalId(int globalVertexId) {
     return weights()[localVertexId(globalVertexId)];
+  }
+
+  /**
+   * @param globalVertexId global vertex id
+   * @return Degree for this id
+   */
+
+  public long degreeForGlobalId(int globalVertexId) {
+    return degrees()[localVertexId(globalVertexId)];
   }
 
   /**

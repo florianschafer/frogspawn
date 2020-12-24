@@ -29,7 +29,21 @@ public class GraphTest extends GraphTestBase {
     assertThat(graph.weights()[0], closeTo(8, 1E-9));
     assertThat(graph.weights()[1], closeTo(7, 1E-9));
     assertThat(graph.weights()[2], closeTo(9, 1E-9));
+  }
 
+  @Test
+  public void degrees() {
+    SparseGraph graph = new SparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .add(2, 0, 5)
+            .add(3, 0, 6)
+            .build();
+    assertThat(graph.degrees().length, is(4));
+    assertThat(graph.degrees()[0], is(3L));
+    assertThat(graph.degrees()[1], is(2L));
+    assertThat(graph.degrees()[2], is(2L));
+    assertThat(graph.degrees()[3], is(1L));
   }
 
   @Test
@@ -66,6 +80,20 @@ public class GraphTest extends GraphTestBase {
     assertThat(graph.weightForGlobalId(1), closeTo(4.0, 1E-6));
     assertThat(graph.weightForGlobalId(2), closeTo(9.0, 1E-6));
     assertThat(graph.weightForGlobalId(3), closeTo(5.0, 1E-6));
+  }
+
+  @Test
+  public void degreeForGlobalId() {
+    Graph graph = new SparseGraphBuilder()
+            .add(0, 1, 3)
+            .add(1, 2, 4)
+            .add(2, 0, 5)
+            .add(3, 0, 6)
+            .build()
+            .subgraph(IntIterators.wrap(new int[]{1, 2, 3}));
+    assertThat(graph.degreeForGlobalId(1), is(1L));
+    assertThat(graph.degreeForGlobalId(2), is(1L));
+    assertThat(graph.degreeForGlobalId(3), is(0L));
   }
 
   @Test
