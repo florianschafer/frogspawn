@@ -8,6 +8,7 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
+import net.adeptropolis.frogspawn.graphs.functions.GraphFunction;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
@@ -202,9 +203,27 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    * @return New, collapsed graph
    */
 
-  public LabeledGraph<V> collapse(Labeling<V> collapsedLabeling) { // TODO: Change name, document, test
+  public LabeledGraph<V> collapse(Labeling<V> collapsedLabeling) {
     LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(collapsedLabeling);
-    traverse(builder::add);
+    traverse(builder::add, TraversalMode.LOWER_TRIANGULAR);
+    return builder.build();
+  }
+
+  /**
+   * Merge with another graph
+   *
+   * @param other Other labeled graph that should be merged
+   * @param baseWeightFunction Function to use when harmonizing graph weights
+   * @param otherBoost additional boost for the other graph
+   * @param mergedLabeling Fresh labeling instance
+   * @return A new Labeled graph, encompassing both the original as well as the other graph
+   */
+
+  public LabeledGraph<V> merge(LabeledGraph<V> other, GraphFunction<Double> baseWeightFunction, double otherBoost, Labeling<V> mergedLabeling) {
+    double otherScaleFactor = otherBoost * baseWeightFunction.apply(graph) / baseWeightFunction.apply(other.graph);
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(mergedLabeling);
+    traverse(builder::add, TraversalMode.LOWER_TRIANGULAR);
+    other.traverse((u, v, weight) -> builder.add(u, v, weight * otherScaleFactor), TraversalMode.LOWER_TRIANGULAR);
     return builder.build();
   }
 
