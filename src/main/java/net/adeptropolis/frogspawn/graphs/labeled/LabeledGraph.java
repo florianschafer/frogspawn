@@ -195,6 +195,19 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   }
 
   /**
+   * Collapse a subgraph into a minimal sparse graph
+   *
+   * @param collapsedLabeling A fresh labeling instance
+   * @return New, collapsed graph
+   */
+
+  public LabeledGraph<V> collapse(Labeling<V> collapsedLabeling) { // TODO: Change name, document, test
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(collapsedLabeling);
+    traverse(builder::add);
+    return builder.build();
+  }
+
+  /**
    * Helper: wrap a labeledEdgeConsumer into an edge consumer
    *
    * @param consumer Labeled edge consumer

@@ -9,8 +9,6 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
-import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
-import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,6 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
 public class LabeledGraphTest {
@@ -98,6 +97,22 @@ public class LabeledGraphTest {
     GraphFilter filter = new MinDegreeFilter(2);
     assertThat(graph.filter(filter, false).order(), is(4));
     assertThat(graph.filter(filter, true).order(), is(3));
+  }
+
+  @Test
+  public void collapse() {
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+            .add("0", "1", 1)
+            .add("1", "2", 1)
+            .add("2", "3", 1)
+            .add("3", "1", 1)
+            .add("3", "4", 1)
+            .build()
+            .subgraph(Stream.of("1", "2", "3"))
+            .collapse(new DefaultLabeling<>(String.class));
+    assertThat(graph.order(), is(3));
+    assertThat(graph.size(), is(6L));
+    assertThat(graph.getLabeling().labels().collect(Collectors.toList()), containsInAnyOrder("1", "2", "3"));
   }
 
   static class EdgeFingerprinter implements LabeledEdgeConsumer<String> {
