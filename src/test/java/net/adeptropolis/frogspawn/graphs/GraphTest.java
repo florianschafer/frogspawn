@@ -6,6 +6,8 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
+import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
+import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
@@ -122,6 +124,20 @@ public class GraphTest extends GraphTestBase {
     CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
     completeGraph(2).traverse(consumer);
     assertThat(consumer.getEdges(), containsInAnyOrder(Edge.of(1, 0, 1), Edge.of(0, 1, 1)));
+  }
+
+  @Test
+  public void filters() {
+    SparseGraph graph = new SparseGraphBuilder()
+            .add(0, 1, 1)
+            .add(1, 2, 1)
+            .add(2, 0, 1)
+            .add(2, 3, 1)
+            .add(3, 4, 1)
+            .build();
+    GraphFilter filter = new MinDegreeFilter(2);
+    assertThat(graph.filter(filter, false).order(), is(4));
+    assertThat(graph.filter(filter, true).order(), is(3));
   }
 
 }

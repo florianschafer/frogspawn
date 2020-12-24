@@ -7,6 +7,10 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
+import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
+import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -80,6 +84,20 @@ public class LabeledGraphTest {
   @Test
   public void size() {
     assertThat(graph.size(), is(12L));
+  }
+
+  @Test
+  public void filter() {
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+            .add("0", "1", 1)
+            .add("1", "2", 1)
+            .add("2", "0", 1)
+            .add("2", "3", 1)
+            .add("3", "4", 1)
+            .build();
+    GraphFilter filter = new MinDegreeFilter(2);
+    assertThat(graph.filter(filter, false).order(), is(4));
+    assertThat(graph.filter(filter, true).order(), is(3));
   }
 
   static class EdgeFingerprinter implements LabeledEdgeConsumer<String> {

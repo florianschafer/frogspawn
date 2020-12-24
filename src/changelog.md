@@ -14,7 +14,7 @@
     - Faster graph serialization
     - Introduce better graph labeling. This breaks compatibility with previously serialized graphs
     - Labeled graphs can now be traversed directly
-
+    - Add minimal graph filter pipeline, min degree filter
             
 ## v1.2.0
 

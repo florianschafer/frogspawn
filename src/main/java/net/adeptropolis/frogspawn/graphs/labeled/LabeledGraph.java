@@ -7,6 +7,7 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
+import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
@@ -175,6 +176,22 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
 
   public long size() {
     return graph.size();
+  }
+
+  /**
+   * Apply a filter to this graph
+   *
+   * @param filter Instance of GraphFilter
+   * @param applyIteratively Whether the filter should be applied just once or iteratively
+   * @return Filtered graph
+   */
+
+  public LabeledGraph<V> filter(GraphFilter filter, boolean applyIteratively) {
+    if (applyIteratively) {
+      return new LabeledGraph<>(filter.applyIteratively(graph), labeling);
+    } else {
+      return new LabeledGraph<>(filter.apply(graph), labeling);
+    }
   }
 
   /**

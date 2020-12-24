@@ -6,6 +6,7 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterator;
+import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.traversal.*;
 
 import java.util.function.IntPredicate;
@@ -188,6 +189,22 @@ public abstract class Graph {
 
   public Graph localSubgraph(IntIterator vertices) {
     return subgraph(new VertexMappingIterator(vertices));
+  }
+
+  /**
+   * Apply a filter to this graph
+   *
+   * @param filter Instance of GraphFilter
+   * @param applyIteratively Whether the filter should be applied just once or iteratively
+   * @return Filtered graph
+   */
+
+  public Graph filter(GraphFilter filter, boolean applyIteratively) {
+    if (applyIteratively) {
+      return filter.applyIteratively(this);
+    } else {
+      return filter.apply(this);
+    }
   }
 
   /**
