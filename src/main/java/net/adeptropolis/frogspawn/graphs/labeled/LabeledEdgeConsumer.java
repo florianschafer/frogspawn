@@ -6,8 +6,8 @@
 package net.adeptropolis.frogspawn.graphs.labeled;
 
 @FunctionalInterface
-public interface LabeledEdgeConsumer<V> {
+public interface LabeledEdgeConsumer<T> {
 
-  void accept(V left, V right, double weight);
+  void accept(T left, T right, double weight);
 
 }

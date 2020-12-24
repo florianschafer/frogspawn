@@ -5,12 +5,10 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 
 /**
  * Provides a convenient builder for compressed sparse graphs from labels instead of integers.
@@ -20,19 +18,17 @@ import java.lang.reflect.Array;
 
 public class LabeledGraphBuilder<V extends Serializable> {
 
-  private final Object2IntOpenHashMap<V> vertexMap;
+  private final Labeling<V> labeling;
   private final SparseGraphBuilder builder;
-  private final Class<V> labelClass;
 
   /**
    * Constructor
    *
-   * @param labelClass Label class
+   * @param labeling Instance of a vertex labeling
    */
 
-  public LabeledGraphBuilder(Class<V> labelClass) {
-    this.labelClass = labelClass;
-    this.vertexMap = new Object2IntOpenHashMap<>();
+  public LabeledGraphBuilder(Labeling<V> labeling) {
+    this.labeling = labeling;
     this.builder = new SparseGraphBuilder();
   }
 
@@ -46,41 +42,19 @@ public class LabeledGraphBuilder<V extends Serializable> {
    */
 
   public synchronized LabeledGraphBuilder<V> add(V left, V right, double weight) {
-    builder.add(vertexId(left), vertexId(right), weight);
+    builder.add(labeling.id(left), labeling.id(right), weight);
     return this;
   }
 
   /**
    * Build the labeled graph
    *
-   * @return A new immutable LabeledGraph instance
+   * @return New immutable LabeledGraph instance
    */
 
   public LabeledGraph<V> build() {
     SparseGraph graph = builder.build();
-    V[] labels = invertLabels();
-    return new LabeledGraph<>(graph, labels);
+    return new LabeledGraph<>(graph, labeling);
   }
-
-  /**
-   * @return Mapping between vertex ids and labels
-   */
-
-  private V[] invertLabels() {
-    @SuppressWarnings("unchecked")
-    V[] map = (V[]) Array.newInstance(labelClass, vertexMap.size());
-    vertexMap.forEach((label, id) -> map[id] = label);
-    return map;
-  }
-
-  /**
-   * @param label A label
-   * @return Unique vertex id for this label
-   */
-
-  private int vertexId(V label) {
-    return vertexMap.computeIntIfAbsent(label, x -> vertexMap.size());
-  }
-
 
 }

@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 // TODO: Test
 public class GraphSupplementer {
@@ -22,7 +23,7 @@ public class GraphSupplementer {
 
   public static <V extends Serializable> LabeledGraph<V> extend(LabeledGraph<V> graph, LabeledGraph<V> supplement, int maxDist, double supplementBoost, Class<V> clazz) {
     Set<V> vertices = selectVertices(graph, supplement, maxDist);
-    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(clazz);
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(new DefaultLabeling<>(clazz));
     double boostFactor = supplementBoost * averageWeight(graph) / averageWeight(supplement);
     addEdges(graph, vertices, builder, 1);
     addEdges(supplement, vertices, builder, boostFactor);
@@ -44,7 +45,7 @@ public class GraphSupplementer {
   }
 
   private static <V extends Serializable> Set<V> selectVertices(LabeledGraph<V> graph, LabeledGraph<V> supplement, int maxDist) {
-    Set<V> selected = new HashSet<>(Arrays.asList(graph.getLabels()));
+    Set<V> selected = graph.labels().collect(Collectors.toSet());
     for (int i = 1; i <= maxDist; i++) {
       selected.addAll(grow(supplement, selected));
     }

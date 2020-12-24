@@ -5,6 +5,9 @@
 
 package net.adeptropolis.frogspawn.digest;
 
+import net.adeptropolis.frogspawn.graphs.labeled.Labeling;
+
+import java.io.Serializable;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -96,15 +99,15 @@ public class Digest {
    * Provides a stream of custom digest members for a labeled graph
    *
    * @param mapper Mapping between cluster digest vertices and custom cluster member objects
-   * @param labels Array of vertex labels
+   * @param labeling Vertex labeling
    * @param <V>    Type of the custom cluster member objects
    * @param <T>    Mapping result type
    * @return Custom cluster member object
    */
 
-  public <V, T> Stream<T> map(LabeledDigestMapping<V, T> mapper, V[] labels) {
+  public <V extends Serializable, T> Stream<T> map(LabeledDigestMapping<V, T> mapper, Labeling<V> labeling) {
     return IntStream.range(0, size())
-            .mapToObj(i -> mapper.map(labels[vertices[i]], weights[i], scores[i]));
+            .mapToObj(i -> mapper.map(labeling.label(vertices[i]), weights[i], scores[i]));
   }
 
 }

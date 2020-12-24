@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
+import net.adeptropolis.frogspawn.graphs.labeled.Labeling;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -125,13 +126,14 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   /**
    * Map a cluster's remainder to a stream of label objects
    *
-   * @param labels Graph labels
    * @param <T>    Label Type
+   * @param labeling Labeling
    * @return Stream of labels
    */
 
-  public <T> Stream<T> remainderLabels(T[] labels) {
-    return IntStream.range(0, remainder.size()).mapToObj(i -> labels[remainder.getInt(i)]);
+  // TODO: Using this method opens a dark portal into oblivion. Save the world by implementing propper labelled subgraphs!
+  public <T extends Serializable> Stream<T> remainderLabels(Labeling<T> labeling) {
+    return IntStream.range(0, remainder.size()).mapToObj(i -> labeling.label(remainder.getInt(i)));
   }
 
   /**

@@ -5,13 +5,14 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.algorithms.MinDegreeFilter;
-import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
+import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * A labeled graph.
@@ -25,30 +26,102 @@ import java.io.Serializable;
 
 public class LabeledGraph<V extends Serializable> implements Serializable {
 
-  static final long serialVersionUID = 7802023886873266825L;
+  static final long serialVersionUID = 7842023986873566825L;
 
-  private final SparseGraph graph;
-  private final V[] labels;
-  private Object2IntOpenHashMap<V> inverseLabelsCache;
+  private final Graph graph;
+
+  private final Labeling<V> labeling;
 
   /**
    * Constructor
-   *  @param graph  A graph
-   * @param labels Array of labels, indexed by vertex id
+   *
+   * @param graph     A graph
+   * @param labeling Instance of a vertex labeling
    */
 
-  LabeledGraph(SparseGraph graph, V[] labels) {
+  LabeledGraph(Graph graph, Labeling<V> labeling) {
     this.graph = graph;
-    this.labels = labels;
-    this.inverseLabelsCache = null;
+    this.labeling = labeling;
   }
 
   /**
    * @return The underlying graph
    */
 
-  public SparseGraph getGraph() {
+  public Graph getGraph() {
     return graph;
+  }
+
+  /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(LabeledEdgeConsumer<V> consumer) {
+    graph.traverse(asEdgeConsumer(consumer));
+  }
+
+  /**
+   * Sequential traversal over all edges of the graph
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
+    graph.traverse(asEdgeConsumer(consumer), mode);
+  }
+
+  /**
+   * Parallel traversal over all edges of the graph
+   *
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  // TODO: Test
+  public void traverseParallel(LabeledEdgeConsumer<V> consumer) {
+    graph.traverseParallel(asEdgeConsumer(consumer));
+  }
+
+  /**
+   * Traverse over all adjacent vertices
+   *
+   * @param label    Vertex label
+   * @param consumer Instance of LabeledEdgeConsumer
+   */
+
+  public void traverse(V label, LabeledEdgeConsumer<V> consumer) {
+    int localId = graph.localVertexId(labeling.id(label));
+    if (localId < 0) {
+      return;
+    }
+    graph.traverseIncidentEdges(localId, asEdgeConsumer(consumer), TraversalMode.DEFAULT);
+  }
+
+  /**
+   * Create a labelled subgraph from a regular subgraph
+   *
+   * @param subgraph Subgraph
+   * @return new labeled subgraph
+   */
+
+  public LabeledGraph<V> subgraph(Graph subgraph) {
+    return new LabeledGraph<>(subgraph, labeling);
+  }
+
+  /**
+   * Create a labelled subgraph from a stream of vertices
+   *
+   * @param vertices Vertices of the new subgraph
+   * @return new labeled subgraph
+   */
+
+  public LabeledGraph<V> subgraph(Stream<V> vertices) {
+    IntStream ids = vertices
+            .mapToInt(labeling::id)
+            .filter(id -> id >= 0);
+    Graph subgraph = graph.subgraph(IntIterators.asIntIterator(ids.iterator()));
+    return new LabeledGraph<>(subgraph, labeling);
   }
 
   /**
@@ -57,86 +130,54 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    */
 
   public V getLabel(int vertexId) {
-    return labels[vertexId];
+    return labeling.label(vertexId);
   }
 
   /**
-   * @return All vertex-label mappings
+   * @return Labeling for this graph
    */
 
-  public V[] getLabels() {
-    return labels;
+  public Labeling<V> getLabeling() {
+    return labeling;
   }
 
   /**
-   * Traverse all edges of the graph using the vertex labels
+   * @return Stream of all labels
+   */
+
+  public Stream<V> labels() {
+    return labeling.labels();
+  }
+
+  /**
+   * @return Order of the graph
+   */
+
+  public int order() {
+    return graph.order();
+  }
+
+  /**
+   * @return Size of the graph
+   */
+
+  public long size() {
+    return graph.size();
+  }
+
+  /**
+   * Helper: wrap a labeledEdgeConsumer into an edge consumer
    *
-   * @param consumer Instance of LabeledEdgeConsumer
+   * @param consumer Labeled edge consumer
+   * @return Edge consumer
    */
 
-  public void traverse(LabeledEdgeConsumer<V> consumer) {
-    traverse(consumer, TraversalMode.DEFAULT);
+  private EdgeConsumer asEdgeConsumer(LabeledEdgeConsumer<V> consumer) {
+    return (u, v, weight) -> consumer.accept(
+            labeling.label(graph.globalVertexId(u)),
+            labeling.label(graph.globalVertexId(v)),
+            weight);
   }
 
-  /**
-   * Traverse all edges adjacent to a given endpoint
-   *
-   * @param label        Endpoint label
-   * @param consumer Instance of LabeledEdgeConsumer
-   * @param mode     Traversal mode
-   */
-
-  // TODO: Test
-  public void traverseIncidentEdges(V label, LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
-    int i = inverseLabels().getOrDefault(label, -1);
-    if (i < 0) {
-      return;
-    }
-    graph.traverseIncidentEdges(graph.localVertexId(i), (u,v,weight) -> {
-      consumer.accept(labels[graph.globalVertexId(u)], labels[graph.globalVertexId(v)], weight);
-    }, mode);
-  }
-
-  /**
-   * Traverse all edges of the graph using the vertex labels
-   *
-   * @param consumer Instance of LabeledEdgeConsumer
-   * @param mode Traversal mode
-   */
-
-  public void traverse(LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
-    for (int i = 0 ; i < graph.order(); i++) {
-      graph.traverseIncidentEdges(i, (v, w, weight) -> consumer.accept(labels[graph.globalVertexId(v)], labels[graph.globalVertexId(w)], weight), mode);
-    }
-  }
-
-  // TODO: Test, comment
-  // NOTE: Creates new instance
-  public LabeledGraph<V> minDegreeFilter(int minDegree, Class<V> labelsClass) {
-    Graph filtered = MinDegreeFilter.apply(graph, minDegree);
-    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(labelsClass);
-    filtered.traverse((u, v, weight) -> builder.add(labels[filtered.globalVertexId(u)], labels[filtered.globalVertexId(v)], weight), TraversalMode.LOWER_TRIANGULAR);
-    return builder.build();
-  }
-
-  /**
-   * Note: This method creates a new map on every invocation!
-   *
-   * @return A new map label -> vertex id
-   */
-
-  // TODO: Test
-  public Object2IntOpenHashMap<V> inverseLabels() {
-    if (inverseLabelsCache != null) {
-      return inverseLabelsCache;
-    }
-    Object2IntOpenHashMap<V> map = new Object2IntOpenHashMap<V>();
-    for (int v = 0; v < labels.length; v++) {
-      map.put(labels[v], v);
-    }
-    inverseLabelsCache = map;
-    return map;
-
-  }
 
 }
