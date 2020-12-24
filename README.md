@@ -52,7 +52,7 @@ vertex ids and those objects. In these cases, it is strongly recommended to use 
 for building graphs:
 
 ```java
-LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(String.class);
+LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class));
 ```
 
 Adding edges to the builder is straightforward using two vertex labels and an edge weight:

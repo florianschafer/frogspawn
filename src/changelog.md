@@ -1,7 +1,6 @@
 # Frogspawn Changelog
 
 ## Current
-    - Introduce better graph labeling. This breaks compatibility with previously serialized graphs
 
 ## v1.2.1
 
@@ -13,6 +12,9 @@
     - Added convenience methods for sequential graph traversal
     - Considerable speed boost when building large graphs
     - Faster graph serialization
+    - Introduce better graph labeling. This breaks compatibility with previously serialized graphs
+    - Labeled graphs can now be traversed directly
+
             
 ## v1.2.0
 
