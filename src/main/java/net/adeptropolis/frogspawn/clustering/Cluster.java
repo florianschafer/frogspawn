@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexIterator;
-import net.adeptropolis.frogspawn.graphs.labeled.Labeling;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 
 import java.io.IOException;
 import java.io.Serializable;

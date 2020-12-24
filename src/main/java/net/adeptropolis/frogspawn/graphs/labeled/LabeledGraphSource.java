@@ -5,6 +5,8 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;

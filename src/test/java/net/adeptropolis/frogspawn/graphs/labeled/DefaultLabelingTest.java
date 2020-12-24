@@ -5,6 +5,7 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import org.junit.Test;
 
 import java.util.stream.Collectors;

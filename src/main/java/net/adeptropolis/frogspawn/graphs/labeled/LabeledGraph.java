@@ -8,6 +8,7 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 

@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableList;
 import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import org.junit.Test;
 
 import java.util.List;

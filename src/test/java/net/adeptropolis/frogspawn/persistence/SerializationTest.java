@@ -14,7 +14,7 @@ import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
-import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabeling;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;

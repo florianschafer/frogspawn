@@ -10,7 +10,7 @@ import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
-import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabeling;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import org.junit.Before;
 import org.junit.Test;
 

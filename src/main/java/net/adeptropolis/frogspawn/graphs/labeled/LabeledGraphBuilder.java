@@ -7,6 +7,7 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 
 import java.io.Serializable;
 

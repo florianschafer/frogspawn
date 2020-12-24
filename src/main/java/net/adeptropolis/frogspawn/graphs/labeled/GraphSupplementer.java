@@ -6,12 +6,12 @@
 package net.adeptropolis.frogspawn.graphs.labeled;
 
 
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
-import net.adeptropolis.frogspawn.graphs.labeled.DefaultLabeling;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import org.junit.Before;

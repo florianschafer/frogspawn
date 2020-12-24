@@ -9,6 +9,8 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

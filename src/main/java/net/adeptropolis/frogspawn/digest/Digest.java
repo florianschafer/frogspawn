@@ -5,7 +5,7 @@
 
 package net.adeptropolis.frogspawn.digest;
 
-import net.adeptropolis.frogspawn.graphs.labeled.Labeling;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 
 import java.io.Serializable;
 import java.util.stream.IntStream;

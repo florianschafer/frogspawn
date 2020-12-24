@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.adeptropolis.frogspawn.graphs.labeled;
+package net.adeptropolis.frogspawn.graphs.labeled.labelings;
 
 import java.io.Serializable;
 import java.util.stream.Stream;
