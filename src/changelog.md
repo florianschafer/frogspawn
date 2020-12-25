@@ -15,6 +15,7 @@
     - Introduce better graph labeling. This breaks compatibility with previously serialized graphs
     - Labeled graphs can now be traversed directly
     - Add minimal graph filter pipeline, min degree filter
+    - Ability to collapse labeled subgraphs
     - Add graph functions
     - Lebeled graph merging
             
