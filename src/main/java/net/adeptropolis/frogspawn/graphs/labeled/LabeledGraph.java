@@ -199,12 +199,11 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   /**
    * Collapse a subgraph into a minimal sparse graph
    *
-   * @param collapsedLabeling A fresh labeling instance
    * @return New, collapsed graph
    */
 
-  public LabeledGraph<V> collapse(Labeling<V> collapsedLabeling) {
-    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(collapsedLabeling);
+  public LabeledGraph<V> collapse() {
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(labeling.newInstance());
     traverse(builder::add, TraversalMode.LOWER_TRIANGULAR);
     return builder.build();
   }
@@ -215,13 +214,12 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    * @param other Other labeled graph that should be merged
    * @param baseWeightFunction Function to use when harmonizing graph weights
    * @param otherBoost additional boost for the other graph
-   * @param mergedLabeling Fresh labeling instance
    * @return A new Labeled graph, encompassing both the original as well as the other graph
    */
 
-  public LabeledGraph<V> merge(LabeledGraph<V> other, GraphFunction<Double> baseWeightFunction, double otherBoost, Labeling<V> mergedLabeling) {
+  public LabeledGraph<V> merge(LabeledGraph<V> other, GraphFunction<Double> baseWeightFunction, double otherBoost) {
     double otherScaleFactor = otherBoost * baseWeightFunction.apply(graph) / baseWeightFunction.apply(other.graph);
-    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(mergedLabeling);
+    LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(labeling.newInstance());
     traverse(builder::add, TraversalMode.LOWER_TRIANGULAR);
     other.traverse((u, v, weight) -> builder.add(u, v, weight * otherScaleFactor), TraversalMode.LOWER_TRIANGULAR);
     return builder.build();

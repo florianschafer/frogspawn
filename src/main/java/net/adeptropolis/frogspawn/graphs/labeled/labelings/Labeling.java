@@ -36,4 +36,10 @@ public interface Labeling<T extends Serializable> {
 
   Stream<T> labels();
 
+  /**
+   * @return Borderline factory impersonation: A new instance for this Labeling implementation
+   */
+
+  Labeling<T> newInstance();
+
 }

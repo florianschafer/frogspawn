@@ -112,7 +112,7 @@ public class LabeledGraphTest {
             .add("3", "4", 1)
             .build()
             .subgraph(Stream.of("1", "2", "3"))
-            .collapse(new DefaultLabeling<>(String.class));
+            .collapse();
     assertThat(graph.order(), is(3));
     assertThat(graph.size(), is(6L));
     assertThat(graph.getLabeling().labels().collect(Collectors.toList()), containsInAnyOrder("1", "2", "3"));
@@ -131,7 +131,7 @@ public class LabeledGraphTest {
             .add("4", "5", 2)
             .add("5", "3", 2)
             .build();
-    LabeledGraph<String> merged = graph.merge(other, new AverageVertexWeight(), 3, new DefaultLabeling<>(String.class));
+    LabeledGraph<String> merged = graph.merge(other, new AverageVertexWeight(), 3);
     assertThat(merged.getLabeling().labels().collect(Collectors.toList()), containsInAnyOrder("0", "1", "2", "3", "4", "5"));
     EdgeFingerprinter edgeFingerprinter = new EdgeFingerprinter();
     merged.traverse(edgeFingerprinter);

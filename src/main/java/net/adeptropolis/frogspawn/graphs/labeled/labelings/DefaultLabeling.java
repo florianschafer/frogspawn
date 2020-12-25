@@ -84,6 +84,15 @@ public class DefaultLabeling<T extends Serializable> implements Labeling<T>, Ser
   }
 
   /**
+   * {@inheritDoc}
+   */
+
+  @Override
+  public Labeling<T> newInstance() {
+    return new DefaultLabeling<>(labelClass);
+  }
+
+  /**
    * Ensure that the label buffer has been properly set up
    */
 
