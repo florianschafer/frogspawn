@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
-import net.adeptropolis.frogspawn.graphs.functions.AverageVertexWeight;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import org.junit.BeforeClass;
@@ -22,7 +21,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
 
-public class LabeledGraphTest {
+public class LabeledGraphTest extends LabeledGraphTestBase {
 
   private static Labeling<String> labeling;
   private static LabeledGraph<String> graph;
@@ -116,42 +115,6 @@ public class LabeledGraphTest {
     assertThat(graph.order(), is(3));
     assertThat(graph.size(), is(6L));
     assertThat(graph.getLabeling().labels().collect(Collectors.toList()), containsInAnyOrder("1", "2", "3"));
-  }
-
-  @Test
-  public void merge() {
-    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
-            .add("0", "1", 1)
-            .add("1", "2", 1)
-            .add("2", "0", 1)
-            .add("2", "3", 1)
-            .build();
-    LabeledGraph<String> other = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
-            .add("2", "3", 2)
-            .add("3", "4", 2)
-            .add("4", "5", 2)
-            .add("5", "3", 2)
-            .build();
-    LabeledGraph<String> merged = graph.merge(other, new AverageVertexWeight(), 3);
-    assertThat(merged.getLabeling().labels().collect(Collectors.toList()), containsInAnyOrder("0", "1", "2", "3", "4", "5"));
-    EdgeFingerprinter edgeFingerprinter = new EdgeFingerprinter();
-    merged.traverse(edgeFingerprinter);
-    assertThat(edgeFingerprinter.fingerprint(), is("1#0#1|1#2#1|0#1#1|0#2#1|2#1#1|2#0#1|2#3#4|3#2#4|3#4#3|3#5#3|4#3#3|4#5#3|5#3#3|5#4#3"));
-  }
-
-  static class EdgeFingerprinter implements LabeledEdgeConsumer<String> {
-
-    private final Stream.Builder<String> builder = Stream.builder();
-
-    @Override
-    public void accept(String left, String right, double weight) {
-      builder.add(String.format("%s#%s#%.0f", left, right, weight));
-    }
-
-    public String fingerprint() {
-      return builder.build().collect(Collectors.joining("|"));
-    }
-
   }
 
 }

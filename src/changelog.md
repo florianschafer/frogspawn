@@ -2,7 +2,7 @@
 
 ## Current
 
-## v1.2.1
+## v1.3.0
 
     - LabeledGraphBuilder::add is now thread safe
     - Provide better defaults
@@ -17,7 +17,7 @@
     - Add minimal graph filter pipeline, min degree filter
     - Ability to collapse labeled subgraphs
     - Add graph functions
-    - Lebeled graph merging
+    - Labeled graph merging
             
 ## v1.2.0
 
