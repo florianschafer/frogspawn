@@ -212,13 +212,13 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
    * Merge with another graph
    *
    * @param other Other labeled graph that should be merged
-   * @param baseWeightFunction Function to use when harmonizing graph weights
+   * @param weightBase Function to use when harmonizing graph weights
    * @param otherBoost additional boost for the other graph
    * @return A new Labeled graph, encompassing both the original as well as the other graph
    */
 
-  public LabeledGraph<V> merge(LabeledGraph<V> other, GraphFunction<Double> baseWeightFunction, double otherBoost) {
-    double otherScaleFactor = otherBoost * baseWeightFunction.apply(graph) / baseWeightFunction.apply(other.graph);
+  public LabeledGraph<V> merge(LabeledGraph<V> other, GraphFunction<Double> weightBase, double otherBoost) {
+    double otherScaleFactor = otherBoost * weightBase.apply(graph) / weightBase.apply(other.graph);
     LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(labeling.newInstance());
     traverse(builder::add, TraversalMode.LOWER_TRIANGULAR);
     other.traverse((u, v, weight) -> builder.add(u, v, weight * otherScaleFactor), TraversalMode.LOWER_TRIANGULAR);

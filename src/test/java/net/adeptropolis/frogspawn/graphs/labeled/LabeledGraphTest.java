@@ -124,6 +124,7 @@ public class LabeledGraphTest {
             .add("0", "1", 1)
             .add("1", "2", 1)
             .add("2", "0", 1)
+            .add("2", "3", 1)
             .build();
     LabeledGraph<String> other = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
             .add("2", "3", 2)
@@ -135,7 +136,7 @@ public class LabeledGraphTest {
     assertThat(merged.getLabeling().labels().collect(Collectors.toList()), containsInAnyOrder("0", "1", "2", "3", "4", "5"));
     EdgeFingerprinter edgeFingerprinter = new EdgeFingerprinter();
     merged.traverse(edgeFingerprinter);
-    assertThat(edgeFingerprinter.fingerprint(), is("1#0#1|1#2#1|0#1#1|0#2#1|2#1#1|2#0#1|2#3#3|3#2#3|3#4#3|3#5#3|4#3#3|4#5#3|5#3#3|5#4#3"));
+    assertThat(edgeFingerprinter.fingerprint(), is("1#0#1|1#2#1|0#1#1|0#2#1|2#1#1|2#0#1|2#3#4|3#2#4|3#4#3|3#5#3|4#3#3|4#5#3|5#3#3|5#4#3"));
   }
 
   static class EdgeFingerprinter implements LabeledEdgeConsumer<String> {
