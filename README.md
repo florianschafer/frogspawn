@@ -92,7 +92,7 @@ Graph graph = builder.build();
 For more information on how to use the low-level Graph API, please refer to the javadocs.
 
 ##### General Remarks
- - Edge weights **must** be ≥ 1 when used for clustering.
+ - Edge weights **must** be ≥ 0 when used for clustering.
  - By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
  - To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
  - The task of assigning sensible edge weights is completely up to the user. For document-term clusters, simple TfIdf-weighting has proven to be very successful.

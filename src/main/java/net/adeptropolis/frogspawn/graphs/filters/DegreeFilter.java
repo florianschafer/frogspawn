@@ -11,18 +11,21 @@ import net.adeptropolis.frogspawn.graphs.Graph;
  * Filter a graph using minimum vertex degrees
  */
 
-public class MinDegreeFilter implements GraphFilter {
+public class DegreeFilter implements GraphFilter {
 
   private final long minDegree;
+  private final long maxDegree;
 
   /**
    * Constructor
    *
    * @param minDegree Minimum vertex degree
+   * @param maxDegree Maximum vertex degree. May be 0 (no max degree filtering)
    */
 
-  public MinDegreeFilter(long minDegree) {
+  public DegreeFilter(long minDegree, long maxDegree) {
     this.minDegree = minDegree;
+    this.maxDegree = maxDegree;
   }
 
   /**
@@ -32,7 +35,7 @@ public class MinDegreeFilter implements GraphFilter {
   @Override
   public Graph apply(Graph graph) {
     long[] degrees = graph.degrees();
-    return graph.subgraph(v -> degrees[v] >= minDegree);
+    return graph.subgraph(v -> degrees[v] >= minDegree && (maxDegree <= 0 || degrees[v] <= maxDegree));
   }
 
 }

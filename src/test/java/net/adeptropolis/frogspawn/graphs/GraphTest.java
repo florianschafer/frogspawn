@@ -7,13 +7,11 @@ package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
-import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
+import net.adeptropolis.frogspawn.graphs.filters.DegreeFilter;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -135,7 +133,7 @@ public class GraphTest extends GraphTestBase {
             .add(2, 3, 1)
             .add(3, 4, 1)
             .build();
-    GraphFilter filter = new MinDegreeFilter(2);
+    GraphFilter filter = new DegreeFilter(2, 0);
     assertThat(graph.filter(filter, false).order(), is(4));
     assertThat(graph.filter(filter, true).order(), is(3));
   }

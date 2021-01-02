@@ -14,7 +14,7 @@ import org.junit.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public class MinDegreeFilterTest {
+public class DegreeFilterTest {
 
   private static final SparseGraph graph = new SparseGraphBuilder()
           .add(0, 1, 1)
@@ -25,8 +25,8 @@ public class MinDegreeFilterTest {
           .build();
 
   @Test
-  public void singleApplication() {
-    Graph filtered = new MinDegreeFilter(2).apply(graph);
+  public void minSingleApplication() {
+    Graph filtered = new DegreeFilter(2, 0).apply(graph);
     assertThat(filtered.order(), is(4));
     IntIterator it = filtered.globalVertexIdIterator();
     assertThat(it.nextInt(), is(0));
@@ -37,8 +37,8 @@ public class MinDegreeFilterTest {
   }
 
   @Test
-  public void cascading() {
-    Graph filtered = new MinDegreeFilter(2).applyIteratively(graph);
+  public void minCascading() {
+    Graph filtered = new DegreeFilter(2, 0).applyIteratively(graph);
     assertThat(filtered.order(), is(3));
     IntIterator it = filtered.globalVertexIdIterator();
     assertThat(it.nextInt(), is(0));
@@ -46,5 +46,17 @@ public class MinDegreeFilterTest {
     assertThat(it.nextInt(), is(2));
     assertThat(it.hasNext(), is(false));
   }
+
+  @Test
+  public void max() {
+    Graph filtered = new DegreeFilter(2, 2).apply(graph);
+    assertThat(filtered.order(), is(3));
+    IntIterator it = filtered.globalVertexIdIterator();
+    assertThat(it.nextInt(), is(0));
+    assertThat(it.nextInt(), is(1));
+    assertThat(it.nextInt(), is(3));
+    assertThat(it.hasNext(), is(false));
+  }
+
 
 }

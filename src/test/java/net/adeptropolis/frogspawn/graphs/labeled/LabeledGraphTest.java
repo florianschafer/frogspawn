@@ -8,7 +8,7 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
-import net.adeptropolis.frogspawn.graphs.filters.MinDegreeFilter;
+import net.adeptropolis.frogspawn.graphs.filters.DegreeFilter;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import org.junit.BeforeClass;
@@ -96,7 +96,7 @@ public class LabeledGraphTest extends LabeledGraphTestBase {
             .add("2", "3", 1)
             .add("3", "4", 1)
             .build();
-    GraphFilter filter = new MinDegreeFilter(2);
+    GraphFilter filter = new DegreeFilter(2, 0);
     assertThat(graph.filter(filter, false).order(), is(4));
     assertThat(graph.filter(filter, true).order(), is(3));
   }

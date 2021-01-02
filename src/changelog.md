@@ -2,6 +2,10 @@
 
 ## Current
 
+## v1.3.1
+
+    - Add vertex filtering by max degree
+
 ## v1.3.0
 
     - LabeledGraphBuilder::add is now thread safe
