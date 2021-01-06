@@ -110,4 +110,19 @@ public class Digest {
             .mapToObj(i -> mapper.map(labeling.label(vertices[i]), weights[i], scores[i]));
   }
 
+
+  /**
+   * Yield labeled digest instances
+   *
+   * @param labeling Graph labeling
+   * @param consumer Instance of LabeledDigestConsumer
+   * @param <V> Vertex type
+   */
+
+  public <V extends Serializable> void forEach(Labeling<V> labeling, LabeledDigestConsumer<V> consumer) {
+    for (int i = 0; i < size(); i++) {
+      consumer.accept(labeling.label(vertices[i]), weights[i], scores[i]);
+    }
+  }
+
 }

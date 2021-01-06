@@ -5,6 +5,7 @@
 ## v1.3.1
 
     - Add vertex filtering by max degree
+    - Create subgraphs using vertex label predicates
 
 ## v1.3.0
 

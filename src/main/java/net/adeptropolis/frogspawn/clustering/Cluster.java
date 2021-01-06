@@ -131,7 +131,7 @@ public class Cluster implements Comparable<Cluster>, Serializable {
    * @return Stream of labels
    */
 
-  // TODO: Using this method opens a dark portal into oblivion. Save the world by implementing propper labelled subgraphs!
+  // TODO: Using this method opens a dark portal into oblivion. Save the world by implementing proper labelled subgraphs!
   public <T extends Serializable> Stream<T> remainderLabels(Labeling<T> labeling) {
     return IntStream.range(0, remainder.size()).mapToObj(i -> labeling.label(remainder.getInt(i)));
   }

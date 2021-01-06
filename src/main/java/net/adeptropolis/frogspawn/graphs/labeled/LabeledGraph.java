@@ -14,6 +14,8 @@ import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
+import java.util.PrimitiveIterator;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -136,6 +138,18 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
             .mapToInt(labeling::id)
             .filter(id -> id >= 0);
     Graph subgraph = graph.subgraph(IntIterators.asIntIterator(ids.iterator()));
+    return new LabeledGraph<>(subgraph, labeling);
+  }
+
+  /**
+   * Create a labelled subgraph from a label predicate
+   *
+   * @param predicate Label predicate
+   * @return New subgraph containing only vertices for which the label predicate was satisfied
+   */
+
+  public LabeledGraph<V> subgraph(Predicate<V> predicate) {
+    Graph subgraph = graph.subgraph(i -> predicate.test(labeling.label(graph.globalVertexId(i)))); // TODO: It might help to have a predicate that is sensitive to global ids!
     return new LabeledGraph<>(subgraph, labeling);
   }
 

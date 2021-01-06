@@ -78,6 +78,16 @@ public class LabeledGraphTest extends LabeledGraphTestBase {
   }
 
   @Test
+  public void subgraphFromLabelPredicate() {
+    EdgeFingerprinter edges = new EdgeFingerprinter();
+    LabeledGraph<String> labelledSubgraph = graph
+            .subgraph(Stream.of("b", "c", "d", "e"))
+            .subgraph(label -> label.equals("d") || label.equals("e"));
+    labelledSubgraph.traverse(edges);
+    assertThat(edges.fingerprint(), is("d#e#4|e#d#4"));
+  }
+
+  @Test
   public void order() {
     assertThat(graph.order(), is(7));
   }
