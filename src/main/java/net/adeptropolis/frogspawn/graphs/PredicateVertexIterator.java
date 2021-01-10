@@ -9,8 +9,10 @@ import it.unimi.dsi.fastutil.ints.IntIterator;
 
 import java.util.function.IntPredicate;
 
-// TODO: Test!
-// Note: returns global ids!
+/**
+ * Provides a (global!) vertex iterator for a given (local!) vertex id predicate.
+ */
+
 public class PredicateVertexIterator implements IntIterator {
 
   private final Graph graph;
@@ -46,6 +48,5 @@ public class PredicateVertexIterator implements IntIterator {
     }
     return -1;
   }
-
 
 }
