@@ -31,7 +31,7 @@ public class PredicateVertexIterator implements IntIterator {
   @Override
   public int nextInt() {
     int nextInt = graph.globalVertexId(next);
-    next = seekNext();
+    next = seekNext(); 
     return nextInt;
   }
 
