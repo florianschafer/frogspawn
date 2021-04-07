@@ -32,7 +32,6 @@ public class RecursiveClustering {
   private final ClusteringSettings settings;
   private final SpectralBisector bisector;
   private final AffiliationGuard affiliationGuard;
-  private final RandomInitialVectorsSource ivSource;
 
   // NOTE: By construction, this type of queue induces the top-town ordering required for determinism
   // and ensures the correct behaviour of vertex affiliation guards
@@ -48,11 +47,10 @@ public class RecursiveClustering {
   private RecursiveClustering(Graph graph, ClusteringSettings settings) {
     this.graph = graph;
     this.settings = settings;
-    this.bisector = new SpectralBisector(settings);
+    this.bisector = new SpectralBisector(settings, new RandomInitialVectorsSource(settings.getRandomSeed()));
     this.queue = new ConcurrentLinkedQueue<>();
     this.affiliationGuard = new AffiliationGuard(settings.getAffiliationMetric(),
             graph, settings.getMinClusterSize(), settings.getMinAffiliation());
-    this.ivSource = new RandomInitialVectorsSource(settings.getRandomSeed());
   }
 
   public static Cluster run(Graph graph, ClusteringSettings settings) {
@@ -103,7 +101,7 @@ public class RecursiveClustering {
 
   private void bisect(Protocluster protocluster) {
     try {
-      bisector.bisect(protocluster.getGraph(), settings.getMaxIterations(), ivSource, partition -> processPartition(protocluster, partition));
+      bisector.bisect(protocluster.getGraph(), partition -> processPartition(protocluster, partition));
     } catch (PowerIterationException e) {
       if (protocluster.getGraph().size() >= settings.getMinClusterSize()) {
         addTerminalChild(protocluster, protocluster.getGraph());

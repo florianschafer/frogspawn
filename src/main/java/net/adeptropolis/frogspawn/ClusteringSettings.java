@@ -86,25 +86,29 @@ public class ClusteringSettings {
   }
 
   /**
+   * @return Trail size for partial convergence criterion
+   */
+  public int getTrailSize() {
+    return trailSize;
+  }
+
+  /**
+   * @return Convergence threshold
+   */
+
+  public double getConvergenceThreshold() {
+    return convergenceThreshold;
+  }
+
+
+  /**
    * @return Seed for random initial vector generation
    */
 
   public long getRandomSeed() {
     return randomSeed;
   }
-
-  /**
-   * Return a new instance of ConvergenceCriterion for a given graph.
-   * Currently, this always returns an instance of <code>ConstantSigTrailConvergence</code>
-   *
-   * @param graph A graph
-   * @return A new <code>PartialConvergenceCriterion</code> instance
-   */
-
-  public PartialConvergenceCriterion convergenceCriterionForGraph(Graph graph) {
-    return new ConstantSigTrailConvergence(graph, trailSize, convergenceThreshold);
-  }
-
+  
   /**
    * @return Currently used vertex affiliation metric
    */

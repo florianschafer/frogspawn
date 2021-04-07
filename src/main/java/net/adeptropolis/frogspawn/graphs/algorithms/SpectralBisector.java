@@ -7,10 +7,7 @@ package net.adeptropolis.frogspawn.graphs.algorithms;
 
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PartialConvergenceCriterion;
-import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PowerIteration;
-import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PowerIterationException;
-import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
+import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.*;
 import net.adeptropolis.frogspawn.graphs.matrices.ShiftedNormalizedLaplacian;
 
 import java.util.function.Consumer;
@@ -23,9 +20,11 @@ public class SpectralBisector {
    */
 
   private final ClusteringSettings settings;
+  private final RandomInitialVectorsSource ivSource;
 
-  public SpectralBisector(ClusteringSettings settings) {
+  public SpectralBisector(ClusteringSettings settings, RandomInitialVectorsSource ivSource) {
     this.settings = settings;
+    this.ivSource = ivSource;
   }
 
   /**
@@ -46,20 +45,30 @@ public class SpectralBisector {
    * Bisects the given graph into two partitons
    *
    * @param graph         The input graph
-   * @param maxIterations Maximum number of iterations
-   * @param ivSource      Source for random initial vectors
    * @param consumer      A consumer for the resulting partitions
    * @throws PowerIteration.MaxIterationsExceededException if the number of iterations has been exceeded
    */
 
-  public void bisect(Graph graph, int maxIterations, RandomInitialVectorsSource ivSource, Consumer<Graph> consumer) throws PowerIterationException {
-    PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
+  public void bisect(Graph graph, Consumer<Graph> consumer) throws PowerIterationException {
+    PartialConvergenceCriterion convergenceCriterion = createConvergenceCriterion(graph);
     ShiftedNormalizedLaplacian ssnl = new ShiftedNormalizedLaplacian(graph);
     double[] iv = ivSource.generate(graph.order());
-    double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, maxIterations, false);
+    double[] v2 = PowerIteration.apply(ssnl, convergenceCriterion, iv, settings.getMaxIterations(), false);
     convergenceCriterion.postprocess(v2);
     yieldSubgraph(graph, v2, consumer, 1);
     yieldSubgraph(graph, v2, consumer, -1);
+  }
+
+  /**
+   * Return a new (partial) convergence criterion instance for a given graph.
+   * Currently, this always returns an instance of <code>ConstantSigTrailConvergence</code>
+   *
+   * @param graph A graph
+   * @return A new <code>PartialConvergenceCriterion</code> instance
+   */
+
+  private PartialConvergenceCriterion createConvergenceCriterion(Graph graph) {
+    return new ConstantSigTrailConvergence(graph, settings.getTrailSize(), settings.getConvergenceThreshold());
   }
 
 }

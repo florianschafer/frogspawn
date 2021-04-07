@@ -31,9 +31,9 @@ public class SpectralBisectorTest extends GraphTestBase {
 
   @Test
   public void completeBipartiteGraphs() throws PowerIterationException {
-    SpectralBisector bisector = new SpectralBisector(settings);
+    SpectralBisector bisector = new SpectralBisector(settings, IV_SOURCE);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
-    bisector.bisect(completeBipartiteWithWeakLink(), 100000, IV_SOURCE, c);
+    bisector.bisect(completeBipartiteWithWeakLink(), c);
     List<List<Integer>> partitions = c.vertices();
     assertThat(partitions.get(0), containsInAnyOrder(0, 1, 2, 3, 4));
     assertThat(partitions.get(1), containsInAnyOrder(5, 6, 7, 8));
@@ -41,11 +41,9 @@ public class SpectralBisectorTest extends GraphTestBase {
 
   @Test
   public void iterationExcessYieldsException() {
-    SpectralBisector bisector = new SpectralBisector(settings);
+    SpectralBisector bisector = new SpectralBisector(settings, IV_SOURCE);
     SubgraphCollectingConsumer c = new SubgraphCollectingConsumer();
-    assertThrows(PowerIteration.MaxIterationsExceededException.class, () -> {
-      bisector.bisect(largeCircle(), 10, IV_SOURCE, c);
-    });
+    assertThrows(PowerIteration.MaxIterationsExceededException.class, () -> bisector.bisect(largeCircle(), c));
   }
 
 }
