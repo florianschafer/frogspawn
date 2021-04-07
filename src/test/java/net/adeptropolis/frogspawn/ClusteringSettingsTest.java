@@ -75,7 +75,7 @@ public class ClusteringSettingsTest extends SettingsTestBase {
   }
 
   private void validateConvergenceCriterion(ClusteringSettings settings, int expectedTrailSize, int expectedThreshold) {
-    PartialConvergenceCriterion convergenceCriterion = settings.convergenceCriterionForGraph(graph);
+    PartialConvergenceCriterion convergenceCriterion = new ConstantSigTrailConvergence(graph, settings.getTrailSize(), settings.getConvergenceThreshold());
     assertThat(convergenceCriterion, instanceOf(ConstantSigTrailConvergence.class));
     ConstantSigTrailConvergence constantSigTrailConvergence = (ConstantSigTrailConvergence) convergenceCriterion;
     assertThat(constantSigTrailConvergence.getTrailSize(), is(expectedTrailSize));

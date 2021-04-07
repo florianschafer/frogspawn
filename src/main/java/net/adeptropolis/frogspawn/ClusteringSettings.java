@@ -108,7 +108,7 @@ public class ClusteringSettings {
   public long getRandomSeed() {
     return randomSeed;
   }
-  
+
   /**
    * @return Currently used vertex affiliation metric
    */
