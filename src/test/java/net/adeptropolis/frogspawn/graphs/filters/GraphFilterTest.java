@@ -8,8 +8,8 @@ package net.adeptropolis.frogspawn.graphs.filters;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.*;
 
 public class GraphFilterTest extends GraphTestBase {
 

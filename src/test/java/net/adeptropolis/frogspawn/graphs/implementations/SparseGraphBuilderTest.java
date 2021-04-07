@@ -16,31 +16,19 @@ import static org.junit.Assert.assertThrows;
 
 public class SparseGraphBuilderTest {
 
+  @Test
+  public void emptyGraph() {
+    CSRDatastore datastore = builder().buildDatastore();
+    assertGraphSizeMatches(datastore, 0);
+    assertEdgeCountMatches(datastore, 0L);
+  }
+
   private static void assertGraphSizeMatches(CSRDatastore datastore, int expected) {
     assertThat("Graph size", datastore.order(), is(expected));
   }
 
   private static void assertEdgeCountMatches(CSRDatastore datastore, long expected) {
     assertThat("Number of edges", datastore.size(), is(expected));
-  }
-
-  private static void assertEdgesMatch(CSRDatastore datastore, int... expected) {
-    assertEquals("EdgeOps", datastore.edges, expected);
-  }
-
-  private static void assertPointersMatch(CSRDatastore datastore, long... expected) {
-    assertEquals("Vertex pointers", datastore.pointers, expected);
-  }
-
-  private static void assertWeightsMatch(CSRDatastore datastore, double... expected) {
-    assertEquals("Weights", datastore.weights, expected);
-  }
-
-  @Test
-  public void emptyGraph() {
-    CSRDatastore datastore = builder().buildDatastore();
-    assertGraphSizeMatches(datastore, 0);
-    assertEdgeCountMatches(datastore, 0L);
   }
 
   @Test
@@ -63,6 +51,10 @@ public class SparseGraphBuilderTest {
     assertWeightsMatch(datastore, 5);
   }
 
+  private static void assertWeightsMatch(CSRDatastore datastore, double... expected) {
+    assertEquals("Weights", datastore.weights, expected);
+  }
+
   @Test
   public void entrySorting() {
     CSRDatastore datastore = builder()
@@ -77,6 +69,14 @@ public class SparseGraphBuilderTest {
     assertPointersMatch(datastore, 0L, 3L, 5L, 6L, 7L, 8L, 9L, 10L);
     assertEdgesMatch(datastore, 4, 5, 6, 2, 3, 1, 1, 0, 0, 0);
     assertWeightsMatch(datastore, 5, 3, 2, 7, 11, 7, 11, 5, 3, 2);
+  }
+
+  private static void assertPointersMatch(CSRDatastore datastore, long... expected) {
+    assertEquals("Vertex pointers", datastore.pointers, expected);
+  }
+
+  private static void assertEdgesMatch(CSRDatastore datastore, int... expected) {
+    assertEquals("EdgeOps", datastore.edges, expected);
   }
 
   @Test

@@ -25,12 +25,6 @@ public class ParallelVertexOpsTest extends GraphTestBase {
     verify(g);
   }
 
-  @Test
-  public void largeGraph() {
-    Graph g = largeCircle(150000);
-    verify(g);
-  }
-
   private void verify(Graph g) {
     Set<Integer> vertices = Collections.synchronizedSet(new HashSet<>());
     ParallelVertexOps.traverse(g, vertices::add);
@@ -40,6 +34,12 @@ public class ParallelVertexOpsTest extends GraphTestBase {
     while (it.hasNext()) {
       assertThat(collected[it.localId()], is(it.globalId()));
     }
+  }
+
+  @Test
+  public void largeGraph() {
+    Graph g = largeCircle(150000);
+    verify(g);
   }
 
 }

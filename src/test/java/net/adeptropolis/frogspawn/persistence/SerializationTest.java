@@ -14,16 +14,19 @@ import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
-import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
+import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles.BIN_BITS;
@@ -44,6 +47,18 @@ public class SerializationTest extends GraphTestBase {
     verifyEqualsAfterSerialization(bigInts);
   }
 
+  private <T> void verifyEqualsAfterSerialization(Object object) throws IOException {
+    T deserialized = Serialization.load(save(object));
+    assertThat(deserialized, is(object));
+  }
+
+  private File save(Object object) throws IOException {
+    File tmpFile = File.createTempFile(UUID.randomUUID().toString(), null);
+    tmpFile.deleteOnExit();
+    Serialization.save(object, tmpFile);
+    return tmpFile;
+  }
+
   @Test
   public void bigDoubles() throws IOException {
     BigDoubles bigDoubles = new BigDoubles(10);
@@ -57,6 +72,26 @@ public class SerializationTest extends GraphTestBase {
   public void sparseGraph() throws IOException {
     SparseGraph graph = WEIGHTED_K20;
     verifyGraph(graph);
+  }
+
+  private void verifyGraph(Graph graph) throws IOException {
+    int[] graphVertices = IntIterators.unwrap(graph.globalVertexIdIterator());
+    List<Edge> graphEdges = getEdges(graph);
+    Graph deserialized = Serialization.load(save(graph));
+    int[] deserializedVertices = IntIterators.unwrap(deserialized.globalVertexIdIterator());
+    List<Edge> deserializedEdges = getEdges(deserialized);
+    assertThat(deserialized.order(), is(graph.order()));
+    assertThat(deserialized.size(), is(graph.size()));
+    assertThat(ArrayUtils.toObject(deserializedVertices), is(ArrayUtils.toObject(graphVertices)));
+    assertThat(deserializedEdges, is(graphEdges));
+  }
+
+  private List<Edge> getEdges(Graph graph) {
+    CollectingEdgeConsumer graphEdgeConsumer = new CollectingEdgeConsumer();
+    for (int i = 0; i < graph.order(); i++) {
+      graph.traverseIncidentEdges(i, graphEdgeConsumer, TraversalMode.DEFAULT);
+    }
+    return graphEdgeConsumer.getEdges();
   }
 
   @Test
@@ -94,38 +129,6 @@ public class SerializationTest extends GraphTestBase {
     assertThat(deserialized.getChildren(), hasSize(1));
     assertThat(deserialized.getRemainder(), is(new IntArrayList(IntIterators.fromTo(0, 9))));
     assertThat(deserialized.getChildren().iterator().next().getRemainder(), is(new IntArrayList(IntIterators.fromTo(10, 20))));
-  }
-
-  private void verifyGraph(Graph graph) throws IOException {
-    int[] graphVertices = IntIterators.unwrap(graph.globalVertexIdIterator());
-    List<Edge> graphEdges = getEdges(graph);
-    Graph deserialized = Serialization.load(save(graph));
-    int[] deserializedVertices = IntIterators.unwrap(deserialized.globalVertexIdIterator());
-    List<Edge> deserializedEdges = getEdges(deserialized);
-    assertThat(deserialized.order(), is(graph.order()));
-    assertThat(deserialized.size(), is(graph.size()));
-    assertThat(ArrayUtils.toObject(deserializedVertices), is(ArrayUtils.toObject(graphVertices)));
-    assertThat(deserializedEdges, is(graphEdges));
-  }
-
-  private List<Edge> getEdges(Graph graph) {
-    CollectingEdgeConsumer graphEdgeConsumer = new CollectingEdgeConsumer();
-    for (int i = 0; i < graph.order(); i++) {
-      graph.traverseIncidentEdges(i, graphEdgeConsumer, TraversalMode.DEFAULT);
-    }
-    return graphEdgeConsumer.getEdges();
-  }
-
-  private <T> void verifyEqualsAfterSerialization(Object object) throws IOException {
-    T deserialized = Serialization.load(save(object));
-    assertThat(deserialized, is(object));
-  }
-
-  private File save(Object object) throws IOException {
-    File tmpFile = File.createTempFile(UUID.randomUUID().toString(), null);
-    tmpFile.deleteOnExit();
-    Serialization.save(object, tmpFile);
-    return tmpFile;
   }
 
 }

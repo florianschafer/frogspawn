@@ -289,9 +289,8 @@ public class GraphTestBase {
           .add(0, 1, 2)
           .add(0, 2, 3)
           .build();
-
-  protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
   private final FingerprintingEdgeConsumer fingerprintingConsumer = new FingerprintingEdgeConsumer();
+  protected CollectingEdgeConsumer consumer = new CollectingEdgeConsumer();
 
   protected static SparseGraph completeGraph(int size) {
     SparseGraphBuilder b = new SparseGraphBuilder();

@@ -8,10 +8,8 @@ package net.adeptropolis.frogspawn.clustering;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessing;
-import net.adeptropolis.frogspawn.clustering.postprocessing.PostprocessingSettings;
 import net.adeptropolis.frogspawn.digest.ClusterDigester;
 import net.adeptropolis.frogspawn.digest.Digest;
-import net.adeptropolis.frogspawn.digest.DigesterSettings;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
@@ -137,6 +135,13 @@ public class RecursiveClusteringTest {
     assertThat(vertices.size(), is(11));
   }
 
+  private final ClusterDigester digester() {
+    ClusteringSettings digesterSettings = ClusteringSettings.builder()
+            .digestRanking(COMBINED_RANKING.apply(1.75)).build();
+    return new ClusterDigester(digesterSettings);
+
+  }
+
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
     long refFp = fingerprintWithPostprocessing(graph, settings);
     for (int i = 0; i < rounds - 1; i++) {
@@ -147,7 +152,7 @@ public class RecursiveClusteringTest {
 
   private long fingerprintWithPostprocessing(Graph graph, ClusteringSettings settings) {
     Cluster root = RecursiveClustering.run(graph, settings);
-    Cluster postprocessed = Postprocessing.apply(root, PostprocessingSettings.builder().build());
+    Cluster postprocessed = Postprocessing.apply(root, settings);
     return hierarchyFingerprint(postprocessed, digester());
   }
 
@@ -166,13 +171,6 @@ public class RecursiveClusteringTest {
       fp += Math.round(1000 * (i + 1) * digest.getVertices()[i] * digest.getWeights()[i] * digest.getScores()[i]);
     }
     return fp;
-  }
-
-  private final ClusterDigester digester() {
-    DigesterSettings digesterSettings = DigesterSettings.builder()
-            .digestRanking(COMBINED_RANKING.apply(1.75)).build();
-    return new ClusterDigester(digesterSettings);
-
   }
 
 }

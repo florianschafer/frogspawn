@@ -33,13 +33,13 @@ public class SparseSubgraphTest extends GraphTestBase {
           .add(4, 11, 11)
           .build();
 
-  private static Graph defaultSubgraph(int... vertices) {
-    return subgraph(defaultGraph, vertices);
-  }
-
   @Test
   public void isDefaultSubgraph() {
     assertThat(defaultSubgraph(0, 1), instanceOf(SparseSubgraph.class));
+  }
+
+  private static Graph defaultSubgraph(int... vertices) {
+    return subgraph(defaultGraph, vertices);
   }
 
   @Test

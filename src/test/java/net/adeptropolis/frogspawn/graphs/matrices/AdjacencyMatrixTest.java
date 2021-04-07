@@ -24,6 +24,17 @@ public class AdjacencyMatrixTest {
     assertThat(y[2], is(593.0));
   }
 
+  private Graph defaultGraph() {
+    return new SparseGraphBuilder()
+            .add(0, 0, 2)
+            .add(0, 1, 3)
+            .add(0, 2, 5)
+            .add(1, 1, 7)
+            .add(1, 2, 11)
+            .add(2, 2, 13)
+            .build();
+  }
+
   @Test
   public void subset() {
     double[] y = new AdjacencyMatrix(defaultGraph().subgraph(IntIterators.wrap(new int[]{0, 2})))
@@ -43,17 +54,6 @@ public class AdjacencyMatrixTest {
     assertThat(r2[0], closeTo(678, 1E-6));
     assertThat(r2[1], closeTo(1433, 1E-6));
     assertThat(r2[2], closeTo(1965, 1E-6));
-  }
-
-  private Graph defaultGraph() {
-    return new SparseGraphBuilder()
-            .add(0, 0, 2)
-            .add(0, 1, 3)
-            .add(0, 2, 5)
-            .add(1, 1, 7)
-            .add(1, 2, 11)
-            .add(2, 2, 13)
-            .build();
   }
 
 

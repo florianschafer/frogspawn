@@ -18,22 +18,6 @@ public class ShiftedNormalizedLaplacianTest extends GraphTestBase {
   private final double INV_SQRT_8 = 1.0 / Math.sqrt(8);
   private final double ONE_HALF = 1.0 / 2;
 
-  private static double[] getAsMatrix(ShiftedNormalizedLaplacian op, int n) {
-    double[] matrix = new double[n * n];
-    for (int j = 0; j < n; j++) {
-      double[] col = getAsMatrixCol(op, j, n);
-      for (int i = 0; i < n; i++) {
-        matrix[i * n + j] = col[i];
-      }
-    }
-    return matrix;
-  }
-
-  private static double[] getAsMatrixCol(ShiftedNormalizedLaplacian op, int col, int n) {
-    double[] basisVec = IntStream.range(0, n).mapToDouble(i -> i == col ? 1 : 0).toArray();
-    return op.multiply(basisVec);
-  }
-
   @Test
   public void v0() {
     double[] expected = new double[]{INV_SQRT_8, ONE_HALF, INV_SQRT_8, INV_SQRT_8, ONE_HALF, INV_SQRT_8};
@@ -58,6 +42,22 @@ public class ShiftedNormalizedLaplacianTest extends GraphTestBase {
     for (int i = 0; i < n * n; i++) {
       assertThat(m[i], closeTo(expected[i], 1E-6));
     }
+  }
+
+  private static double[] getAsMatrix(ShiftedNormalizedLaplacian op, int n) {
+    double[] matrix = new double[n * n];
+    for (int j = 0; j < n; j++) {
+      double[] col = getAsMatrixCol(op, j, n);
+      for (int i = 0; i < n; i++) {
+        matrix[i * n + j] = col[i];
+      }
+    }
+    return matrix;
+  }
+
+  private static double[] getAsMatrixCol(ShiftedNormalizedLaplacian op, int col, int n) {
+    double[] basisVec = IntStream.range(0, n).mapToDouble(i -> i == col ? 1 : 0).toArray();
+    return op.multiply(basisVec);
   }
 
   @Test

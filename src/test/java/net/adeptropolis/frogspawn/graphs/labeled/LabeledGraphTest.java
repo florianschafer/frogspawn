@@ -7,8 +7,8 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
-import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.filters.DegreeFilter;
+import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import org.junit.BeforeClass;

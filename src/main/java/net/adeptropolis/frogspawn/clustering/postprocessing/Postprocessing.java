@@ -5,6 +5,7 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing;
 
+import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.*;
 import org.apache.commons.lang3.time.StopWatch;
@@ -39,25 +40,12 @@ public class Postprocessing {
    * @param settings    Clustering settings
    */
 
-  private Postprocessing(Cluster rootCluster, PostprocessingSettings settings) {
+  private Postprocessing(Cluster rootCluster, ClusteringSettings settings) {
     this.rootCluster = rootCluster;
     this.queue = createQueue(settings);
     this.affiliationGuardingPostprocessor = new AffiliationGuardingPostprocessor(
             settings.getAffiliationMetric(), settings.getMinClusterSize(),
             settings.getMinAffiliation());
-  }
-
-  /**
-   * Apply the full postprocessor pipeline
-   *
-   * @param rootCluster Root cluster
-   * @param settings    Postprocessing settings
-   * @return The root cluster
-   */
-
-  public static Cluster apply(Cluster rootCluster, PostprocessingSettings settings) {
-    LOG.info("Starting postprocessing using settings {}", settings);
-    return new Postprocessing(rootCluster, settings).postprocess();
   }
 
   /**
@@ -67,7 +55,7 @@ public class Postprocessing {
    * @return New pipeline
    */
 
-  private static Deque<Postprocessor> createQueue(PostprocessingSettings settings) {
+  private static Deque<Postprocessor> createQueue(ClusteringSettings settings) {
 
     Deque<Postprocessor> queue = new LinkedList<>();
 
@@ -100,6 +88,19 @@ public class Postprocessing {
     }
 
     return queue;
+  }
+
+  /**
+   * Apply the full postprocessor pipeline
+   *
+   * @param rootCluster Root cluster
+   * @param settings    Postprocessing settings
+   * @return The root cluster
+   */
+
+  public static Cluster apply(Cluster rootCluster, ClusteringSettings settings) {
+    LOG.info("Starting postprocessing using settings {}", settings);
+    return new Postprocessing(rootCluster, settings).postprocess();
   }
 
   /**

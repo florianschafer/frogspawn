@@ -23,8 +23,8 @@ public class Edge {
   }
 
   @Override
-  public String toString() {
-    return String.format("[%d,%d:%f]", u, v, weight);
+  public int hashCode() {
+    return (int) ((((long) u << 32 | v) + Math.round(weight * 1000)) % 2147483647);
   }
 
   @Override
@@ -37,7 +37,7 @@ public class Edge {
   }
 
   @Override
-  public int hashCode() {
-    return (int) ((((long) u << 32 | v) + Math.round(weight * 1000)) % 2147483647);
+  public String toString() {
+    return String.format("[%d,%d:%f]", u, v, weight);
   }
 }

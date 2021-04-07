@@ -13,77 +13,77 @@ import net.adeptropolis.frogspawn.graphs.Graph;
 
 public class Protocluster {
 
-    private final Graph graph;
-    private Cluster cluster;
-    private GraphType graphType;
+  private final Graph graph;
+  private Cluster cluster;
+  private GraphType graphType;
 
-    /**
-     * Constructor
-     *
-     * @param graph     A graph, i.e. the cluster candidate
-     * @param graphType Type of the graph. Either <code>ROOT</code>, <code>COMPONENT</code> or <code>SPECTRAL</code>
-     * @param cluster   Parent cluster
-     */
+  /**
+   * Constructor
+   *
+   * @param graph     A graph, i.e. the cluster candidate
+   * @param graphType Type of the graph. Either <code>ROOT</code>, <code>COMPONENT</code> or <code>SPECTRAL</code>
+   * @param cluster   Parent cluster
+   */
 
-    Protocluster(Graph graph, GraphType graphType, Cluster cluster) {
-        this.graph = graph;
-        this.graphType = graphType;
-        this.cluster = cluster;
-    }
+  Protocluster(Graph graph, GraphType graphType, Cluster cluster) {
+    this.graph = graph;
+    this.graphType = graphType;
+    this.cluster = cluster;
+  }
 
-    /**
-     * @return The cluster candidate graph
-     */
+  /**
+   * @return The cluster candidate graph
+   */
 
-    public Graph getGraph() {
-        return graph;
-    }
+  public Graph getGraph() {
+    return graph;
+  }
 
-    /**
-     * @return Type of the cluster candidate graph
-     */
+  /**
+   * @return Type of the cluster candidate graph
+   */
 
-    GraphType getGraphType() {
-        return graphType;
-    }
+  GraphType getGraphType() {
+    return graphType;
+  }
 
-    /**
-     * Set the cluster candidate graph to type <code>COMPONENT</code>
-     */
+  /**
+   * Set the cluster candidate graph to type <code>COMPONENT</code>
+   */
 
-    void setGraphTypeConnectedComponent() {
-        this.graphType = GraphType.COMPONENT;
-    }
+  void setGraphTypeConnectedComponent() {
+    this.graphType = GraphType.COMPONENT;
+  }
 
-    /**
-     * @return Parent cluster
-     */
+  /**
+   * @return Parent cluster
+   */
 
-    public Cluster getCluster() {
-        return cluster;
-    }
+  public Cluster getCluster() {
+    return cluster;
+  }
 
-    /**
-     * Set the parent cluster
-     *
-     * @param cluster Parent cluster
-     */
+  /**
+   * Set the parent cluster
+   *
+   * @param cluster Parent cluster
+   */
 
-    public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
-    }
+  public void setCluster(Cluster cluster) {
+    this.cluster = cluster;
+  }
 
-    /**
-     * Type of the cluster candidate graph. Possible values:
-     * <ul>
-     *   <li><code>ROOT</code>: Root graph</li>
-     *   <li><code>COMPONENT</code>: Connected component</li>
-     *   <li><code>SPECTRAL</code>: Spectral partition</li>
-     * </ul>
-     */
+  /**
+   * Type of the cluster candidate graph. Possible values:
+   * <ul>
+   *   <li><code>ROOT</code>: Root graph</li>
+   *   <li><code>COMPONENT</code>: Connected component</li>
+   *   <li><code>SPECTRAL</code>: Spectral partition</li>
+   * </ul>
+   */
 
-    public enum GraphType {
-        ROOT, COMPONENT, SPECTRAL
-    }
+  public enum GraphType {
+    ROOT, COMPONENT, SPECTRAL
+  }
 
 }

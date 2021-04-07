@@ -26,6 +26,12 @@ public class ConnectedComponentsTest extends GraphTestBase {
     assertThat(subgraphs.get(0), contains(0, 1, 2, 3, 4, 5, 6));
   }
 
+  private List<List<Integer>> getSubgraphs(Graph graph) {
+    SubgraphCollectingConsumer consumer = new SubgraphCollectingConsumer();
+    ConnectedComponents.find(graph, consumer);
+    return consumer.vertices();
+  }
+
   @Test
   public void removingNonBridgePreservesComponent() {
     Graph graph = butterflyGraph().subgraph(IntIterators.wrap(new int[]{0, 2, 3, 4, 5, 6}));
@@ -51,12 +57,6 @@ public class ConnectedComponentsTest extends GraphTestBase {
     assertThat(subgraphs.get(0), contains(1));
     assertThat(subgraphs.get(1), contains(3));
     assertThat(subgraphs.get(2), contains(4, 5, 6));
-  }
-
-  private List<List<Integer>> getSubgraphs(Graph graph) {
-    SubgraphCollectingConsumer consumer = new SubgraphCollectingConsumer();
-    ConnectedComponents.find(graph, consumer);
-    return consumer.vertices();
   }
 
 }

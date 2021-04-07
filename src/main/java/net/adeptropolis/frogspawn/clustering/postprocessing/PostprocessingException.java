@@ -7,8 +7,8 @@ package net.adeptropolis.frogspawn.clustering.postprocessing;
 
 public class PostprocessingException extends RuntimeException {
 
-    public PostprocessingException(String message) {
-        super(message);
-    }
+  public PostprocessingException(String message) {
+    super(message);
+  }
 
 }

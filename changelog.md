@@ -5,7 +5,7 @@
 ## v1.3.2
 
     - General cleanup
-    - Use Lombok for configuration classes. This breaks part of the api
+    - Reunite config classes using Lombok. This breaks part of the api
 
 ## v1.3.1
 

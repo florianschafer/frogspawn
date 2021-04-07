@@ -7,11 +7,9 @@ package net.adeptropolis.frogspawn.graphs.implementations;
 
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.VertexDegrees;
-import net.adeptropolis.frogspawn.graphs.VertexWeights;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.is;
 
 public class VertexDegreesTest {

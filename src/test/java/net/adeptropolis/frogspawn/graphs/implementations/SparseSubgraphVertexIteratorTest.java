@@ -14,15 +14,6 @@ import static org.hamcrest.Matchers.is;
 
 public class SparseSubgraphVertexIteratorTest extends GraphTestBase {
 
-  private static void verifyIterator(VertexIterator iterator, int... expected) {
-    for (int i = 0; i < expected.length; i++) {
-      assertThat("Premature exhaustion", iterator.hasNext(), is(true));
-      assertThat("Index mismatch", iterator.localId(), is(i));
-      assertThat("id mismatch", iterator.globalId(), is(expected[i]));
-    }
-    assertThat("Iterator should have been exhausted", iterator.hasNext(), is(false));
-  }
-
   @Test
   public void emptyIterator() {
     VertexIterator iterator = subgraph(completeGraph(5)).vertexIterator();
@@ -33,6 +24,15 @@ public class SparseSubgraphVertexIteratorTest extends GraphTestBase {
   public void singletonIterator() {
     VertexIterator iterator = subgraph(completeGraph(5), 3).vertexIterator();
     verifyIterator(iterator, 3);
+  }
+
+  private static void verifyIterator(VertexIterator iterator, int... expected) {
+    for (int i = 0; i < expected.length; i++) {
+      assertThat("Premature exhaustion", iterator.hasNext(), is(true));
+      assertThat("Index mismatch", iterator.localId(), is(i));
+      assertThat("id mismatch", iterator.globalId(), is(expected[i]));
+    }
+    assertThat("Iterator should have been exhausted", iterator.hasNext(), is(false));
   }
 
   @Test

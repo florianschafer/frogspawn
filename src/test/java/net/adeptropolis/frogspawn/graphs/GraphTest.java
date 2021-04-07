@@ -6,8 +6,8 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import it.unimi.dsi.fastutil.ints.IntIterators;
-import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.filters.DegreeFilter;
+import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;

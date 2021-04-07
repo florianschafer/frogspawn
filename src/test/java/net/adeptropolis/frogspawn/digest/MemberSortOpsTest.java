@@ -33,10 +33,32 @@ public class MemberSortOpsTest {
     assertIsAscending();
   }
 
+  private void sort(DigestRanking ranking) {
+    MemberSortOps.sort(vertices, weights, scores, ranking);
+  }
+
+  private void assertIsAscending() {
+    assertThat(vertices[0], is(1));
+    assertThat(vertices[1], is(2));
+    assertThat(weights[0], closeTo(10d, 1E-6));
+    assertThat(weights[1], closeTo(20d, 1E-6));
+    assertThat(scores[0], closeTo(100d, 1E-6));
+    assertThat(scores[1], closeTo(200d, 1E-6));
+  }
+
   @Test
   public void sortByCustomDescendingVertex() {
     sort((vertexId, weight, score) -> vertexId);
     assertIsDescending();
+  }
+
+  private void assertIsDescending() {
+    assertThat(vertices[0], is(2));
+    assertThat(vertices[1], is(1));
+    assertThat(weights[0], closeTo(20d, 1E-6));
+    assertThat(weights[1], closeTo(10d, 1E-6));
+    assertThat(scores[0], closeTo(200d, 1E-6));
+    assertThat(scores[1], closeTo(100d, 1E-6));
   }
 
   @Test
@@ -61,28 +83,6 @@ public class MemberSortOpsTest {
   public void sortByCustomAscendingScore() {
     sort((vertexId, weight, score) -> -score);
     assertIsAscending();
-  }
-
-  private void assertIsAscending() {
-    assertThat(vertices[0], is(1));
-    assertThat(vertices[1], is(2));
-    assertThat(weights[0], closeTo(10d, 1E-6));
-    assertThat(weights[1], closeTo(20d, 1E-6));
-    assertThat(scores[0], closeTo(100d, 1E-6));
-    assertThat(scores[1], closeTo(200d, 1E-6));
-  }
-
-  private void assertIsDescending() {
-    assertThat(vertices[0], is(2));
-    assertThat(vertices[1], is(1));
-    assertThat(weights[0], closeTo(20d, 1E-6));
-    assertThat(weights[1], closeTo(10d, 1E-6));
-    assertThat(scores[0], closeTo(200d, 1E-6));
-    assertThat(scores[1], closeTo(100d, 1E-6));
-  }
-
-  private void sort(DigestRanking ranking) {
-    MemberSortOps.sort(vertices, weights, scores, ranking);
   }
 
 }

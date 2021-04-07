@@ -50,6 +50,16 @@ public class Snapshot<V extends Serializable> implements Serializable {
   }
 
   /**
+   * Save this snapshot to file
+   *
+   * @param file Output file
+   */
+
+  private void save(File file) {
+    Serialization.save(this, file);
+  }
+
+  /**
    * Load a snapshot from file
    *
    * @param file Snapshot file
@@ -59,16 +69,6 @@ public class Snapshot<V extends Serializable> implements Serializable {
 
   public static <V extends Serializable> Snapshot<V> load(File file) {
     return Serialization.load(file);
-  }
-
-  /**
-   * Save this snapshot to file
-   *
-   * @param file Output file
-   */
-
-  private void save(File file) {
-    Serialization.save(this, file);
   }
 
   /**

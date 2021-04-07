@@ -76,13 +76,13 @@ public class PostprocessingTraversalTest {
     }
 
     @Override
-    public boolean compromisesVertexAffinity() {
-      return false;
+    public TreeTraversalMode traversalMode() {
+      return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
     }
 
     @Override
-    public TreeTraversalMode traversalMode() {
-      return TreeTraversalMode.LOCAL_BOTTOM_TO_TOP;
+    public boolean compromisesVertexAffinity() {
+      return false;
     }
 
     @Override

@@ -59,18 +59,6 @@ public class AffiliationGuardTest extends GraphTestBase {
     assertThat(verticesFulFillingAffiliation, is(IntArrayList.wrap(new int[]{50, 51})));
   }
 
-  @Test
-  public void sizeFallsShortDuringIteration() {
-    SparseGraph graph = defaultGraph();
-    Cluster cluster = new Cluster(graph);
-    Graph candidate = defaultCandidate(graph);
-    AffiliationGuard affiliationGuard = new AffiliationGuard(METRIC, graph, 4, 0.75);
-    Graph subgraphWithGuaranteedAffiliations = affiliationGuard.ensure(cluster, candidate);
-    assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
-    cluster.getRemainder().sort(NATURAL_COMPARATOR);
-    assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));
-  }
-
   private SparseGraph defaultGraph() {
     return new SparseGraphBuilder()
             .add(50, 51, 10)
@@ -82,6 +70,18 @@ public class AffiliationGuardTest extends GraphTestBase {
 
   private Graph defaultCandidate(SparseGraph graph) {
     return graph.subgraph(IntIterators.wrap(new int[]{50, 51, 52, 53}));
+  }
+
+  @Test
+  public void sizeFallsShortDuringIteration() {
+    SparseGraph graph = defaultGraph();
+    Cluster cluster = new Cluster(graph);
+    Graph candidate = defaultCandidate(graph);
+    AffiliationGuard affiliationGuard = new AffiliationGuard(METRIC, graph, 4, 0.75);
+    Graph subgraphWithGuaranteedAffiliations = affiliationGuard.ensure(cluster, candidate);
+    assertThat(subgraphWithGuaranteedAffiliations, is(nullValue()));
+    cluster.getRemainder().sort(NATURAL_COMPARATOR);
+    assertThat(cluster.getRemainder(), is(IntArrayList.wrap(new int[]{50, 51, 52, 53})));
   }
 
 }
