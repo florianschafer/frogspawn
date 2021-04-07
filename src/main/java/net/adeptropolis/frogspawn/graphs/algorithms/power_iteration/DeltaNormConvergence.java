@@ -17,6 +17,14 @@ public class DeltaNormConvergence implements ConvergenceCriterion {
   private final double precision;
 
   /**
+   * Constructor with default precision 1E-9
+   */
+
+  public DeltaNormConvergence() {
+    this(DEFAULT_PRECISION);
+  }
+
+  /**
    * Constructor
    *
    * @param precision The targeted precision
@@ -24,14 +32,6 @@ public class DeltaNormConvergence implements ConvergenceCriterion {
 
   public DeltaNormConvergence(double precision) {
     this.precision = precision;
-  }
-
-  /**
-   * Constructor with default precision 1E-9
-   */
-
-  public DeltaNormConvergence() {
-    this(DEFAULT_PRECISION);
   }
 
   /**

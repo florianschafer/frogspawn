@@ -76,35 +76,6 @@ public class SparseGraphBuilder implements Graph.Builder {
   }
 
   /**
-   * Set an edge buffer element
-   *
-   * @param idx    Index
-   * @param u      Left vertex
-   * @param v      Right Vertex
-   * @param weight Edge weight
-   */
-
-  private void set(long idx, int u, int v, double weight) {
-    if (idx >= size) resize(size + GROW_SIZE);
-    edges[0].set(idx, u);
-    edges[1].set(idx, v);
-    weights.set(idx, weight);
-  }
-
-  /**
-   * Resize the edge buffer
-   *
-   * @param newSize New size
-   */
-
-  private void resize(long newSize) {
-    size = newSize;
-    edges[0].resize(newSize);
-    edges[1].resize(newSize);
-    weights.resize(newSize);
-  }
-
-  /**
    * Build the graph
    *
    * @return A new immutable Graph instance
@@ -195,7 +166,6 @@ public class SparseGraphBuilder implements Graph.Builder {
     resize(ptr);
   }
 
-
   /**
    * For every vertex, compute its pointer relative to both arrays storing edges and weights
    *
@@ -221,6 +191,35 @@ public class SparseGraphBuilder implements Graph.Builder {
     }
 
     return pointers;
+  }
+
+  /**
+   * Set an edge buffer element
+   *
+   * @param idx    Index
+   * @param u      Left vertex
+   * @param v      Right Vertex
+   * @param weight Edge weight
+   */
+
+  private void set(long idx, int u, int v, double weight) {
+    if (idx >= size) resize(size + GROW_SIZE);
+    edges[0].set(idx, u);
+    edges[1].set(idx, v);
+    weights.set(idx, weight);
+  }
+
+  /**
+   * Resize the edge buffer
+   *
+   * @param newSize New size
+   */
+
+  private void resize(long newSize) {
+    size = newSize;
+    edges[0].resize(newSize);
+    edges[1].resize(newSize);
+    weights.resize(newSize);
   }
 
   /**

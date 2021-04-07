@@ -8,13 +8,11 @@ package net.adeptropolis.frogspawn.graphs.labeled;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.filters.GraphFilter;
-import net.adeptropolis.frogspawn.graphs.functions.GraphFunction;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
-import java.util.PrimitiveIterator;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -40,7 +38,7 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   /**
    * Constructor
    *
-   * @param graph     A graph
+   * @param graph    A graph
    * @param labeling Instance of a vertex labeling
    */
 
@@ -75,6 +73,20 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
 
   public void traverse(LabeledEdgeConsumer<V> consumer, TraversalMode mode) {
     graph.traverse(asEdgeConsumer(consumer), mode);
+  }
+
+  /**
+   * Helper: wrap a labeledEdgeConsumer into an edge consumer
+   *
+   * @param consumer Labeled edge consumer
+   * @return Edge consumer
+   */
+
+  private EdgeConsumer asEdgeConsumer(LabeledEdgeConsumer<V> consumer) {
+    return (u, v, weight) -> consumer.accept(
+            labeling.label(graph.globalVertexId(u)),
+            labeling.label(graph.globalVertexId(v)),
+            weight);
   }
 
   /**
@@ -113,7 +125,6 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
     }
     graph.traverseIncidentEdges(localId, asEdgeConsumer(consumer), mode);
   }
-
 
   /**
    * Create a labelled subgraph from a regular subgraph
@@ -197,7 +208,7 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
   /**
    * Apply a filter to this graph
    *
-   * @param filter Instance of GraphFilter
+   * @param filter           Instance of GraphFilter
    * @param applyIteratively Whether the filter should be applied just once or iteratively
    * @return Filtered graph
    */
@@ -220,20 +231,6 @@ public class LabeledGraph<V extends Serializable> implements Serializable {
     LabeledGraphBuilder<V> builder = new LabeledGraphBuilder<>(labeling.newInstance());
     traverse(builder::add, TraversalMode.LOWER_TRIANGULAR);
     return builder.build();
-  }
-
-  /**
-   * Helper: wrap a labeledEdgeConsumer into an edge consumer
-   *
-   * @param consumer Labeled edge consumer
-   * @return Edge consumer
-   */
-
-  private EdgeConsumer asEdgeConsumer(LabeledEdgeConsumer<V> consumer) {
-    return (u, v, weight) -> consumer.accept(
-            labeling.label(graph.globalVertexId(u)),
-            labeling.label(graph.globalVertexId(v)),
-            weight);
   }
 
 

@@ -39,8 +39,8 @@ public class RecursiveClusteringTest {
   public static void initialize() {
     defaultGraph = loadGraph("small_graph.tsv");
     defaultSettings = ClusteringSettings.builder()
-            .withMinClusterSize(50)
-            .withMinAffiliation(0.1)
+            .minClusterSize(50)
+            .minAffiliation(0.1)
             .build();
     root = RecursiveClustering.run(defaultGraph, defaultSettings);
   }
@@ -72,7 +72,7 @@ public class RecursiveClusteringTest {
 
   @Test
   public void recursionExcessPreservesVertices() {
-    ClusteringSettings settings = ClusteringSettings.builder().withMaxIterations(0).build();
+    ClusteringSettings settings = ClusteringSettings.builder().maxIterations(0).build();
     root = RecursiveClustering.run(defaultGraph, settings);
     IntOpenHashSet allClusterVertices = new IntOpenHashSet(root.aggregateVertices().iterator());
     IntOpenHashSet allGraphVertices = new IntOpenHashSet(defaultGraph.collectVertices());
@@ -102,8 +102,8 @@ public class RecursiveClusteringTest {
   @Test
   public void determinismMedium() {
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinClusterSize(50)
-            .withMinAffiliation(0.05)
+            .minClusterSize(50)
+            .minAffiliation(0.05)
             .build();
     Graph graph = loadGraph("medium_graph.tsv");
     verifyDeterminism(graph, settings, 5);
@@ -125,12 +125,12 @@ public class RecursiveClusteringTest {
             .add(10, 9, 1)
             .build();
     ClusteringSettings settings = ClusteringSettings.builder()
-            .withMinAffiliation(0.5)
-            .withMinClusterSize(1)
+            .minAffiliation(0.5)
+            .minClusterSize(1)
             .build();
     IntOpenHashSet vertices = new IntOpenHashSet();
     RecursiveClustering.run(graph, settings).traverse(cluster -> {
-      digester(settings).digest(cluster)
+      digester().digest(cluster)
               .map((vertexId, weight, score) -> vertexId)
               .forEach(v -> vertices.add((int) v));
     });
@@ -147,8 +147,8 @@ public class RecursiveClusteringTest {
 
   private long fingerprintWithPostprocessing(Graph graph, ClusteringSettings settings) {
     Cluster root = RecursiveClustering.run(graph, settings);
-    Cluster postprocessed = Postprocessing.apply(root, PostprocessingSettings.builder(settings).build());
-    return hierarchyFingerprint(postprocessed, digester(settings));
+    Cluster postprocessed = Postprocessing.apply(root, PostprocessingSettings.builder().build());
+    return hierarchyFingerprint(postprocessed, digester());
   }
 
   private long hierarchyFingerprint(Cluster cluster, ClusterDigester digester) {
@@ -168,9 +168,9 @@ public class RecursiveClusteringTest {
     return fp;
   }
 
-  private final ClusterDigester digester(ClusteringSettings settings) {
-    DigesterSettings digesterSettings = DigesterSettings.builder(settings)
-            .withDigestRanking(COMBINED_RANKING.apply(1.75)).build();
+  private final ClusterDigester digester() {
+    DigesterSettings digesterSettings = DigesterSettings.builder()
+            .digestRanking(COMBINED_RANKING.apply(1.75)).build();
     return new ClusterDigester(digesterSettings);
 
   }

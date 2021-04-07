@@ -23,10 +23,10 @@ public class SpectralBisectorTest extends GraphTestBase {
   private static final RandomInitialVectorsSource IV_SOURCE = new RandomInitialVectorsSource(1337421337L);
 
   private static final ClusteringSettings settings = ClusteringSettings.builder()
-          .withMinClusterSize(0)
-          .withMinAffiliation(0)
-          .withTrailSize(100)
-          .withConvergenceThreshold(0.999)
+          .minClusterSize(0)
+          .minAffiliation(0)
+          .trailSize(100)
+          .convergenceThreshold(0.999)
           .build();
 
   @Test

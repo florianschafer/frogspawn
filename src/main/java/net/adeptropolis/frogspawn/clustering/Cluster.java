@@ -93,16 +93,11 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   }
 
   /**
-   * Annex a descendant cluster, i.e. make this cluster its parent
-   *
-   * @param cluster Cluster
+   * @return Child clusters
    */
 
-  public void annex(Cluster cluster) {
-    if (cluster.parent.children.remove(cluster)) {
-      cluster.parent = this;
-      children.add(cluster);
-    }
+  public Set<Cluster> getChildren() {
+    return children;
   }
 
   /**
@@ -124,9 +119,22 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   }
 
   /**
+   * Annex a descendant cluster, i.e. make this cluster its parent
+   *
+   * @param cluster Cluster
+   */
+
+  public void annex(Cluster cluster) {
+    if (cluster.parent.children.remove(cluster)) {
+      cluster.parent = this;
+      children.add(cluster);
+    }
+  }
+
+  /**
    * Map a cluster's remainder to a stream of label objects
    *
-   * @param <T>    Label Type
+   * @param <T>      Label Type
    * @param labeling Labeling
    * @return Stream of labels
    */
@@ -134,32 +142,6 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   // TODO: Using this method opens a dark portal into oblivion. Save the world by implementing proper labelled subgraphs!
   public <T extends Serializable> Stream<T> remainderLabels(Labeling<T> labeling) {
     return IntStream.range(0, remainder.size()).mapToObj(i -> labeling.label(remainder.getInt(i)));
-  }
-
-  /**
-   * @return Child clusters
-   */
-
-  public Set<Cluster> getChildren() {
-    return children;
-  }
-
-  /**
-   * @return Parent cluster
-   */
-
-  public Cluster getParent() {
-    return parent;
-  }
-
-  /**
-   * Add a vertex to this cluster's remainder
-   *
-   * @param globalId Global vertex id
-   */
-
-  public void addToRemainder(int globalId) {
-    remainder.add(globalId);
   }
 
   /**
@@ -172,6 +154,16 @@ public class Cluster implements Comparable<Cluster>, Serializable {
     while (it.hasNext()) {
       addToRemainder(it.nextInt());
     }
+  }
+
+  /**
+   * Add a vertex to this cluster's remainder
+   *
+   * @param globalId Global vertex id
+   */
+
+  public void addToRemainder(int globalId) {
+    remainder.add(globalId);
   }
 
   /**
@@ -230,6 +222,14 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   }
 
   /**
+   * @return Parent cluster
+   */
+
+  public Cluster getParent() {
+    return parent;
+  }
+
+  /**
    * @return Size of this cluster's remainder
    */
 
@@ -280,11 +280,17 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   }
 
   /**
-   * @return Cluster id used for stable child sorting (determinism)
+   * Hash Code
+   *
+   * <p>Note: With the cluster id, there is already a unique integer value representing a particular cluster instance.
+   * This hash function merely spreads out the ids over the full int range.</p>
+   *
+   * @return A hash code value for this object.
    */
 
-  public int getId() {
-    return id;
+  @Override
+  public int hashCode() {
+    return (int) ((HASH_MULTIPLIER_PRIME * getId()) % HASH_MOD_PRIME);
   }
 
   /**
@@ -305,17 +311,11 @@ public class Cluster implements Comparable<Cluster>, Serializable {
   }
 
   /**
-   * Hash Code
-   *
-   * <p>Note: With the cluster id, there is already a unique integer value representing a particular cluster instance.
-   * This hash function merely spreads out the ids over the full int range.</p>
-   *
-   * @return A hash code value for this object.
+   * @return Cluster id used for stable child sorting (determinism)
    */
 
-  @Override
-  public int hashCode() {
-    return (int) ((HASH_MULTIPLIER_PRIME * getId()) % HASH_MOD_PRIME);
+  public int getId() {
+    return id;
   }
 
   /**

@@ -29,6 +29,31 @@ import java.util.Set;
 public class SingletonRedistributionPostprocessor implements Postprocessor {
 
   /**
+   * Apply postprocessing
+   *
+   * @return State after applying this postprocessor
+   */
+
+  public PostprocessingState apply(Cluster root) {
+    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue();
+    Set<Cluster> enqueued = new HashSet<>();
+    enqueueLeafs(root, queue, enqueued);
+    return processQueue(queue, enqueued);
+  }
+
+  /**
+   * Locate all leaf nodes in a cluster tree and enqueue them
+   */
+
+  private static void enqueueLeafs(Cluster root, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
+    root.traverse(cluster -> {
+      if (cluster.getChildren().isEmpty()) {
+        enqueue(cluster, queue, enqueued);
+      }
+    });
+  }
+
+  /**
    * Process the queue
    */
 
@@ -42,15 +67,17 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   }
 
   /**
-   * Locate all leaf nodes in a cluster tree and enqueue them
+   * Add a new cluster to the queue, making sure that none is enqueued multiple times
+   * when coming from different branches
+   *
+   * @param cluster Cluster to enqueue
    */
 
-  private static void enqueueLeafs(Cluster root, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
-    root.traverse(cluster -> {
-      if (cluster.getChildren().isEmpty()) {
-        enqueue(cluster, queue, enqueued);
-      }
-    });
+  private static void enqueue(Cluster cluster, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
+    if (!enqueued.contains(cluster)) {
+      queue.add(cluster);
+      enqueued.add(cluster);
+    }
   }
 
   /**
@@ -84,23 +111,6 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   }
 
   /**
-   * Moving upwards, attach all clusters in a chain to a designated new common ancestor
-   *
-   * @param cluster          Starting cluster
-   * @param designatedParent New common parent to which all clusters from the chain should be attached
-   */
-
-  private static void redistributeChain(Cluster cluster, Cluster designatedParent) {
-    List<Cluster> chain = Lists.newArrayList();
-    for (Cluster ptr = cluster; !ptr.getParent().equals(designatedParent); ptr = ptr.getParent()) {
-      chain.add(ptr);
-    }
-    for (Cluster ptr : chain) {
-      designatedParent.annex(ptr);
-    }
-  }
-
-  /**
    * Moving upwards in the cluster hierarchy, find the first ancestor with non-trivial branches,
    * i.e. at least two child nodes
    *
@@ -118,30 +128,20 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
   }
 
   /**
-   * Add a new cluster to the queue, making sure that none is enqueued multiple times
-   * when coming from different branches
+   * Moving upwards, attach all clusters in a chain to a designated new common ancestor
    *
-   * @param cluster Cluster to enqueue
+   * @param cluster          Starting cluster
+   * @param designatedParent New common parent to which all clusters from the chain should be attached
    */
 
-  private static void enqueue(Cluster cluster, PriorityQueue<Cluster> queue, Set<Cluster> enqueued) {
-    if (!enqueued.contains(cluster)) {
-      queue.add(cluster);
-      enqueued.add(cluster);
+  private static void redistributeChain(Cluster cluster, Cluster designatedParent) {
+    List<Cluster> chain = Lists.newArrayList();
+    for (Cluster ptr = cluster; !ptr.getParent().equals(designatedParent); ptr = ptr.getParent()) {
+      chain.add(ptr);
     }
-  }
-
-  /**
-   * Apply postprocessing
-   *
-   * @return State after applying this postprocessor
-   */
-
-  public PostprocessingState apply(Cluster root) {
-    PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue();
-    Set<Cluster> enqueued = new HashSet<>();
-    enqueueLeafs(root, queue, enqueued);
-    return processQueue(queue, enqueued);
+    for (Cluster ptr : chain) {
+      designatedParent.annex(ptr);
+    }
   }
 
   /**

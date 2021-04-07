@@ -53,6 +53,11 @@ public class RemainderSizePostprocessor implements Postprocessor {
    * @return <code>false</code>
    */
 
+  @Override
+  public boolean compromisesVertexAffinity() {
+    return false;
+  }
+
   /**
    * This kind of postprocessor does not require checking for idempotency
    *
@@ -61,11 +66,6 @@ public class RemainderSizePostprocessor implements Postprocessor {
 
   @Override
   public boolean requiresIdempotency() {
-    return false;
-  }
-
-  @Override
-  public boolean compromisesVertexAffinity() {
     return false;
   }
 

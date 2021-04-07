@@ -83,6 +83,17 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
   }
 
   /**
+   * Determine whether an eigenvector entry signum is constant over the full window
+   *
+   * @param i Index of a particular eigenvector entry
+   * @return <code>true</code> if and only if the signum at index <code>i</code> is constant over the full window.
+   */
+
+  private boolean hasConstantTrail(int i) {
+    return constSigTrail[i] >= trailSize - 1;
+  }
+
+  /**
    * Postprocess a partially converged eigenvector (see class documentation above)
    *
    * @param vec The partially converged eigenvector
@@ -105,18 +116,16 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
   }
 
   /**
-   * Classify non-converged entries into <code>{-1, 1}</code> based on a given selector
+   * Provide a subgraph where either the selected signum matches or the entry has not converged
    *
-   * @param vec      A partially converged eigenvector
-   * @param selector Either <code>-1</code> or <code>1</code>
+   * @param vec      A vector
+   * @param selector Either -1 or 1
+   * @return A new subgraph
    */
 
-  private void classifyNonConvergentFallback(double[] vec, int selector) {
-    for (int i = 0; i < vec.length; i++) {
-      if (!hasConstantTrail(i)) {
-        vec[i] = selector;
-      }
-    }
+  private Graph extractPostprocessingSubgraph(double[] vec, int selector) {
+    IntIterator localIndices = new SignumSelectingIndexIterator(vec, selector, i -> !hasConstantTrail(i));
+    return graph.localSubgraph(localIndices);
   }
 
   /**
@@ -140,6 +149,21 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
   }
 
   /**
+   * Classify non-converged entries into <code>{-1, 1}</code> based on a given selector
+   *
+   * @param vec      A partially converged eigenvector
+   * @param selector Either <code>-1</code> or <code>1</code>
+   */
+
+  private void classifyNonConvergentFallback(double[] vec, int selector) {
+    for (int i = 0; i < vec.length; i++) {
+      if (!hasConstantTrail(i)) {
+        vec[i] = selector;
+      }
+    }
+  }
+
+  /**
    * @param subgraph A subgraph
    * @param i        Vertex index (wrt. to the eigenvector)
    * @return Relative weight of the vertex indexed by <code>i</code> with respect to the given (sub-)graph
@@ -147,30 +171,6 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   private double relativeWeight(Graph subgraph, int i) {
     return subgraph.weightForGlobalId(graph.globalVertexId(i)) / subgraph.totalWeight();
-  }
-
-  /**
-   * Provide a subgraph where either the selected signum matches or the entry has not converged
-   *
-   * @param vec      A vector
-   * @param selector Either -1 or 1
-   * @return A new subgraph
-   */
-
-  private Graph extractPostprocessingSubgraph(double[] vec, int selector) {
-    IntIterator localIndices = new SignumSelectingIndexIterator(vec, selector, i -> !hasConstantTrail(i));
-    return graph.localSubgraph(localIndices);
-  }
-
-  /**
-   * Determine whether an eigenvector entry signum is constant over the full window
-   *
-   * @param i Index of a particular eigenvector entry
-   * @return <code>true</code> if and only if the signum at index <code>i</code> is constant over the full window.
-   */
-
-  private boolean hasConstantTrail(int i) {
-    return constSigTrail[i] >= trailSize - 1;
   }
 
   /**

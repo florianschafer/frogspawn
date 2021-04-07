@@ -28,18 +28,6 @@ public class PredicateVertexIterator implements IntIterator {
     this.next = seekNext();
   }
 
-  @Override
-  public int nextInt() {
-    int nextInt = graph.globalVertexId(next);
-    next = seekNext(); 
-    return nextInt;
-  }
-
-  @Override
-  public boolean hasNext() {
-    return next >= 0;
-  }
-
   private int seekNext() {
     for (; ptr < graph.order(); ptr++) {
       if (predicate.test(ptr)) {
@@ -47,6 +35,18 @@ public class PredicateVertexIterator implements IntIterator {
       }
     }
     return -1;
+  }
+
+  @Override
+  public int nextInt() {
+    int nextInt = graph.globalVertexId(next);
+    next = seekNext();
+    return nextInt;
+  }
+
+  @Override
+  public boolean hasNext() {
+    return next >= 0;
   }
 
 }

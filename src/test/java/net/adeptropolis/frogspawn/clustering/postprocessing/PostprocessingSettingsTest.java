@@ -5,6 +5,7 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing;
 
+import com.google.common.collect.ImmutableList;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.SettingsTestBase;
 import net.adeptropolis.frogspawn.clustering.Cluster;
@@ -27,21 +28,23 @@ public class PostprocessingSettingsTest extends SettingsTestBase {
 
   @Before
   public void setup() {
-    postprocessingSettings = PostprocessingSettings.builder(clusteringSettings())
-            .withMinChildren(1337)
-            .withCustomPostprocessor(new FakeCustomPostprocessor())
-            .withSimilarityMetric(new FakeSimilarityMetric())
-            .withMinParentSimilarity(0.2718)
-            .withMaxParentSimilarity(3.1415)
-            .withParentSimilarityAcceptanceLimit(1.0 / 8)
-            .withSingletonMode(SingletonMode.REDISTRIBUTE)
+    postprocessingSettings = PostprocessingSettings.builder()
+            .affiliationMetric(new FakeAffiliationMetric())
+            .minAffiliation(0.465)
+            .minClusterSize(4242)
+            .minChildren(1337)
+            .customPostprocessors(ImmutableList.of(new FakeCustomPostprocessor()))
+            .similarityMetric(new FakeSimilarityMetric())
+            .minParentSimilarity(0.2718)
+            .maxParentSimilarity(3.1415)
+            .parentSimilarityAcceptanceLimit(1.0 / 8)
+            .singletonMode(SingletonMode.REDISTRIBUTE)
             .build();
   }
 
   @Test
   public void validateDefaults() {
-    ClusteringSettings defaultClusteringSettings = ClusteringSettings.builder().build();
-    PostprocessingSettings defaultSettings = PostprocessingSettings.builder(defaultClusteringSettings).build();
+    PostprocessingSettings defaultSettings = PostprocessingSettings.builder().build();
     assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
     assertThat(defaultSettings.getMinAffiliation(), closeTo(0.2, 1E-6));
     assertThat(defaultSettings.getSimilarityMetric(), instanceOf(NormalizedCutMetric.class));

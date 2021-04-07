@@ -26,18 +26,16 @@ import static org.hamcrest.Matchers.is;
 
 public class ClusterDigesterTest {
 
-  private static final ClusteringSettings CLUSTERING_SETTINGS = ClusteringSettings.builder().build();
-
-  private static final DigesterSettings aggregate3Settings = DigesterSettings.builder(CLUSTERING_SETTINGS)
-          .withMaxDigestSize(3)
-          .withAggregateDigests(true)
-          .withDigestRanking(WEIGHT_RANKING)
+  private static final DigesterSettings aggregate3Settings = DigesterSettings.builder()
+          .maxDigestSize(3)
+          .aggregateDigests(true)
+          .digestRanking(WEIGHT_RANKING)
           .build();
 
-  private static final DigesterSettings remainder2Settings = DigesterSettings.builder(CLUSTERING_SETTINGS)
-          .withMaxDigestSize(2)
-          .withAggregateDigests(false)
-          .withDigestRanking(WEIGHT_RANKING)
+  private static final DigesterSettings remainder2Settings = DigesterSettings.builder()
+          .maxDigestSize(2)
+          .aggregateDigests(false)
+          .digestRanking(WEIGHT_RANKING)
           .build();
 
   private Graph graph;
@@ -115,10 +113,10 @@ public class ClusterDigesterTest {
 
   @Test
   public void unlimitedSize() {
-    DigesterSettings unlimitedSettings = DigesterSettings.builder(CLUSTERING_SETTINGS)
-            .withMaxDigestSize(0)
-            .withAggregateDigests(true)
-            .withDigestRanking(WEIGHT_RANKING)
+    DigesterSettings unlimitedSettings = DigesterSettings.builder()
+            .maxDigestSize(0)
+            .aggregateDigests(true)
+            .digestRanking(WEIGHT_RANKING)
             .build();
     Digest digest = new ClusterDigester(unlimitedSettings).digest(c2);
     assertThat(digest.size(), is(6));

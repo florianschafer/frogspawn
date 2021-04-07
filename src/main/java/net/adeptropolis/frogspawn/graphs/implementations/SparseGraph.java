@@ -49,15 +49,6 @@ public class SparseGraph extends Graph implements Serializable {
    */
 
   @Override
-  public int order() {
-    return datastore.order();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-
-  @Override
   public long size() {
     return datastore.edges.size();
   }
@@ -87,6 +78,15 @@ public class SparseGraph extends Graph implements Serializable {
   @Override
   public IntIterator globalVertexIdIterator() {
     return IntIterators.fromTo(0, order());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+
+  @Override
+  public int order() {
+    return datastore.order();
   }
 
   /**
@@ -125,8 +125,8 @@ public class SparseGraph extends Graph implements Serializable {
    */
 
   @Override
-  public int localVertexId(int globalVertexId) {
-    return globalVertexId;
+  public int globalVertexId(int localVertexId) {
+    return localVertexId;
   }
 
   /**
@@ -134,8 +134,8 @@ public class SparseGraph extends Graph implements Serializable {
    */
 
   @Override
-  public int globalVertexId(int localVertexId) {
-    return localVertexId;
+  public int localVertexId(int globalVertexId) {
+    return globalVertexId;
   }
 
   /**

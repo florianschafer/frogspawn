@@ -38,19 +38,6 @@ public class BigDoubles implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
-   * Create a new BigDoubles instance from a given list of doubles
-   *
-   * @param values Any number of doubles
-   * @return new BigDoubles instance
-   */
-
-  public static BigDoubles of(double... values) {
-    BigDoubles doubles = new BigDoubles(values.length);
-    for (int i = 0; i < values.length; i++) doubles.set(i, values[i]);
-    return doubles;
-  }
-
-  /**
    * Resize to a given capacity
    *
    * @param capacity Requested storage capacity
@@ -68,14 +55,16 @@ public class BigDoubles implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
-   * Retrieve value
+   * Create a new BigDoubles instance from a given list of doubles
    *
-   * @param idx Index
-   * @return Value at index idx
+   * @param values Any number of doubles
+   * @return new BigDoubles instance
    */
 
-  public double get(long idx) {
-    return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
+  public static BigDoubles of(double... values) {
+    BigDoubles doubles = new BigDoubles(values.length);
+    for (int i = 0; i < values.length; i++) doubles.set(i, values[i]);
+    return doubles;
   }
 
   /**
@@ -90,16 +79,6 @@ public class BigDoubles implements LongComparator, BigSwapper, Serializable {
     if (data == null || bin >= data.length) resize(GROWTH_FACTOR * idx);
     if (idx >= size) size = idx + 1;
     data[bin][(int) (idx & BIN_MASK)] = value;
-  }
-
-  /**
-   * Return size
-   *
-   * @return Largest stored index + 1
-   */
-
-  public long size() {
-    return size;
   }
 
   /**
@@ -137,6 +116,17 @@ public class BigDoubles implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
+   * Retrieve value
+   *
+   * @param idx Index
+   * @return Value at index idx
+   */
+
+  public double get(long idx) {
+    return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
+  }
+
+  /**
    * Swap values between two indices
    *
    * @param idx1 Index
@@ -151,6 +141,18 @@ public class BigDoubles implements LongComparator, BigSwapper, Serializable {
     set(idx2, val1);
   }
 
+  /**
+   * @return Hash code of this object. Just implemented to shut up SonarLint
+   */
+
+  @Override
+  public int hashCode() {
+    HashCodeBuilder builder = new HashCodeBuilder();
+    for (long i = 0; i < size; i++) {
+      builder.append(get(i));
+    }
+    return builder.hashCode();
+  }
 
   /**
    * Compare with another object. Only used for testing.
@@ -169,25 +171,22 @@ public class BigDoubles implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
-   * @return Hash code of this object. Just implemented to shut up SonarLint
-   */
-
-  @Override
-  public int hashCode() {
-    HashCodeBuilder builder = new HashCodeBuilder();
-    for (long i = 0; i < size; i++) {
-      builder.append(get(i));
-    }
-    return builder.hashCode();
-  }
-
-  /**
    * @return A string representation of this object
    */
 
   @Override
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
+  }
+
+  /**
+   * Return size
+   *
+   * @return Largest stored index + 1
+   */
+
+  public long size() {
+    return size;
   }
 
 }

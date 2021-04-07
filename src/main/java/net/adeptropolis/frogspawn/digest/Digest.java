@@ -67,14 +67,6 @@ public class Digest {
   }
 
   /**
-   * @return Size of the digest
-   */
-
-  public int size() {
-    return vertices.length;
-  }
-
-  /**
    * @return Total cluster size (In case the digest has been cut off at some point)
    */
 
@@ -96,12 +88,20 @@ public class Digest {
   }
 
   /**
+   * @return Size of the digest
+   */
+
+  public int size() {
+    return vertices.length;
+  }
+
+  /**
    * Provides a stream of custom digest members for a labeled graph
    *
-   * @param mapper Mapping between cluster digest vertices and custom cluster member objects
+   * @param mapper   Mapping between cluster digest vertices and custom cluster member objects
    * @param labeling Vertex labeling
-   * @param <V>    Type of the custom cluster member objects
-   * @param <T>    Mapping result type
+   * @param <V>      Type of the custom cluster member objects
+   * @param <T>      Mapping result type
    * @return Custom cluster member object
    */
 
@@ -116,7 +116,7 @@ public class Digest {
    *
    * @param labeling Graph labeling
    * @param consumer Instance of LabeledDigestConsumer
-   * @param <V> Vertex type
+   * @param <V>      Vertex type
    */
 
   public <V extends Serializable> void forEach(Labeling<V> labeling, LabeledDigestConsumer<V> consumer) {

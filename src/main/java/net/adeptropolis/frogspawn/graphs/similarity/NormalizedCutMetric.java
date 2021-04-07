@@ -17,23 +17,6 @@ import java.util.Arrays;
 public class NormalizedCutMetric implements GraphSimilarityMetric {
 
   /**
-   * Reduce multiple accumulators into a single instance by just adding values
-   *
-   * @param accumulators Array of accumulators
-   * @return Single accumulator with summed up values
-   */
-
-  private static Accumulator reduce(Accumulator[] accumulators) {
-    Accumulator acc = new Accumulator();
-    for (int i = 0; i < ParallelEdgeOps.slices(); i++) {
-      acc.subgraphWeights += accumulators[i].subgraphWeights;
-      acc.complementWeights += accumulators[i].complementWeights;
-      acc.cuts += accumulators[i].cuts;
-    }
-    return acc;
-  }
-
-  /**
    * Computes (half) the normalized cut between a graph and one of its subgraphs.
    *
    * @param supergraph A graph
@@ -51,20 +34,6 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
     Accumulator acc = collectWeights(supergraph, subgraph);
     return computeNcut(acc) / 2;
 
-  }
-
-  /**
-   * Create new accumulators
-   *
-   * @return Array of new accumulators
-   */
-
-  private Accumulator[] createAccumulators() {
-    Accumulator[] accumulators = new Accumulator[ParallelEdgeOps.slices()];
-    for (int i = 0; i < ParallelEdgeOps.slices(); i++) {
-      accumulators[i] = new Accumulator();
-    }
-    return accumulators;
   }
 
   /**
@@ -96,24 +65,6 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
   }
 
   /**
-   * Provides a lookup table for graphs to quickly check whether a vertex
-   * is contained in any of its subgraphs
-   *
-   * @param supergraph A graph
-   * @param subgraph   Subgraph of <code>supergraph</code>
-   * @return Boolean array with elements (local graph ids)
-   * indicating whether it is also part of the subgraph
-   */
-
-  private boolean[] subgraphMap(Graph supergraph, Graph subgraph) {
-    boolean[] subgraphLocalIds = new boolean[supergraph.order()];
-    Arrays.fill(subgraphLocalIds, false);
-    subgraph.traverseVerticesParallel(u ->
-            subgraphLocalIds[supergraph.localVertexId(subgraph.globalVertexId(u))] = true);
-    return subgraphLocalIds;
-  }
-
-  /**
    * Compute the normalized cut from collected weights
    *
    * @param agg Accumulator
@@ -135,6 +86,55 @@ public class NormalizedCutMetric implements GraphSimilarityMetric {
     }
     return 0;
 
+  }
+
+  /**
+   * Provides a lookup table for graphs to quickly check whether a vertex
+   * is contained in any of its subgraphs
+   *
+   * @param supergraph A graph
+   * @param subgraph   Subgraph of <code>supergraph</code>
+   * @return Boolean array with elements (local graph ids)
+   * indicating whether it is also part of the subgraph
+   */
+
+  private boolean[] subgraphMap(Graph supergraph, Graph subgraph) {
+    boolean[] subgraphLocalIds = new boolean[supergraph.order()];
+    Arrays.fill(subgraphLocalIds, false);
+    subgraph.traverseVerticesParallel(u ->
+            subgraphLocalIds[supergraph.localVertexId(subgraph.globalVertexId(u))] = true);
+    return subgraphLocalIds;
+  }
+
+  /**
+   * Create new accumulators
+   *
+   * @return Array of new accumulators
+   */
+
+  private Accumulator[] createAccumulators() {
+    Accumulator[] accumulators = new Accumulator[ParallelEdgeOps.slices()];
+    for (int i = 0; i < ParallelEdgeOps.slices(); i++) {
+      accumulators[i] = new Accumulator();
+    }
+    return accumulators;
+  }
+
+  /**
+   * Reduce multiple accumulators into a single instance by just adding values
+   *
+   * @param accumulators Array of accumulators
+   * @return Single accumulator with summed up values
+   */
+
+  private static Accumulator reduce(Accumulator[] accumulators) {
+    Accumulator acc = new Accumulator();
+    for (int i = 0; i < ParallelEdgeOps.slices(); i++) {
+      acc.subgraphWeights += accumulators[i].subgraphWeights;
+      acc.complementWeights += accumulators[i].complementWeights;
+      acc.cuts += accumulators[i].cuts;
+    }
+    return acc;
   }
 
   /**

@@ -12,17 +12,17 @@ public class SettingsTestBase {
 
   protected ClusteringSettings clusteringSettings() {
     return ClusteringSettings.builder()
-            .withAffiliationMetric(new FakeAffiliationMetric())
-            .withMinAffiliation(0.465)
-            .withMinClusterSize(4242)
-            .withMaxIterations(42356)
-            .withTrailSize(783)
-            .withConvergenceThreshold(0.74)
-            .withRandomSeed(23857L)
+            .affiliationMetric(new FakeAffiliationMetric())
+            .minAffiliation(0.465)
+            .minClusterSize(4242)
+            .maxIterations(42356)
+            .trailSize(783)
+            .convergenceThreshold(0.74)
+            .randomSeed(23857L)
             .build();
   }
 
-  protected static class FakeAffiliationMetric implements AffiliationMetric {
+  public static class FakeAffiliationMetric implements AffiliationMetric {
 
     @Override
     public double[] compute(Graph supergraph, Graph subgraph) {

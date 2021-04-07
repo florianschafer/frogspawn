@@ -33,7 +33,7 @@ public class ClusterDigester {
   public ClusterDigester(DigesterSettings settings) {
     this.metric = settings.getAffiliationMetric();
     this.maxSize = settings.getMaxDigestSize();
-    this.aggregate = settings.doAggregateDigests();
+    this.aggregate = settings.isAggregateDigests();
     this.ranking = settings.getDigestRanking();
   }
 

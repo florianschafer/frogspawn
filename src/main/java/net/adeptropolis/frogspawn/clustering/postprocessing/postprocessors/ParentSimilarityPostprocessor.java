@@ -159,6 +159,20 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
   }
 
   /**
+   * Compute the similarity score between a cluster and one of its ancestors
+   *
+   * @param cluster  The cluster
+   * @param ancestor The cluster's ancestor
+   * @return Similarity between the cluster and its ancestor
+   */
+
+  private double similarity(Cluster ancestor, Cluster cluster) {
+    Graph clusterGraph = cluster.aggregateGraph();
+    Graph ancestorGraph = ancestor.aggregateGraph();
+    return metric.compute(ancestorGraph, clusterGraph);
+  }
+
+  /**
    * @return This class implements a custom cluster tree traversal mechanism
    */
 
@@ -188,20 +202,6 @@ public class ParentSimilarityPostprocessor implements Postprocessor {
   @Override
   public boolean requiresIdempotency() {
     return true;
-  }
-
-  /**
-   * Compute the similarity score between a cluster and one of its ancestors
-   *
-   * @param cluster  The cluster
-   * @param ancestor The cluster's ancestor
-   * @return Similarity between the cluster and its ancestor
-   */
-
-  private double similarity(Cluster ancestor, Cluster cluster) {
-    Graph clusterGraph = cluster.aggregateGraph();
-    Graph ancestorGraph = ancestor.aggregateGraph();
-    return metric.compute(ancestorGraph, clusterGraph);
   }
 
   private static class Stats {

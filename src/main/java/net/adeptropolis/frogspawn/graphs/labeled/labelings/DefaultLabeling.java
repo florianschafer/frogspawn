@@ -15,17 +15,19 @@ import java.util.stream.Stream;
 /**
  * Default graph labeling using a simple map and and array, Although this implementation allows for
  * very generic usage, please try to use some type-optimized labeling implementation instead.
+ *
  * @param <T> Label type
  */
 
 public class DefaultLabeling<T extends Serializable> implements Labeling<T>, Serializable {
 
   private final Object2IntOpenHashMap<T> indices;
-  private T[] labels;
   private final Class<T> labelClass;
+  private T[] labels;
 
   /**
    * Constructor
+   *
    * @param labelClass Class of vertex labels
    */
 

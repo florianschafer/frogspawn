@@ -16,36 +16,36 @@ import java.util.PriorityQueue;
 
 public class BottomUpQueueFactory {
 
-  private static final Comparator<Cluster> BTT_COMPARATOR = Comparator
-          .comparingInt(Cluster::depth)
-          .thenComparingInt(Cluster::remainderSize)
-          .thenComparingInt(Cluster::getId)
-          .reversed();
+    private static final Comparator<Cluster> BTT_COMPARATOR = Comparator
+            .comparingInt(Cluster::depth)
+            .thenComparingInt(Cluster::remainderSize)
+            .thenComparingInt(Cluster::getId)
+            .reversed();
 
-  /**
-   * Constructor
-   */
+    /**
+     * Constructor
+     */
 
-  private BottomUpQueueFactory() {
-  }
+    private BottomUpQueueFactory() {
+    }
 
-  /**
-   * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
-   */
+    /**
+     * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
+     */
 
-  public static PriorityQueue<Cluster> queue() {
-    return new PriorityQueue<>(BTT_COMPARATOR);
-  }
+    public static PriorityQueue<Cluster> queue() {
+        return new PriorityQueue<>(BTT_COMPARATOR);
+    }
 
-  /**
-   * @param root Root cluster
-   * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
-   */
+    /**
+     * @param root Root cluster
+     * @return A new priority queue containing the hierarchy's clusters, ordered by depth (bottom to top)
+     */
 
-  public static PriorityQueue<Cluster> queue(Cluster root) {
-    PriorityQueue<Cluster> queue = queue();
-    root.traverse(queue::add);
-    return queue;
-  }
+    public static PriorityQueue<Cluster> queue(Cluster root) {
+        PriorityQueue<Cluster> queue = queue();
+        root.traverse(queue::add);
+        return queue;
+    }
 
 }

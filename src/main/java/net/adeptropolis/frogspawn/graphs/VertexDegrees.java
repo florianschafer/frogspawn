@@ -6,8 +6,6 @@
 package net.adeptropolis.frogspawn.graphs;
 
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
-import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
-import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 /**
  * Compute the vertex weights of a graph

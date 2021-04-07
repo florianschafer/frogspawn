@@ -29,7 +29,7 @@ public class LabeledGraphMerger<V extends Serializable> {
    * Constructor
    *
    * @param baseWeightFunction Function to determine the base
-   * @param labeling New labeling instance for the merged graph
+   * @param labeling           New labeling instance for the merged graph
    */
 
   public LabeledGraphMerger(GraphFunction<Double> baseWeightFunction, Labeling<V> labeling) {
@@ -66,7 +66,7 @@ public class LabeledGraphMerger<V extends Serializable> {
   /**
    * Add a single graph's edges to the merge set
    *
-   * @param graph Graph
+   * @param graph   Graph
    * @param builder Graph builder
    */
 
@@ -89,6 +89,7 @@ public class LabeledGraphMerger<V extends Serializable> {
 
     /**
      * Constructor
+     *
      * @param graph Graph
      * @param boost Graph boost
      */

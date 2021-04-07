@@ -48,15 +48,6 @@ public class SparseSubgraph extends Graph implements Serializable {
    */
 
   @Override
-  public int order() {
-    return vertices.length;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-
-  @Override
   public long size() {
     if (cachedNumEdges >= 0) {
       return cachedNumEdges;
@@ -100,8 +91,8 @@ public class SparseSubgraph extends Graph implements Serializable {
    */
 
   @Override
-  public void traverseParallel(EdgeConsumer consumer) {
-    ParallelEdgeOps.traverse(this, consumer, TraversalMode.DEFAULT);
+  public int order() {
+    return vertices.length;
   }
 
   /**
@@ -136,8 +127,8 @@ public class SparseSubgraph extends Graph implements Serializable {
    */
 
   @Override
-  public int localVertexId(int globalVertexId) {
-    return InterpolationSearch.search(vertices, globalVertexId, 0, order() - 1);
+  public void traverseParallel(EdgeConsumer consumer) {
+    ParallelEdgeOps.traverse(this, consumer, TraversalMode.DEFAULT);
   }
 
   /**
@@ -147,6 +138,24 @@ public class SparseSubgraph extends Graph implements Serializable {
   @Override
   public int globalVertexId(int localVertexId) {
     return vertices[localVertexId];
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+
+  @Override
+  public int localVertexId(int globalVertexId) {
+    return InterpolationSearch.search(vertices, globalVertexId, 0, order() - 1);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+
+  @Override
+  public Graph subgraph(IntIterator vertices) {
+    return new SparseSubgraph(datastore, vertices);
   }
 
   /**
@@ -211,15 +220,6 @@ public class SparseSubgraph extends Graph implements Serializable {
 
       if (ptr >= high) break;
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-
-  @Override
-  public Graph subgraph(IntIterator vertices) {
-    return new SparseSubgraph(datastore, vertices);
   }
 
   /**

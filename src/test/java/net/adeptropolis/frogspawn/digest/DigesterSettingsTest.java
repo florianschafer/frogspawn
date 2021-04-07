@@ -22,20 +22,20 @@ public class DigesterSettingsTest extends SettingsTestBase {
 
   @Before
   public void setup() {
-    digesterSettings = DigesterSettings.builder(clusteringSettings())
-            .withDigestRanking(new FakeDigestRanking())
-            .withAggregateDigests(true)
-            .withMaxDigestSize(42)
+    digesterSettings = DigesterSettings.builder()
+            .affiliationMetric(new FakeAffiliationMetric())
+            .digestRanking(new FakeDigestRanking())
+            .aggregateDigests(true)
+            .maxDigestSize(42)
             .build();
   }
 
   @Test
   public void validateDefaults() {
-    ClusteringSettings defaultClusteringSettings = ClusteringSettings.builder().build();
-    DigesterSettings defaultSettings = DigesterSettings.builder(defaultClusteringSettings).build();
+    DigesterSettings defaultSettings = DigesterSettings.builder().build();
     assertThat(defaultSettings.getMaxDigestSize(), is(0));
     assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
-    assertThat(defaultSettings.doAggregateDigests(), is(false));
+    assertThat(defaultSettings.isAggregateDigests(), is(false));
     assertThat(defaultSettings.getDigestRanking(), instanceOf(DEFAULT_COMBINED_RANKING.getClass()));
   }
 
@@ -51,7 +51,7 @@ public class DigesterSettingsTest extends SettingsTestBase {
 
   @Test
   public void aggregate() {
-    assertThat(digesterSettings.doAggregateDigests(), is(true));
+    assertThat(digesterSettings.isAggregateDigests(), is(true));
   }
 
   @Test

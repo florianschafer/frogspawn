@@ -24,22 +24,22 @@ public class PostprocessingState {
    * Constructor
    *
    * @param madeHierarchyChanges Whether the postprocessor made changes to the cluster hierarchy
-   * @param forceQualityGuard    Whether to always force running the quality guard afterwards, regardless of what <code>madeHierarchyChanges</code> says.
    */
 
-  public PostprocessingState(boolean madeHierarchyChanges, boolean forceQualityGuard) {
-    this.madeHierarchyChanges = madeHierarchyChanges;
-    this.forceQualityGuard = forceQualityGuard;
+  public PostprocessingState(boolean madeHierarchyChanges) {
+    this(madeHierarchyChanges, false);
   }
 
   /**
    * Constructor
    *
    * @param madeHierarchyChanges Whether the postprocessor made changes to the cluster hierarchy
+   * @param forceQualityGuard    Whether to always force running the quality guard afterwards, regardless of what <code>madeHierarchyChanges</code> says.
    */
 
-  public PostprocessingState(boolean madeHierarchyChanges) {
-    this(madeHierarchyChanges, false);
+  public PostprocessingState(boolean madeHierarchyChanges, boolean forceQualityGuard) {
+    this.madeHierarchyChanges = madeHierarchyChanges;
+    this.forceQualityGuard = forceQualityGuard;
   }
 
   /**
@@ -80,16 +80,16 @@ public class PostprocessingState {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(madeHierarchyChanges, forceQualityGuard);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     PostprocessingState state = (PostprocessingState) o;
     return madeHierarchyChanges == state.madeHierarchyChanges &&
             forceQualityGuard == state.forceQualityGuard;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(madeHierarchyChanges, forceQualityGuard);
   }
 }

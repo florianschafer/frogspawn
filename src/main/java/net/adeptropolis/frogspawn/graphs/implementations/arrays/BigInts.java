@@ -38,19 +38,6 @@ public class BigInts implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
-   * Create a new BigInts instance from a given list of ints
-   *
-   * @param values Any number of ints
-   * @return new BigInts instance
-   */
-
-  public static BigInts of(int... values) {
-    BigInts ints = new BigInts(values.length);
-    for (int i = 0; i < values.length; i++) ints.set(i, values[i]);
-    return ints;
-  }
-
-  /**
    * Resize to a given capacity
    *
    * @param capacity Requested storage capacity
@@ -68,14 +55,16 @@ public class BigInts implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
-   * Retrieve value
+   * Create a new BigInts instance from a given list of ints
    *
-   * @param idx Index
-   * @return Value at index idx
+   * @param values Any number of ints
+   * @return new BigInts instance
    */
 
-  public int get(long idx) {
-    return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
+  public static BigInts of(int... values) {
+    BigInts ints = new BigInts(values.length);
+    for (int i = 0; i < values.length; i++) ints.set(i, values[i]);
+    return ints;
   }
 
   /**
@@ -90,16 +79,6 @@ public class BigInts implements LongComparator, BigSwapper, Serializable {
     if (bin >= data.length) resize(GROWTH_FACTOR * idx);
     if (idx >= size) size = idx + 1;
     data[bin][(int) (idx & BIN_MASK)] = value;
-  }
-
-  /**
-   * Return size
-   *
-   * @return Largest stored index + 1
-   */
-
-  public long size() {
-    return size;
   }
 
   /**
@@ -137,6 +116,17 @@ public class BigInts implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
+   * Retrieve value
+   *
+   * @param idx Index
+   * @return Value at index idx
+   */
+
+  public int get(long idx) {
+    return data[(int) (idx >> BIN_BITS)][(int) (idx & BIN_MASK)];
+  }
+
+  /**
    * Swap values between two indices
    *
    * @param idx1 Index
@@ -149,6 +139,19 @@ public class BigInts implements LongComparator, BigSwapper, Serializable {
     int val2 = get(idx2);
     set(idx1, val2);
     set(idx2, val1);
+  }
+
+  /**
+   * @return Hash code of this object. Just implemented to shut up SonarLint
+   */
+
+  @Override
+  public int hashCode() {
+    HashCodeBuilder builder = new HashCodeBuilder();
+    for (long i = 0; i < size; i++) {
+      builder.append(get(i));
+    }
+    return builder.hashCode();
   }
 
   /**
@@ -168,25 +171,22 @@ public class BigInts implements LongComparator, BigSwapper, Serializable {
   }
 
   /**
-   * @return Hash code of this object. Just implemented to shut up SonarLint
-   */
-
-  @Override
-  public int hashCode() {
-    HashCodeBuilder builder = new HashCodeBuilder();
-    for (long i = 0; i < size; i++) {
-      builder.append(get(i));
-    }
-    return builder.hashCode();
-  }
-
-  /**
    * @return A string representation of this object
    */
 
   @Override
   public String toString() {
     return LongStream.range(0, size()).mapToObj(i -> String.valueOf(get(i))).collect(Collectors.joining(", "));
+  }
+
+  /**
+   * Return size
+   *
+   * @return Largest stored index + 1
+   */
+
+  public long size() {
+    return size;
   }
 
 }

@@ -28,24 +28,10 @@ public class SpectralBisector {
   }
 
   /**
-   * Create a subgraph based on the signs of the eigenvector for the second-smallest eigenvalue of the Normalized Laplacian
-   *
-   * @param graph        The input graph
-   * @param v2           The approximate second-smallest eigenvector of the Normalized Laplacian of the Graph
-   * @param consumer     A consumer for the resulting partition
-   * @param selectSignum Select either all non-negative (selectSignum ≥ 0) or negative (selectSignum &lt; 0) entries from the eigenvector.
-   */
-
-  private static void yieldSubgraph(Graph graph, double[] v2, Consumer<Graph> consumer, int selectSignum) {
-    SignumSelectingIndexIterator vertices = new SignumSelectingIndexIterator(v2, selectSignum, null);
-    consumer.accept(graph.localSubgraph(vertices));
-  }
-
-  /**
    * Bisects the given graph into two partitons
    *
-   * @param graph         The input graph
-   * @param consumer      A consumer for the resulting partitions
+   * @param graph    The input graph
+   * @param consumer A consumer for the resulting partitions
    * @throws PowerIteration.MaxIterationsExceededException if the number of iterations has been exceeded
    */
 
@@ -69,6 +55,20 @@ public class SpectralBisector {
 
   private PartialConvergenceCriterion createConvergenceCriterion(Graph graph) {
     return new ConstantSigTrailConvergence(graph, settings.getTrailSize(), settings.getConvergenceThreshold());
+  }
+
+  /**
+   * Create a subgraph based on the signs of the eigenvector for the second-smallest eigenvalue of the Normalized Laplacian
+   *
+   * @param graph        The input graph
+   * @param v2           The approximate second-smallest eigenvector of the Normalized Laplacian of the Graph
+   * @param consumer     A consumer for the resulting partition
+   * @param selectSignum Select either all non-negative (selectSignum ≥ 0) or negative (selectSignum &lt; 0) entries from the eigenvector.
+   */
+
+  private static void yieldSubgraph(Graph graph, double[] v2, Consumer<Graph> consumer, int selectSignum) {
+    SignumSelectingIndexIterator vertices = new SignumSelectingIndexIterator(v2, selectSignum, null);
+    consumer.accept(graph.localSubgraph(vertices));
   }
 
 }

@@ -27,14 +27,6 @@ public abstract class Graph {
   private double cachedTotalWeight = -1;
 
   /**
-   * Graph order
-   *
-   * @return The number of vertices in the graph
-   */
-
-  public abstract int order();
-
-  /**
    * <p>Size of the Graph</p>
    * <p><b>Note:</b> The edges of undirected graphs are accounted for in a directed fashion, i.e.
    * for such graphs, the return value of this method is exactly twice the number of edges.</p>
@@ -69,14 +61,14 @@ public abstract class Graph {
   public abstract IntIterator globalVertexIdIterator();
 
   /**
-   * Traverse all edges adjacent to a given endpoint
+   * Sequential traversal over all edges of the graph
    *
-   * @param v        (Local!) vertex id of the endpoint
    * @param consumer Instance of EdgeConsumer
-   * @param mode     Traversal mode
    */
 
-  public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode);
+  public void traverse(EdgeConsumer consumer) {
+    this.traverse(consumer, TraversalMode.DEFAULT);
+  }
 
   /**
    * Sequential traversal over all edges of the graph
@@ -91,14 +83,22 @@ public abstract class Graph {
   }
 
   /**
-   * Sequential traversal over all edges of the graph
+   * Graph order
    *
-   * @param consumer Instance of EdgeConsumer
+   * @return The number of vertices in the graph
    */
 
-  public void traverse(EdgeConsumer consumer) {
-    this.traverse(consumer, TraversalMode.DEFAULT);
-  }
+  public abstract int order();
+
+  /**
+   * Traverse all edges adjacent to a given endpoint
+   *
+   * @param v        (Local!) vertex id of the endpoint
+   * @param consumer Instance of EdgeConsumer
+   * @param mode     Traversal mode
+   */
+
+  public abstract void traverseIncidentEdges(int v, EdgeConsumer consumer, TraversalMode mode);
 
   /**
    * Parallel traversal over all edges of the graph
@@ -132,15 +132,6 @@ public abstract class Graph {
   }
 
   /**
-   * Translate between global and local vertex ids
-   *
-   * @param globalVertexId A global vertex id
-   * @return Local vertex id
-   */
-
-  public abstract int localVertexId(int globalVertexId);
-
-  /**
    * Translate between local and global vertex ids
    *
    * @param localVertexId A local vertex id
@@ -161,13 +152,13 @@ public abstract class Graph {
   }
 
   /**
-   * <p>Compute the induced subgraph from a given set of global vertex ids</p>
+   * Translate between global and local vertex ids
    *
-   * @param vertices The vertex set of the new subgraph
-   * @return a new subgraph
+   * @param globalVertexId A global vertex id
+   * @return Local vertex id
    */
 
-  public abstract Graph subgraph(IntIterator vertices);
+  public abstract int localVertexId(int globalVertexId);
 
   /**
    * <p>Compute the induced subgraph from a local vertex id predicate</p>
@@ -179,6 +170,15 @@ public abstract class Graph {
   public Graph subgraph(IntPredicate predicate) {
     return subgraph(new PredicateVertexIterator(this, predicate));
   }
+
+  /**
+   * <p>Compute the induced subgraph from a given set of global vertex ids</p>
+   *
+   * @param vertices The vertex set of the new subgraph
+   * @return a new subgraph
+   */
+
+  public abstract Graph subgraph(IntIterator vertices);
 
   /**
    * <p>Compute the induced subgraph from a given set of local vertex ids</p>
@@ -194,7 +194,7 @@ public abstract class Graph {
   /**
    * Apply a filter to this graph
    *
-   * @param filter Instance of GraphFilter
+   * @param filter           Instance of GraphFilter
    * @param applyIteratively Whether the filter should be applied just once or iteratively
    * @return Filtered graph
    */
@@ -205,6 +205,15 @@ public abstract class Graph {
     } else {
       return filter.apply(this);
     }
+  }
+
+  /**
+   * @param globalVertexId global vertex id
+   * @return Weight for this id
+   */
+
+  public double weightForGlobalId(int globalVertexId) {
+    return weights()[localVertexId(globalVertexId)];
   }
 
   /**
@@ -219,6 +228,15 @@ public abstract class Graph {
   }
 
   /**
+   * @param globalVertexId global vertex id
+   * @return Degree for this id
+   */
+
+  public long degreeForGlobalId(int globalVertexId) {
+    return degrees()[localVertexId(globalVertexId)];
+  }
+
+  /**
    * @return The vertex degrees of the graph.
    */
 
@@ -227,24 +245,6 @@ public abstract class Graph {
       cachedDegrees = VertexDegrees.compute(this);
     }
     return cachedDegrees;
-  }
-
-  /**
-   * @param globalVertexId global vertex id
-   * @return Weight for this id
-   */
-
-  public double weightForGlobalId(int globalVertexId) {
-    return weights()[localVertexId(globalVertexId)];
-  }
-
-  /**
-   * @param globalVertexId global vertex id
-   * @return Degree for this id
-   */
-
-  public long degreeForGlobalId(int globalVertexId) {
-    return degrees()[localVertexId(globalVertexId)];
   }
 
   /**

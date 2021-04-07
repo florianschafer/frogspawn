@@ -11,15 +11,6 @@ import net.adeptropolis.frogspawn.graphs.Graph;
 public interface GraphFilter {
 
   /**
-   * Apply a filter to a graph
-   *
-   * @param graph Input graph
-   * @return Filtered graph
-   */
-
-  Graph apply(Graph graph);
-
-  /**
    * Apply the filter iteratively until no further changes are made
    *
    * @param graph Input graph
@@ -36,5 +27,14 @@ public interface GraphFilter {
       prevOrder = graph.order();
     }
   }
+
+  /**
+   * Apply a filter to a graph
+   *
+   * @param graph Input graph
+   * @return Filtered graph
+   */
+
+  Graph apply(Graph graph);
 
 }

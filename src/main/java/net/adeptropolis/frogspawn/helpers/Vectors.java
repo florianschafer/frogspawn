@@ -17,21 +17,6 @@ public class Vectors {
   }
 
   /**
-   * Compute the Euclidean norm of a vector
-   *
-   * @param v A vector
-   * @return Norm of <code>v</code>
-   */
-
-  public static double norm2(double[] v) {
-    double norm = 0;
-    for (double value : v) {
-      norm += value * value;
-    }
-    return Math.sqrt(norm);
-  }
-
-  /**
    * Compute the scalar product of two vectors.
    *
    * @param v left argument
@@ -59,6 +44,21 @@ public class Vectors {
     for (int i = 0; i < v.length; i++) {
       v[i] = v[i] * scale;
     }
+  }
+
+  /**
+   * Compute the Euclidean norm of a vector
+   *
+   * @param v A vector
+   * @return Norm of <code>v</code>
+   */
+
+  public static double norm2(double[] v) {
+    double norm = 0;
+    for (double value : v) {
+      norm += value * value;
+    }
+    return Math.sqrt(norm);
   }
 
   /**
