@@ -5,10 +5,10 @@
 
 package net.adeptropolis.frogspawn.graphs.algorithms.power_iteration;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.SignumSelectingIndexIterator;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Arrays;
 
@@ -101,7 +101,7 @@ public class ConstantSigTrailConvergence implements PartialConvergenceCriterion 
 
   @Override
   public void postprocess(double[] vec) throws PartialConvergencePostprocessingException {
-    Preconditions.checkState(vec.length == graph.order(), "Vector length does not match graph size");
+    Validate.isTrue(vec.length == graph.order(), "Vector length does not match graph size");
     Graph lGraph = extractPostprocessingSubgraph(vec, -1);
     Graph rGraph = extractPostprocessingSubgraph(vec, 1);
     if (lGraph.order() > 0 && rGraph.order() > 0) {

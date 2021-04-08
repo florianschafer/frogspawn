@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.graphs.matrices;
 
-import com.google.common.annotations.VisibleForTesting;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.helpers.Vectors;
 
@@ -46,7 +45,6 @@ public class ShiftedNormalizedLaplacian implements SquareMatrix {
    * @return The desired eigenvector
    */
 
-  @VisibleForTesting
   static double[] computeV0(Graph graph) {
     double[] v0 = new double[graph.order()];
     double norm = Math.sqrt(graph.totalWeight());

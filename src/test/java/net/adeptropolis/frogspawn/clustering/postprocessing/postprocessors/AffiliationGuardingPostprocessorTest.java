@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors;
 
-import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
@@ -16,6 +15,9 @@ import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import org.hamcrest.core.Is;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -94,7 +96,7 @@ public class AffiliationGuardingPostprocessorTest {
   public void noVertexFulfilsAffiliationCriterion() {
     postprocessor = new AffiliationGuardingPostprocessor(metric, 10000, 1.0);
     assertThat(postprocessor.apply(c678), is(PostprocessingState.CHANGED));
-    assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
+    assertThat(c4.getChildren(), is(new HashSet<>(Arrays.asList(c5, c9))));
     assertThat(c5.getParent(), is(c4));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
   }
@@ -103,7 +105,7 @@ public class AffiliationGuardingPostprocessorTest {
   public void allVerticesFulfilAffiliationCriterion() {
     postprocessor = new AffiliationGuardingPostprocessor(metric, 1, 0.0);
     assertThat(postprocessor.apply(c678), is(PostprocessingState.UNCHANGED));
-    assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
+    assertThat(c4.getChildren(), is(new HashSet<>(Arrays.asList(c5, c678))));
     assertThat(c4.getRemainder(), containsInAnyOrder(4));
   }
 
@@ -111,7 +113,7 @@ public class AffiliationGuardingPostprocessorTest {
   public void someVerticesFallBelowAffiliationScore() {
     postprocessor = new AffiliationGuardingPostprocessor(metric, 1, 0.27);
     assertThat(postprocessor.apply(c678), is(PostprocessingState.CHANGED));
-    assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c678)));
+    assertThat(c4.getChildren(), is(new HashSet<>(Arrays.asList(c5, c678))));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6));
     assertThat(c678.getRemainder(), containsInAnyOrder(7, 8));
   }
@@ -120,7 +122,7 @@ public class AffiliationGuardingPostprocessorTest {
   public void numberOfVerticesFulfillingAffiliationScoreBelowMinClusterSize() {
     postprocessor = new AffiliationGuardingPostprocessor(metric, 3, 0.27);
     assertThat(postprocessor.apply(c678), is(PostprocessingState.CHANGED));
-    assertThat(c4.getChildren(), is(ImmutableSet.of(c5, c9)));
+    assertThat(c4.getChildren(), is(new HashSet<>(Arrays.asList(c5, c9))));
     assertThat(c4.getRemainder(), containsInAnyOrder(4, 6, 7, 8));
   }
 

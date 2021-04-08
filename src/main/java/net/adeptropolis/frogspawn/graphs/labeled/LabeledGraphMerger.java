@@ -5,12 +5,12 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
-import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.graphs.functions.GraphFunction;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,7 +35,7 @@ public class LabeledGraphMerger<V extends Serializable> {
   public LabeledGraphMerger(GraphFunction<Double> baseWeightFunction, Labeling<V> labeling) {
     this.baseWeightFunction = baseWeightFunction;
     this.labeling = labeling;
-    this.graphs = Lists.newArrayList();
+    this.graphs = new ArrayList<>();
   }
 
   /**

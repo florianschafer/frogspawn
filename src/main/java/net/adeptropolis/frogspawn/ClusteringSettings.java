@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn;
 
-import com.google.common.collect.Lists;
 import lombok.*;
 import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
@@ -15,6 +14,7 @@ import net.adeptropolis.frogspawn.digest.DigestRanking;
 import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.adeptropolis.frogspawn.digest.DigestRankings.DEFAULT_COMBINED_RANKING;
@@ -59,7 +59,7 @@ public class ClusteringSettings {
   @Builder.Default
   private final SingletonMode singletonMode = SingletonMode.ASSIMILATE;
   @Builder.Default
-  private final List<Postprocessor> customPostprocessors = Lists.newArrayList();
+  private final List<Postprocessor> customPostprocessors = new ArrayList<>();
 
   // Digestion
   @Builder.Default

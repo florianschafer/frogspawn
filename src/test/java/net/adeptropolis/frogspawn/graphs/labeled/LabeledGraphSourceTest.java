@@ -5,11 +5,11 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled;
 
-import com.google.common.collect.ImmutableList;
 import net.adeptropolis.frogspawn.graphs.Edge;
 import net.adeptropolis.frogspawn.graphs.GraphTestBase;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -29,7 +29,7 @@ public class LabeledGraphSourceTest {
     GraphTestBase.CollectingEdgeConsumer consumer = new GraphTestBase.CollectingEdgeConsumer();
     labeledGraph.getGraph().traverseParallel(consumer);
     List<Edge> edges = consumer.getEdges();
-    assertThat(edges, is(ImmutableList.of(
+    assertThat(edges, is(Arrays.asList(
             Edge.of(0, 1, 2),
             Edge.of(1, 0, 2),
             Edge.of(1, 2, 3),

@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.graphs.implementations;
 
-import com.google.common.annotations.VisibleForTesting;
 import it.unimi.dsi.fastutil.BigArrays;
 import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
@@ -94,7 +93,6 @@ public class SparseGraphBuilder implements Graph.Builder {
    * @return a new graph datastore
    */
 
-  @VisibleForTesting
   CSRDatastore buildDatastore() {
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();

@@ -5,13 +5,13 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing;
 
-import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors.PostprocessingState;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -65,7 +65,7 @@ public class PostprocessingTraversalTest {
     private final boolean reportChanges;
 
     private CollectingLocalBTTPostprocessor(boolean reportChanges) {
-      this.clusters = Lists.newArrayList();
+      this.clusters = new ArrayList<>();
       this.reportChanges = reportChanges;
     }
 
@@ -102,7 +102,7 @@ public class PostprocessingTraversalTest {
     private final boolean reportChanges;
 
     private CollectingGlobalCustomTraversalPostprocessor(boolean reportChanges) {
-      this.clusters = Lists.newArrayList();
+      this.clusters = new ArrayList<>();
       this.reportChanges = reportChanges;
     }
 

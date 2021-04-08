@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.graphs;
 
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
@@ -395,7 +394,7 @@ public class GraphTestBase {
     private final List<Graph> graphs;
 
     public SubgraphCollectingConsumer() {
-      graphs = Lists.newArrayList();
+      graphs = new ArrayList<>();
     }
 
     public List<List<Integer>> vertices() {
@@ -404,7 +403,7 @@ public class GraphTestBase {
         vertices.hasNext();
         return vertices.globalId();
       })).map(graph -> {
-        List<Integer> vertices = Lists.newArrayList();
+        List<Integer> vertices = new ArrayList<>();
         VertexIterator iterator = graph.vertexIterator();
         while (iterator.hasNext()) {
           vertices.add(iterator.globalId());

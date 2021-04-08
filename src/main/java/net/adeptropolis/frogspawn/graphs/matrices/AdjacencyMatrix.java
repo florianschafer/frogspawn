@@ -5,9 +5,9 @@
 
 package net.adeptropolis.frogspawn.graphs.matrices;
 
-import com.google.common.base.Preconditions;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
+import org.apache.commons.lang3.Validate;
 
 import java.util.Arrays;
 
@@ -39,7 +39,7 @@ public class AdjacencyMatrix implements SquareMatrix, EdgeConsumer {
 
   public double[] multiply(double[] argument) {
     Arrays.fill(result, 0);
-    Preconditions.checkArgument(argument.length == graph.order(), "Argument length mismatch");
+    Validate.isTrue(argument.length == graph.order(), "Argument length mismatch");
     this.argument = argument;
     graph.traverseParallel(this);
     return result;

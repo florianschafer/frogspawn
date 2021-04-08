@@ -5,7 +5,7 @@
 
 package net.adeptropolis.frogspawn.helpers;
 
-import com.google.common.base.Preconditions;
+import org.apache.commons.lang3.Validate;
 
 /**
  * Provides some basic vector operations
@@ -25,7 +25,7 @@ public class Vectors {
    */
 
   public static double scalarProduct(double[] v, double[] w) {
-    Preconditions.checkArgument(v.length == w.length);
+    Validate.isTrue(v.length == w.length);
     double prod = 0;
     for (int i = 0; i < v.length; i++) {
       prod += v[i] * w[i];

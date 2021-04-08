@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.clustering;
 
-import com.google.common.base.Preconditions;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationGuard;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -13,6 +12,7 @@ import net.adeptropolis.frogspawn.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.frogspawn.graphs.algorithms.SpectralBisector;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.PowerIterationException;
 import net.adeptropolis.frogspawn.graphs.algorithms.power_iteration.RandomInitialVectorsSource;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -211,7 +211,7 @@ public class RecursiveClustering {
     if (guaranteedAffiliationSubgraph.size() > settings.getMinClusterSize()) {
       enqueueProtocluster(Protocluster.GraphType.SPECTRAL, protocluster.getCluster(), guaranteedAffiliationSubgraph);
     } else {
-      Preconditions.checkState(guaranteedAffiliationSubgraph.size() == settings.getMinClusterSize());
+      Validate.isTrue(guaranteedAffiliationSubgraph.size() == settings.getMinClusterSize());
       addTerminalChild(protocluster, guaranteedAffiliationSubgraph);
     }
   }

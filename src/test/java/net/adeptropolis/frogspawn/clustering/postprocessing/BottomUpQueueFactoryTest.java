@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing;
 
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -36,7 +35,7 @@ public class BottomUpQueueFactoryTest extends GraphTestBase {
     c3.addToRemainder(IntIterators.wrap(new int[]{11, 12, 13, 14}));
     Cluster c41 = new Cluster(c4);
     c41.addToRemainder(IntIterators.wrap(new int[]{20}));
-    ArrayList<Object> collected = Lists.newArrayList();
+    ArrayList<Object> collected = new ArrayList<>();
     PriorityQueue<Cluster> queue = BottomUpQueueFactory.queue(root);
     while (!queue.isEmpty()) {
       collected.add(queue.poll());

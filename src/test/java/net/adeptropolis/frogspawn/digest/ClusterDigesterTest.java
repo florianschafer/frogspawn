@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.digest;
 
-import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.Cluster;
@@ -15,6 +14,7 @@ import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -151,7 +151,7 @@ public class ClusterDigesterTest {
     for (int i = 0; i < graph.order(); i++) {
       labeling.id(String.format("[%d]", i));
     }
-    List<String> instances = Lists.newArrayList();
+    List<String> instances = new ArrayList<>();
     new ClusterDigester(aggregate3Settings)
             .digest(c2)
             .forEach(labeling, (label, weight, score) -> instances.add(String.format(Locale.US, "%s|%.1f|%.3f", label, weight, score)));

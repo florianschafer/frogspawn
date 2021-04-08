@@ -5,16 +5,12 @@
 
 package net.adeptropolis.frogspawn.clustering.postprocessing.postprocessors;
 
-import com.google.common.collect.Lists;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.postprocessing.BottomUpQueueFactory;
 import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessor;
 import net.adeptropolis.frogspawn.clustering.postprocessing.TreeTraversalMode;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Redistribute trivial clusters. That is, identify chains of clusters with trivial branching behaviour
@@ -135,7 +131,7 @@ public class SingletonRedistributionPostprocessor implements Postprocessor {
    */
 
   private static void redistributeChain(Cluster cluster, Cluster designatedParent) {
-    List<Cluster> chain = Lists.newArrayList();
+    List<Cluster> chain = new ArrayList<>();
     for (Cluster ptr = cluster; !ptr.getParent().equals(designatedParent); ptr = ptr.getParent()) {
       chain.add(ptr);
     }

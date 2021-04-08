@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.clustering;
 
-import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -15,6 +14,7 @@ import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.DefaultLabeling;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -77,7 +77,7 @@ public class ClusterTest {
     Cluster child22 = new Cluster(child2);
     Set<Cluster> visited = new HashSet<>();
     root.traverse(visited::add);
-    assertThat(visited, is(ImmutableSet.of(root, child1, child2, child11, child12, child21, child22)));
+    assertThat(visited, is(new HashSet<>(Arrays.asList(root, child1, child2, child11, child12, child21, child22))));
   }
 
   @Test
@@ -127,7 +127,7 @@ public class ClusterTest {
     Cluster root = new Cluster((Graph) null);
     Cluster child1 = new Cluster(root);
     Cluster child2 = new Cluster(root);
-    assertThat(root.aggregateClusters(), is(ImmutableSet.of(root, child1, child2)));
+    assertThat(root.aggregateClusters(), is(new HashSet<>(Arrays.asList(root, child1, child2))));
   }
 
   @Test

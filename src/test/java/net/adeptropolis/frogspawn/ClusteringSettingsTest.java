@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn;
 
-import com.google.common.collect.ImmutableList;
 import net.adeptropolis.frogspawn.clustering.Cluster;
 import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationMetric;
 import net.adeptropolis.frogspawn.clustering.affiliation.DefaultAffiliationMetric;
@@ -23,6 +22,8 @@ import net.adeptropolis.frogspawn.graphs.similarity.GraphSimilarityMetric;
 import net.adeptropolis.frogspawn.graphs.similarity.NormalizedCutMetric;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static net.adeptropolis.frogspawn.clustering.postprocessing.SingletonMode.ASSIMILATE;
 import static net.adeptropolis.frogspawn.clustering.postprocessing.SingletonMode.REDISTRIBUTE;
@@ -55,7 +56,7 @@ public class ClusteringSettingsTest {
             .convergenceThreshold(0.74)
             .randomSeed(23857L)
             .minChildren(1337)
-            .customPostprocessors(ImmutableList.of(new FakeCustomPostprocessor()))
+            .customPostprocessors(Collections.singletonList(new FakeCustomPostprocessor()))
             .similarityMetric(new FakeSimilarityMetric())
             .minParentSimilarity(0.2718)
             .maxParentSimilarity(3.1415)
