@@ -6,7 +6,7 @@
 
     - General cleanup
     - Reunite config classes using Lombok. This breaks part of the api
-    - Get rid of Guava dependency
+    - Get rid of Guava and math3 dependency
 
 ## v1.3.1
 
