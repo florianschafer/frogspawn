@@ -1,4 +1,3 @@
- - Update documentation (changes settings, postprocessing)
  - Explore generally only storing half the matrix!
  - Parallel connected components!
  - Equip affilitation metric with a "passed" function and remove minAffiliation to allow for arbitrary scores

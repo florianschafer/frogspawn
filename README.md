@@ -41,8 +41,6 @@ memory-efficient sparse graph representation that allows for the creation of ind
 
 ### Usage
 
-#### Building and feeding Graphs
-
 ##### Building Labeled Graphs
 
 Internally, graphs are efficiently stored in a compressed sparse format with integers as vertex ids. Since
@@ -75,27 +73,11 @@ relevant to clustering expect simple `Graph` objects that can be retrieved via `
 
 For a more practical example on how to use the builder, please refer to `LabeledGraphSource#fromTSV`. 
 
-##### Building Graphs using the Low-Level API
-
-Building graphs using the internal API is almost identical to using the labeled version above, but
-requires the vertex ids to be **consecutive integers starting at 0**. Note that violating this
-requirement will result in undefined behavior.
-
-```java
-SparseGraphBuilder builder = new SparseGraphBuilder();
-builder.add(left, right, weight)
-...
-builder.add(anotherLeft, anotherRight, anotherWeight)
-Graph graph = builder.build();
-```
-
-For more information on how to use the low-level Graph API, please refer to the javadocs.
-
 ##### General Remarks
  - Edge weights **must** be ≥ 0 when used for clustering.
  - By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
  - To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
- - The task of assigning sensible edge weights is completely up to the user. For document-term clusters, simple TfIdf-weighting has proven to be very successful.
+ - The task of assigning sensible edge weights is completely up to the user.
 
 #### Configuration
 
@@ -104,61 +86,44 @@ in the example below (using the defaults):
 
 ```java
 ClusteringSettings settings = ClusteringSettings.builder()
-  .withMinClusterSize(50)          // Min cluster size
-  .withMinAffiliation(0.1)   // Min affiliation score that a vertex may yield with respect to its cluster
+  .minClusterSize(50)        // Min cluster size
+  .minAffiliation(0.2)       // Min affiliation score that a vertex may yield with respect to its cluster
+  .minParentSimilarity(0.09) // Minimum parent-child similarity.
+  .maxParentSimilarity(0.60) // Maximum parent-child similarity.
+  .singletonMode(ASSIMILATE) // Configure how singleton clusters should be handled
+  .aggregateDigests(false)   // Whether cluster digests should work in an aggregated fashion
+  .digestRanking(DEFAULT_COMBINED_RANKING) // Controls the sorting of cluster members when creating digests
   .build();
 ```
 
-Using the default affiliation metric, the vertex score is computed as the fraction of the intra-cluster
-weight of the vertex (also counting descendant clusters) compared to its global weight.
+Some of these settings may require a little bit more explanation:
 
-Note that all affiliation and similarity settings are always guaranteed to be satisfied: Any cluster will only
-contain vertices whose intra-cluster score satisfies at least the min affiliation criterion.
+- `minClusterSize`: Just what you think it means: The minimum number of vertices required to form a cluster
+- `minAffiliation`: Ensures that all vertices inside a cluster obey the min affiliation criterion. By default,
+  the affiliation score is computed as the fraction of the intra-cluster weight of the vertex
+  (also counting descendant clusters) compared to its global weight.
+- `minParentSimilarity, maxParentSimilarity`: Ensures that the normalized cuts (as a proxy for similarity) between
+  clusters and their parents lie within a certain range. Too dissimilar clusters are assigned to an ancestor with higher
+  similarity while clusters with very high similarity are merged together.
+- `singletonMode`: Configure treatment of singleton clusters (i.e. those without any siblings). Possible options are:
+  - `ASSIMILATE`: Merge singletons into their parents
+  - `REDISTRIBUTE`: Make singletons a sibling of the original parent
+  - `NONE`: Leave singletons where they are.
+- `aggregateDigests`: Controls whether the cluster output stage should only consider a cluster's remainder (`false`) or
+  also the aggregate remainders of all descendant clusters (`true`).
+- `digestRanking`: Control the inner-cluster vertex sorting in the output stage. Possible values:
+  - `WEIGHT_RANKING`: Sort by vertex weight (descending)
+  - `SCORE_RANKING`: Sort by vertex affiliation score (descending)
+  - `COMBINED_RANKING`: Sort by both vertex weight and score, balancing their impact using an exponent on the weighs
+- `maxDigestSize`: Whether to output just a sample of a cluster's vertices or everything (`0`).
 
-For further details and additional options, please refer to the javadocs.
+Note that all affiliation and similarity settings are always guaranteed to be satisfied. For further details
+and additional options, please refer to the javadocs.
 
 #### Starting the clustering process
 
-The following method will start the actual clustering and return the root node of the resulting cluster tree:
-
-```
-Cluster root = RecursiveClustering.run(graph, settings);
-```
-
-As mentioned before, when using labeled graphs, the input graph can be retrieved from the labeled
-instance, i.e.
-
 ```java
 Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
-```
-
-#### Postprocessing
-
-The above call returns the raw binary tree that results from recursively bisecting the input graph.
-Although there are some cases where this already is the desired clustering outcome, most use cases aim
-for a more balanced and groomed clustering output.
-
-This is where cluster tree postprocessing comes into play. Leaving internal postprocessors aside, there
-are currently 3 active components that restructure the shape of the cluster tree:
-
-- Parent Similarity: Ensures that the normalized cuts (as a proxy for similarity) between clusters and their parents\\
-  lie within a certain range. Too dissimilar clusters are assigned to an ancestor with higher similarity while\\
-  clusters with very high similarity are assimilated into their parents.
-- Singletons: Depending on the configuration, singleton clusters are either assimilated into their parents or pushed\\
-  up the cluster tree.
-- Subcluster count: Starting from the bottom of the hierarchy, merge all clusters into their grandparents until those\\
-  yield a certain number of children. This postprocessor is deactivated by default.
-
-Postprocessing is always applied in an in-place fashion. It's configuration follows closely that of clustering
-itself: 
-
-```java
-PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings)
-  .withMinParentSimilarity(0.075)
-  .withMaxParentSimilarity(0.35)
-  .withSingletonMode(SingletonMode.ASSIMILATE)
-  .build();
-Postprocessing.apply(root, postprocessingSettings);
 ```
 
 #### Cluster Output Creation
@@ -171,24 +136,6 @@ very easy to create custom ones, namely `ClusterDigester`, `Digest`, `DigestMapp
 In this context, a digest is an ready-for-output representation of a cluster. Digests store all vertices, weights
 and affiliation scores, sorted by custom or predefined ranking function. Moreover, depending on the configuration,
 it may not just encompass the cluster vertices or also aggregate those of all of its descendants.
-
-Just like clustering and postprocessing, a Digester instance is configured using a convenient builder:
-
-```java
-DigesterSettings digesterSettings = DigesterSettings.builder(settings)
-  .withMaxDigestSize(0)                             // Return all vertices
-  .withAggregateDigests(false)                      // Only return the vertices of the cluster itself
-  .withDigestRanking(COMBINED_RANKING.apply(1.75))  // Predefined ranking function: weight^1.75 * affiliationScore
-  .build();
-ClusterDigester digester = new ClusterDigester(digesterSettings);
-```
-
-Please refer to the `DigestRanking` interface on how to create custom ranking functions. Currently, there are three
-predefined options:
-
- - `WEIGHT_RANKING`: Sort by vertex weight (descending)
- - `SCORE_RANKING`: Sort by vertex affiliation score (descending)
- - `COMBINED_RANKING`: Sort by both vertex weight and score, balancing their impact using an exponent on the weighs 
 
 Digests are not intended to be used directly for output. Instead, one should supply a digest mapping function
 that maps the cluster members onto custom user-defined objects. For this purpose, there are two functional interfaces
@@ -223,26 +170,22 @@ Below, you will find a fully working example of running clustering and exporting
 been imported from a TSV file using default settings.
 
 ```java
-LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines("/path/to/edges/in/tsv/format.tsv"));
+    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(Paths.get("/path/to/edges/in/tsv/format.tsv")));
 
-ClusteringSettings settings = ClusteringSettings.builder().build();
-Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
+    ClusteringSettings settings = ClusteringSettings.builder().build();
+    Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
 
-PostprocessingSettings postprocessingSettings = PostprocessingSettings.builder(settings).build();
-Postprocessing.apply(root, postprocessingSettings);
-    
-DigesterSettings digesterSettings = DigesterSettings.builder(settings).build();
-ClusterDigester digester = new ClusterDigester(digesterSettings);
-LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f]", label, weight);
+    ClusterDigester digester = new ClusterDigester(settings);
+    LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f]", label, weight);
 
-PrintWriter w = new PrintWriter("/output/path.txt");
-root.traverse(cluster -> {
-  Digest digest = digester.digest(cluster);
-  String vertices = digest.map(mapping, labeledGraph.getLabels()).collect(Collectors.joining(", "));
-  String prefix = StringUtils.repeat("==", cluster.depth());
-  w.printf("%s> %d: %s\n", prefix, digest.totalSize(), vertices);
-});
-w.close();
+    PrintWriter w = new PrintWriter("/output/path.txt");
+    root.traverse(cluster -> {
+    Digest digest = digester.digest(cluster);
+    String vertices = digest.map(mapping, labeledGraph.getLabeling()).collect(Collectors.joining(", "));
+    String prefix = StringUtils.repeat("==", cluster.depth());
+    w.printf("%s> %d: %s\n", prefix, digest.totalSize(), vertices);
+    });
+    w.close();
 ```
 
 This will create a semi-structured output in the following fashion:
