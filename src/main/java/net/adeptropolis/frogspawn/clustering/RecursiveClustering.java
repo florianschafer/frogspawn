@@ -7,6 +7,7 @@ package net.adeptropolis.frogspawn.clustering;
 
 import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.clustering.affiliation.AffiliationGuard;
+import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.frogspawn.graphs.Graph;
 import net.adeptropolis.frogspawn.graphs.algorithms.ConnectedComponents;
 import net.adeptropolis.frogspawn.graphs.algorithms.SpectralBisector;
@@ -73,7 +74,7 @@ public class RecursiveClustering {
     processQueue();
     stopWatch.stop();
     LOG.info("Finished clustering {} vertices after {}", graph.order(), stopWatch);
-    return root;
+    return Postprocessing.apply(root, settings);
   }
 
   /**

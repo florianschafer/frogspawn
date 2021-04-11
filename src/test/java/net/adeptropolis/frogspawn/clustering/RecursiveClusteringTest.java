@@ -7,7 +7,6 @@ package net.adeptropolis.frogspawn.clustering;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.adeptropolis.frogspawn.ClusteringSettings;
-import net.adeptropolis.frogspawn.clustering.postprocessing.Postprocessing;
 import net.adeptropolis.frogspawn.digest.ClusterDigester;
 import net.adeptropolis.frogspawn.digest.Digest;
 import net.adeptropolis.frogspawn.graphs.Graph;
@@ -143,17 +142,16 @@ public class RecursiveClusteringTest {
   }
 
   private void verifyDeterminism(Graph graph, ClusteringSettings settings, int rounds) {
-    long refFp = fingerprintWithPostprocessing(graph, settings);
+    long refFp = fingerprint(graph, settings);
     for (int i = 0; i < rounds - 1; i++) {
-      long fp = fingerprintWithPostprocessing(graph, settings);
+      long fp = fingerprint(graph, settings);
       assertThat(fp, is(refFp));
     }
   }
 
-  private long fingerprintWithPostprocessing(Graph graph, ClusteringSettings settings) {
+  private long fingerprint(Graph graph, ClusteringSettings settings) {
     Cluster root = RecursiveClustering.run(graph, settings);
-    Cluster postprocessed = Postprocessing.apply(root, settings);
-    return hierarchyFingerprint(postprocessed, digester());
+    return hierarchyFingerprint(root, digester());
   }
 
   private long hierarchyFingerprint(Cluster cluster, ClusterDigester digester) {
