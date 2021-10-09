@@ -65,6 +65,7 @@ public class ClusteringSettingsTest {
             .digestRanking(new FakeDigestRanking())
             .aggregateDigests(true)
             .maxDigestSize(42)
+            .flatten(true)
             .build();
   }
 
@@ -89,6 +90,7 @@ public class ClusteringSettingsTest {
     assertThat(defaultSettings.getAffiliationMetric(), instanceOf(DefaultAffiliationMetric.class));
     assertThat(defaultSettings.isAggregateDigests(), is(false));
     assertThat(defaultSettings.getDigestRanking(), instanceOf(DEFAULT_COMBINED_RANKING.getClass()));
+    assertThat(defaultSettings.isFlatten(), is(false));
   }
 
   private void validateConvergenceCriterion(ClusteringSettings settings, int expectedTrailSize, int expectedThreshold) {
@@ -162,6 +164,11 @@ public class ClusteringSettingsTest {
   @Test
   public void singletonMode() {
     assertThat(clusteringSettings.getSingletonMode(), is(REDISTRIBUTE));
+  }
+
+  @Test
+  public void flatten() {
+    assertThat(clusteringSettings.isFlatten(), is(true));
   }
 
   @Test

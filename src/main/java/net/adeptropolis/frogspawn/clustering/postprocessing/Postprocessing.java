@@ -83,6 +83,10 @@ public class Postprocessing {
       default:
     }
 
+    if (settings.isFlatten()) {
+      queue.addLast(new FlatteningPostprocessor());
+    }
+
     for (Postprocessor customPostprocessor : settings.getCustomPostprocessors()) {
       queue.addLast(customPostprocessor);
     }

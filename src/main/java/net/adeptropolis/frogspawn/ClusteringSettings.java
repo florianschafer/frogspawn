@@ -59,6 +59,8 @@ public class ClusteringSettings {
   @Builder.Default
   private final SingletonMode singletonMode = SingletonMode.ASSIMILATE;
   @Builder.Default
+  private final boolean flatten = false;
+  @Builder.Default
   private final List<Postprocessor> customPostprocessors = new ArrayList<>();
 
   // Digestion
