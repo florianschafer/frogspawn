@@ -14,7 +14,6 @@ import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.ParallelEdgeOps;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,7 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Compressed sparse subgraph implementation, i.e. a subgraph of {@link SparseGraph}
  */
 
-public class SparseSubgraph extends Graph implements Serializable {
+public class SparseSubgraph extends Graph {
 
   static final long serialVersionUID = 1332295543424708677L;
 

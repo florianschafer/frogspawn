@@ -9,7 +9,6 @@ import net.adeptropolis.frogspawn.graphs.functions.GraphFunction;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +18,7 @@ import java.util.List;
  * @param <V> Label type
  */
 
-public class LabeledGraphMerger<V extends Serializable> {
+public class LabeledGraphMerger<V> {
 
   private final List<BoostedGraph<V>> graphs;
   private final GraphFunction<Double> baseWeightFunction;
@@ -82,7 +81,7 @@ public class LabeledGraphMerger<V extends Serializable> {
    * @param <V> Label type
    */
 
-  private static class BoostedGraph<V extends Serializable> {
+  private static class BoostedGraph<V> {
 
     private final LabeledGraph<V> graph;
     private final double boost;

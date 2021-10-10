@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.BigSwapper;
 import it.unimi.dsi.fastutil.longs.LongComparator;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.io.Serializable;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
@@ -18,7 +17,7 @@ import java.util.stream.LongStream;
  * A big (i.e. long-indexed) array of doubles.
  */
 
-public class BigDoubles implements LongComparator, BigSwapper, Serializable {
+public class BigDoubles implements LongComparator, BigSwapper {
 
   public static final int BIN_BITS = 17;
   private static final int BIN_MASK = (1 << BIN_BITS) - 1;

@@ -12,7 +12,6 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
@@ -31,7 +30,7 @@ import java.util.stream.Stream;
 
 // TODO: This class is by far the most messy part of the whole project. Find a way to unravel all the mixed concerns here
 //  and expose much less internal methods!
-public class Cluster implements Comparable<Cluster>, Serializable {
+public class Cluster implements Comparable<Cluster> {
 
   static final long serialVersionUID = -1920325521338707901L;
   private static final AtomicInteger CURR_ID = new AtomicInteger(Integer.MIN_VALUE);
@@ -140,7 +139,7 @@ public class Cluster implements Comparable<Cluster>, Serializable {
    */
 
   // TODO: Using this method opens a dark portal into oblivion. Save the world by implementing proper labelled subgraphs!
-  public <T extends Serializable> Stream<T> remainderLabels(Labeling<T> labeling) {
+  public <T> Stream<T> remainderLabels(Labeling<T> labeling) {
     return IntStream.range(0, remainder.size()).mapToObj(i -> labeling.label(remainder.getInt(i)));
   }
 
@@ -349,7 +348,7 @@ public class Cluster implements Comparable<Cluster>, Serializable {
    * Simple storage class for the root cluster and graph
    */
 
-  private static class Root implements Serializable {
+  private static class Root {
 
     static final long serialVersionUID = 577784202545623995L;
 

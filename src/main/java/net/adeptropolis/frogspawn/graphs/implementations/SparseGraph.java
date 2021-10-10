@@ -12,13 +12,11 @@ import net.adeptropolis.frogspawn.graphs.VertexIterator;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
-import java.io.Serializable;
-
 /**
  * Compressed sparse graph implementation
  */
 
-public class SparseGraph extends Graph implements Serializable {
+public class SparseGraph extends Graph {
 
   static final long serialVersionUID = 3908340146557361096L;
 

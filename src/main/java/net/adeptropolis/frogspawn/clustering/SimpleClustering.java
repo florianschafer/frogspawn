@@ -10,7 +10,6 @@ import net.adeptropolis.frogspawn.ClusteringSettings;
 import net.adeptropolis.frogspawn.digest.ClusterDigester;
 import net.adeptropolis.frogspawn.graphs.labeled.LabeledGraph;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,7 @@ import java.util.stream.Collectors;
  * @param <L> Label type
  */
 
-public class SimpleClustering<L extends Serializable> {
+public class SimpleClustering<L> {
 
   private final LabeledGraph<L> graph;
   private final ClusteringSettings settings;
@@ -37,7 +36,7 @@ public class SimpleClustering<L extends Serializable> {
    * @return Hierarchy of {@link OutputCluster} instances
    */
 
-  public static <L extends Serializable> OutputCluster<L> cluster(LabeledGraph<L> graph, ClusteringSettings settings) {
+  public static <L> OutputCluster<L> cluster(LabeledGraph<L> graph, ClusteringSettings settings) {
     return new SimpleClustering<>(graph, settings).cluster();
   }
 
@@ -107,7 +106,7 @@ public class SimpleClustering<L extends Serializable> {
    */
 
   @Value
-  public static class ClusterMember<L extends Serializable> {
+  public static class ClusterMember<L> {
 
     L label;
     double weight;
@@ -121,7 +120,7 @@ public class SimpleClustering<L extends Serializable> {
    */
 
   @Value
-  public static class OutputCluster<L extends Serializable> {
+  public static class OutputCluster<L> {
 
     List<OutputCluster<L>> children;
     List<ClusterMember<L>> members;

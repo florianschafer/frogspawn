@@ -7,7 +7,6 @@ package net.adeptropolis.frogspawn.digest;
 
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 
-import java.io.Serializable;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -105,7 +104,7 @@ public class Digest {
    * @return Custom cluster member object
    */
 
-  public <V extends Serializable, T> Stream<T> map(LabeledDigestMapping<V, T> mapper, Labeling<V> labeling) {
+  public <V, T> Stream<T> map(LabeledDigestMapping<V, T> mapper, Labeling<V> labeling) {
     return IntStream.range(0, size())
             .mapToObj(i -> mapper.map(labeling.label(vertices[i]), weights[i], scores[i]));
   }
@@ -119,7 +118,7 @@ public class Digest {
    * @param <V>      Vertex type
    */
 
-  public <V extends Serializable> void forEach(Labeling<V> labeling, LabeledDigestConsumer<V> consumer) {
+  public <V> void forEach(Labeling<V> labeling, LabeledDigestConsumer<V> consumer) {
     for (int i = 0; i < size(); i++) {
       consumer.accept(labeling.label(vertices[i]), weights[i], scores[i]);
     }

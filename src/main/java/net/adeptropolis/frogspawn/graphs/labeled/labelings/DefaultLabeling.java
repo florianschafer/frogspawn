@@ -7,7 +7,6 @@ package net.adeptropolis.frogspawn.graphs.labeled.labelings;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.stream.Stream;
@@ -19,7 +18,7 @@ import java.util.stream.Stream;
  * @param <T> Label type
  */
 
-public class DefaultLabeling<T extends Serializable> implements Labeling<T>, Serializable {
+public class DefaultLabeling<T> implements Labeling<T> {
 
   private final Object2IntOpenHashMap<T> indices;
   private final Class<T> labelClass;

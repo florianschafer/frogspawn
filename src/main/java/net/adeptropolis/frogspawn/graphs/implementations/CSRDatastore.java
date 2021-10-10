@@ -8,8 +8,6 @@ package net.adeptropolis.frogspawn.graphs.implementations;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigDoubles;
 import net.adeptropolis.frogspawn.graphs.implementations.arrays.BigInts;
 
-import java.io.Serializable;
-
 /**
  * Storage class for large, sparse graphs
  * <p>
@@ -23,7 +21,7 @@ import java.io.Serializable;
  * @see SparseGraphBuilder
  */
 
-public class CSRDatastore implements Serializable {
+public class CSRDatastore {
 
   static final long serialVersionUID = 5572670833943799413L;
 

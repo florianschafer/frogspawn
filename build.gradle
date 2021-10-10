@@ -99,6 +99,12 @@ javadoc {
     }
 }
 
+task pythonCopyJars(type: Copy) {
+    from configurations.compileClasspath
+    from(jar.getArchiveFile().get())
+    into 'python/jars'
+}
+
 dependencies {
     api group: 'it.unimi.dsi', name: 'fastutil', version: '8.5.4'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'

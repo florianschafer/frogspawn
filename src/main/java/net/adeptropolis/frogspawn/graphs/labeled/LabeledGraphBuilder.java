@@ -9,15 +9,13 @@ import net.adeptropolis.frogspawn.graphs.implementations.SparseGraph;
 import net.adeptropolis.frogspawn.graphs.implementations.SparseGraphBuilder;
 import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 
-import java.io.Serializable;
-
 /**
  * Provides a convenient builder for compressed sparse graphs from labels instead of integers.
  *
  * @param <V> Label type
  */
 
-public class LabeledGraphBuilder<V extends Serializable> {
+public class LabeledGraphBuilder<V> {
 
   private final Labeling<V> labeling;
   private final SparseGraphBuilder builder;

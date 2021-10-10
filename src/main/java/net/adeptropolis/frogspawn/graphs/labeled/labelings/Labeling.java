@@ -5,7 +5,6 @@
 
 package net.adeptropolis.frogspawn.graphs.labeled.labelings;
 
-import java.io.Serializable;
 import java.util.stream.Stream;
 
 /**
@@ -14,7 +13,7 @@ import java.util.stream.Stream;
  * @param <T> Label type
  */
 
-public interface Labeling<T extends Serializable> {
+public interface Labeling<T> {
 
   /**
    * @param v Global vertex id

@@ -12,7 +12,6 @@ import net.adeptropolis.frogspawn.graphs.labeled.labelings.Labeling;
 import net.adeptropolis.frogspawn.graphs.traversal.EdgeConsumer;
 import net.adeptropolis.frogspawn.graphs.traversal.TraversalMode;
 
-import java.io.Serializable;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -27,7 +26,7 @@ import java.util.stream.Stream;
  * @param <V> Label type
  */
 
-public class LabeledGraph<V extends Serializable> implements Serializable {
+public class LabeledGraph<V> {
 
   static final long serialVersionUID = 7842023986873566825L;
 
