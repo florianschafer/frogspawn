@@ -3,6 +3,7 @@
 ## Latest
     
     - Optionally flatten cluster trees
+    - Provide a more simple overall interface to clustering of labeled graphs
 
 ## v1.3.2
 

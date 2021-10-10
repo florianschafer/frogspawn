@@ -3,41 +3,11 @@
 
 ### Summary
 
-At its core, Frogspawn is a very fast sieve-augmented variant of recursive spectral graph clustering that embeds all
-vertices of the graph in a tree of clusters such that similar vertices end up in the same cluster and similar clusters
-form a parent-child relationship in the resulting cluster tree.
-
-### Details
-
-Ignoring some details, the canonical approach to recursive spectral clustering is to bisect the graph
-along its *minimal normalized cut*, i.e. the set of edges whose removal splits the graph into two disjoint partitions in
-such a way that the (normalized) cumulative weight of the removed edges is minimal over all possible ways to bisect
-the graph. This process is then applied in a recursive manner until some termination condition is satisfied,
-effectively creating a binary tree with the clusters at its leafs.
-
-Here, this procedure is augmented in two important ways: Firstly, instead of indiscriminately applying recursion to the
-partitions from former steps, a vertex affiliation score is computed for every vertex with respect to every potentially
-new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
-to the last cluster tree node where they satisfy the min-affiliation criterion (hence the "sieve"). The same goes for all
-vertices of partitions falling short of a certain minimal size. This approach not only yields an enormous benefit to
-both cluster quality and overall speed, but also introduces a straightforward and comprehensive parameter that puts a
-strict condition on the desired clustering outcome that is inherent to the graph itself.
-
-Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed to meet additional
-criteria such as clusters being required to obey certain min-cut ranges with respect to their parents where
-non-compliant clusters are either attached to an ancestor with higher similarity or assimilated by their parents.
-This not only counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive
-bisection process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the
-strictly binary nature of the process.
-
-On the more technical side, Frogspawn's spectral bisector stage is multiple orders of magnitude faster than any naive
-implementation using standard eigensolvers. This is mostly achieved by a two-pronged approach: On the one hand, it
-is possible to exploit known properties of some of the involved eigensystems and using that information to apply a
-custom variant of spectral shifting in order to transform the eigenproblem at hand into one that can be solved much
-more efficiently. On the other hand, focusing on the nature of this particular clustering problem allows for an
-immense relaxation of the eigensolver's convergence criterion, which is something that generic eigensolvers simply
-cannot provide. Last but not least, those pen-and-paper optimizations are complemented by a very fast and
-memory-efficient sparse graph representation that allows for the creation of induced subgraphs at very little cost.
+At its core, Frogspawn is a very fast and memory efficient sieve-augmented variant of recursive spectral graph
+clustering (i.e. min normalized cut) that embeds all vertices of the graph in a tree of clusters such that similar
+vertices end up in the same cluster and similar clusters form a parent-child relationship in the resulting cluster tree.
+Instead of storing all vertices only in the bottom leaves, they may end of anywhere within the hierarchy, depending on
+their affiliation with the respective cluster.
 
 ### Usage
 
@@ -46,7 +16,7 @@ memory-efficient sparse graph representation that allows for the creation of ind
 Internally, graphs are efficiently stored in a compressed sparse format with integers as vertex ids. Since
 the average use case deals with labeled graph (i.e. graphs whose vertices represent some business objects or just plain
 strings), there are a couple of convenience classes that automatically provide a mapping between internal
-vertex ids and those objects. In these cases, it is strongly recommended to use the supplied `LabeledGraphBuilder`
+vertex ids and those objects. In these cases, it is strongly recommended using the supplied `LabeledGraphBuilder`
 for building graphs:
 
 ```java
@@ -71,13 +41,13 @@ Note that instances of `LabeledGraph` are merely a thin wrapper around the inter
 that store the graph itself together with a mapping between vertex ids and label objects. Most methods
 relevant to clustering expect simple `Graph` objects that can be retrieved via `LabeledGraph#getGraph`.
 
-For a more practical example on how to use the builder, please refer to `LabeledGraphSource#fromTSV`. 
+For a more practical example on how to use the builder, please refer to `LabeledGraphSource#fromTSV`.
 
 ##### General Remarks
- - Edge weights **must** be ≥ 0 when used for clustering.
- - By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
- - To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
- - The task of assigning sensible edge weights is completely up to the user.
+- Edge weights **must** be ≥ 0 when used for clustering.
+- By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
+- To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
+- The task of assigning sensible edge weights is completely up to the user.
 
 #### Configuration
 
@@ -140,9 +110,9 @@ it may not just encompass the cluster vertices or also aggregate those of all of
 Digests are not intended to be used directly for output. Instead, one should supply a digest mapping function
 that maps the cluster members onto custom user-defined objects. For this purpose, there are two functional interfaces
 that one may use to supply arbitrary mapping functions:
- 
- - `DigestMapping<output type>`: Simple mapping using vertex ids
- - `LabeledDigestMapping<label type, output type>`: Mapping using vertex labels
+
+- `DigestMapping<output type>`: Simple mapping using vertex ids
+- `LabeledDigestMapping<label type, output type>`: Mapping using vertex labels
 
 As an example, the following mapping creates a simple String representation for every digest vertex:
 
@@ -201,3 +171,35 @@ This will create a semi-structured output in the following fashion:
 ==> 15497: child_2_member_a [345], child_2_member_b [45], ...
 ...
 ```
+
+### Details
+
+Ignoring some details, the canonical approach to recursive spectral clustering is to bisect the graph
+along its *minimal normalized cut*, i.e. the set of edges whose removal splits the graph into two disjoint partitions in
+such a way that the (normalized) cumulative weight of the removed edges is minimal over all possible ways to bisect
+the graph. This process is then applied in a recursive manner until some termination condition is satisfied,
+effectively creating a binary tree with the clusters at its leaves.
+
+Here, this procedure is augmented in two important ways: Firstly, instead of indiscriminately applying recursion to the
+partitions from former steps, a vertex affiliation score is computed for every vertex with respect to every potentially
+new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
+to the last cluster tree node where they satisfy the min-affiliation criterion (hence the "sieve"). The same goes for all
+vertices of partitions falling short of a certain minimal size. This approach not only yields an enormous benefit to
+both cluster quality and overall speed, but also introduces a straightforward and comprehensive parameter that puts a
+strict condition on the desired clustering outcome that is inherent to the graph itself.
+
+Secondly, after the recursive clustering has terminated, the resulting binary tree is postprocessed to meet additional
+criteria such as clusters being required to obey certain min-cut ranges with respect to their parents where
+non-compliant clusters are either attached to an ancestor with higher similarity or assimilated by their parents.
+This not only counteracts the "shaving" phenomenon, where the resulting tree becomes a mere artifact of the recursive
+bisection process, but also imposes a more natural structure on the cluster hierarchy while also doing away with the
+strictly binary nature of the process.
+
+On the more technical side, Frogspawn's spectral bisector stage is multiple orders of magnitude faster than any naive
+implementation using standard eigensolvers. This is mostly achieved by a two-pronged approach: On the one hand, it
+is possible to exploit known properties of some of the involved eigensystems and using that information to apply a
+custom variant of spectral shifting in order to transform the eigenproblem at hand into one that can be solved much
+more efficiently. On the other hand, focusing on the nature of this particular clustering problem allows for an
+immense relaxation of the eigensolver's convergence criterion, which is something that generic eigensolvers simply
+cannot provide. Last but not least, those pen-and-paper optimizations are complemented by a very fast and
+memory-efficient sparse graph representation that allows for the creation of induced subgraphs at very little cost.
