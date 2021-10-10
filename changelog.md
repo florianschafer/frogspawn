@@ -1,6 +1,8 @@
 # Frogspawn Changelog
 
-## Current
+## Latest
+    
+    - Optionally flatten cluster trees
 
 ## v1.3.2
 
