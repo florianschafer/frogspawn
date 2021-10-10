@@ -1,7 +1,7 @@
 # Frogspawn
 ## A Fast Recursive Spectral Graph Partitioner
 
-### Summary
+## Summary
 
 At its core, Frogspawn is a very fast and memory efficient sieve-augmented variant of recursive spectral graph
 clustering (i.e. min normalized cut) that embeds all vertices of the graph in a tree of clusters such that similar
@@ -9,15 +9,33 @@ vertices end up in the same cluster and similar clusters form a parent-child rel
 Instead of storing all vertices only in the bottom leaves, they may end of anywhere within the hierarchy, depending on
 their affiliation with the respective cluster.
 
-### Usage
+## Usage
 
-##### Building Labeled Graphs
+**Note:** These instructions refer to the clustering of labeled graphs using the high-level API and convenience
+wrappers. For more information on bare integer-indexed graphs and using the low-level API, see below.
 
-Internally, graphs are efficiently stored in a compressed sparse format with integers as vertex ids. Since
-the average use case deals with labeled graph (i.e. graphs whose vertices represent some business objects or just plain
-strings), there are a couple of convenience classes that automatically provide a mapping between internal
-vertex ids and those objects. In these cases, it is strongly recommended using the supplied `LabeledGraphBuilder`
-for building graphs:
+### Creating Graphs
+
+There are multiple ways of creating input graphs. In either case, there are a few things to keep in mind:
+
+ - All edges are interpreted as being undirected
+ - Edges may be added multiple times, in which case their weights are simply added
+ - Edge weights **must** be ≥ 0 when used for clustering.
+ - The task of assigning sensible edge weights is completely up to the user.
+ 
+#### Direct Import from a File or URL: 
+
+The easiest way of creating labeled graphs is to import them from a stream of TSV records with columns for
+edge weight, left vertex, right vertex:
+
+```java
+    Path path = Paths.get(".../graph.tsv");
+    LabeledGraph<String> graph = LabeledGraphSource.fromTSV(Files.lines(path));
+```
+
+#### Building Labeled Graphs
+
+Alternatively, graphs can be created on the fly using a builder:
 
 ```java
 LabeledGraphBuilder<String> builder = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class));
@@ -29,40 +47,27 @@ Adding edges to the builder is straightforward using two vertex labels and an ed
 builder.add("left", "right", 42);
 ```
 
-All edges are interpreted as being undirected, i.e. using `builder.add("right", "left", 42)` in the above
-example would yield the same result. Furthermore, edges may be added multiple times, in which case their
-weights are simply summed up later. To finally build the graph, use
+To finally build the graph, use
 
 ```java
 LabeledGraph<String> = builder.build();
 ```
 
-Note that instances of `LabeledGraph` are merely a thin wrapper around the internal graph API (see below)
-that store the graph itself together with a mapping between vertex ids and label objects. Most methods
-relevant to clustering expect simple `Graph` objects that can be retrieved via `LabeledGraph#getGraph`.
-
-For a more practical example on how to use the builder, please refer to `LabeledGraphSource#fromTSV`.
-
-##### General Remarks
-- Edge weights **must** be ≥ 0 when used for clustering.
-- By design, leaf vertices do not contribute to the clustering process and should be filtered out prior to building the graph to avoid unnecessary performance degradation.
-- To improve performance, it is highly recommended to not blindly feed all possible edges, but instead apply some variant of relevance filtering beforehand.
-- The task of assigning sensible edge weights is completely up to the user.
-
-#### Configuration
+### Configuration
 
 The desired clustering outcome may be configured using a variety of parameters. The most important ones are described
 in the example below (using the defaults):
 
 ```java
 ClusteringSettings settings = ClusteringSettings.builder()
-  .minClusterSize(50)        // Min cluster size
-  .minAffiliation(0.2)       // Min affiliation score that a vertex may yield with respect to its cluster
-  .minParentSimilarity(0.09) // Minimum parent-child similarity.
-  .maxParentSimilarity(0.60) // Maximum parent-child similarity.
-  .singletonMode(ASSIMILATE) // Configure how singleton clusters should be handled
-  .aggregateDigests(false)   // Whether cluster digests should work in an aggregated fashion
-  .digestRanking(DEFAULT_COMBINED_RANKING) // Controls the sorting of cluster members when creating digests
+  .minClusterSize(50)
+  .minAffiliation(0.2)
+  .minParentSimilarity(0.09)
+  .maxParentSimilarity(0.60)
+  .singletonMode(ASSIMILATE)
+  .aggregateDigests(false)
+  .digestRanking(DEFAULT_COMBINED_RANKING)
+  .flatten(false) //  
   .build();
 ```
 
@@ -86,93 +91,32 @@ Some of these settings may require a little bit more explanation:
   - `SCORE_RANKING`: Sort by vertex affiliation score (descending)
   - `COMBINED_RANKING`: Sort by both vertex weight and score, balancing their impact using an exponent on the weighs
 - `maxDigestSize`: Whether to output just a sample of a cluster's vertices or everything (`0`).
+- `flatten`: Produce a flat list of clusters instead of a tree structure. Note that this will technically still
+  create a tree of depth 2, where the root node contains all vertices that couldn't be assigned to any of the clusters.
 
-Note that all affiliation and similarity settings are always guaranteed to be satisfied. For further details
-and additional options, please refer to the javadocs.
+All affiliation and similarity settings are always guaranteed to be satisfied. For further details and
+additional options, please refer to the javadocs.
 
-#### Starting the clustering process
+### Starting the clustering process
 
-```java
-Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
-```
-
-#### Cluster Output Creation
-
-There is currently no generic way to produce cluster outputs. However, there are a couple of classes that make it
-very easy to create custom ones, namely `ClusterDigester`, `Digest`, `DigestMapping` and `LabeledDigestMapping`.
-
-##### Digests and Mappings
-
-In this context, a digest is an ready-for-output representation of a cluster. Digests store all vertices, weights
-and affiliation scores, sorted by custom or predefined ranking function. Moreover, depending on the configuration,
-it may not just encompass the cluster vertices or also aggregate those of all of its descendants.
-
-Digests are not intended to be used directly for output. Instead, one should supply a digest mapping function
-that maps the cluster members onto custom user-defined objects. For this purpose, there are two functional interfaces
-that one may use to supply arbitrary mapping functions:
-
-- `DigestMapping<output type>`: Simple mapping using vertex ids
-- `LabeledDigestMapping<label type, output type>`: Mapping using vertex labels
-
-As an example, the following mapping creates a simple String representation for every digest vertex:
+Doing the actual clustering is just as easy as creating graphs. In most cases, this will be:
 
 ```java
-LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f %.2f]", label, weight, score);
+OutputCluster<String> tree = SimpleClustering.cluster(graph, settings);
 ```
 
-##### Traversing clusters for output
+This will create a tree of `OutputCluster<String>` objects, each with a list of child clusters and vertices.
 
-Digests only refer to single clusters. In order to create the output for the full cluster tree, one needs to traverse
-it starting from the root cluster and create the digests and output hierarchy on the fly. There are many ways to
-navigate through a cluster hierarchy, although in most cases, it is recommended to use `Cluster#traverse`, which takes a
-`Consumer<Cluster>` and walks through the hierarchy in a classical depth-first-like fashion. For more information,
-please see the javadocs.
+In case of plain integer graphs, custom output structures or whenever the number of nodes or clusters is so large
+that it should be streamed instead of collected all at once, please refer to the low level API section about cluster
+digests.
 
-```java
-root.traverse(cluster -> {
- // Apply a digester to the cluster, evaluate the local hierarchy using cluster.getChildren() / cluster.getParent,... 
-});
-```
+## Low-Level API
 
-### Full working example
+Documentation on this topic is a work in progress. Until then, please refer to the javadocs and the implementations
+of `SimpleClustering` and `RecursiveClustering`. Or just send me a message.
 
-Below, you will find a fully working example of running clustering and exporting results using a labeled graph that has
-been imported from a TSV file using default settings.
-
-```java
-    LabeledGraph<String> labeledGraph = LabeledGraphSource.fromTSV(Files.lines(Paths.get("/path/to/edges/in/tsv/format.tsv")));
-
-    ClusteringSettings settings = ClusteringSettings.builder().build();
-    Cluster root = RecursiveClustering.run(labeledGraph.getGraph(), settings);
-
-    ClusterDigester digester = new ClusterDigester(settings);
-    LabeledDigestMapping<String, String> mapping = (label, weight, score) -> String.format("%s [%.1f]", label, weight);
-
-    PrintWriter w = new PrintWriter("/output/path.txt");
-    root.traverse(cluster -> {
-    Digest digest = digester.digest(cluster);
-    String vertices = digest.map(mapping, labeledGraph.getLabeling()).collect(Collectors.joining(", "));
-    String prefix = StringUtils.repeat("==", cluster.depth());
-    w.printf("%s> %d: %s\n", prefix, digest.totalSize(), vertices);
-    });
-    w.close();
-```
-
-This will create a semi-structured output in the following fashion:
-
-```
-> 4250: root_member_a [123], root_member_b [42], ...
-==> 15497: child_1_member_a [435], child_1_member_b [271], ...
-====> 878: child_11_member_a [435], child_11_member_b [271], ...
-======> 878: child_111_member_a [43], child_111_member_b [21], ...
-======> 878: child_112_member_a [56], child_112_member_b [28], ...
-====> 248: child_12_member_a [124], child_12_member_b [67], ...
-====> 124: child_13_member_a [341], child_13_member_b [221], ...
-==> 15497: child_2_member_a [345], child_2_member_b [45], ...
-...
-```
-
-### Details
+## Technical Background
 
 Ignoring some details, the canonical approach to recursive spectral clustering is to bisect the graph
 along its *minimal normalized cut*, i.e. the set of edges whose removal splits the graph into two disjoint partitions in
@@ -180,7 +124,7 @@ such a way that the (normalized) cumulative weight of the removed edges is minim
 the graph. This process is then applied in a recursive manner until some termination condition is satisfied,
 effectively creating a binary tree with the clusters at its leaves.
 
-Here, this procedure is augmented in two important ways: Firstly, instead of indiscriminately applying recursion to the
+Here, this procedure is augmented in two important ways: Instead of indiscriminately applying recursion to the
 partitions from former steps, a vertex affiliation score is computed for every vertex with respect to every potentially
 new cluster. All vertices that fall below this score are not considered for further clustering and are instead assigned
 to the last cluster tree node where they satisfy the min-affiliation criterion (hence the "sieve"). The same goes for all
