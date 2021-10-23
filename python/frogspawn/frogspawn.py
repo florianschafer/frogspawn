@@ -6,10 +6,10 @@ import jpype
 import jpype.imports
 from collections.abc import Iterator, Generator
 from jpype.types import *
-from typing import Union
+from typing import Union, Tuple
 
 
-def cluster(edges: Union[Iterator[str, str, float], Generator[str, str, float]],
+def cluster(edges: Union[Iterator[Tuple[str, str, float]], Generator[Tuple[str, str, float]]],
             min_affiliation: float = None,
             min_cluster_size: int = None,
             relocate_similarity: float = None,
