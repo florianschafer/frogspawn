@@ -2,14 +2,14 @@
 #  SPDX-License-Identifier: Apache-2.0
 
 import os
+from collections.abc import Iterator, Generator
+from typing import Union, Tuple, Any
+
 import jpype
 import jpype.imports
-from collections.abc import Iterator, Generator
-from jpype.types import *
-from typing import Union, Tuple
 
 
-def cluster(edges: Union[Iterator[Tuple[str, str, float]], Generator[Tuple[str, str, float]]],
+def cluster(edges: Union[Iterator[Tuple[Any, Any, float]], Generator[Tuple[Any, Any, float]]],
             min_affiliation: float = None,
             min_cluster_size: int = None,
             relocate_similarity: float = None,
@@ -26,7 +26,7 @@ def cluster(edges: Union[Iterator[Tuple[str, str, float]], Generator[Tuple[str, 
 
     # Create packages
     from net.adeptropolis.frogspawn.graphs.labeled import LabeledGraphBuilder
-    from net.adeptropolis.frogspawn.graphs.labeled.labelings import StringLabeling
+    from net.adeptropolis.frogspawn.graphs.labeled.labelings import DefaultLabeling
     from net.adeptropolis.frogspawn import ClusteringSettings
     from net.adeptropolis.frogspawn.clustering import SimpleClustering
 
@@ -45,7 +45,7 @@ def cluster(edges: Union[Iterator[Tuple[str, str, float]], Generator[Tuple[str, 
     settings = settings_builder.build()
 
     # Create graph:
-    builder = LabeledGraphBuilder(StringLabeling())
+    builder = LabeledGraphBuilder(DefaultLabeling())
     for left, right, weight in edges:
         builder.add(left, right, weight)
     graph = builder.build()
