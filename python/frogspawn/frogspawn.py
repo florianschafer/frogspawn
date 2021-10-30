@@ -8,6 +8,8 @@ from typing import Union, Tuple, Any
 import jpype
 import jpype.imports
 
+from .cluster import Cluster
+
 
 def cluster(edges: Union[Iterator[Tuple[Any, Any, float]], Generator[Tuple[Any, Any, float]]],
             min_affiliation: float = None,
@@ -50,5 +52,8 @@ def cluster(edges: Union[Iterator[Tuple[Any, Any, float]], Generator[Tuple[Any, 
         builder.add(left, right, weight)
     graph = builder.build()
 
-    # Cluster and return results
-    return SimpleClustering.cluster(graph, settings)
+    # Cluster
+    root = SimpleClustering.cluster(graph, settings)
+
+    # Wrap and return results
+    return Cluster(root)

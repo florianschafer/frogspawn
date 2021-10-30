@@ -6,6 +6,7 @@
     - Provide a more simple overall interface to clustering of labeled graphs
     - Tune down logging to DEBUG for pretty much everything that's not an error or warning
     - Remove unnecessary passing of label classes to DefaultLabeling
+    - Add Python bindings
 
 ## v1.3.2
 
