@@ -103,7 +103,7 @@ public class Postprocessing {
    */
 
   public static Cluster apply(Cluster rootCluster, ClusteringSettings settings) {
-    LOG.info("Starting postprocessing using settings {}", settings);
+    LOG.debug("Starting postprocessing using settings {}", settings);
     return new Postprocessing(rootCluster, settings).postprocess();
   }
 
@@ -120,7 +120,7 @@ public class Postprocessing {
       applyPostprocessor(queue.pollFirst());
     }
     stopWatch.stop();
-    LOG.info("Postprocessing finished after {}", stopWatch);
+    LOG.debug("Postprocessing finished after {}", stopWatch);
     return rootCluster;
   }
 

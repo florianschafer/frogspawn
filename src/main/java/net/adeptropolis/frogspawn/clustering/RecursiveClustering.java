@@ -65,7 +65,7 @@ public class RecursiveClustering {
    */
 
   public Cluster run() {
-    LOG.info("Starting recursive clustering of {} vertices using settings: {}", graph.order(), settings);
+    LOG.debug("Starting recursive clustering of {} vertices using settings: {}", graph.order(), settings);
     StopWatch stopWatch = new StopWatch();
     stopWatch.start();
     Cluster root = new Cluster(graph);
@@ -73,7 +73,7 @@ public class RecursiveClustering {
     queue.add(initialProtocluster);
     processQueue();
     stopWatch.stop();
-    LOG.info("Finished clustering {} vertices after {}", graph.order(), stopWatch);
+    LOG.debug("Finished clustering {} vertices after {}", graph.order(), stopWatch);
     return Postprocessing.apply(root, settings);
   }
 

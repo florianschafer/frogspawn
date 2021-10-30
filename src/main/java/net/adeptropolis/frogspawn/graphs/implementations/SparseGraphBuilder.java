@@ -105,7 +105,7 @@ public class SparseGraphBuilder implements Graph.Builder {
     int graphSize = edges[0].get(ptr - 1) + 1;
     long[] pointers = computePointers(graphSize);
     stopWatch.stop();
-    LOG.info("Finished building graph with {} vertices and {} edges in {}", graphSize, ptr, stopWatch);
+    LOG.debug("Finished building graph with {} vertices and {} edges in {}", graphSize, ptr, stopWatch);
     return new CSRDatastore(graphSize, ptr, pointers, edges[1], weights);
   }
 
