@@ -134,7 +134,7 @@ public class ClusterDigesterTest {
 
   @Test
   public void labeledMapping() {
-    DefaultLabeling<String> labeling = new DefaultLabeling<>(String.class);
+    DefaultLabeling<String> labeling = new DefaultLabeling<>();
     for (int i = 0; i < graph.order(); i++) {
       labeling.id(String.format("[%d]", i));
     }
@@ -147,7 +147,7 @@ public class ClusterDigesterTest {
 
   @Test
   public void labeledForEach() {
-    DefaultLabeling<String> labeling = new DefaultLabeling<>(String.class);
+    DefaultLabeling<String> labeling = new DefaultLabeling<>();
     for (int i = 0; i < graph.order(); i++) {
       labeling.id(String.format("[%d]", i));
     }

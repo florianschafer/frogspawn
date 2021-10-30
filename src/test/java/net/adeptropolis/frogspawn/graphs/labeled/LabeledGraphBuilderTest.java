@@ -21,7 +21,7 @@ public class LabeledGraphBuilderTest extends GraphTestBase {
 
   @Test
   public void vertexMappings() {
-    LabeledGraph<String> labeledGraph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    LabeledGraph<String> labeledGraph = new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("0", "1", 2)
             .add("1", "2", 3)
             .add("3", "4", 5)
@@ -34,7 +34,7 @@ public class LabeledGraphBuilderTest extends GraphTestBase {
 
   @Test
   public void graph() {
-    Graph graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    Graph graph = new LabeledGraphBuilder<>(new DefaultLabeling<>())
             .add("0", "1", 2)
             .add("1", "2", 3)
             .build()

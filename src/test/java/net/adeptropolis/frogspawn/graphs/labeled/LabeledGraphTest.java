@@ -28,7 +28,7 @@ public class LabeledGraphTest extends LabeledGraphTestBase {
 
   @BeforeClass
   public static void setup() {
-    labeling = new DefaultLabeling<>(String.class);
+    labeling = new DefaultLabeling<>();
     graph = new LabeledGraphBuilder<>(labeling)
             .add("a", "b", 1)
             .add("a", "c", 2)
@@ -99,7 +99,7 @@ public class LabeledGraphTest extends LabeledGraphTestBase {
 
   @Test
   public void filter() {
-    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("0", "1", 1)
             .add("1", "2", 1)
             .add("2", "0", 1)
@@ -113,7 +113,7 @@ public class LabeledGraphTest extends LabeledGraphTestBase {
 
   @Test
   public void collapse() {
-    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("0", "1", 1)
             .add("1", "2", 1)
             .add("2", "3", 1)

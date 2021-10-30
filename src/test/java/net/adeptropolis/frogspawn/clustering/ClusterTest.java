@@ -154,7 +154,7 @@ public class ClusterTest {
 
   @Test
   public void remainderLabels() {
-    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    LabeledGraph<String> graph = new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("A", "B", 3)
             .add("B", "C", 4)
             .build();

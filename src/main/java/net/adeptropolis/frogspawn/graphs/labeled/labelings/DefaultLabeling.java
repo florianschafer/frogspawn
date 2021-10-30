@@ -7,7 +7,6 @@ package net.adeptropolis.frogspawn.graphs.labeled.labelings;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -21,18 +20,14 @@ import java.util.stream.Stream;
 public class DefaultLabeling<T> implements Labeling<T> {
 
   private final Object2IntOpenHashMap<T> indices;
-  private final Class<T> labelClass;
-  private T[] labels;
+  private Object[] labels;
 
   /**
    * Constructor
-   *
-   * @param labelClass Class of vertex labels
    */
 
-  public DefaultLabeling(Class<T> labelClass) {
+  public DefaultLabeling() {
     this.indices = new Object2IntOpenHashMap<>();
-    this.labelClass = labelClass;
     this.labels = null;
   }
 
@@ -41,13 +36,14 @@ public class DefaultLabeling<T> implements Labeling<T> {
    * @return The label associated with a given global vertex id
    */
 
+  @SuppressWarnings("unchecked")
   @Override
   public T label(int v) {
     ensureLabels();
     if (v >= labels.length) {
       return null;
     }
-    return labels[v];
+    return (T) labels[v];
   }
 
   /**
@@ -78,10 +74,11 @@ public class DefaultLabeling<T> implements Labeling<T> {
    * @return Stream of all labels
    */
 
+  @SuppressWarnings("unchecked")
   @Override
   public Stream<T> labels() {
     ensureLabels();
-    return Arrays.stream(labels);
+    return Arrays.stream(labels).map(label -> (T) label);
   }
 
   /**
@@ -90,7 +87,7 @@ public class DefaultLabeling<T> implements Labeling<T> {
 
   @Override
   public Labeling<T> newInstance() {
-    return new DefaultLabeling<>(labelClass);
+    return new DefaultLabeling<>();
   }
 
   /**
@@ -107,9 +104,8 @@ public class DefaultLabeling<T> implements Labeling<T> {
    * Build the label buffer
    */
 
-  @SuppressWarnings("unchecked")
   private void commit() {
-    labels = (T[]) Array.newInstance(labelClass, indices.size());
+    labels = new Object[indices.size()];
     indices.forEach((label, idx) -> labels[idx] = label);
   }
 

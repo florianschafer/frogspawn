@@ -21,13 +21,13 @@ public class LabeledGraphMergerTest extends LabeledGraphTestBase {
   @Test
   public void mergeTwoGraphs() {
     LabeledGraphMerger<String> merger = new LabeledGraphMerger<>(new AverageEdgeWeight(), new StringLabeling());
-    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("0", "1", 1)
             .add("1", "2", 1)
             .add("2", "0", 1)
             .add("2", "3", 1)
             .build(), 1);
-    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("2", "3", 2)
             .add("3", "4", 2)
             .add("4", "5", 2)
@@ -43,18 +43,18 @@ public class LabeledGraphMergerTest extends LabeledGraphTestBase {
   @Test
   public void mergeThreeGraphs() {
     LabeledGraphMerger<String> merger = new LabeledGraphMerger<>(new AverageEdgeWeight(), new StringLabeling());
-    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("0", "1", 2)
             .add("1", "2", 2)
             .add("2", "0", 2)
             .build(), 1);
-    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("2", "3", 3)
             .add("3", "4", 3)
             .add("4", "5", 3)
             .add("5", "3", 3)
             .build(), 2);
-    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<>(String.class))
+    merger.add(new LabeledGraphBuilder<>(new DefaultLabeling<String>())
             .add("5", "6", 4)
             .add("6", "7", 4)
             .add("7", "8", 4)
