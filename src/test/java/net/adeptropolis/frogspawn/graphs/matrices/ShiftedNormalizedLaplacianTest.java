@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import java.util.stream.IntStream;
 
-import static net.adeptropolis.frogspawn.graphs.matrices.ShiftedNormalizedLaplacian.computeSqrtWeights;
+import static net.adeptropolis.frogspawn.graphs.matrices.ShiftedNormalizedLaplacian.computeInvSqrtWeights;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.closeTo;
 
@@ -22,7 +22,7 @@ public class ShiftedNormalizedLaplacianTest extends GraphTestBase {
   @Test
   public void v0() {
     double[] expected = new double[]{INV_SQRT_8, ONE_HALF, INV_SQRT_8, INV_SQRT_8, ONE_HALF, INV_SQRT_8};
-    double[] sqrtWeights = computeSqrtWeights(EIGEN_REF_GRAPH);
+    double[] sqrtWeights = computeInvSqrtWeights(EIGEN_REF_GRAPH);
     double[] v0 = ShiftedNormalizedLaplacian.computeV0(EIGEN_REF_GRAPH, sqrtWeights);
     for (int i = 0; i < expected.length; i++) {
       assertThat(v0[i], closeTo(expected[i], 1E-6));
