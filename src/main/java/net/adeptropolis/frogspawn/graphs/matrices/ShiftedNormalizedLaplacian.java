@@ -18,7 +18,7 @@ import net.adeptropolis.frogspawn.helpers.Vectors;
 public class ShiftedNormalizedLaplacian implements SquareMatrix {
 
   private final Graph graph;
-  private final double[] weights;
+  private final double[] sqrtWeights;
   private final double[] argument;
   private final AdjacencyMatrix adjacencyMatrix;
   private final double[] v0;
@@ -31,25 +31,42 @@ public class ShiftedNormalizedLaplacian implements SquareMatrix {
 
   public ShiftedNormalizedLaplacian(Graph graph) {
     this.graph = graph;
-    this.weights = graph.weights();
-    this.v0 = computeV0(graph);
+    this.sqrtWeights = computeSqrtWeights(graph);
+    this.v0 = computeV0(graph, sqrtWeights);
     this.argument = new double[graph.order()];
     this.adjacencyMatrix = new AdjacencyMatrix(graph);
+  }
+
+  /**
+   * Compute the square roots of a graphs vertex weighs
+   *
+   * @param graph Graph
+   * @return Square root vertex weights vector
+   */
+
+  static double[] computeSqrtWeights(Graph graph) {
+    double[] weights = graph.weights();
+    double[] sqrtWeights = new double[weights.length];
+    for (int i = 0; i < weights.length; i++) {
+      sqrtWeights[i] = Math.sqrt(weights[i]);
+    }
+    return sqrtWeights;
   }
 
   /**
    * Compute the eigenvector associated with the smallest eigenvalue of the regular normalized laplacian of the graph.
    * Note that this eigenvector is known a priori and can be directly computed from the original graph's weights.
    *
-   * @param graph A graph
+   * @param graph       A graph
+   * @param sqrtWeights Square roots of vertex weights
    * @return The desired eigenvector
    */
 
-  static double[] computeV0(Graph graph) {
+  static double[] computeV0(Graph graph, double[] sqrtWeights) {
     double[] v0 = new double[graph.order()];
     double norm = Math.sqrt(graph.totalWeight());
     for (int i = 0; i < graph.order(); i++) {
-      v0[i] = Math.sqrt(graph.weights()[i]) / norm;
+      v0[i] = sqrtWeights[i] / norm;
     }
     return v0;
   }
@@ -59,13 +76,13 @@ public class ShiftedNormalizedLaplacian implements SquareMatrix {
    */
 
   public double[] multiply(double[] x) {
-    double mu = 2 * Vectors.scalarProduct(v0, x);
     for (int i = 0; i < graph.order(); i++) {
-      argument[i] = x[i] / Math.sqrt(weights[i]);
+      argument[i] = x[i] / sqrtWeights[i];
     }
     double[] result = adjacencyMatrix.multiply(argument);
+    double mu = 2 * Vectors.scalarProduct(v0, x);
     for (int i = 0; i < graph.order(); i++) {
-      result[i] = x[i] + result[i] / Math.sqrt(weights[i]) - mu * v0[i];
+      result[i] = x[i] + result[i] / sqrtWeights[i] - mu * v0[i];
     }
     return result;
   }
