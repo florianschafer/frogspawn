@@ -31,26 +31,44 @@ public class ShiftedNormalizedLaplacian implements SquareMatrix {
 
   public ShiftedNormalizedLaplacian(Graph graph) {
     this.graph = graph;
-    this.invSqrtWeights = computeInvSqrtWeights(graph);
-    this.v0 = computeV0(graph, invSqrtWeights);
     this.argument = new double[graph.order()];
     this.adjacencyMatrix = new AdjacencyMatrix(graph);
+    double[] sqrtWeights = computeSqrtWeights(graph);
+    this.v0 = computeV0(graph, sqrtWeights);
+    this.invSqrtWeights = invertEntries(sqrtWeights);
   }
 
   /**
-   * Compute the inverse square roots of a graphs vertex weighs
+   * Compute the square roots of a graph's vertex weighs
    *
    * @param graph Graph
    * @return Square root vertex weights vector
    */
 
-  static double[] computeInvSqrtWeights(Graph graph) {
+  static double[] computeSqrtWeights(Graph graph) {
     double[] weights = graph.weights();
     double[] sqrtWeights = new double[weights.length];
     for (int i = 0; i < weights.length; i++) {
-      sqrtWeights[i] = 1.0 / Math.sqrt(weights[i]);
+      sqrtWeights[i] = Math.sqrt(weights[i]);
     }
     return sqrtWeights;
+  }
+
+  /**
+   * In-place inversion of all elements of a vector (assuming non-zeros)
+   *
+   * @param vector Vector whose elements should be inverted
+   * @return Original vector object with its entries having been inverted
+   */
+
+  private static double[] invertEntries(double[] vector) {
+    for (int i = 0; i < vector.length; i++) {
+      if (vector[i] == 0d) {
+        throw new IllegalArgumentException("Unable to invert zero-valued element");
+      }
+      vector[i] = 1.0 / vector[i];
+    }
+    return vector;
   }
 
   /**
@@ -58,15 +76,15 @@ public class ShiftedNormalizedLaplacian implements SquareMatrix {
    * Note that this eigenvector is known a priori and can be directly computed from the original graph's weights.
    *
    * @param graph       A graph
-   * @param invSqrtWeights Inverse Square roots of vertex weights
+   * @param sqrtWeights Square roots of vertex weights
    * @return The desired eigenvector
    */
 
-  static double[] computeV0(Graph graph, double[] invSqrtWeights) {
+  static double[] computeV0(Graph graph, double[] sqrtWeights) {
     double[] v0 = new double[graph.order()];
     double norm = Math.sqrt(graph.totalWeight());
     for (int i = 0; i < graph.order(); i++) {
-      v0[i] =  (1 / invSqrtWeights[i]) / norm; // TODO: maybe keep non-inverted square weights somewhere in case this double-inversion leads to numerical issues
+      v0[i] = sqrtWeights[i] / norm;
     }
     return v0;
   }
